@@ -1,0 +1,21 @@
+Usuário fazendo logout.Redirecionando para: login.php[2025-01-06 19:24:29] Usuário solicitou logout.
+[2025-01-06 19:24:29] Redirecionando para: login.php
+[2025-01-06 19:29:43] Formulário de login submetido. Email: admin@empresa.com
+[2025-01-06 19:29:43] Buscando usuários na API para autenticação.
+[2025-01-06 19:29:43] Tentando obter usuários da API.
+[2025-01-06 19:29:43] Dados obtidos com sucesso da API.
+[2025-01-06 19:29:43] Erro ao decodificar os dados da API: Syntax error
+[2025-01-06 19:29:43] Erro: Erro ao conectar à API: Erro ao decodificar os dados da API: Syntax error
+[2025-01-06 19:34:42] Formulário de login submetido. Email: admin@empresa.com
+[2025-01-06 19:34:42] Buscando usuários na API para autenticação.
+[2025-01-06 19:34:42] Tentando obter usuários da API.
+[2025-01-06 19:34:42] Dados obtidos com sucesso da API.
+[2025-01-06 19:34:42] Erro ao decodificar os dados da API: Syntax error
+[2025-01-06 19:34:42] Erro: Erro ao conectar à API: Erro ao decodificar os dados da API: Syntax error
+[2025-01-06 19:34:51] Formulário de login submetido. Email: admin@empresa.com
+[2025-01-06 19:34:51] Buscando usuários na API para autenticação.
+[2025-01-06 19:34:51] Tentando obter usuários da API.
+[2025-01-06 19:34:51] Dados obtidos com sucesso da API.
+[2025-01-06 19:34:51] Erro ao decodificar os dados da API: Syntax error
+[2025-01-06 19:34:51] Erro: Erro ao conectar à API: Erro ao decodificar os dados da API: Syntax error
+Usuário fazendo logout.Redirecionando para: login.phpUsuário fazendo logout.Redirecionando para: login.php

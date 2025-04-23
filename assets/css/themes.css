@@ -1,0 +1,68 @@
+:root {
+  --primary: #525d69;
+  --secondary: #333;
+  --accent: #4834d4;
+  --background: #f8f9fa;
+  --text: #333;
+  --card1-bg: #2c3e50;  
+  --card2-bg: #6c5ce7;
+  --card3-bg: #e74c3c;
+  --card4-bg: #f39c12;
+  --card-text: #fff;
+}
+
+/* Color Themes */
+.theme-green {
+  --primary: #525d69;
+  --secondary: #333;
+  --accent: #4834d4;
+}
+
+.theme-blue {
+  --primary: #4834d4;
+  --secondary: #2c3e50;
+  --accent: #525d69; 
+}
+
+.theme-purple {
+  --primary: #9c88ff;
+  --secondary: #5f27cd;
+  --accent: #ff6b81;
+}
+
+.theme-orange {
+  --primary: #ffa502;
+  --secondary: #ff7f50;
+  --accent: #00cec9;
+}
+
+.theme-red {
+  --primary: #ff4757;
+  --secondary: #ff6b81;
+  --accent: #00cec9;
+}
+
+/* Theme Selector */
+.color-picker {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.color-option:hover {
+  transform: scale(1.2);
+}

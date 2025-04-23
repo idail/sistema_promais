@@ -1,0 +1,277 @@
+/* Estilos para a página de clínicas */
+
+/* Cards */
+.card {
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    padding: .75rem 1.25rem;
+    position: relative;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Tabela */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,.075);
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem;
+}
+
+/* Status badges */
+.badge {
+    padding: .25em .4em;
+    font-size: 85%;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.bg-success {
+    background-color: #28a745!important;
+}
+
+.bg-danger {
+    background-color: #dc3545!important;
+}
+
+/* Botões */
+.btn {
+    margin-right: .25rem;
+}
+
+.btn i {
+    margin-right: .25rem;
+}
+
+/* Inputs e Selects */
+.form-control {
+    height: calc(2.25rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Modal */
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: calc(.3rem - 1px);
+    border-top-right-radius: calc(.3rem - 1px);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: calc(.3rem - 1px);
+    border-bottom-left-radius: calc(.3rem - 1px);
+}
+
+/* Paginação */
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Loading spinner */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .btn {
+        margin-bottom: .5rem;
+    }
+    
+    .table-responsive {
+        margin-bottom: 1rem;
+    }
+    
+    .modal-dialog {
+        margin: .5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Custom Styles for Clinicas Page */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.btn {
+    @apply px-4 py-2 rounded-lg transition-all duration-300 ease-in-out;
+}
+
+.btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-container {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 800px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#clinicasTable {
+    width: 100% !important;
+}
+
+#clinicasTable th {
+    @apply text-sm font-semibold uppercase tracking-wider;
+}
+
+#clinicasTable td {
+    @apply text-sm;
+}
+
+#clinicasTable .dataTables_filter,
+#clinicasTable .dataTables_length {
+    @apply mb-4;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    @apply px-3 py-1 mx-1 rounded-md;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    @apply bg-blue-600 text-white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .modal-container {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        border-radius: 0;
+    }
+}
+
+/* Status Badge Styles */
+.status-badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.status-badge-active {
+    @apply bg-green-100 text-green-800;
+}
+
+.status-badge-inactive {
+    @apply bg-red-100 text-red-800;
+}
+
+/* Hover Effects */
+.hover-effect {
+    @apply transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md;
+}

@@ -1,0 +1,2 @@
+2025-01-28 21:18:49 [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cid.uf' in 'field list'
+2025-01-28 21:18:49 [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cid.uf' in 'field list'

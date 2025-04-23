@@ -1,0 +1,77 @@
+Sistema web desenvolvido em PHP com MySQL
+Frontend utilizando TailwindCSS e JavaScript
+Arquitetura em camadas com separação de responsabilidades
+Principais Componentes:
+auth.php: Sistema de autenticação e controle de sessão
+cadastros/: Módulo de cadastros (clínicas, médicos, etc.)
+api.php: Interface de API para comunicação
+painel.php e painel2.php: Painéis de controle
+assets/: Recursos estáticos (CSS, JS, imagens)
+Modelo de Dados: a) Empresas:
+Cadastro de empresas com dados básicos (nome, CNPJ, endereço)
+Relacionamento com usuários e chaves de liberação
+b) Usuários:
+
+Níveis de acesso: admin, operador, cliente
+Vinculação com empresa
+Controle de sessão e autenticação
+c) Clínicas:
+
+Cadastro completo com dados de contato
+Vínculo com empresa
+Status ativo/inativo
+Associação com médicos
+d) Médicos:
+
+Cadastro com CRM e especialidade
+Vínculo com clínicas
+Controle de PCMSO
+e) Planos e Licenciamento:
+
+Sistema de planos (Básico, Profissional, Corporativo)
+Chaves de liberação com controle de expiração
+Preços e durações diferentes por plano
+Regras de Negócio:
+a) Controle de Acesso:
+
+Autenticação obrigatória
+Hierarquia de permissões (admin > operador > cliente)
+Sessões com timeout
+Registro de logs de acesso
+b) Licenciamento:
+
+Chaves únicas por usuário
+Controle de expiração de licenças
+Vinculação com planos específicos
+Possibilidade de múltiplas chaves por empresa
+c) Cadastros:
+
+Validação de CNPJ
+Formatação automática de telefones
+Validação de campos obrigatórios
+Controle de status ativo/inativo
+d) Médicos e Clínicas:
+
+Validação de CRM
+Múltiplos médicos por clínica
+Sistema de busca e filtros
+Controle de PCMSO
+Funcionalidades Principais:
+Gestão de usuários e permissões
+Cadastro e gestão de clínicas
+Cadastro e gestão de médicos
+Controle de licenças e planos
+Painéis administrativos
+Logs e auditoria
+Segurança:
+Sanitização de inputs
+Proteção contra SQL Injection
+Hash de senhas
+Controle de sessão
+Validação de dados
+Interface:
+Design responsivo com TailwindCSS
+Modais para formulários
+Paginação de resultados
+Filtros e busca dinâmica
+Feedback visual de ações

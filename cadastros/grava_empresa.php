@@ -1,0 +1,337 @@
+<div class="tab-container">
+    <div class="tab-buttons">
+        <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
+        <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button>
+    </div>
+
+    <div id="dados" class="tab-content active">
+        <form method="post" id="empresaForm" class="custom-form">
+            <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
+
+            <div class="form-group">
+                <label for="created_at">Data de Cadastro:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                    <input type="datetime-local" value="<?= htmlspecialchars($clinica['created_at'] ?? '') ?>" id="created_at" name="created_at" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="form-columns">
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-address-card"></i>
+                            <input type="text" value="<?= htmlspecialchars($clinica['cnpj'] ?? '') ?>" id="cnpj" name="cnpj" class="form-control cnpj-input" onblur="fetchCompanyData(this.value)" oninput="formatCNPJ(this)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nome_fantasia">Nome Fantasia:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-building"></i>
+                            <input type="text" value="<?= htmlspecialchars($clinica['nome_fantasia'] ?? '') ?>" id="nome_fantasia" name="nome_fantasia" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="razao_social">Razão Social:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-file-signature"></i>
+                            <input type="text" value="<?= htmlspecialchars($clinica['razao_social'] ?? '') ?>" id="razao_social" name="razao_social" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex: 75%;">
+                            <label for="endereco">Endereço:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" value="<?= htmlspecialchars($clinica['endereco'] ?? '') ?>" id="endereco" name="endereco" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex: 25%; margin-left: 10px;">
+                            <label for="numero">Número:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-pin"></i>
+                                <input type="text" value="<?= htmlspecialchars($clinica['numero'] ?? '') ?>" id="numero" name="numero" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="address-container">
+                        <div class="form-group" style="flex: 75%;">
+                            <label for="complemento">Complemento:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-signs"></i>
+                                <input type="text" value="<?= htmlspecialchars($clinica['complemento'] ?? '') ?>" id="complemento" name="complemento" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex: 25%;">
+                            <label for="bairro">Bairro:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map"></i>
+                                <input type="text" value="<?= htmlspecialchars($clinica['bairro'] ?? '') ?>" id="bairro" name="bairro" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="cidade_id">Cidade:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-city"></i>
+                            <select id="cidade_id" name="cidade_id" class="form-control">
+                                <!-- As opções serão adicionadas dinamicamente aqui -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cep">CEP:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <input type="text" value="<?= htmlspecialchars($clinica['cep'] ?? '') ?>" id="cep" name="cep" class="form-control" oninput="formatCEP(this)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" value="<?= htmlspecialchars($clinica['email'] ?? '') ?>" id="email" name="email" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone">Telefone:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="text" value="<?= htmlspecialchars($clinica['telefone'] ?? '') ?>" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status: Ativa/Inativa</label>
+                        <div class="status-toggle">
+                            <input type="checkbox" id="status" name="status" class="toggle-checkbox" value="1">
+                            <label for="status" class="toggle-label"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+
+    <div id="profissionais" class="tab-content">
+        <p>Conteúdo da aba Profissionais da Medicina Relacionados.</p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+<style>
+    .tab-container {
+        width: 100%;
+    }
+
+    .tab-buttons {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tab-button {
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: #f1f1f1;
+        border: none;
+        outline: none;
+        transition: background-color 0.3s;
+    }
+
+    .tab-button:hover {
+        background-color: #ddd;
+    }
+
+    .tab-button.active {
+        background-color: rgb(59, 59, 59);
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+        border: none;
+        border-top: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .custom-form .form-columns {
+        display: flex;
+        gap: 20px;
+    }
+
+    .custom-form .form-column {
+        flex: 1;
+    }
+
+    .custom-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 11px;
+        color: #888;
+    }
+
+    .custom-form .form-control {
+        width: 100%;
+        padding: 12px 12px 12px 40px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+    }
+
+    .status-toggle {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .status-toggle .toggle-checkbox {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .status-toggle .toggle-label {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .status-toggle .toggle-label:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    .status-toggle .toggle-checkbox:checked+.toggle-label {
+        background-color: #4CAF50;
+    }
+
+    .status-toggle .toggle-checkbox:checked+.toggle-label:before {
+        transform: translateX(26px);
+    }
+
+    .btn-primary {
+        padding: 10px 20px;
+        background-color: rgb(72, 74, 77);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Ajuste para o campo de data e hora */
+    input[type="datetime-local"] {
+        width: auto;
+        /* Define a largura automática */
+        max-width: 300px;
+        /* Define uma largura máxima */
+    }
+
+    /* Estilo para o container de endereço */
+    .address-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* Estilo para o input de CNPJ */
+    .cnpj-input {
+        border: none;
+        background-color: rgb(201, 201, 201);
+        font-weight: bold;
+        color: black;
+    }
+
+
+    .cnpj-input:focus {
+        border-color: #45a049;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+</style>
+
+<script>
+    $(document).ready(function(e){
+        carrega_cidades();
+    });
+
+    function carrega_cidades(){
+        $.ajax({
+            url: "api/list/cidades.php",
+            type: "get",
+            dataType: "json",
+            data: {},
+            success: function (retorno_cidades) 
+            {
+                debugger;
+
+                console.log(retorno_cidades.data.cidades);
+
+                let recebe_select_list_cidades = document.getElementById('cidade_id');
+
+                // Limpa opções anteriores
+                recebe_select_list_cidades.innerHTML = '<option value="">Selecione uma cidade</option>';
+
+                let cidades = retorno_cidades.data.cidades;
+
+                if (cidades.length > 0) {
+                    for (let i = 0; i < cidades.length; i++) {
+                        let option = document.createElement('option');
+                        option.value = cidades[i].id;
+                        option.text = cidades[i].nome + ' - ' + cidades[i].estado;
+                        recebe_select_list_cidades.appendChild(option);
+                    }
+                }
+            },
+            error:function(xhr,status,error)
+            {
+                console.log("Erro ao pegar cidades:" + error);
+            },
+        });
+    }
+</script>
