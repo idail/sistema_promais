@@ -344,6 +344,8 @@
         fetch(`https://open.cnpja.com/office/${cleanedCNPJ}`)
             .then(response => response.json())
             .then(data => {
+                debugger;
+                console.log(data);
                 document.getElementById('nome_fantasia').value = data.alias || '';
                 document.getElementById('razao_social').value = data.company.name || '';
                 document.getElementById('endereco').value = data.address.street || '';
@@ -402,7 +404,7 @@
 
     let recebe_nome_cidade_empresa;
 
-    $("#cidade_id").change(function(e){
+    $("#cidade_id").change(function(e) {
         e.preventDefault();
 
         debugger;
@@ -437,17 +439,20 @@
             dataType: "json",
             data: {
                 processo_empresa: "inserir_empresa",
-                valor_nome_fantasia_empresa:recebe_nome_fantasia_empresa,
-                valor_cnpj_empresa:recebe_cnpj_empresa,
-                valor_endereco_empresa:recebe_endereco_completo,
-                valor_telefone_empresa:recebe_telefone_empresa,
-                valor_email_empresa:recebe_email_empresa,
+                valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
+                valor_cnpj_empresa: recebe_cnpj_empresa,
+                valor_endereco_empresa: recebe_endereco_completo,
+                valor_telefone_empresa: recebe_telefone_empresa,
+                valor_email_empresa: recebe_email_empresa,
             },
-            success: function(retorno_empresa) 
-            {
+            success: function(retorno_empresa) {
                 debugger;
 
-                console.log(retorno_empresa);
+                if (retorno_empresa) 
+                {
+                    console.log("Empresa cadastrada com sucesso");
+                    window.location.href = "painel.php?pg=empresas";
+                }
             },
             error: function(xhr, status, error) {
                 console.log("Falha ao inserir empresa:" + error);
