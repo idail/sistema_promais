@@ -330,6 +330,7 @@
     }
 
     function formatPhoneValue(phone) {
+        debugger;
         phone = phone.replace(/\D/g, '');
         if (phone.length > 11) phone = phone.slice(0, 11);
         return phone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
@@ -343,6 +344,7 @@
     }
 
     function formatPhone(input) {
+        debugger;
         let value = input.value.replace(/\D/g, '');
         if (value.length > 11) value = value.slice(0, 11);
         value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
