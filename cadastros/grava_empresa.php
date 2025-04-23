@@ -423,8 +423,8 @@
         debugger;
 
         let recebe_cidade_empresa = $('#cidade_id option:selected').text(); // Nome da cidade
-        let recebe_array_informacoes_cidade_empresa = recebe_cidade_empresa.split("-");
-        recebe_nome_cidade_empresa = recebe_array_informacoes_cidade_empresa[0];
+        //let recebe_array_informacoes_cidade_empresa = recebe_cidade_empresa.split("-");
+        recebe_nome_cidade_empresa = recebe_cidade_empresa;
     });
 
     $("#grava-empresa").click(function(e) {

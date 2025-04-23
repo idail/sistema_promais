@@ -3,22 +3,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #clinicasTable {
+    #empresas_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #clinicasTable th,
-    #clinicasTable td {
+    #empresas_tabela th,
+    #empresas_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #clinicasTable th {
+    #empresas_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -91,7 +91,7 @@
 </div>
 
 <div>
-    <table id="clinicasTable">
+    <table id="empresas_tabela">
         <thead>
             <tr>
                 <th>ID</th>
@@ -100,7 +100,6 @@
                 <th>Endereço</th>
                 <th>Cidade/Estado</th>
                 <th>Telefone</th>
-                <th>Status</th>
                 <th>Ações</th> <!-- Nova coluna para os botões de ação -->
             </tr>
         </thead>
@@ -112,3 +111,106 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function(e) {
+        function buscar_empresas() {
+            $.ajax({
+                url: "cadastros/processa_empresa.php", // Endpoint da API
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_empresa": "buscar_empresas"
+                },
+                success: function(resposta_empresa) {
+                    debugger;
+                    if (resposta_empresa.length > 0) {
+                        console.log(resposta_empresa);
+                        preencher_tabela(resposta_empresa);
+                        inicializarDataTable();
+                    } else {
+                        console.error("Erro ao buscar dados:", resposta_empresa);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro na requisição:", error);
+                }
+            });
+        }
+
+        // Iniciar a busca dos dados ao carregar a página
+        buscar_empresas();
+    });
+
+
+    // Função para preencher a tabela com os dados das clínicas
+    function preencher_tabela(resposta_empresa) {
+        debugger;
+        let tbody = document.querySelector("#empresas_tabela tbody");
+        tbody.innerHTML = ""; // Limpa o conteúdo existente
+
+        for (let i = 0; i < resposta_empresa.length; i++) {
+            const empresa = resposta_empresa[i];
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${empresa.id}</td>
+            <td>${empresa.nome}</td>
+            <td>${empresa.cnpj}</td>
+            <td>${empresa.endereco}</td>
+            <td>${empresa.endereco}</td>
+            <td>${empresa.telefone}</td>
+            <td>
+                <div class="action-buttons">
+                    <a href="#" class="view" title="Visualizar">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="?pg=pro_cli&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${empresa.id}" class="delete" title="Apagar">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        `;
+            tbody.appendChild(row);
+        }
+
+        // resposta_empresa.forEach(empresa => {
+        //     const row = document.createElement("tr");
+        //     row.innerHTML = `
+        //                 <td>${empresa.id}</td>
+        //                 <td>${empresa.nome_fantasia}</td>
+        //                 <td>${empresa.cnpj}</td>
+        //                 <td>${empresa.endereco}, ${empresa.numero}, ${empresa.complemento}</td>
+        //                 <td>${empresa.cidade_nome}/${empresa.cidade_estado}</td>
+        //                 <td>${empresa.telefone}</td>
+        //                 <td>${empresa.status}</td>
+        //                 <td>
+        //                     <div class="action-buttons">
+        //                         <a href="#" class="view" title="Visualizar">
+        //                             <i class="fas fa-eye"></i>
+        //                         </a>
+        //                         <a href="?pg=pro_cli&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
+        //                             <i class="fas fa-edit"></i>
+        //                         </a>
+        //                         <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${empresa.id}" class="delete" title="Apagar">
+        //                             <i class="fas fa-trash"></i>
+        //                         </a>
+        //                     </div>
+        //                 </td>
+        //             `;
+        //     tbody.appendChild(row);
+        // });
+    }
+
+    // Função para inicializar o DataTables
+    function inicializarDataTable() {
+        $('#empresas_tabela').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+            }
+        });
+    }
+</script>

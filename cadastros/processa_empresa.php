@@ -42,5 +42,30 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $resultado_cadastra_empresa = $comando_cadastra_empresa->execute();
         echo json_encode($resultado_cadastra_empresa);
     }
+}else if($_SERVER["REQUEST_METHOD"] === "GET")
+{
+    $recebe_processo_empresa = $_GET["processo_empresa"];
+
+    if($recebe_processo_empresa === "buscar_empresas")
+    {
+        // conexao.php
+        $host = 'localhost';
+        $dbname = 'promais';
+        $user = 'root';
+        $password = ''; // Sem senha
+
+        try {
+            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Erro ao conectar ao banco de dados: " . $e->getMessage());
+        }
+
+        $instrucao_busca_empresas = "select * from empresas";
+        $comando_buca_empresas = $pdo->prepare($instrucao_busca_empresas);
+        $comando_buca_empresas->execute();
+        $resultado_busca_empresas = $comando_buca_empresas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_empresas);
+    }
 }
 ?>
