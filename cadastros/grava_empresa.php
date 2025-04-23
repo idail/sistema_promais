@@ -5,7 +5,7 @@
     </div>
 
     <div id="dados" class="tab-content active">
-        <form method="post" id="empresaForm" class="custom-form">
+        <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
             <div class="form-group">
@@ -113,17 +113,17 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="status">Status: Ativa/Inativa</label>
                         <div class="status-toggle">
                             <input type="checkbox" id="status" name="status" class="toggle-checkbox" value="1">
                             <label for="status" class="toggle-label"></label>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-primary" id="grava-empresa">Salvar</button>
         </form>
     </div>
 
@@ -296,19 +296,85 @@
 </style>
 
 <script>
-    $(document).ready(function(e){
+    function formatCNPJ(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 14) value = value.slice(0, 14);
+        value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+        value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+        value = value.replace(/(\d{4})(\d)/, '$1-$2');
+        input.value = value;
+    }
+
+    function validateCNPJ(cnpj) {
+        cnpj = cnpj.replace(/[^\d]+/g, '');
+        if (cnpj.length !== 14) return false;
+        fetchCompanyData(cnpj);
+    }
+
+    function formatCEPValue(cep) {
+        cep = cep.replace(/\D/g, '');
+        if (cep.length > 8) cep = cep.slice(0, 8);
+        return cep.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+    }
+
+    function formatPhoneValue(phone) {
+        phone = phone.replace(/\D/g, '');
+        if (phone.length > 11) phone = phone.slice(0, 11);
+        return phone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    }
+
+    function formatCEP(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 8) value = value.slice(0, 8);
+        value = value.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+        input.value = value;
+    }
+
+    function formatPhone(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+        input.value = value;
+    }
+
+    function fetchCompanyData(cnpj) {
+        const cleanedCNPJ = cnpj.replace(/[.\/-]/g, '');
+
+        fetch(`https://open.cnpja.com/office/${cleanedCNPJ}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('nome_fantasia').value = data.alias || '';
+                document.getElementById('razao_social').value = data.company.name || '';
+                document.getElementById('endereco').value = data.address.street || '';
+                document.getElementById('numero').value = data.address.number || '';
+                document.getElementById('complemento').value = data.address.details || '';
+                document.getElementById('bairro').value = data.address.district || '';
+                document.getElementById('cep').value = formatCEPValue(data.address.zip || '');
+                document.getElementById('email').value = data.emails[0]?.address || '';
+                document.getElementById('telefone').value = formatPhoneValue(data.phones[0] ? `${data.phones[0].area}${data.phones[0].number}` : '');
+
+                carrega_cidades(data.address.city, data.address.state);
+
+                const now = new Date();
+                const formattedDateTime = now.toISOString().slice(0, 16);
+                document.getElementById('created_at').value = formattedDateTime;
+            })
+            .catch(error => console.error('Erro ao buscar CNPJ:', error));
+    }
+
+    $(document).ready(function(e) {
         carrega_cidades();
     });
 
-    function carrega_cidades(){
+    function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
         $.ajax({
             url: "api/list/cidades.php",
             type: "get",
             dataType: "json",
             data: {},
-            success: function (retorno_cidades) 
-            {
-                debugger;
+            success: function(retorno_cidades) {
+                //debugger;
 
                 console.log(retorno_cidades.data.cidades);
 
@@ -328,10 +394,64 @@
                     }
                 }
             },
-            error:function(xhr,status,error)
-            {
+            error: function(xhr, status, error) {
                 console.log("Erro ao pegar cidades:" + error);
             },
         });
     }
+
+    let recebe_nome_cidade_empresa;
+
+    $("#cidade_id").change(function(e){
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_cidade_empresa = $('#cidade_id option:selected').text(); // Nome da cidade
+        let recebe_array_informacoes_cidade_empresa = recebe_cidade_empresa.split("-");
+        recebe_nome_cidade_empresa = recebe_array_informacoes_cidade_empresa[0];
+    });
+
+    $("#grava-empresa").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+        let recebe_cnpj_empresa = $("#cnpj").val();
+        let recebe_nome_fantasia_empresa = $("#nome_fantasia").val()
+        let recebe_razao_social_empresa = $("#razao_social").val();
+        let recebe_endereco_empresa = $("#endereco").val();
+        let recebe_numero_empresa = $("#numero").val();
+        let recebe_complemento_empresa = $("#complemento").val();
+        let recebe_bairro_empresa = $("#bairro").val();
+        let recebe_cep_empresa = $("#cep").val();
+        let recebe_email_empresa = $("#email").val();
+        let recebe_telefone_empresa = $("#telefone").val();
+
+        let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa + "," + recebe_nome_cidade_empresa;
+
+        console.log(recebe_endereco_completo);
+
+        $.ajax({
+            url: "cadastros/processa_empresa.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                processo_empresa: "inserir_empresa",
+                valor_nome_fantasia_empresa:recebe_nome_fantasia_empresa,
+                valor_cnpj_empresa:recebe_cnpj_empresa,
+                valor_endereco_empresa:recebe_endereco_completo,
+                valor_telefone_empresa:recebe_telefone_empresa,
+                valor_email_empresa:recebe_email_empresa,
+            },
+            success: function(retorno_empresa) 
+            {
+                debugger;
+
+                console.log(retorno_empresa);
+            },
+            error: function(xhr, status, error) {
+                console.log("Falha ao inserir empresa:" + error);
+            },
+        });
+    });
 </script>
