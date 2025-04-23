@@ -296,6 +296,17 @@
 </style>
 
 <script>
+    function openTab(event, tabName) {
+        const tabContents = document.querySelectorAll('.tab-content');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        tabContents.forEach(tab => tab.classList.remove('active'));
+        tabButtons.forEach(button => button.classList.remove('active'));
+
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
     function formatCNPJ(input) {
         let value = input.value.replace(/\D/g, '');
         if (value.length > 14) value = value.slice(0, 14);
@@ -448,8 +459,7 @@
             success: function(retorno_empresa) {
                 debugger;
 
-                if (retorno_empresa) 
-                {
+                if (retorno_empresa) {
                     console.log("Empresa cadastrada com sucesso");
                     window.location.href = "painel.php?pg=empresas";
                 }
