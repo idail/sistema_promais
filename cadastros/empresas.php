@@ -150,15 +150,20 @@
         tbody.innerHTML = ""; // Limpa o conteúdo existente
 
         for (let i = 0; i < resposta_empresa.length; i++) {
-            const empresa = resposta_empresa[i];
+            let empresa = resposta_empresa[i];
 
-            const row = document.createElement("tr");
+            // Separar o endereço
+            let partesEndereco = empresa.endereco.split(',');
+            let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
+            let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+
+            let row = document.createElement("tr");
             row.innerHTML = `
             <td>${empresa.id}</td>
             <td>${empresa.nome}</td>
             <td>${empresa.cnpj}</td>
-            <td>${empresa.endereco}</td>
-            <td>${empresa.endereco}</td>
+            <td>${ruaNumero}</td>
+            <td>${cidadeEstado}</td>
             <td>${empresa.telefone}</td>
             <td>
                 <div class="action-buttons">
