@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Ativar exibição de erros (apenas para desenvolvimento)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -60,6 +61,8 @@ function cadastrarEmpresa($pdo) {
     // Mapeia o valor do checkbox para 'Ativo' ou 'Inativo'
     $status = isset($_POST['status']) && $_POST['status'] == '1' ? 'Ativo' : 'Inativo';
 
+    $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
+
     // Dados do formulário (incluindo empresa_id)
     $data = [
         'empresa_id' => $_POST['empresa_id'], // Captura o valor do campo hidden
@@ -87,8 +90,40 @@ function cadastrarEmpresa($pdo) {
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
+    $recebe_ultimo_codigo_gerado_cadastramento_clinica = $pdo->lastInsertId();
 
-    echo json_encode(['status' => 'success', 'message' => 'Empresa cadastrada com sucesso!']);
+    //echo json_encode(['status' => 'success', 'message' => 'Empresa cadastrada com sucesso!']);
+
+    $valores_codigos_registrado_clinica = array();
+    $valores_codigos_empresa_id = array();
+
+    for ($indice = 0; $indice < count($recebe_codigos_medicos_associados); $indice++) 
+    { 
+        array_push($valores_codigos_registrado_clinica,$recebe_ultimo_codigo_gerado_cadastramento_clinica);
+    }
+
+    for ($empresa =0; $empresa < count($recebe_codigos_medicos_associados); $empresa++) 
+    { 
+        array_push($valores_codigos_empresa_id,$_SESSION["empresa_id"]);
+    }
+
+    $dataHoraAtual = date('Y-m-d H:i:s');
+
+    for ($relacao = 0; $relacao < count($recebe_codigos_medicos_associados); $relacao++) 
+    { 
+        $instrucao_cadastra_relacao_medicos_clinicas = "insert into medicos_clinicas(empresa_id,medico_id,clinica_id,data_associacao,
+        status)values(:recebe_empresa_id,:recebe_medico_id,:recebe_clinica_id,:recebe_data_associacao,:recebe_status)";
+        $comando_cadastra_relacao_medicos_clinicas = $pdo->prepare($instrucao_cadastra_relacao_medicos_clinicas);
+        $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_empresa_id",$valores_codigos_empresa_id[$relacao]);
+        $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_medico_id",$recebe_codigos_medicos_associados[$relacao]);
+        $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_clinica_id",$valores_codigos_registrado_clinica[$relacao]);
+        $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_data_associacao",$dataHoraAtual);
+        $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_status","Ativo");
+        $comando_cadastra_relacao_medicos_clinicas->execute();
+        $recebe_ultimo_codigo_registrado_medicos_clinicas = $pdo->lastInsertId();
+    }
+
+    echo json_encode($recebe_ultimo_codigo_registrado_medicos_clinicas);
 }
 // Função para atualizar uma empresa
 function atualizarEmpresa($pdo) {

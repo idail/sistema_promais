@@ -586,7 +586,11 @@ $conexao->close();
 
     document.getElementById('empresaForm').addEventListener('submit', function(event) {
         event.preventDefault();
+        debugger;
         const formData = new FormData(this);
+        formData.append("codigos_medicos_associados",JSON.stringify(valores_codigos_medicos));
+
+        console.log(formData);
 
         fetch('cadastros/pro_cli_json.php?pg=pro_cli&acao=cadastrar&tipo=insert', {
                 method: 'POST',
@@ -594,7 +598,8 @@ $conexao->close();
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Sucesso:', data);
+                debugger;
+                console.log(data);
                 window.location.href = "painel.php?pg=clinicas";
             })
             .catch((error) => {
