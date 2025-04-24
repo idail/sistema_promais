@@ -152,7 +152,8 @@ $conexao->close();
                 </div>
             </div>
 
-            <div>
+            <div style="display: flex; align-items: flex-start; gap: 40px;">
+                <!-- Coluna esquerda: select + botão -->
                 <div class="form-group">
                     <label for="cidade_id_2">Médico Associado:</label>
                     <div class="input-with-icon" style="display: flex; align-items: center; gap: 10px;">
@@ -162,23 +163,22 @@ $conexao->close();
                     </div>
                 </div>
 
-
+                <!-- Coluna direita: tabela -->
                 <div>
-                    <table id="clinicasTable">
+                    <table id="tabela-medico-associado" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Associar médico a clinica</th> <!-- Nova coluna para os botões de ação -->
+                                <th>Associar médico à clínica</th>
+                                <th>Opção</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Idail Neto</td>
-                            </tr>
                             <!-- Dados serão preenchidos via JavaScript -->
                         </tbody>
                     </table>
                 </div>
             </div>
+
 
 
             <button type="submit" class="btn btn-primary">Salvar</button>
@@ -192,22 +192,22 @@ $conexao->close();
 
 <style>
     /* Estilos gerais da tabela */
-    #clinicasTable {
+    #tabela-medico-associado {
         font-size: 12px;
-        width: 25%;
+        width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #clinicasTable th,
-    #clinicasTable td {
+    #tabela-medico-associado th,
+    #tabela-medico-associado td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #clinicasTable th {
+    #tabela-medico-associado th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -374,43 +374,94 @@ $conexao->close();
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <script>
-    
-    $(document).ready(function(e){
+    $(document).ready(function(e) {
         $.ajax({
-                url: "cadastros/processa_medico.php", // Endpoint da API
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_medico": "buscar_medicos_associar_clinica"
-                },
-                success: function(resposta_medicos) 
-                {
-                    debugger;
+            url: "cadastros/processa_medico.php", // Endpoint da API
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_medico": "buscar_medicos_associar_clinica"
+            },
+            success: function(resposta_medicos) {
+                debugger;
 
-                    console.log(resposta_medicos);
+                console.log(resposta_medicos);
 
-                    if(resposta_medicos.length > 0)
-                    {
-                        let select_medicos = document.getElementById('medico-associado');
-                        // Começa com uma opção padrão
-                        let options = '<option value="">Selecione um médico</option>';  
-                        
-                        // Adiciona opções dos médicos retornados
-                        for (let i = 0; i < resposta_medicos.length; i++) 
-                        {
-                            let medico = resposta_medicos[i];
-                            options += `<option value="${medico.id}">${medico.nome}</option>`;
-                        }
+                if (resposta_medicos.length > 0) {
+                    let select_medicos = document.getElementById('medico-associado');
+                    // Começa com uma opção padrão
+                    let options = '<option value="">Selecione um médico</option>';
 
-                        // Insere todas as opções de uma vez no select
-                        select_medicos.innerHTML = options;
+                    // Adiciona opções dos médicos retornados
+                    for (let i = 0; i < resposta_medicos.length; i++) {
+                        let medico = resposta_medicos[i];
+                        options += `<option value="${medico.id}">${medico.nome}</option>`;
                     }
-                },
-                error:function(xhr,status,error)
-                {
-                    console.log("Falha ao buscar médicos:" + error);
-                },
-            });
+
+                    // Insere todas as opções de uma vez no select
+                    select_medicos.innerHTML = options;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Falha ao buscar médicos:" + error);
+            },
+        });
+    });
+
+    let valores_codigos_medicos = Array();
+
+    $("#associar-medico-clinica").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
+
+        let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
+
+        console.log(recebe_codigo_medico_selecionado_associar_clinica + " - " + recebe_nome_medico_selecionado_associar_clinica);
+
+        let recebe_tabela_associar_medico_clinica = document.querySelector(
+            "#tabela-medico-associado tbody"
+        );
+
+        let indice = recebe_tabela_associar_medico_clinica.querySelectorAll("tr").length;
+
+        recebe_tabela_associar_medico_clinica.innerHTML +=
+            "<tr data-index='" + indice + "'>" +
+            "<td>" + recebe_nome_medico_selecionado_associar_clinica + "</td>" +
+            "<td><i class='fas fa-trash' id='exclui-medico-associado'></i></td>" +
+            "</tr>";
+
+        valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
+
+        $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+    });
+
+    $(document).on("click","#exclui-medico-associado",function(e){
+        e.preventDefault();
+
+        debugger;
+
+        let linha = $(this).closest("tr");
+        let index = linha.data("index");
+
+        linha.remove();
+
+        valores_codigos_medicos.splice(index, 1);
+
+        console.log(valores_codigos_medicos);
+
+        let recebe_tabela_associar_medico_clinica = document.querySelector("#tabela-medico-associado tbody");
+
+        // Pega todas as linhas <tr> dentro do tbody
+        let linhas = recebe_tabela_associar_medico_clinica.querySelectorAll("tr");
+
+        // Itera usando for tradicional
+        for (let i = 0; i < linhas.length; i++) 
+        {
+            linhas[i].setAttribute("data-index", i);
+        }
     });
 
 
