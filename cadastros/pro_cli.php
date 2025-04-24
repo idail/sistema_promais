@@ -30,7 +30,7 @@ $conexao->close();
 <div class="tab-container">
     <div class="tab-buttons">
         <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
-        <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button>
+        <!-- <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button> -->
     </div>
 
     <div id="dados" class="tab-content active">
@@ -152,16 +152,66 @@ $conexao->close();
                 </div>
             </div>
 
+            <div>
+                <div class="form-group">
+                    <label for="cidade_id_2">Médico Associado:</label>
+                    <div class="input-with-icon" style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-md"></i>
+                        <select id="medico-associado" name="medico_associado" class="form-control" style="max-width: 250px;"></select>
+                        <button type="button" class="btn btn-primary" id="associar-medico-clinica">Incluir</button>
+                    </div>
+                </div>
+
+
+                <div>
+                    <table id="clinicasTable">
+                        <thead>
+                            <tr>
+                                <th>Associar médico a clinica</th> <!-- Nova coluna para os botões de ação -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Idail Neto</td>
+                            </tr>
+                            <!-- Dados serão preenchidos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
     </div>
 
-    <div id="profissionais" class="tab-content">
+    <!-- <div id="profissionais" class="tab-content">
         <p>Conteúdo da aba Profissionais da Medicina Relacionados.</p>
-    </div>
+    </div> -->
 </div>
 
 <style>
+    /* Estilos gerais da tabela */
+    #clinicasTable {
+        font-size: 12px;
+        width: 25%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #clinicasTable th,
+    #clinicasTable td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #clinicasTable th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
     .tab-container {
         width: 100%;
     }
@@ -321,7 +371,49 @@ $conexao->close();
     }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
 <script>
+    
+    $(document).ready(function(e){
+        $.ajax({
+                url: "cadastros/processa_medico.php", // Endpoint da API
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_medico": "buscar_medicos_associar_clinica"
+                },
+                success: function(resposta_medicos) 
+                {
+                    debugger;
+
+                    console.log(resposta_medicos);
+
+                    if(resposta_medicos.length > 0)
+                    {
+                        let select_medicos = document.getElementById('medico-associado');
+                        // Começa com uma opção padrão
+                        let options = '<option value="">Selecione um médico</option>';  
+                        
+                        // Adiciona opções dos médicos retornados
+                        for (let i = 0; i < resposta_medicos.length; i++) 
+                        {
+                            let medico = resposta_medicos[i];
+                            options += `<option value="${medico.id}">${medico.nome}</option>`;
+                        }
+
+                        // Insere todas as opções de uma vez no select
+                        select_medicos.innerHTML = options;
+                    }
+                },
+                error:function(xhr,status,error)
+                {
+                    console.log("Falha ao buscar médicos:" + error);
+                },
+            });
+    });
+
+
     function openTab(event, tabName) {
         const tabContents = document.querySelectorAll('.tab-content');
         const tabButtons = document.querySelectorAll('.tab-button');
