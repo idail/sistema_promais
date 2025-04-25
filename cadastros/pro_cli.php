@@ -387,8 +387,7 @@ $conexao->close();
 
         console.log(recebe_codigo_alteracao_clinica);
 
-        async function buscar_informacoes_clinica() 
-        {
+        async function buscar_informacoes_clinica() {
             await popula_lista_cidade_clinica_alteracao();
 
             await popula_medicos_associar_clinica();
@@ -397,70 +396,58 @@ $conexao->close();
         buscar_informacoes_clinica();
     });
 
-    function popula_lista_cidade_clinica_alteracao()
-    {
-        $.ajax({
-            url: "cadastros/processa_clinica.php", // Endpoint da API
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_clinica": "buscar_cidade_clinica",
-                "valor_id_clinica":recebe_codigo_alteracao_clinica,
-            },
-            success: function(resposta) 
-            {
-                debugger;
-                console.log(resposta);
-
-                for (let indice = 0; indice < resposta.length; indice++)
-                {
-                    $("#cidade_id").val(resposta[0].id);
-                }
-
-                // let recebe_nome_cidade_clinica = resposta.nome;
-                // let recebe_estado_clinica = resposta.estado;
-                // let recebe_cidade_estado_clinica = recebe_nome_cidade_clinica + "-" + recebe_cidade_estado_clinica;
-
-            },
-            error:function(xhr,status,error)
-            {
-                console.log("Falha ao buscar cidade da clinica:" + error);
-            },
+    function popula_lista_cidade_clinica_alteracao() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_clinica.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_clinica": "buscar_cidade_clinica",
+                    "valor_id_clinica": recebe_codigo_alteracao_clinica,
+                },
+                success: function(resposta) {
+                    console.log(resposta);
+                    for (let indice = 0; indice < resposta.length; indice++) {
+                        $("#cidade_id").val(resposta[0].id);
+                    }
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar cidade da clinica:" + error);
+                    reject(error);
+                },
+            });
         });
     }
 
-    function popula_medicos_associar_clinica()
-    {
-        $.ajax({
-            url: "cadastros/processa_medico.php", // Endpoint da API
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_medico": "buscar_medicos_associar_clinica"
-            },
-            success: function(resposta_medicos) {
-                debugger;
-
-                console.log(resposta_medicos);
-
-                if (resposta_medicos.length > 0) {
-                    let select_medicos = document.getElementById('medico-associado');
-                    // Começa com uma opção padrão
-                    let options = '<option value="">Selecione um médico</option>';
-
-                    // Adiciona opções dos médicos retornados
-                    for (let i = 0; i < resposta_medicos.length; i++) {
-                        let medico = resposta_medicos[i];
-                        options += `<option value="${medico.id}">${medico.nome}</option>`;
+    function popula_medicos_associar_clinica() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_medico.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_medico": "buscar_medicos_associar_clinica"
+                },
+                success: function(resposta_medicos) {
+                    console.log(resposta_medicos);
+                    if (resposta_medicos.length > 0) {
+                        let select_medicos = document.getElementById('medico-associado');
+                        let options = '<option value="">Selecione um médico</option>';
+                        for (let i = 0; i < resposta_medicos.length; i++) {
+                            let medico = resposta_medicos[i];
+                            options += `<option value="${medico.id}">${medico.nome}</option>`;
+                        }
+                        select_medicos.innerHTML = options;
                     }
-
-                    // Insere todas as opções de uma vez no select
-                    select_medicos.innerHTML = options;
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log("Falha ao buscar médicos:" + error);
-            },
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
         });
     }
 
@@ -494,7 +481,7 @@ $conexao->close();
         $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
     });
 
-    $(document).on("click","#exclui-medico-associado",function(e){
+    $(document).on("click", "#exclui-medico-associado", function(e) {
         e.preventDefault();
 
         debugger;
@@ -514,8 +501,7 @@ $conexao->close();
         let linhas = recebe_tabela_associar_medico_clinica.querySelectorAll("tr");
 
         // Itera usando for tradicional
-        for (let i = 0; i < linhas.length; i++) 
-        {
+        for (let i = 0; i < linhas.length; i++) {
             linhas[i].setAttribute("data-index", i);
         }
     });
@@ -644,7 +630,7 @@ $conexao->close();
         event.preventDefault();
         debugger;
         const formData = new FormData(this);
-        formData.append("codigos_medicos_associados",JSON.stringify(valores_codigos_medicos));
+        formData.append("codigos_medicos_associados", JSON.stringify(valores_codigos_medicos));
 
         console.log(formData);
 
