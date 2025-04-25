@@ -375,6 +375,46 @@ $conexao->close();
 
 <script>
     $(document).ready(function(e) {
+
+        debugger;
+
+        let recebe_url_atual = window.location.href;
+
+        let recebe_parametro_codigo_clinica = new URLSearchParams(recebe_url_atual.split("&")[2]);
+
+        let recebe_codigo_alteracao_clinica = recebe_parametro_codigo_clinica.get("id");
+
+        console.log(recebe_codigo_alteracao_clinica);
+
+        $.ajax({
+            url: "cadastros/processa_clinica.php", // Endpoint da API
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_clinica": "buscar_cidade_clinica",
+                "valor_id_clinica":recebe_codigo_alteracao_clinica,
+            },
+            success: function(resposta) 
+            {
+                debugger;
+                console.log(resposta);
+
+                for (let indice = 0; indice < resposta.length; indice++)
+                {
+                    $("#cidade_id").val(resposta[0].cidade_id);
+                }
+
+                // let recebe_nome_cidade_clinica = resposta.nome;
+                // let recebe_estado_clinica = resposta.estado;
+                // let recebe_cidade_estado_clinica = recebe_nome_cidade_clinica + "-" + recebe_cidade_estado_clinica;
+
+            },
+            error:function(xhr,status,error)
+            {
+                console.log("Falha ao buscar cidade da clinica:" + error);
+            },
+        });
+
         $.ajax({
             url: "cadastros/processa_medico.php", // Endpoint da API
             method: "GET",
