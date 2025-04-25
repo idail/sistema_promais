@@ -375,24 +375,31 @@ $conexao->close();
 
 <script>
     let recebe_codigo_alteracao_clinica;
+    let recebe_acao_alteracao_clinica;
     $(document).ready(function(e) {
 
         debugger;
 
         let recebe_url_atual = window.location.href;
 
+        let recebe_parametro_acao_clinica = new URLSearchParams(recebe_url_atual.split("&")[1]);
+
         let recebe_parametro_codigo_clinica = new URLSearchParams(recebe_url_atual.split("&")[2]);
 
         recebe_codigo_alteracao_clinica = recebe_parametro_codigo_clinica.get("id");
 
+        recebe_acao_alteracao_clinica = recebe_parametro_acao_clinica.get("acao");
+
         console.log(recebe_codigo_alteracao_clinica);
 
         async function buscar_informacoes_clinica() {
-            await popula_lista_cidade_clinica_alteracao();
-
-            await popula_medicos_associar_clinica();
-
-            await popula_medicos_associados_clinica();
+            debugger;
+            if(recebe_acao_alteracao_clinica === "editar")
+            {
+                await popula_lista_cidade_clinica_alteracao();
+                await popula_medicos_associar_clinica();
+                await popula_medicos_associados_clinica();   
+            }
         }
 
         buscar_informacoes_clinica();
