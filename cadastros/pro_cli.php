@@ -396,7 +396,7 @@ $conexao->close();
         buscar_informacoes_clinica();
     });
 
-    function popula_lista_cidade_clinica_alteracao() {
+    async function popula_lista_cidade_clinica_alteracao() {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: "cadastros/processa_clinica.php",
@@ -422,7 +422,7 @@ $conexao->close();
         });
     }
 
-    function popula_medicos_associar_clinica() {
+    async function popula_medicos_associar_clinica() {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: "cadastros/processa_medico.php",
