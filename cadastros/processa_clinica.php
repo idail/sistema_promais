@@ -25,8 +25,10 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
             die("Erro ao conectar ao banco de dados: " . $e->getMessage());
         }
 
-        $instrucao_busca_cidade_clinica_alteracao = "select cl.empresa_id,cl.cidade_id,c.nome,c.estado,c.id from clinicas as cl inner join cidades as c on cl.empresa_id = 
-        c.empresa_id and cl.cidade_id = c.id where cl.id = :recebe_codigo_clinica_alteracao";
+        // $instrucao_busca_cidade_clinica_alteracao = "select cl.empresa_id,cl.cidade_id,c.nome,c.estado,c.id from clinicas as cl inner join cidades as c on cl.empresa_id = 
+        // c.empresa_id and cl.cidade_id = c.id where cl.id = :recebe_codigo_clinica_alteracao";
+        $instrucao_busca_cidade_clinica_alteracao = "SELECT c.nome AS cidade, c.estado FROM clinicas cl 
+        JOIN cidades c ON cl.cidade_id = c.id WHERE cl.id = :recebe_codigo_clinica_alteracao";
         $comando_busca_cidade_clinica_alteracao = $pdo->prepare($instrucao_busca_cidade_clinica_alteracao);
         $comando_busca_cidade_clinica_alteracao->bindValue(":recebe_codigo_clinica_alteracao",$recebe_id_clinica);
         $comando_busca_cidade_clinica_alteracao->execute();
