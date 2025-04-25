@@ -407,6 +407,7 @@ $conexao->close();
                     "valor_id_clinica": recebe_codigo_alteracao_clinica,
                 },
                 success: function(resposta) {
+                    debugger;
                     console.log(resposta);
                     for (let indice = 0; indice < resposta.length; indice++) {
                         $("#cidade_id").val(resposta[0].id);
@@ -431,6 +432,7 @@ $conexao->close();
                     "processo_medico": "buscar_medicos_associar_clinica"
                 },
                 success: function(resposta_medicos) {
+                    debugger;
                     console.log(resposta_medicos);
                     if (resposta_medicos.length > 0) {
                         let select_medicos = document.getElementById('medico-associado');
