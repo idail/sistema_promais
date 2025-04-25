@@ -401,7 +401,7 @@ $conexao->close();
 
                 for (let indice = 0; indice < resposta.length; indice++)
                 {
-                    $("#cidade_id").val(resposta[0].cidade_id);
+                    $("#cidade_id").val(resposta[0].id);
                 }
 
                 // let recebe_nome_cidade_clinica = resposta.nome;
