@@ -391,6 +391,8 @@ $conexao->close();
             await popula_lista_cidade_clinica_alteracao();
 
             await popula_medicos_associar_clinica();
+
+            await popula_medicos_associados_clinica();
         }
 
         buscar_informacoes_clinica();
@@ -443,6 +445,50 @@ $conexao->close();
                         }
                         select_medicos.innerHTML = options;
                     }
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
+
+    async function popula_medicos_associados_clinica()
+    {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_medico.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_medico": "buscar_medicos_associados_clinica",
+                    valor_codigo_clinica_medicos_associados:recebe_codigo_alteracao_clinica,
+                },
+                success: function(resposta_medicos) {
+                    debugger;
+                    console.log(resposta_medicos);
+
+                    if(resposta_medicos.length > 0)
+                    {
+                        let recebe_tabela_associar_medico_clinica = document.querySelector(
+                        "#tabela-medico-associado tbody"
+                        );
+
+                        $("#tabela-medico-associado tbody").html("");
+
+                        for (let indice = 0; indice < resposta_medicos.length; indice++)
+                        {
+                            recebe_tabela_associar_medico_clinica +=
+                             "<tr>" +
+                                "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
+                                "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'></i></td>" +
+                             "</tr>";
+                        }
+                        $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+                    }
+                    
                     resolve(); // sinaliza que terminou
                 },
                 error: function(xhr, status, error) {
