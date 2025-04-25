@@ -374,6 +374,7 @@ $conexao->close();
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <script>
+    let recebe_codigo_alteracao_clinica;
     $(document).ready(function(e) {
 
         debugger;
@@ -382,10 +383,22 @@ $conexao->close();
 
         let recebe_parametro_codigo_clinica = new URLSearchParams(recebe_url_atual.split("&")[2]);
 
-        let recebe_codigo_alteracao_clinica = recebe_parametro_codigo_clinica.get("id");
+        recebe_codigo_alteracao_clinica = recebe_parametro_codigo_clinica.get("id");
 
         console.log(recebe_codigo_alteracao_clinica);
 
+        async function buscar_informacoes_clinica() 
+        {
+            await popula_lista_cidade_clinica_alteracao();
+
+            await popula_medicos_associar_clinica();
+        }
+
+        buscar_informacoes_clinica();
+    });
+
+    function popula_lista_cidade_clinica_alteracao()
+    {
         $.ajax({
             url: "cadastros/processa_clinica.php", // Endpoint da API
             method: "GET",
@@ -414,7 +427,10 @@ $conexao->close();
                 console.log("Falha ao buscar cidade da clinica:" + error);
             },
         });
+    }
 
+    function popula_medicos_associar_clinica()
+    {
         $.ajax({
             url: "cadastros/processa_medico.php", // Endpoint da API
             method: "GET",
@@ -446,7 +462,7 @@ $conexao->close();
                 console.log("Falha ao buscar médicos:" + error);
             },
         });
-    });
+    }
 
     let valores_codigos_medicos = Array();
 
