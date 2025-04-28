@@ -37,6 +37,8 @@ $conexao->close();
         <form method="post" id="empresaForm" class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
+            <input type="hidden" id="codigo-clinica-alteracao" name="codigo_clinica_alteracao" value="<?php echo $clinica["id"]; ?>">
+
             <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
                 <div class="input-with-icon">
@@ -519,21 +521,17 @@ $conexao->close();
             data: {
                 "processo_clinica": "descvincular_medico_clinica",
                 valor_medico_clinica_id: recebe_codigo_medico_ja_associado,
-                valor_codigo_medico:recebe_codigo_medico
+                valor_codigo_medico: recebe_codigo_medico
             },
-            success: function(resposta_medicos_clinicas) 
-            {
+            success: function(resposta_medicos_clinicas) {
                 debugger;
 
                 console.log(resposta_medicos_clinicas);
 
-                if(resposta_medicos_clinicas)
-                {
-                    async function buscar_informacoes_clinica() 
-                    {
+                if (resposta_medicos_clinicas) {
+                    async function buscar_informacoes_clinica() {
                         debugger;
-                        if (recebe_acao_alteracao_clinica === "editar")
-                        {
+                        if (recebe_acao_alteracao_clinica === "editar") {
                             await popula_medicos_associados_clinica();
                         }
                     }
@@ -730,19 +728,35 @@ $conexao->close();
 
         console.log(formData);
 
-        fetch('cadastros/pro_cli_json.php?pg=pro_cli&acao=cadastrar&tipo=insert', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                debugger;
-                console.log(data);
-                window.location.href = "painel.php?pg=clinicas";
-            })
-            .catch((error) => {
-                console.error('Erro:', error);
-            });
+        if (recebe_acao_alteracao_clinica === "editar") {
+            fetch('cadastros/pro_cli_json.php?pg=pro_cli&acao=editar', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    debugger;
+                    console.log(data);
+                    window.location.href = "painel.php?pg=clinicas";
+                })
+                .catch((error) => {
+                    console.error('Erro:', error);
+                });
+        } else {
+            fetch('cadastros/pro_cli_json.php?pg=pro_cli&acao=cadastrar&tipo=insert', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    debugger;
+                    console.log(data);
+                    window.location.href = "painel.php?pg=clinicas";
+                })
+                .catch((error) => {
+                    console.error('Erro:', error);
+                });
+        }
     });
 </script>
 
