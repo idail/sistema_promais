@@ -399,6 +399,8 @@ $conexao->close();
                 await popula_lista_cidade_clinica_alteracao();
                 await popula_medicos_associar_clinica();
                 await popula_medicos_associados_clinica();   
+            }else{
+                await popula_medicos_associar_clinica();
             }
         }
 
