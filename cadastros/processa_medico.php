@@ -34,7 +34,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
     }else if($recebe_processo_medico === "buscar_medicos_associados_clinica")
     {
         $recebe_codigo_clinica_medicos_associados = $_GET["valor_codigo_clinica_medicos_associados"];
-        $instrucao_busca_medicos_associados_clinica = "SELECT DISTINCT m.id AS medico_id, m.nome AS nome_medico FROM 
+        $instrucao_busca_medicos_associados_clinica = "SELECT DISTINCT m.id AS medico_id,mc.id, m.nome AS nome_medico FROM 
         medicos_clinicas mc JOIN medicos m ON mc.medico_id = m.id WHERE mc.status = 'Ativo' AND mc.clinica_id = :recebe_codigo_clinica";
         $comando_busca_medicos_associados_clinica = $pdo->prepare($instrucao_busca_medicos_associados_clinica);
         $comando_busca_medicos_associados_clinica->bindValue(":recebe_codigo_clinica",$recebe_codigo_clinica_medicos_associados);
