@@ -546,6 +546,7 @@ $conexao->close();
     });
 
     let valores_codigos_medicos = Array();
+    let limpou_tabela_alteracao;
 
     $("#associar-medico-clinica").click(function(e) {
         e.preventDefault();
@@ -554,7 +555,11 @@ $conexao->close();
 
         if(recebe_acao_alteracao_clinica === "editar")
         {
-            $("#tabela-medico-associado tbody").html("");
+            if(!limpou_tabela_alteracao)
+            {
+                $("#tabela-medico-associado tbody").html("");
+                limpou_tabela_alteracao = true;
+            }
 
             let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
 
