@@ -209,7 +209,56 @@ function atualizarEmpresa($pdo) {
     $comando_altera_clinica->bindValue(":recebe_id_clinica",$recebe_codigo_clinica_alterar);
     $resultado_altera_clinica = $comando_altera_clinica->execute();
 
-    echo json_encode($resultado_altera_clinica);
+    $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
+
+    if(count($recebe_codigos_medicos_associados) > 0)
+    {
+            $valores_codigos_registrado_clinica_alterar = array();
+            $valores_codigos_empresa_id_alterar = array();
+
+            for ($indice = 0; $indice < count($recebe_codigos_medicos_associados); $indice++) 
+            { 
+                array_push($valores_codigos_registrado_clinica_alterar,$recebe_codigo_clinica_alterar);
+            }
+
+            for ($empresa =0; $empresa < count($recebe_codigos_medicos_associados); $empresa++) 
+            { 
+                array_push($valores_codigos_empresa_id_alterar,$_SESSION["empresa_id"]);
+            }
+
+            $data_hora_atual_alterar = date('Y-m-d H:i:s');
+
+            for ($relacao = 0; $relacao < count($recebe_codigos_medicos_associados); $relacao++) 
+            { 
+                $instrucao_cadastra_relacao_medicos_clinicas_na_alteracao = "insert into medicos_clinicas(empresa_id,medico_id,clinica_id,data_associacao,
+                status)values(:recebe_empresa_id,:recebe_medico_id,:recebe_clinica_id,:recebe_data_associacao,:recebe_status)";
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao = $pdo->prepare($instrucao_cadastra_relacao_medicos_clinicas_na_alteracao);
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_empresa_id",$valores_codigos_empresa_id_alterar[$relacao]);
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_medico_id",$recebe_codigos_medicos_associados[$relacao]);
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_clinica_id",$valores_codigos_registrado_clinica_alterar[$relacao]);
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_data_associacao",$data_hora_atual_alterar);
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_status","Ativo");
+                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->execute();
+                $recebe_ultimo_codigo_registrado_medicos_clinicas_na_alteracao = $pdo->lastInsertId();
+            }
+            echo json_encode($recebe_ultimo_codigo_registrado_medicos_clinicas_na_alteracao);
+    }else{
+        echo json_encode($resultado_altera_clinica);
+    }
+
+
+    // if(isset($_POST["codigos_medicos_associados"]) && !empty($_POST["codigos_medicos_associados"]))
+    // {
+    //     $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
+
+    //     if (is_array($recebe_codigos_medicos_associados) && !empty($recebe_codigos_medicos_associados)) {
+    //         echo json_encode("entrou aqui");
+            
+    //     }
+    //     echo json_encode("entrou aqui 2");
+    // }else{
+    //     echo json_encode("entrou aqui por causa que so alterou a cinica sem alterar medicos");
+    // }
     // echo json_encode(['status' => 'success', 'message' => 'Empresa atualizada com sucesso!']);
 }
 

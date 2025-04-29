@@ -552,27 +552,48 @@ $conexao->close();
 
         debugger;
 
-        let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
+        if(recebe_acao_alteracao_clinica === "editar")
+        {
+            $("#tabela-medico-associado tbody").html("");
 
-        let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
+            let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
 
-        console.log(recebe_codigo_medico_selecionado_associar_clinica + " - " + recebe_nome_medico_selecionado_associar_clinica);
+            let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
 
-        let recebe_tabela_associar_medico_clinica = document.querySelector(
-            "#tabela-medico-associado tbody"
-        );
+            let recebe_tabela_associar_medico_clinica = document.querySelector("#tabela-medico-associado tbody");
 
-        let indice = recebe_tabela_associar_medico_clinica.querySelectorAll("tr").length;
+            let indice = recebe_tabela_associar_medico_clinica.querySelectorAll("tr").length;
 
-        recebe_tabela_associar_medico_clinica.innerHTML +=
-            "<tr data-index='" + indice + "'>" +
-            "<td>" + recebe_nome_medico_selecionado_associar_clinica + "</td>" +
-            "<td><i class='fas fa-trash' id='exclui-medico-associado'></i></td>" +
-            "</tr>";
+            recebe_tabela_associar_medico_clinica.innerHTML +=
+                "<tr data-index='" + indice + "'>" +
+                "<td>" + recebe_nome_medico_selecionado_associar_clinica + "</td>" +
+                "<td><i class='fas fa-trash' id='exclui-medico-associado'></i></td>" +
+                "</tr>";
 
-        valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
+            valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
+        }else{
+            let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
 
-        $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+            let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
+
+            console.log(recebe_codigo_medico_selecionado_associar_clinica + " - " + recebe_nome_medico_selecionado_associar_clinica);
+
+            let recebe_tabela_associar_medico_clinica = document.querySelector(
+                "#tabela-medico-associado tbody"
+            );
+
+            let indice = recebe_tabela_associar_medico_clinica.querySelectorAll("tr").length;
+
+            recebe_tabela_associar_medico_clinica.innerHTML +=
+                "<tr data-index='" + indice + "'>" +
+                "<td>" + recebe_nome_medico_selecionado_associar_clinica + "</td>" +
+                "<td><i class='fas fa-trash' id='exclui-medico-associado'></i></td>" +
+                "</tr>";
+
+            valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
+
+            $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+        }
     });
 
     $(document).on("click", "#exclui-medico-associado", function(e) {
@@ -737,7 +758,7 @@ $conexao->close();
                 .then(data => {
                     debugger;
                     console.log(data);
-                    window.location.href = "painel.php?pg=clinicas";
+                    //window.location.href = "painel.php?pg=clinicas";
                 })
                 .catch((error) => {
                     console.error('Erro:', error);
