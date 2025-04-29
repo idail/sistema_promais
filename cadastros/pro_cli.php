@@ -163,7 +163,7 @@ $conexao->close();
             <div style="display: flex; align-items: flex-start; gap: 40px;">
                 <!-- Coluna esquerda: select + botão -->
                 <div class="form-group">
-                    <label for="cidade_id_2">Médico Examinador:</label>
+                    <label for="cidade_id_2">Vincular Médico Examinador</label>
                     <div class="input-with-icon" style="display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-user-md"></i>
                         <select id="medico-associado" name="medico_associado" class="form-control" style="max-width: 250px;"></select>
@@ -176,7 +176,7 @@ $conexao->close();
                     <table id="tabela-medico-associado" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Vincular médico examinador</th>
+                                <th>Médicos examinadores vinculados a essa clinica</th>
                                 <th>Opção</th>
                             </tr>
                         </thead>

@@ -113,6 +113,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -153,7 +154,7 @@
                         <td>${clinica.status}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar">
+                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica'>
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
@@ -181,4 +182,17 @@
         // Iniciar a busca dos dados ao carregar a página
         buscarDados();
     });
+
+    $(document).on("click","#visualizar-informacoes-clinica",function(e){
+        debugger;
+        $("#informacoes-clinica").modal("show");
+    });
 </script>
+
+<!-- <div class="modal fade bd-example-modal-lg" id="informacoes-clinica" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div> -->
