@@ -173,6 +173,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
+    let recebe_codigo_clinica_informacoes_rapida;
     $(document).ready(function() {
         // Função para buscar dados da API
         function buscarDados() {
@@ -249,7 +250,7 @@
 
     $(document).on("click", "#visualizar-informacoes-clinica", function(e) {
         debugger;
-        let recebe_codigo_clinica = $(this).data("codigo-clinica");
+        recebe_codigo_clinica_informacoes_rapida = $(this).data("codigo-clinica");
 
         $.ajax({
             url: "cadastros/processa_clinica.php",
@@ -257,7 +258,7 @@
             dataType: "json",
             data: {
                 "processo_clinica": "buscar_informacoes_rapidas_clinicas",
-                "valor_id_clinica_informacoes_rapidas": recebe_codigo_clinica,
+                "valor_id_clinica_informacoes_rapidas": recebe_codigo_clinica_informacoes_rapida,
             },
             success: function(resposta) {
                 debugger;
@@ -282,6 +283,13 @@
                             $("#status").prop("checked", true);
                         else
                             $("#status").prop("checked", false);
+
+                        async function exibi_medicos_associados_clinica() 
+                        {
+                            await popula_medicos_associados_clinica();
+                        }
+
+                        exibi_medicos_associados_clinica();
                     }
                 }
             },
@@ -332,6 +340,48 @@
         } catch (error) {
             console.error('Erro na requisição:', error);
         }
+    }
+
+    async function popula_medicos_associados_clinica() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_medico.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_medico": "buscar_medicos_associados_clinica",
+                    valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_informacoes_rapida,
+                },
+                success: function(resposta_medicos) {
+                    debugger;
+                    console.log(resposta_medicos);
+
+                    if (resposta_medicos.length > 0) {
+                        let recebe_tabela_associar_medico_clinica = document.querySelector(
+                            "#tabela-medico-associado tbody"
+                        );
+
+                        $("#tabela-medico-associado tbody").html("");
+
+                        for (let indice = 0; indice < resposta_medicos.length; indice++) {
+                            recebe_tabela_associar_medico_clinica +=
+                                "<tr>" +
+                                "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
+                                // "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
+                                // " data-codigo-medico-clinica='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
+                                "</tr>";
+                        }
+                        $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+                    }
+
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
+        });
     }
 </script>
 
@@ -469,14 +519,14 @@
 
             <!-- Médicos Vinculados -->
             <div class="mt-8 space-y-4">
-                <label for="medico-associado" class="block font-semibold">Vincular Médico Examinador</label>
+                <!-- <label for="medico-associado" class="block font-semibold">Vincular Médico Examinador</label>
                 <div class="flex items-center gap-4 flex-wrap">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-user-md text-gray-500"></i>
                         <select id="medico-associado" name="medico_associado" class="form-control w-64"></select>
                     </div>
                     <button type="button" class="btn btn-primary" id="associar-medico-clinica">Incluir</button>
-                </div>
+                </div> -->
 
                 <table id="tabela-medico-associado" class="table table-bordered w-full mt-4">
                     <thead>
