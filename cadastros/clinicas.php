@@ -238,13 +238,18 @@
 
         // Iniciar a busca dos dados ao carregar a página
         buscarDados();
+
+        async function buscar_informacoes_rapidas_clinica() 
+        {
+            await popula_cidades_informacoes_rapidas();
+        }
+
+        buscar_informacoes_rapidas_clinica();
     });
 
     $(document).on("click", "#visualizar-informacoes-clinica", function(e) {
         debugger;
         let recebe_codigo_clinica = $(this).data("codigo-clinica");
-
-        carregarCidades();
 
         $.ajax({
             url: "cadastros/processa_clinica.php",
@@ -273,7 +278,7 @@
                         $("#telefone").val(resposta[indice].telefone);
 
                         let recebe_status_clinica;
-                        if(resposta[indice].status === "Ativo")
+                        if (resposta[indice].status === "Ativo")
                             $("#status").prop("checked", true);
                         else
                             $("#status").prop("checked", false);
@@ -292,37 +297,41 @@
         document.getElementById('informacoes-clinica').classList.add('hidden'); // fechar
     });
 
-    function carregarCidades(cidadeSelecionada = '', estadoSelecionado = '') {
+    async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "")
+    {
+        debugger;
         const apiUrl = 'api/list/cidades.php';
         const cidadeSelect = document.getElementById('cidade_id');
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
 
-                    data.data.cidades.forEach(cidade => {
-                        const option = document.createElement('option');
-                        option.value = cidade.id;
-                        option.textContent = `${cidade.nome} - ${cidade.estado}`;
-                        cidadeSelect.appendChild(option);
-                    });
+            if (data.status === 'success') {
+                cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
 
-                    if (cidadeSelecionada) {
-                        for (let i = 0; i < cidadeSelect.options.length; i++) {
-                            if (cidadeSelect.options[i].text.includes(cidadeSelecionada) &&
-                                cidadeSelect.options[i].text.includes(estadoSelecionado)) {
-                                cidadeSelect.selectedIndex = i;
-                                break;
-                            }
+                data.data.cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.id;
+                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
+                    cidadeSelect.appendChild(option);
+                });
+
+                if (cidadeSelecionada && estadoSelecionado) {
+                    for (let i = 0; i < cidadeSelect.options.length; i++) {
+                        const optionText = cidadeSelect.options[i].text;
+                        if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
+                            cidadeSelect.selectedIndex = i;
+                            break;
                         }
                     }
-                } else {
-                    console.error('Erro ao carregar cidades:', data.message);
                 }
-            })
-            .catch(error => console.error('Erro na requisição:', error));
+            } else {
+                console.error('Erro ao carregar cidades:', data.message);
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+        }
     }
 </script>
 
