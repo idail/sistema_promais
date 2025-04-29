@@ -89,6 +89,51 @@
         display: flex;
         border-bottom: 1px solid #ccc;
     }
+
+    .status-toggle {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .status-toggle .toggle-checkbox {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .status-toggle .toggle-label {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .status-toggle .toggle-label:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    .status-toggle .toggle-checkbox:checked+.toggle-label {
+        background-color: #4CAF50;
+    }
+
+    .status-toggle .toggle-checkbox:checked+.toggle-label:before {
+        transform: translateX(26px);
+    }
 </style>
 
 <div>
@@ -166,7 +211,7 @@
                         <td>${clinica.status}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica'>
+                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica' data-codigo-clinica='${clinica.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
@@ -197,6 +242,48 @@
 
     $(document).on("click", "#visualizar-informacoes-clinica", function(e) {
         debugger;
+        let recebe_codigo_clinica = $(this).data("codigo-clinica");
+
+        carregarCidades();
+
+        $.ajax({
+            url: "cadastros/processa_clinica.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_clinica": "buscar_informacoes_rapidas_clinicas",
+                "valor_id_clinica_informacoes_rapidas": recebe_codigo_clinica,
+            },
+            success: function(resposta) {
+                debugger;
+
+                if (resposta.length > 0) {
+                    for (let indice = 0; indice < resposta.length; indice++) {
+                        $("#created_at").val(resposta[indice].created_at);
+                        $("#cnpj").val(resposta[indice].cnpj);
+                        $("#nome_fantasia").val(resposta[indice].nome_fantasia);
+                        $("#razao_social").val(resposta[indice].razao_social);
+                        $("#endereco").val(resposta[indice].endereco);
+                        $("#numero").val(resposta[indice].numero);
+                        $("#complemento").val(resposta[indice].complemento);
+                        $("#bairro").val(resposta[indice].bairro);
+                        $("#cidade_id").val(resposta[indice].cidade_id);
+                        $("#cep").val(resposta[indice].cep);
+                        $("#email").val(resposta[indice].email);
+                        $("#telefone").val(resposta[indice].telefone);
+
+                        let recebe_status_clinica;
+                        if(resposta[indice].status === "Ativo")
+                            $("#status").prop("checked", true);
+                        else
+                            $("#status").prop("checked", false);
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
         document.getElementById('informacoes-clinica').classList.remove('hidden'); // abrir
     });
 
@@ -204,6 +291,39 @@
         debugger;
         document.getElementById('informacoes-clinica').classList.add('hidden'); // fechar
     });
+
+    function carregarCidades(cidadeSelecionada = '', estadoSelecionado = '') {
+        const apiUrl = 'api/list/cidades.php';
+        const cidadeSelect = document.getElementById('cidade_id');
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+
+                    data.data.cidades.forEach(cidade => {
+                        const option = document.createElement('option');
+                        option.value = cidade.id;
+                        option.textContent = `${cidade.nome} - ${cidade.estado}`;
+                        cidadeSelect.appendChild(option);
+                    });
+
+                    if (cidadeSelecionada) {
+                        for (let i = 0; i < cidadeSelect.options.length; i++) {
+                            if (cidadeSelect.options[i].text.includes(cidadeSelecionada) &&
+                                cidadeSelect.options[i].text.includes(estadoSelecionado)) {
+                                cidadeSelect.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    console.error('Erro ao carregar cidades:', data.message);
+                }
+            })
+            .catch(error => console.error('Erro na requisição:', error));
+    }
 </script>
 
 <!-- Modal -->
@@ -236,7 +356,7 @@
                         <label for="cnpj" class="block font-semibold mb-1">CNPJ:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-address-card text-gray-500"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['cnpj'] ?? '') ?>" id="cnpj" name="cnpj" class="form-control cnpj-input" onblur="fetchCompanyData(this.value)" oninput="formatCNPJ(this)">
+                            <input type="text" value="" id="cnpj" name="cnpj" class="form-control cnpj-input">
                         </div>
                     </div>
 
@@ -252,7 +372,7 @@
                         <label for="razao_social" class="block font-semibold mb-1">Razão Social:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-file-signature text-gray-500"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['razao_social'] ?? '') ?>" id="razao_social" name="razao_social" class="form-control">
+                            <input type="text" id="razao_social" name="razao_social" class="form-control">
                         </div>
                     </div>
 
@@ -261,14 +381,14 @@
                             <label for="endereco" class="block font-semibold mb-1">Endereço:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-marker-alt text-gray-500"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['endereco'] ?? '') ?>" id="endereco" name="endereco" class="form-control">
+                                <input type="text" id="endereco" name="endereco" class="form-control">
                             </div>
                         </div>
                         <div class="w-1/3">
                             <label for="numero" class="block font-semibold mb-1">Número:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-pin text-gray-500"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['numero'] ?? '') ?>" id="numero" name="numero" class="form-control">
+                                <input type="text" id="numero" name="numero" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -278,14 +398,14 @@
                             <label for="complemento" class="block font-semibold mb-1">Complemento:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-signs text-gray-500"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['complemento'] ?? '') ?>" id="complemento" name="complemento" class="form-control">
+                                <input type="text" id="complemento" name="complemento" class="form-control">
                             </div>
                         </div>
                         <div class="w-1/3">
                             <label for="bairro" class="block font-semibold mb-1">Bairro:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map text-gray-500"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['bairro'] ?? '') ?>" id="bairro" name="bairro" class="form-control">
+                                <input type="text" id="bairro" name="bairro" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -304,8 +424,7 @@
                     <div>
                         <label for="cep" class="block font-semibold mb-1">CEP:</label>
                         <div class="flex items-center gap-2">
-                            <i class="fas fa-map-marked-alt text-gray-500"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['cep'] ?? '') ?>" id="cep" name="cep" class="form-control" oninput="formatCEP(this)">
+                            <i class="fas fa-map-marked-alt text-gray-500" id="cep"></i>
                         </div>
                     </div>
 
@@ -313,7 +432,7 @@
                         <label for="email" class="block font-semibold mb-1">Email:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-envelope text-gray-500"></i>
-                            <input type="email" value="<?= htmlspecialchars($clinica['email'] ?? '') ?>" id="email" name="email" class="form-control">
+                            <input type="email" id="email" name="email" class="form-control">
                         </div>
                     </div>
 
@@ -321,15 +440,18 @@
                         <label for="telefone" class="block font-semibold mb-1">Telefone:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-phone text-gray-500"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['telefone'] ?? '') ?>" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)">
+                            <input type="text" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)">
                         </div>
                     </div>
 
-                    <div>
-                        <label for="status" class="block font-semibold mb-1">Status: Ativa/Inativa</label>
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="status" name="status" class="toggle-checkbox"
-                                <?php if (isset($clinica["status"]) && $clinica["status"] == "Ativo") echo 'checked'; ?>>
+                    <div class="form-group">
+                        <label for="status">Status: Ativa/Inativa</label>
+                        <div class="status-toggle">
+                            <input
+                                type="checkbox"
+                                id="status"
+                                name="status"
+                                class="toggle-checkbox">
                             <label for="status" class="toggle-label"></label>
                         </div>
                     </div>

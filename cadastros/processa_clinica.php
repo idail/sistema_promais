@@ -38,6 +38,16 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_busca_cidade_clinica_alteracao->execute();
         $resultado_busca_cidade_clinica_alteracao = $comando_busca_cidade_clinica_alteracao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_cidade_clinica_alteracao);
+    }else if($recebe_processo_clinica === "buscar_informacoes_rapidas_clinicas")
+    {
+        $recebe_codigo_clinica_informacoes_rapidas = $_GET["valor_id_clinica_informacoes_rapidas"];
+
+        $instrucao_busca_clinica_informacoes_rapidas = "select * from clinicas where id = :recebe_id_clinica_informacoes_rapidas";
+        $comando_busca_clinica_informacoes_rapidas = $pdo->prepare($instrucao_busca_clinica_informacoes_rapidas);
+        $comando_busca_clinica_informacoes_rapidas->bindValue(":recebe_id_clinica_informacoes_rapidas",$recebe_codigo_clinica_informacoes_rapidas);
+        $comando_busca_clinica_informacoes_rapidas->execute();
+        $resultado_busca_informacoes_rapidas_clinica = $comando_busca_clinica_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_informacoes_rapidas_clinica);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "POST")
 {
