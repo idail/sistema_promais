@@ -88,12 +88,12 @@ function cadastrarEmpresa($pdo) {
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
-    $recebe_ultimo_codigo_gerado_cadastramento_clinica = $pdo->lastInsertId();    
+    $recebe_ultimo_codigo_gerado_cadastramento_clinica = $pdo->lastInsertId();
+    
+    $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
 
-    if(!empty($_POST["codigos_medicos_associados"]))
+    if(count($recebe_codigos_medicos_associados))
     {
-        $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
-
         $valores_codigos_registrado_clinica = array();
         $valores_codigos_empresa_id = array();
 
@@ -127,6 +127,15 @@ function cadastrarEmpresa($pdo) {
     }else{
         echo json_encode(['status' => 'success', 'message' => 'Empresa cadastrada com sucesso!']);
     }
+
+    // if(!empty($_POST["codigos_medicos_associados"]))
+    // {
+    //     $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
+
+        
+    // }else{
+        
+    // }
 }
 // Função para atualizar uma empresa
 function atualizarEmpresa($pdo) {

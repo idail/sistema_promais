@@ -758,7 +758,7 @@ $conexao->close();
                 .then(data => {
                     debugger;
                     console.log(data);
-                    //window.location.href = "painel.php?pg=clinicas";
+                    window.location.href = "painel.php?pg=clinicas";
                 })
                 .catch((error) => {
                     console.error('Erro:', error);
