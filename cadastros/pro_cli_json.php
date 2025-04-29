@@ -59,35 +59,69 @@ function cadastrarEmpresa($pdo) {
     }
 
     // Mapeia o valor do checkbox para 'Ativo' ou 'Inativo'
-    $status = isset($_POST['status']) && $_POST['status'] == '1' ? 'Ativo' : 'Inativo';
+    // $status = isset($_POST['status']) && $_POST['status'] == '1' ? 'Ativo' : 'Inativo';
 
     // Dados do formulário (incluindo empresa_id)
-    $data = [
-        'empresa_id' => $_POST['empresa_id'], // Captura o valor do campo hidden
-        'created_at' => $_POST['created_at'],
-        'cnpj' => $_POST['cnpj'],
-        'nome_fantasia' => $_POST['nome_fantasia'],
-        'razao_social' => $_POST['razao_social'],
-        'endereco' => $_POST['endereco'],
-        'numero' => $_POST['numero'],
-        'complemento' => $_POST['complemento'],
-        'bairro' => $_POST['bairro'],
-        'cidade_id' => $_POST['cidade_id'],
-        'cep' => $_POST['cep'],
-        'email' => $_POST['email'],
-        'telefone' => $_POST['telefone'],
-        'status' => $status, // Usa o valor mapeado
-    ];
+    // $data = [
+    //     'empresa_id' => $_POST['empresa_id'], // Captura o valor do campo hidden
+    //     'created_at' => $_POST['created_at'],
+    //     'cnpj' => $_POST['cnpj'],
+    //     'nome_fantasia' => $_POST['nome_fantasia'],
+    //     'razao_social' => $_POST['razao_social'],
+    //     'endereco' => $_POST['endereco'],
+    //     'numero' => $_POST['numero'],
+    //     'complemento' => $_POST['complemento'],
+    //     'bairro' => $_POST['bairro'],
+    //     'cidade_id' => $_POST['cidade_id'],
+    //     'cep' => $_POST['cep'],
+    //     'email' => $_POST['email'],
+    //     'telefone' => $_POST['telefone'],
+    //     'status' => $status, // Usa o valor mapeado
+    // ];
+
+    $recebe_clinica_id_cadastrar = $_POST['empresa_id'];
+    $recebe_nome_fantasia_clinica_cadastrar = $_POST['nome_fantasia'];
+    $recebe_clinica_data_criacao_cadastrar = $_POST['created_at'];
+    $recebe_razao_social_clinica_cadastrar = $_POST['razao_social'];
+    $recebe_cnpj_clinica_cadastrar = $_POST['cnpj'];
+    $recebe_endereco_clinica_cadastrar = $_POST['endereco'];
+    $recebe_numero_clinica_cadastrar = $_POST['numero'];
+    $recebe_complemento_clinica_cadastrar = $_POST['complemento'];
+    $recebe_bairro_clinica_cadastrar = $_POST["bairro"];
+    $recebe_cidade_id_clinica_cadastrar = $_POST['cidade_id'];
+    $recebe_cep_clinica_cadastrar = $_POST['cep'];
+    $recebe_email_clinica_cadastrar = $_POST['email'];
+    $recebe_telefone_clinica_cadastrar = $_POST['telefone'];
+
+    if (isset($_POST['status']) && $_POST['status'] === "on") {
+        $status = "Ativo";
+    } else {
+        $status = "Inativo";
+    }
 
     // Query SQL (incluindo empresa_id)
     $sql = "INSERT INTO clinicas (
-        empresa_id, created_at, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id, cep, email, telefone, status
+        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id, cep, email, telefone, status
     ) VALUES (
-        :empresa_id, :created_at, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :cep, :email, :telefone, :status
+        :empresa_id, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :cep, :email, :telefone, :status
     )";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($data);
+    $comando_cadastra_clinica = $pdo->prepare($sql);
+    $comando_cadastra_clinica->bindValue(":empresa_id",$recebe_clinica_id_cadastrar);
+    // $comando_cadastra_clinica->bindValue(":created_at",$recebe_clinica_data_criacao_cadastrar);
+    $comando_cadastra_clinica->bindValue(":nome_fantasia",$recebe_nome_fantasia_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":razao_social",$recebe_razao_social_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":cnpj",$recebe_cnpj_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":endereco",$recebe_endereco_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":numero",$recebe_numero_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":complemento",$recebe_complemento_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":bairro",$recebe_bairro_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":cidade_id",$recebe_cidade_id_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":cep",$recebe_cep_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":email",$recebe_email_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":telefone",$recebe_telefone_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":status",$status);
+    $comando_cadastra_clinica->execute();
     $recebe_ultimo_codigo_gerado_cadastramento_clinica = $pdo->lastInsertId();
     
     $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
@@ -174,7 +208,13 @@ function atualizarEmpresa($pdo) {
     $recebe_cep_clinica_alterar = $_POST["cep"];
     $recebe_email_clinica_alterar = $_POST["email"];
     $recebe_telefone_clinica_alterar = $_POST["telefone"];
-    $recebe_status_clinica_alterar = $_POST["status"];
+
+    if (isset($_POST['status']) && $_POST['status'] === "on") {
+        $status = "Ativo";
+    } else {
+        $status = "Inativo";
+    }
+
     $recebe_codigo_clinica_alterar = $_POST["codigo_clinica_alteracao"];
 
     // $sql = "UPDATE empresas SET
@@ -214,7 +254,7 @@ function atualizarEmpresa($pdo) {
     $comando_altera_clinica->bindValue(":recebe_cep_clinica",$recebe_cep_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_email_clinica",$recebe_email_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_telefone_clinica",$recebe_telefone_clinica_alterar);
-    $comando_altera_clinica->bindValue(":recebe_status_clinica",$recebe_status_clinica_alterar);
+    $comando_altera_clinica->bindValue(":recebe_status_clinica",$status);
     $comando_altera_clinica->bindValue(":recebe_id_clinica",$recebe_codigo_clinica_alterar);
     $resultado_altera_clinica = $comando_altera_clinica->execute();
 

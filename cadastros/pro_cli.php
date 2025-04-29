@@ -147,7 +147,13 @@ $conexao->close();
                     <div class="form-group">
                         <label for="status">Status: Ativa/Inativa</label>
                         <div class="status-toggle">
-                            <input type="checkbox" id="status" name="status" class="toggle-checkbox" value="1">
+                            <input
+                                type="checkbox"
+                                id="status"
+                                name="status"
+                                class="toggle-checkbox"
+                                
+                                <?php if (isset($clinica["status"]) && $clinica["status"] == "Ativo"){echo 'checked' ?? "";} ?>>
                             <label for="status" class="toggle-label"></label>
                         </div>
                     </div>
@@ -553,10 +559,8 @@ $conexao->close();
 
         debugger;
 
-        if(recebe_acao_alteracao_clinica === "editar")
-        {
-            if(!limpou_tabela_alteracao)
-            {
+        if (recebe_acao_alteracao_clinica === "editar") {
+            if (!limpou_tabela_alteracao) {
                 $("#tabela-medico-associado tbody").html("");
                 limpou_tabela_alteracao = true;
             }
@@ -576,7 +580,7 @@ $conexao->close();
                 "</tr>";
 
             valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
-        }else{
+        } else {
             let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
 
             let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
