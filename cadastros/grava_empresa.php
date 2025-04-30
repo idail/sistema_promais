@@ -1,7 +1,7 @@
 <div class="tab-container">
     <div class="tab-buttons">
         <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
-        <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button>
+        <!-- <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button> -->
     </div>
 
     <div id="dados" class="tab-content active">
@@ -123,13 +123,40 @@
                 </div>
             </div>
 
+            <div style="display: flex; align-items: flex-start; gap: 40px;">
+                <!-- Coluna esquerda: select + botão -->
+                <div class="form-group">
+                    <label for="cidade_id_2">Vincular Médico Examinador</label>
+                    <div class="input-with-icon" style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-md"></i>
+                        <select id="medico-associado" name="medico_associado" class="form-control" style="max-width: 250px;"></select>
+                        <button type="button" class="btn btn-primary" id="associar-medico-empresa">Incluir</button>
+                    </div>
+                </div>
+
+                <!-- Coluna direita: tabela -->
+                <div>
+                    <table id="tabela-medico-associado-coordenador" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Médicos examinadores coordenadores vinculados a essa emoresa</th>
+                                <th>Opção</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão preenchidos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <button type="button" class="btn btn-primary" id="grava-empresa">Salvar</button>
         </form>
     </div>
 
-    <div id="profissionais" class="tab-content">
+    <!-- <div id="profissionais" class="tab-content">
         <p>Conteúdo da aba Profissionais da Medicina Relacionados.</p>
-    </div>
+    </div> -->
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -296,6 +323,65 @@
 </style>
 
 <script>
+    let recebe_codigo_alteracao_empresa;
+    let recebe_acao_alteracao_empresa;
+
+    $(document).ready(function(e){
+        let recebe_url_atual = window.location.href;
+
+        let recebe_parametro_acao_empresa = new URLSearchParams(recebe_url_atual.split("&")[1]);
+
+        let recebe_parametro_codigo_empresa = new URLSearchParams(recebe_url_atual.split("&")[2]);
+
+        recebe_codigo_alteracao_empresa = recebe_parametro_codigo_empresa.get("id");
+
+        recebe_acao_alteracao_empresa = recebe_parametro_acao_empresa.get("acao");
+
+        async function buscar_informacoes_empresa() {
+            debugger;
+            if (recebe_acao_alteracao_empresa === "editar") {
+                // await popula_lista_cidade_empresa_alteracao();
+                await popula_medicos_associar_empresa();
+                await popula_medicos_associados_clinica();
+            } else {
+                await popula_medicos_associar_empresa();
+            }
+        }
+
+        buscar_informacoes_empresa();
+    });
+
+    async function popula_medicos_associar_empresa() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_medico.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_medico": "buscar_medicos_associar_empresa"
+                },
+                success: function(resposta_medicos) {
+                    debugger;
+                    console.log(resposta_medicos);
+                    if (resposta_medicos.length > 0) {
+                        let select_medicos = document.getElementById('medico-associado');
+                        let options = '<option value="">Selecione um médico</option>';
+                        for (let i = 0; i < resposta_medicos.length; i++) {
+                            let medico = resposta_medicos[i];
+                            options += `<option value="${medico.id}">${medico.nome}</option>`;
+                        }
+                        select_medicos.innerHTML = options;
+                    }
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
+
     function openTab(event, tabName) {
         const tabContents = document.querySelectorAll('.tab-content');
         const tabButtons = document.querySelectorAll('.tab-button');
