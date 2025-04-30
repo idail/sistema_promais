@@ -129,7 +129,7 @@
                     <label for="cidade_id_2">Vincular Médico Examinador</label>
                     <div class="input-with-icon" style="display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-user-md"></i>
-                        <select id="medico-associado" name="medico_associado" class="form-control" style="max-width: 250px;"></select>
+                        <select id="medico-associado-empresa" name="medico_associado" class="form-control" style="max-width: 250px;"></select>
                         <button type="button" class="btn btn-primary" id="associar-medico-empresa">Incluir</button>
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                     <table id="tabela-medico-associado-coordenador" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Médicos examinadores coordenadores vinculados a essa emoresa</th>
+                                <th>Médicos examinadores coordenadores vinculados a essa empresa</th>
                                 <th>Opção</th>
                             </tr>
                         </thead>
@@ -364,7 +364,7 @@
                     debugger;
                     console.log(resposta_medicos);
                     if (resposta_medicos.length > 0) {
-                        let select_medicos = document.getElementById('medico-associado');
+                        let select_medicos = document.getElementById('medico-associado-empresa');
                         let options = '<option value="">Selecione um médico</option>';
                         for (let i = 0; i < resposta_medicos.length; i++) {
                             let medico = resposta_medicos[i];
@@ -381,6 +381,47 @@
             });
         });
     }
+
+    let valores_codigos_medicos_empresas = Array();
+    let limpou_tabela_alteracao_empresa;
+
+    $("#associar-medico-empresa").click(function(e){
+        e.preventDefault();
+
+        debugger;
+
+        if(recebe_acao_alteracao_empresa === "editar")
+        {
+            
+        }else{
+            let recebe_codigo_medico_selecionado_associar_empresa = $("#medico-associado-empresa").val();
+
+            let recebe_nome_medico_selecionado_associar_empresa = $('#medico-associado-empresa option:selected').text();
+
+            console.log(recebe_codigo_medico_selecionado_associar_empresa + " - " + recebe_nome_medico_selecionado_associar_empresa);
+
+            let recebe_tabela_associar_medico_empresa = document.querySelector(
+                "#tabela-medico-associado-coordenador tbody"
+            );
+
+            let indice = recebe_tabela_associar_medico_empresa.querySelectorAll("tr").length;
+
+            recebe_tabela_associar_medico_empresa.innerHTML +=
+                "<tr data-index='" + indice + "'>" +
+                "<td>" + recebe_nome_medico_selecionado_associar_empresa + "</td>" +
+                "<td><i class='fas fa-trash' id='exclui-medico-associado-empresa'></i></td>" +
+                "</tr>";
+
+            valores_codigos_medicos_empresas.push(recebe_codigo_medico_selecionado_associar_empresa);
+
+            $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
+
+            $("#medico-associado-empresa").prop('disabled', true);
+
+            // Desabilita o botão
+            $('#associar-medico-empresa').prop('disabled', true);
+        }
+    });
 
     function openTab(event, tabName) {
         const tabContents = document.querySelectorAll('.tab-content');
