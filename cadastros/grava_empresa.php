@@ -324,9 +324,10 @@
 
 <script>
     let recebe_codigo_alteracao_empresa;
-    let recebe_acao_alteracao_empresa;
+    let recebe_acao_alteracao_empresa = "cadastrar";
 
     $(document).ready(function(e){
+        debugger;
         let recebe_url_atual = window.location.href;
 
         let recebe_parametro_acao_empresa = new URLSearchParams(recebe_url_atual.split("&")[1]);
@@ -335,7 +336,10 @@
 
         recebe_codigo_alteracao_empresa = recebe_parametro_codigo_empresa.get("id");
 
-        recebe_acao_alteracao_empresa = recebe_parametro_acao_empresa.get("acao");
+        let recebe_acao_empresa = recebe_parametro_acao_empresa.get("acao");
+
+        if(recebe_acao_empresa !== "" && recebe_acao_empresa !== null)
+            recebe_acao_alteracao_empresa = recebe_acao_empresa;
 
         async function buscar_informacoes_empresa() {
             debugger;
@@ -420,6 +424,31 @@
 
             // Desabilita o botão
             $('#associar-medico-empresa').prop('disabled', true);
+        }
+    });
+
+    $(document).on("click", "#exclui-medico-associado-empresa", function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        let linha = $(this).closest("tr");
+        let index = linha.data("index");
+
+        linha.remove();
+
+        valores_codigos_medicos_empresas.splice(index, 1);
+
+        console.log(valores_codigos_medicos_empresas);
+
+        let recebe_tabela_associar_medico_empresa = document.querySelector("#tabela-medico-associado-coordenador tbody");
+
+        // Pega todas as linhas <tr> dentro do tbody
+        let linhas = recebe_tabela_associar_medico_empresa.querySelectorAll("tr");
+
+        // Itera usando for tradicional
+        for (let i = 0; i < linhas.length; i++) {
+            linhas[i].setAttribute("data-index", i);
         }
     });
 
@@ -586,10 +615,12 @@
                 valor_endereco_empresa: recebe_endereco_completo,
                 valor_telefone_empresa: recebe_telefone_empresa,
                 valor_email_empresa: recebe_email_empresa,
+                valor_medico_coordenador_empresa:valores_codigos_medicos_empresas,
             },
             success: function(retorno_empresa) {
                 debugger;
 
+                console.log(retorno_empresa > 0);
                 if (retorno_empresa) {
                     console.log("Empresa cadastrada com sucesso");
                     window.location.href = "painel.php?pg=empresas";
