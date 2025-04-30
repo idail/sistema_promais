@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 01/05/2025 às 00:02
+-- Tempo de geração: 01/05/2025 às 00:15
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -162,7 +162,14 @@ INSERT INTO `empresas` (`id`, `nome`, `cnpj`, `endereco`, `telefone`, `email`, `
 (16, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', '6796385622', 'rezende@gmail.com', 0),
 (17, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', '6796385622', 'rezende@gmail.com', 0),
 (18, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', '6796385622', 'rezende@gmail.com', 0),
-(19, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', '6796385622', 'rezende@gmai.com', 0);
+(19, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', '6796385622', 'rezende@gmai.com', 0),
+(20, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', '6796385622', 'rezende@gmail.com', 0),
+(21, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', '6796385622', 'rezende@gmail.com', 0),
+(22, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', '6796385622', 'rezende@gmail.com', 0),
+(23, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', '6796385622', 'rezende@gmail.com', 0),
+(24, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', '6796385622', 'rezende@gmail.com', 0),
+(25, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', '6796385622', 'rezende@gmail.com', 0),
+(26, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Brasília , DF', '6796385622', 'rezende@gmail.com', 0);
 
 -- --------------------------------------------------------
 
@@ -258,7 +265,7 @@ CREATE TABLE `medicos_empresas` (
   `id` int(11) NOT NULL,
   `empresa_id` int(11) NOT NULL,
   `medico_id` int(11) NOT NULL,
-  `data_associacao` int(11) NOT NULL DEFAULT current_timestamp(),
+  `data_associacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` enum('Ativo','Inativo') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -267,9 +274,11 @@ CREATE TABLE `medicos_empresas` (
 --
 
 INSERT INTO `medicos_empresas` (`id`, `empresa_id`, `medico_id`, `data_associacao`, `status`) VALUES
-(1, 15, 2, 2025, 'Ativo'),
-(2, 16, 1, 2025, 'Ativo'),
-(3, 19, 1, 2147483647, 'Ativo');
+(1, 15, 2, '0000-00-00 00:00:00', 'Ativo'),
+(2, 16, 1, '0000-00-00 00:00:00', 'Ativo'),
+(3, 19, 1, '0000-00-00 00:00:00', 'Ativo'),
+(4, 24, 2, '0000-00-00 00:00:00', 'Ativo'),
+(5, 25, 1, '2025-04-30 22:13:25', 'Ativo');
 
 -- --------------------------------------------------------
 
@@ -419,7 +428,7 @@ ALTER TABLE `clinicas`
 -- AUTO_INCREMENT de tabela `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de tabela `medicos`
@@ -437,7 +446,7 @@ ALTER TABLE `medicos_clinicas`
 -- AUTO_INCREMENT de tabela `medicos_empresas`
 --
 ALTER TABLE `medicos_empresas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `planos`

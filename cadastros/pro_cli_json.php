@@ -126,7 +126,7 @@ function cadastrarEmpresa($pdo) {
     
     $recebe_codigos_medicos_associados = json_decode($_POST["codigos_medicos_associados"], true);
 
-    if(count($recebe_codigos_medicos_associados))
+    if(count($recebe_codigos_medicos_associados) > 0)
     {
         $valores_codigos_registrado_clinica = array();
         $valores_codigos_empresa_id = array();
