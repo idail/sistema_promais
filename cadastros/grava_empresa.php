@@ -8,6 +8,8 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
+            <input type="hidden" name="empresa_id_alteracao" id="empresa_id_alteracao">
+
             <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
                 <div class="input-with-icon">
@@ -493,6 +495,7 @@
                             $("#bairro").val(resposta_empresa[indice].bairro);
                             $("#email").val(resposta_empresa[indice].email);
                             $("#telefone").val(resposta_empresa[indice].telefone);
+                            $("#empresa_id_alteracao").val(resposta_empresa[indice].id);
                         }
                     }
 
@@ -792,36 +795,70 @@
 
         console.log(recebe_endereco_completo);
 
-        $.ajax({
-            url: "cadastros/processa_empresa.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-                processo_empresa: "inserir_empresa",
-                valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
-                valor_cnpj_empresa: recebe_cnpj_empresa,
-                valor_endereco_empresa: recebe_endereco_completo,
-                valor_telefone_empresa: recebe_telefone_empresa,
-                valor_email_empresa: recebe_email_empresa,
-                valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
-                valor_id_cidade: recebe_id_cidade,
-                valor_razao_social_empresa: recebe_razao_social_empresa,
-                valor_bairro_empresa: recebe_bairro_empresa,
-                valor_cep_empresa: recebe_cep_empresa,
-                valor_complemento_empresa: recebe_complemento_empresa,
-            },
-            success: function(retorno_empresa) {
-                debugger;
+        if (recebe_acao_alteracao_empresa === "editar") {
+            $.ajax({
+                url: "cadastros/processa_empresa.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_empresa: "alterar_empresa",
+                    valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
+                    valor_cnpj_empresa: recebe_cnpj_empresa,
+                    valor_endereco_empresa: recebe_endereco_completo,
+                    valor_telefone_empresa: recebe_telefone_empresa,
+                    valor_email_empresa: recebe_email_empresa,
+                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
+                    valor_id_cidade: recebe_id_cidade,
+                    valor_razao_social_empresa: recebe_razao_social_empresa,
+                    valor_bairro_empresa: recebe_bairro_empresa,
+                    valor_cep_empresa: recebe_cep_empresa,
+                    valor_complemento_empresa: recebe_complemento_empresa,
+                    valor_id_empresa:$("#empresa_id_alteracao").val(),
+                },
+                success: function(retorno_empresa) {
+                    debugger;
 
-                console.log(retorno_empresa > 0);
-                if (retorno_empresa) {
-                    console.log("Empresa cadastrada com sucesso");
-                    window.location.href = "painel.php?pg=empresas";
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log("Falha ao inserir empresa:" + error);
-            },
-        });
+                    console.log(retorno_empresa);
+                    if (retorno_empresa) {
+                        console.log("Empresa alterada com sucesso");
+                        window.location.href = "painel.php?pg=empresas";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao inserir empresa:" + error);
+                },
+            });
+        } else {
+            $.ajax({
+                url: "cadastros/processa_empresa.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_empresa: "inserir_empresa",
+                    valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
+                    valor_cnpj_empresa: recebe_cnpj_empresa,
+                    valor_endereco_empresa: recebe_endereco_completo,
+                    valor_telefone_empresa: recebe_telefone_empresa,
+                    valor_email_empresa: recebe_email_empresa,
+                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
+                    valor_id_cidade: recebe_id_cidade,
+                    valor_razao_social_empresa: recebe_razao_social_empresa,
+                    valor_bairro_empresa: recebe_bairro_empresa,
+                    valor_cep_empresa: recebe_cep_empresa,
+                    valor_complemento_empresa: recebe_complemento_empresa,
+                },
+                success: function(retorno_empresa) {
+                    debugger;
+
+                    if (retorno_empresa) {
+                        console.log("Empresa cadastrada com sucesso");
+                        window.location.href = "painel.php?pg=empresas";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao inserir empresa:" + error);
+                },
+            });
+        }
     });
 </script>

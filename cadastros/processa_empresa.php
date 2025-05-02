@@ -102,6 +102,73 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_desvincular_medico_empresa->bindValue(":recebe_codigo_medico_desvincular",$recebe_codigo_medico);
         $resultado_desvincular_medico_empresa = $comando_desvincular_medico_empresa->execute();
         echo json_encode($resultado_desvincular_medico_empresa);
+    }else if($recebe_processo_empresa === "alterar_empresa")
+    {
+        $recebe_nome_fantasia_empresa_alterar = $_POST["valor_nome_fantasia_empresa"];
+        $recebe_cnpj_empresa_alterar = $_POST["valor_cnpj_empresa"];
+        $recebe_endereco_empresa_alterar = $_POST["valor_endereco_empresa"];
+        $recebe_telefone_empresa_alterar = $_POST["valor_telefone_empresa"];
+        $recebe_email_empresa_alterar = $_POST["valor_email_empresa"];
+        $recebe_id_cidade_empresa_alterar = $_POST["valor_id_cidade"];
+        $recebe_razao_social_empresa_alterar = $_POST["valor_razao_social_empresa"];
+        $recebe_bairro_empresa_alterar = $_POST["valor_bairro_empresa"];
+        $recebe_cep_empresa_alterar = $_POST["valor_cep_empresa"];
+        $recebe_complemento_empresa_alterar = $_POST["valor_complemento_empresa"];
+        $recebe_chave_id_empresa_alterar = $_SESSION["user_plan"];
+        $recebe_id_empresa_alterar = $_POST["valor_id_empresa"];
+
+        $instrucao_altera_empresa = 
+        "update empresas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
+        telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
+        bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar where id = :recebe_id_empresa_alterar";
+        $comando_altera_empresa = $pdo->prepare($instrucao_altera_empresa);
+        $comando_altera_empresa->bindValue(":recebe_nome_alterar",$recebe_nome_fantasia_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_cnpj_alterar",$recebe_cnpj_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_endereco_alterar",$recebe_endereco_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_id_cidade_alterar",$recebe_id_cidade_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_telefone_alterar",$recebe_telefone_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_email_alterar",$recebe_email_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_chave_id_alterar",$recebe_chave_id_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_razao_social_alterar",$recebe_razao_social_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_bairro_alterar",$recebe_bairro_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_cep_alterar",$recebe_cep_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_complemento_alterar",$recebe_complemento_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_id_empresa_alterar",$recebe_id_empresa_alterar);
+        $resultado_altera_empresa = $comando_altera_empresa->execute();
+
+        if(!empty($_POST["valor_medico_coordenador_empresa"]))
+        {
+            if(count($_POST["valor_medico_coordenador_empresa"]) > 0)
+            {
+                $recebe_id_medico_associado_empresa = $_POST["valor_medico_coordenador_empresa"];
+                
+                $valores_id_cadastramento_empresa = array();
+
+                for ($i = 0; $i < count($recebe_id_medico_associado_empresa); $i++) 
+                { 
+                    array_push($valores_id_cadastramento_empresa,$recebe_id_empresa_alterar);
+                }
+
+                $data_hora_atual = date("Y-m-d H:i:s");
+
+                for ($i=0; $i < count($recebe_id_medico_associado_empresa); $i++)
+                { 
+                    $instrucao_cadastra_relacao_medicos_empresas = 
+                    "insert into medicos_empresas(empresa_id,medico_id,status)
+                    values(:recebe_empresa_id,:recebe_medico_id,:recebe_status)";
+                    $comando_cadastra_relacao_medicos_empresas = $pdo->prepare($instrucao_cadastra_relacao_medicos_empresas);
+                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$valores_id_cadastramento_empresa[$i]);
+                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_medico_id",$recebe_id_medico_associado_empresa[$i]);
+                    // $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_data_associacao",$data_hora_atual);
+                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_status","Ativo");
+                    $comando_cadastra_relacao_medicos_empresas->execute();
+                    $recebe_ultimo_codigo_registrado_medicos_empresas = $pdo->lastInsertId();
+                }
+                echo json_encode($recebe_ultimo_codigo_registrado_medicos_empresas);
+            }
+        }else{
+            echo json_encode($resultado_altera_empresa);
+        }
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
