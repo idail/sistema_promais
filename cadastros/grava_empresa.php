@@ -325,6 +325,7 @@
 <script>
     let recebe_codigo_alteracao_empresa;
     let recebe_acao_alteracao_empresa = "cadastrar";
+    let verifica_vinculacao_medico_empresa;
 
     $(document).ready(function(e) {
         debugger;
@@ -440,7 +441,7 @@
                             let recebe_botao_desvincular_medico_empresa;
                             if (resposta_medicos[indice].id !== "" && resposta_medicos[indice].medico_id !== "") {
                                 recebe_botao_desvincular_medico_empresa = "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
-                                " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
+                                    " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
                             }
 
                             recebe_tabela_associar_medico_empresa +=
@@ -529,8 +530,11 @@
                 console.log(resposta_medicos_clinicas);
 
                 if (resposta_medicos_clinicas) {
-                    $("#medico-associado-empresa").prop("disabled",true);
-                    $("#associar-medico-empresa").prop("disabled",true);
+                    if (verifica_vinculacao_medico_empresa) {
+                        $("#medico-associado-empresa").prop("disabled", true);
+                        $("#associar-medico-empresa").prop("disabled", true);
+                    }
+                    
                     async function buscar_informacoes_empresa() {
                         debugger;
                         if (recebe_acao_alteracao_empresa === "editar") {
@@ -556,7 +560,34 @@
         debugger;
 
         if (recebe_acao_alteracao_empresa === "editar") {
+            let recebe_codigo_medico_selecionado_associar_empresa = $("#medico-associado-empresa").val();
 
+            let recebe_nome_medico_selecionado_associar_empresa = $('#medico-associado-empresa option:selected').text();
+
+            console.log(recebe_codigo_medico_selecionado_associar_empresa + " - " + recebe_nome_medico_selecionado_associar_empresa);
+
+            let recebe_tabela_associar_medico_empresa = document.querySelector(
+                "#tabela-medico-associado-coordenador tbody"
+            );
+
+            let indice = recebe_tabela_associar_medico_empresa.querySelectorAll("tr").length;
+
+            recebe_tabela_associar_medico_empresa.innerHTML +=
+                "<tr data-index='" + indice + "'>" +
+                "<td>" + recebe_nome_medico_selecionado_associar_empresa + "</td>" +
+                "<td><i class='fas fa-trash' id='exclui-medico-associado-empresa'></i></td>" +
+                "</tr>";
+
+            valores_codigos_medicos_empresas.push(recebe_codigo_medico_selecionado_associar_empresa);
+
+            $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
+
+            $("#medico-associado-empresa").prop('disabled', true);
+
+            // Desabilita o botão
+            $('#associar-medico-empresa').prop('disabled', true);
+
+            verifica_vinculacao_medico_empresa = true;
         } else {
             let recebe_codigo_medico_selecionado_associar_empresa = $("#medico-associado-empresa").val();
 
