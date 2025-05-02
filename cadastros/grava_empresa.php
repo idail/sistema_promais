@@ -22,7 +22,7 @@
                         <label for="cnpj">CNPJ:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-address-card"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['cnpj'] ?? '') ?>" id="cnpj" name="cnpj" class="form-control cnpj-input" onblur="fetchCompanyData(this.value)" oninput="formatCNPJ(this)">
+                            <input type="text" id="cnpj" name="cnpj" class="form-control cnpj-input" onblur="fetchCompanyData(this.value)" oninput="formatCNPJ(this)">
                         </div>
                     </div>
 
@@ -30,7 +30,7 @@
                         <label for="nome_fantasia">Nome Fantasia:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-building"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['nome_fantasia'] ?? '') ?>" id="nome_fantasia" name="nome_fantasia" class="form-control">
+                            <input type="text" id="nome_fantasia" name="nome_fantasia" class="form-control">
                         </div>
                     </div>
 
@@ -38,7 +38,7 @@
                         <label for="razao_social">Razão Social:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-file-signature"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['razao_social'] ?? '') ?>" id="razao_social" name="razao_social" class="form-control">
+                            <input type="text" id="razao_social" name="razao_social" class="form-control">
                         </div>
                     </div>
 
@@ -47,7 +47,7 @@
                             <label for="endereco">Endereço:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['endereco'] ?? '') ?>" id="endereco" name="endereco" class="form-control">
+                                <input type="text" id="endereco" name="endereco" class="form-control">
                             </div>
                         </div>
 
@@ -55,7 +55,7 @@
                             <label for="numero">Número:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-map-pin"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['numero'] ?? '') ?>" id="numero" name="numero" class="form-control">
+                                <input type="text" id="numero" name="numero" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                             <label for="complemento">Complemento:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-map-signs"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['complemento'] ?? '') ?>" id="complemento" name="complemento" class="form-control">
+                                <input type="text" id="complemento" name="complemento" class="form-control">
                             </div>
                         </div>
 
@@ -72,7 +72,7 @@
                             <label for="bairro">Bairro:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-map"></i>
-                                <input type="text" value="<?= htmlspecialchars($clinica['bairro'] ?? '') ?>" id="bairro" name="bairro" class="form-control">
+                                <input type="text" id="bairro" name="bairro" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                         <label for="cep">CEP:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-map-marked-alt"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['cep'] ?? '') ?>" id="cep" name="cep" class="form-control" oninput="formatCEP(this)">
+                            <input type="text" id="cep" name="cep" class="form-control" oninput="formatCEP(this)">
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                         <label for="email">Email:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" value="<?= htmlspecialchars($clinica['email'] ?? '') ?>" id="email" name="email" class="form-control">
+                            <input type="email" id="email" name="email" class="form-control">
                         </div>
                     </div>
 
@@ -109,7 +109,7 @@
                         <label for="telefone">Telefone:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            <input type="text" value="<?= htmlspecialchars($clinica['telefone'] ?? '') ?>" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)">
+                            <input type="text" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)">
                         </div>
                     </div>
 
@@ -326,7 +326,7 @@
     let recebe_codigo_alteracao_empresa;
     let recebe_acao_alteracao_empresa = "cadastrar";
 
-    $(document).ready(function(e){
+    $(document).ready(function(e) {
         debugger;
         let recebe_url_atual = window.location.href;
 
@@ -338,7 +338,7 @@
 
         let recebe_acao_empresa = recebe_parametro_acao_empresa.get("acao");
 
-        if(recebe_acao_empresa !== "" && recebe_acao_empresa !== null)
+        if (recebe_acao_empresa !== "" && recebe_acao_empresa !== null)
             recebe_acao_alteracao_empresa = recebe_acao_empresa;
 
         async function buscar_informacoes_empresa() {
@@ -348,6 +348,7 @@
                 await popula_lista_cidade_empresa_alteracao();
                 await popula_medicos_associar_empresa();
                 await popula_medicos_associados_empresa();
+                await popula_informacoes_empresa_alteracao();
             } else {
                 carrega_cidades();
                 await popula_medicos_associar_empresa();
@@ -456,18 +457,58 @@
         });
     }
 
+    async function popula_informacoes_empresa_alteracao() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_empresa.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_empresa": "buscar_informacoes_empresa_alteracao",
+                    valor_codigo_empresa_alteracao: recebe_codigo_alteracao_empresa,
+                },
+                success: function(resposta_empresa) {
+                    debugger;
+                    console.log(resposta_empresa);
+
+                    if (resposta_empresa.length > 0) {
+                        for (let indice = 0; indice < resposta_empresa.length; indice++) 
+                        {
+                            $("#cnpj").val(resposta_empresa[indice].cnpj);
+                            $("#nome_fantasia").val(resposta_empresa[indice].nome);
+                            $("#razao_social").val("");
+                            
+                            let recebe_endereco_empresa = resposta_empresa[indice].endereco.split(",");
+                            $("#endereco").val(recebe_endereco_empresa[0]);
+                            $("#numero").val(recebe_endereco_empresa[1]);
+                            $("#complemento").val("");
+                            $("#bairro").val("");
+                            $("#email").val(resposta_empresa[indice].email);
+                            $("#telefone").val(resposta_empresa[indice].telefone);
+                        }
+                    }
+
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
+
     let valores_codigos_medicos_empresas = Array();
     let limpou_tabela_alteracao_empresa;
 
-    $("#associar-medico-empresa").click(function(e){
+    $("#associar-medico-empresa").click(function(e) {
         e.preventDefault();
 
         debugger;
 
-        if(recebe_acao_alteracao_empresa === "editar")
-        {
-            
-        }else{
+        if (recebe_acao_alteracao_empresa === "editar") {
+
+        } else {
             let recebe_codigo_medico_selecionado_associar_empresa = $("#medico-associado-empresa").val();
 
             let recebe_nome_medico_selecionado_associar_empresa = $('#medico-associado-empresa option:selected').text();
@@ -682,8 +723,12 @@
                 valor_endereco_empresa: recebe_endereco_completo,
                 valor_telefone_empresa: recebe_telefone_empresa,
                 valor_email_empresa: recebe_email_empresa,
-                valor_medico_coordenador_empresa:valores_codigos_medicos_empresas,
-                valor_id_cidade:recebe_id_cidade
+                valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
+                valor_id_cidade: recebe_id_cidade,
+                valor_razao_social_empresa:recebe_razao_social_empresa,
+                valor_bairro_empresa:recebe_bairro_empresa,
+                valor_cep_empresa:recebe_bairro_empresa,
+                valor_complemento_empresa:recebe_complemento_empresa,
             },
             success: function(retorno_empresa) {
                 debugger;

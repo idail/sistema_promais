@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02/05/2025 às 20:09
+-- Tempo de geração: 02/05/2025 às 21:30
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -140,38 +140,45 @@ CREATE TABLE `empresas` (
   `id_cidade` int(11) NOT NULL,
   `telefone` varchar(15) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `chave_id` int(11) DEFAULT NULL
+  `chave_id` int(11) DEFAULT NULL,
+  `razao_social` varchar(100) NOT NULL,
+  `bairro` varchar(100) NOT NULL,
+  `cep` varchar(100) NOT NULL,
+  `complemento` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `empresas`
 --
 
-INSERT INTO `empresas` (`id`, `nome`, `cnpj`, `endereco`, `id_cidade`, `telefone`, `email`, `chave_id`) VALUES
-(1, 'Promais - Segurança do Trabalho', '12.345.678/0001-90', 'Rua Exemplo, 123, São Paulo', 1, '(11) 1234-5678', 'contato@promais.com.br', 1),
-(2, 'Empresa B', '23.456.789/0001-01', 'Avenida Central, 456, Rio de Janeiro', 4, '(21) 2345-6789', 'contato@empresaB.com', 2),
-(3, 'Empresa C', '34.567.890/0001-12', 'Rua das Flores, 789, Belo Horizonte', 5, '(31) 3456-7890', 'contato@empresaC.com', 3),
-(4, 'Empresa D', '45.678.901/0001-23', 'Rua do Comércio, 1011, Curitiba', 5, '(41) 4567-8901', 'contato@empresaD.com', NULL),
-(5, 'Empresa E', '56.789.012/0001-34', 'Avenida Paulista, 2020, São Paulo', 0, '(11) 5678-9012', 'contato@empresaE.com', NULL),
-(9, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Manaus ', 0, '6933412245', 'ricardodallavalle@gmail.com', 0),
-(10, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Salvador ', 0, '6933412245', 'ricardodallavalle@gmail.com', 0),
-(11, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Manaus,AM', 0, '6933412245', 'ricardodallavalle@gmail.com', 0),
-(12, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Salvador , BA', 0, '6933412245', 'ricardodallavalle@gmail.com', 0),
-(13, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'neto_br_8@hotmail.com', 0),
-(14, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Manaus , AM', 0, '6796385622', 'rezende@gmail.com', 0),
-(15, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0),
-(16, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0),
-(17, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0),
-(18, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0),
-(19, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmai.com', 0),
-(20, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0),
-(21, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0),
-(22, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0),
-(23, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0),
-(24, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0),
-(25, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0),
-(26, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Brasília , DF', 0, '6796385622', 'rezende@gmail.com', 0),
-(27, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'empresamaravilhosa@gmail.com', 0);
+INSERT INTO `empresas` (`id`, `nome`, `cnpj`, `endereco`, `id_cidade`, `telefone`, `email`, `chave_id`, `razao_social`, `bairro`, `cep`, `complemento`, `created_at`, `updated_at`) VALUES
+(1, 'Promais - Segurança do Trabalho', '12.345.678/0001-90', 'Rua Exemplo, 123, São Paulo', 1, '(11) 1234-5678', 'contato@promais.com.br', 1, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(2, 'Empresa B', '23.456.789/0001-01', 'Avenida Central, 456, Rio de Janeiro', 4, '(21) 2345-6789', 'contato@empresaB.com', 2, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(3, 'Empresa C', '34.567.890/0001-12', 'Rua das Flores, 789, Belo Horizonte', 5, '(31) 3456-7890', 'contato@empresaC.com', 3, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(4, 'Empresa D', '45.678.901/0001-23', 'Rua do Comércio, 1011, Curitiba', 5, '(41) 4567-8901', 'contato@empresaD.com', NULL, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(5, 'Empresa E', '56.789.012/0001-34', 'Avenida Paulista, 2020, São Paulo', 0, '(11) 5678-9012', 'contato@empresaE.com', NULL, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(9, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Manaus ', 0, '6933412245', 'ricardodallavalle@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(10, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Salvador ', 0, '6933412245', 'ricardodallavalle@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(11, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Manaus,AM', 0, '6933412245', 'ricardodallavalle@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(12, 'Rd Construcoes', '13.277.519/0001-63', 'Avenida Marechal Rondon,4844,Salvador , BA', 0, '6933412245', 'ricardodallavalle@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(13, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'neto_br_8@hotmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(14, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Manaus , AM', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(15, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(16, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(17, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(18, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(19, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmai.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(20, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(21, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(22, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(23, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Fortaleza , CE', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(24, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(25, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(26, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Brasília , DF', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(27, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'empresamaravilhosa@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
+(28, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'empresamaravilhosa@gmail.com', 0, 'RD CONSTRUTORA LTDA', 'Monte Castelo', 'Monte Castelo', 'Sala 05', '2025-05-02 19:28:57', '2025-05-02 19:28:57');
 
 -- --------------------------------------------------------
 
@@ -430,7 +437,7 @@ ALTER TABLE `clinicas`
 -- AUTO_INCREMENT de tabela `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de tabela `medicos`
