@@ -12,7 +12,7 @@
                 <label for="created_at">Data de Cadastro:</label>
                 <div class="input-with-icon">
                     <i class="fas fa-calendar-alt"></i>
-                    <input type="datetime-local" value="<?= htmlspecialchars($clinica['created_at'] ?? '') ?>" id="created_at" name="created_at" class="form-control" readonly>
+                    <input type="datetime-local" id="created_at" name="created_at" class="form-control" readonly>
                 </div>
             </div>
 
@@ -474,6 +474,7 @@
                     if (resposta_empresa.length > 0) {
                         for (let indice = 0; indice < resposta_empresa.length; indice++) 
                         {
+                            $("#created_at").val(resposta_empresa[indice].created_at);
                             $("#cnpj").val(resposta_empresa[indice].cnpj);
                             $("#nome_fantasia").val(resposta_empresa[indice].nome);
                             $("#razao_social").val(resposta_empresa[indice].razao_social);
