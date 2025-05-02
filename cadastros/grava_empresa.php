@@ -437,15 +437,20 @@
                         $("#tabela-medico-associado-coordenador tbody").html("");
 
                         for (let indice = 0; indice < resposta_medicos.length; indice++) {
+                            let recebe_botao_desvincular_medico_empresa;
+                            if (resposta_medicos[indice].id !== "" && resposta_medicos[indice].medico_id !== "") {
+                                recebe_botao_desvincular_medico_empresa = "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
+                                " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
+                            }
+
                             recebe_tabela_associar_medico_empresa +=
                                 "<tr>" +
                                 "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
-                                "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
-                                " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
+                                recebe_botao_desvincular_medico_empresa +
                                 "</tr>";
                         }
                         $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
-                    }else{
+                    } else {
                         $("#tabela-medico-associado-coordenador tbody").html("");
                     }
 
@@ -474,8 +479,7 @@
                     console.log(resposta_empresa);
 
                     if (resposta_empresa.length > 0) {
-                        for (let indice = 0; indice < resposta_empresa.length; indice++) 
-                        {
+                        for (let indice = 0; indice < resposta_empresa.length; indice++) {
                             $("#created_at").val(resposta_empresa[indice].created_at);
                             $("#cnpj").val(resposta_empresa[indice].cnpj);
                             $("#nome_fantasia").val(resposta_empresa[indice].nome);
@@ -501,7 +505,7 @@
         });
     }
 
-    $(document).on("click","#exclui-medico-ja-associado",function(e){
+    $(document).on("click", "#exclui-medico-ja-associado", function(e) {
         e.preventDefault();
 
         debugger;
@@ -525,6 +529,8 @@
                 console.log(resposta_medicos_clinicas);
 
                 if (resposta_medicos_clinicas) {
+                    $("#medico-associado-empresa").prop("disabled",true);
+                    $("#associar-medico-empresa").prop("disabled",true);
                     async function buscar_informacoes_empresa() {
                         debugger;
                         if (recebe_acao_alteracao_empresa === "editar") {
@@ -768,10 +774,10 @@
                 valor_email_empresa: recebe_email_empresa,
                 valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
                 valor_id_cidade: recebe_id_cidade,
-                valor_razao_social_empresa:recebe_razao_social_empresa,
-                valor_bairro_empresa:recebe_bairro_empresa,
-                valor_cep_empresa:recebe_cep_empresa,
-                valor_complemento_empresa:recebe_complemento_empresa,
+                valor_razao_social_empresa: recebe_razao_social_empresa,
+                valor_bairro_empresa: recebe_bairro_empresa,
+                valor_cep_empresa: recebe_cep_empresa,
+                valor_complemento_empresa: recebe_complemento_empresa,
             },
             success: function(retorno_empresa) {
                 debugger;
