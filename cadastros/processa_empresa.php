@@ -27,15 +27,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_endereco_empresa = $_POST["valor_endereco_empresa"];
         $recebe_telefone_empresa = $_POST["valor_telefone_empresa"];
         $recebe_email_empresa = $_POST["valor_email_empresa"];
+        $recebe_id_cidade_empresa = $_POST["valor_id_cidade"];
         $recebe_chave_id_empresa = $_SESSION["user_plan"];
 
-        $instrucao_cadastra_empresa = "insert into empresas(nome,cnpj,endereco,telefone,email,chave_id)values
-        (:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,:recebe_telefone_empresa,
+        $instrucao_cadastra_empresa = "insert into empresas(nome,cnpj,endereco,id_cidade,telefone,email,chave_id)values
+        (:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,:recebe_id_cidade_empresa,:recebe_telefone_empresa,
         :recebe_email_empresa,:recebe_chave_id_empresa)";
         $comando_cadastra_empresa = $pdo->prepare($instrucao_cadastra_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_nome_empresa",$recebe_nome_fantasia_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_cnpj_empresa",$recebe_cnpj_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_endereco_empresa",$recebe_endereco_empresa);
+        $comando_cadastra_empresa->bindValue(":recebe_id_cidade_empresa",$recebe_id_cidade_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_telefone_empresa",$recebe_telefone_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_email_empresa",$recebe_email_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_chave_id_empresa",$recebe_chave_id_empresa);

@@ -344,9 +344,9 @@
         async function buscar_informacoes_empresa() {
             debugger;
             if (recebe_acao_alteracao_empresa === "editar") {
-                // await popula_lista_cidade_empresa_alteracao();
+                await popula_lista_cidade_empresa_alteracao();
                 await popula_medicos_associar_empresa();
-                await popula_medicos_associados_clinica();
+                await popula_medicos_associados_empresa();
             } else {
                 await popula_medicos_associar_empresa();
             }
@@ -572,12 +572,13 @@
     }
 
     let recebe_nome_cidade_empresa;
+    let recebe_id_cidade;
 
     $("#cidade_id").change(function(e) {
         e.preventDefault();
 
         debugger;
-
+        recebe_id_cidade = $(this).val();
         let recebe_cidade_empresa = $('#cidade_id option:selected').text(); // Nome da cidade
         let recebe_array_informacoes_cidade_empresa = recebe_cidade_empresa.split("-");
         let recebe_informacao_cidade_empresa = recebe_array_informacoes_cidade_empresa[0];
@@ -616,6 +617,7 @@
                 valor_telefone_empresa: recebe_telefone_empresa,
                 valor_email_empresa: recebe_email_empresa,
                 valor_medico_coordenador_empresa:valores_codigos_medicos_empresas,
+                valor_id_cidade:recebe_id_cidade
             },
             success: function(retorno_empresa) {
                 debugger;
