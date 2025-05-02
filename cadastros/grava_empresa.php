@@ -440,7 +440,7 @@
                         for (let indice = 0; indice < resposta_medicos.length; indice++) {
                             let recebe_botao_desvincular_medico_empresa;
                             if (resposta_medicos[indice].id !== "" && resposta_medicos[indice].medico_id !== "") {
-                                recebe_botao_desvincular_medico_empresa = "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
+                                recebe_botao_desvincular_medico_empresa = "<td><i class='fas fa-trash' title='Desvincular Médico' id='exclui-medico-ja-associado'" +
                                     " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
                             }
 
@@ -534,7 +534,7 @@
                         $("#medico-associado-empresa").prop("disabled", true);
                         $("#associar-medico-empresa").prop("disabled", true);
                     }
-                    
+
                     async function buscar_informacoes_empresa() {
                         debugger;
                         if (recebe_acao_alteracao_empresa === "editar") {
