@@ -53,7 +53,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
 {
     $recebe_processo_clinica = $_POST["processo_clinica"];
 
-    if($recebe_processo_clinica === "descvincular_medico_clinica")
+    if($recebe_processo_clinica === "desvincular_medico_clinica")
     {
         $recebe_medico_clinica_id = $_POST["valor_medico_clinica_id"];
 

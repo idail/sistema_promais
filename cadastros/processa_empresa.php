@@ -87,6 +87,21 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         }else{
             echo json_encode($recebe_ultimo_codigo_gerado_cadastramento_empresa);
         }
+    }else if($recebe_processo_empresa === "desvincular_medico_empresa")
+    {
+        $recebe_medico_empresa_id = $_POST["valor_medico_empresa_id"];
+
+        $recebe_codigo_medico = $_POST["valor_codigo_medico"];
+
+        $instrucao_desvincular_medico_empresa =
+        "update medicos_empresas set status = :recebe_status_desvincular where id = :recebe_codigo_medicos_empresas_desvincular
+        and medico_id = :recebe_codigo_medico_desvincular";
+        $comando_desvincular_medico_empresa = $pdo->prepare($instrucao_desvincular_medico_empresa);
+        $comando_desvincular_medico_empresa->bindValue(":recebe_status_desvincular","Inativo");
+        $comando_desvincular_medico_empresa->bindValue(":recebe_codigo_medicos_empresas_desvincular",$recebe_medico_empresa_id);
+        $comando_desvincular_medico_empresa->bindValue(":recebe_codigo_medico_desvincular",$recebe_codigo_medico);
+        $resultado_desvincular_medico_empresa = $comando_desvincular_medico_empresa->execute();
+        echo json_encode($resultado_desvincular_medico_empresa);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {

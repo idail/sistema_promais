@@ -445,6 +445,8 @@
                                 "</tr>";
                         }
                         $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
+                    }else{
+                        $("#tabela-medico-associado-coordenador tbody").html("");
                     }
 
                     resolve(); // sinaliza que terminou
@@ -498,6 +500,46 @@
             });
         });
     }
+
+    $(document).on("click","#exclui-medico-ja-associado",function(e){
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_codigo_medico_ja_associado = $(this).data("codigo-medico-empresa");
+
+        let recebe_codigo_medico = $(this).data("codigo-medico");
+
+        $.ajax({
+            url: "cadastros/processa_empresa.php",
+            method: "POST",
+            dataType: "json",
+            data: {
+                "processo_empresa": "desvincular_medico_empresa",
+                valor_medico_empresa_id: recebe_codigo_medico_ja_associado,
+                valor_codigo_medico: recebe_codigo_medico
+            },
+            success: function(resposta_medicos_clinicas) {
+                debugger;
+
+                console.log(resposta_medicos_clinicas);
+
+                if (resposta_medicos_clinicas) {
+                    async function buscar_informacoes_empresa() {
+                        debugger;
+                        if (recebe_acao_alteracao_empresa === "editar") {
+                            await popula_medicos_associados_empresa();
+                        }
+                    }
+
+                    buscar_informacoes_empresa();
+                }
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
+    });
 
     let valores_codigos_medicos_empresas = Array();
     let limpou_tabela_alteracao_empresa;

@@ -525,7 +525,7 @@ $conexao->close();
             method: "POST",
             dataType: "json",
             data: {
-                "processo_clinica": "descvincular_medico_clinica",
+                "processo_clinica": "desvincular_medico_clinica",
                 valor_medico_clinica_id: recebe_codigo_medico_ja_associado,
                 valor_codigo_medico: recebe_codigo_medico
             },
