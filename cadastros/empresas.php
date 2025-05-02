@@ -170,7 +170,7 @@
                     <a href="#" class="view" title="Visualizar">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="?pg=grava_empresas.php&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
+                    <a href="?pg=grava_empresa&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
                     <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${empresa.id}" class="delete" title="Apagar">

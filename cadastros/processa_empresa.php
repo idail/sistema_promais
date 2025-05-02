@@ -89,6 +89,19 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_buca_empresas->execute();
         $resultado_busca_empresas = $comando_buca_empresas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_empresas);
+    }else if($recebe_processo_empresa === "buscar_cidade_empresa")
+    {
+        $recebe_id_empresa = $_GET["valor_id_empresa"];
+
+        $instrucao_busca_cidade_empresa_alteracao = "SELECT c.id, c.nome
+        FROM cidades c
+        JOIN empresas e ON e.id_cidade = c.id
+        WHERE e.id = :recebe_codigo_empresa_alteracao";
+        $comando_busca_empresa_cidade_alteracao = $pdo->prepare($instrucao_busca_cidade_empresa_alteracao);
+        $comando_busca_empresa_cidade_alteracao->bindValue(":recebe_codigo_empresa_alteracao",$recebe_id_empresa);
+        $comando_busca_empresa_cidade_alteracao->execute();
+        $resultado_busca_cidade_empresa_alteracao = $comando_busca_empresa_cidade_alteracao->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cidade_empresa_alteracao);
     }
 }
 ?>

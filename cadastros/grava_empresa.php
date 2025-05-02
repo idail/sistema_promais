@@ -344,16 +344,44 @@
         async function buscar_informacoes_empresa() {
             debugger;
             if (recebe_acao_alteracao_empresa === "editar") {
+                carrega_cidades();
                 await popula_lista_cidade_empresa_alteracao();
                 await popula_medicos_associar_empresa();
                 await popula_medicos_associados_empresa();
             } else {
+                carrega_cidades();
                 await popula_medicos_associar_empresa();
             }
         }
 
         buscar_informacoes_empresa();
     });
+
+    async function popula_lista_cidade_empresa_alteracao() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_empresa.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_empresa": "buscar_cidade_empresa",
+                    "valor_id_empresa": recebe_codigo_alteracao_empresa,
+                },
+                success: function(resposta) {
+                    debugger;
+                    console.log(resposta);
+                    for (let indice = 0; indice < resposta.length; indice++) {
+                        $("#cidade_id").val(resposta[0].id);
+                    }
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar cidade da clinica:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
 
     async function popula_medicos_associar_empresa() {
         return new Promise((resolve, reject) => {
@@ -376,6 +404,48 @@
                         }
                         select_medicos.innerHTML = options;
                     }
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
+
+    async function popula_medicos_associados_empresa() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_medico.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_medico": "buscar_medicos_associados_empresa",
+                    valor_codigo_empresa_medicos_associados: recebe_codigo_alteracao_empresa,
+                },
+                success: function(resposta_medicos) {
+                    debugger;
+                    console.log(resposta_medicos);
+
+                    if (resposta_medicos.length > 0) {
+                        let recebe_tabela_associar_medico_empresa = document.querySelector(
+                            "#tabela-medico-associado-coordenador tbody"
+                        );
+
+                        $("#tabela-medico-associado-coordenador tbody").html("");
+
+                        for (let indice = 0; indice < resposta_medicos.length; indice++) {
+                            recebe_tabela_associar_medico_empresa +=
+                                "<tr>" +
+                                "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
+                                "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
+                                " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
+                                "</tr>";
+                        }
+                        $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
+                    }
+
                     resolve(); // sinaliza que terminou
                 },
                 error: function(xhr, status, error) {
@@ -533,10 +603,6 @@
             })
             .catch(error => console.error('Erro ao buscar CNPJ:', error));
     }
-
-    $(document).ready(function(e) {
-        carrega_cidades();
-    });
 
     function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
         $.ajax({
