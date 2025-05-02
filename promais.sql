@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02/05/2025 às 21:30
+-- Tempo de geração: 02/05/2025 às 21:35
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -119,11 +119,6 @@ INSERT INTO `clinicas` (`id`, `empresa_id`, `codigo`, `nome_fantasia`, `razao_so
 (3, 1, 'CL003', 'Clínica Vida Plena', 'Vida Plena Serviços de Saúde LTDA', '34.567.890/0001-03', 'Av. Atlântica', '200', NULL, 'Centro', 12, '69020-010', 'contato@vidaplena.com.br', '(92) 3333-3333', 'Ativo', '2025-01-22 01:36:19', '2025-01-22 01:36:19'),
 (4, 1, 'CL004', 'Centro de Saúde Alto Araguaia', 'Centro de Saúde AA LTDA', '45.678.901/0001-04', 'Rua Principal', '150', 'Térreo', 'Centro', 13, '78780-000', 'contato@csaa.com.br', '(66) 3333-4444', 'Ativo', '2025-01-22 01:36:19', '2025-01-22 01:36:19'),
 (5, 1, 'CL005', 'Clínica Bem Estar', 'Bem Estar Medicina LTDA', '56.789.012/0001-05', 'Av. Dom Pedro II', '300', 'Conjunto 45', 'Centro', 9, '60020-010', 'contato@bemestar.com.br', '(85) 3333-5555', 'Ativo', '2025-01-22 01:36:19', '2025-01-22 01:36:19'),
-(28, 2, 'CL001', 'Unisys', 'UNISYS BRASIL LTDA', '33.426.420/0004-36', 'Rua Teixeira de Freitas', '31', 'Rua 14 de Julho, 5141', 'Centro', 10, '77777-777', 'neto_br_8@hotmail.com', '(99) 98998-9898', 'Ativo', '2025-04-29 02:41:00', '2025-04-29 03:33:10'),
-(29, 2, 'CL001', 'Unisys', 'UNISYS BRASIL LTDA', '33.426.420/0001-93', 'Avenida das Nacoes Unidas', '17891', 'Conj 801/parte Dp10 12e13', 'Vila Almeida', 12, '04795-920', 'mauricio.miranda@br.unisys.com', '2139007765', 'Ativo', '2025-04-29 05:13:00', '2025-04-29 03:12:36'),
-(30, 2, '', 'Unisys', 'UNISYS BRASIL LTDA', '33.426.420/0001-93', 'Avenida das Nacoes Unidas', '17891', 'Conj 801/parte Dp10 12e13', 'Vila Almeida', 3, '04795-920', 'mauricio.miranda@br.unisys.com', '2139007765', 'Ativo', '2025-04-29 05:15:00', '2025-04-29 01:15:37'),
-(31, 2, 'CL001', 'coca cola bebida boa', 'SPAL INDUSTRIA BRASILEIRA DE BEBIDAS S/A', '61.186.888/0098-16', 'rua terere', '2803', 'centro', 'Chacara das Mansoes', 9, '79079-005', 'fiscal@kof.com', '1121025500', 'Ativo', '2025-04-29 05:16:00', '2025-04-29 03:00:34'),
-(32, 2, 'CL001', 'Coca Cola e Fanta', 'REFRIGERANTES DO OESTE LTDA', '03.025.988/0001-31', 'Rodovia Campo Grande/sao Paulo', 'S/N11', 'Km 01', 'Vila Albuquerque', 6, '79060-000', 'rosactb@terra.com.br', '(33) 33333-3333', 'Ativo', '2025-04-29 07:19:00', '2025-04-29 03:33:15'),
 (33, 2, 'CL001', 'teste', 'SPAL INDUSTRIA BRASILEIRA DE BEBIDAS S/A', '61.186.888/0098-16', 'Rodovia Br-163', '2803', 'teste teste', 'Chacara das Mansoes', 0, '79079-005', 'fiscal@kof.com', '1121025500', 'Ativo', '2025-04-29 03:37:09', '2025-04-29 18:00:10');
 
 -- --------------------------------------------------------
@@ -177,8 +172,8 @@ INSERT INTO `empresas` (`id`, `nome`, `cnpj`, `endereco`, `id_cidade`, `telefone
 (24, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
 (25, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
 (26, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Brasília , DF', 0, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
-(27, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'empresamaravilhosa@gmail.com', 0, '', '', '', '', '2025-05-02 19:15:23', '2025-05-02 19:16:18'),
-(28, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'empresamaravilhosa@gmail.com', 0, 'RD CONSTRUTORA LTDA', 'Monte Castelo', 'Monte Castelo', 'Sala 05', '2025-05-02 19:28:57', '2025-05-02 19:28:57');
+(27, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'rezende@gmail.com', 0, '', '', '', '', '2025-05-02 19:35:39', '2025-05-02 19:16:18'),
+(28, 'Rd Construtora', '30.077.647/0001-82', 'Rua Amazonas,850,Salvador , BA', 6, '6796385622', 'rezende@gmail.com', 0, 'RD CONSTRUTORA LTDA', 'Monte Castelo', 'Monte Castelo', '79011470', '2025-05-02 19:35:41', '2025-05-02 19:28:57');
 
 -- --------------------------------------------------------
 
