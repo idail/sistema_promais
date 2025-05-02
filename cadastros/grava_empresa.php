@@ -476,13 +476,13 @@
                         {
                             $("#cnpj").val(resposta_empresa[indice].cnpj);
                             $("#nome_fantasia").val(resposta_empresa[indice].nome);
-                            $("#razao_social").val("");
-                            
+                            $("#razao_social").val(resposta_empresa[indice].razao_social);
+                            $("#cep").val(resposta_empresa[indice].cep);
                             let recebe_endereco_empresa = resposta_empresa[indice].endereco.split(",");
                             $("#endereco").val(recebe_endereco_empresa[0]);
                             $("#numero").val(recebe_endereco_empresa[1]);
-                            $("#complemento").val("");
-                            $("#bairro").val("");
+                            $("#complemento").val(resposta_empresa[indice].complemento);
+                            $("#bairro").val(resposta_empresa[indice].bairro);
                             $("#email").val(resposta_empresa[indice].email);
                             $("#telefone").val(resposta_empresa[indice].telefone);
                         }
@@ -727,7 +727,7 @@
                 valor_id_cidade: recebe_id_cidade,
                 valor_razao_social_empresa:recebe_razao_social_empresa,
                 valor_bairro_empresa:recebe_bairro_empresa,
-                valor_cep_empresa:recebe_bairro_empresa,
+                valor_cep_empresa:recebe_cep_empresa,
                 valor_complemento_empresa:recebe_complemento_empresa,
             },
             success: function(retorno_empresa) {
