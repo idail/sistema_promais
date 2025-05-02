@@ -169,6 +169,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         }else{
             echo json_encode($resultado_altera_empresa);
         }
+    }else if($recebe_processo_empresa === "excluir_empresa")
+    {
+        $recebe_id_empresa_excluir = $_POST["valor_id_empresa"];
+
+        if(!empty($recebe_id_empresa_excluir))
+        {
+            $instrucao_excluir_empresa = "delete from empresas where id = :recebe_id_empresa_excluir";
+            $comando_excluir_empresa = $pdo->prepare($instrucao_excluir_empresa);
+            $comando_excluir_empresa->bindValue(":recebe_id_empresa_excluir",$recebe_id_empresa_excluir);
+            $resultado_excluir_empresa = $comando_excluir_empresa->execute();
+            echo json_encode($resultado_excluir_empresa);   
+        }
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {

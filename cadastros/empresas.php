@@ -173,7 +173,7 @@
                     <a href="?pg=grava_empresa&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${empresa.id}" class="delete" title="Apagar">
+                    <a href='#' id='exclui-empresa' data-codigo-empresa="${empresa.id}" class="delete" title="Apagar">
                         <i class="fas fa-trash"></i>
                     </a>
                 </div>
@@ -181,6 +181,36 @@
         `;
             tbody.appendChild(row);
         }
+
+        $(document).on("click","#exclui-empresa",function(e){
+            e.preventDefault();
+
+            debugger;
+
+            let recebe_id_empresa = $(this).data("codigo-empresa");
+
+            // alert(recebe_id_empresa);
+
+            $.ajax({
+                url: "cadastros/processa_empresa.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_empresa: "excluir_empresa",
+                    valor_id_empresa: recebe_id_empresa,
+                },
+                success: function(retorno_empresa) {
+                    debugger;
+                    console.log(retorno_empresa);
+                    if (retorno_empresa) {
+                        window.location.href = "painel.php?pg=empresas";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao excluir empresa:" + error);
+                },
+            });
+        });
 
         // resposta_empresa.forEach(empresa => {
         //     const row = document.createElement("tr");

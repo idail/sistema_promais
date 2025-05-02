@@ -6270,3 +6270,213 @@ Dash.php sendo executado:
   * PHP_SELF: /sistema_promais/painel.php
   * REQUEST_TIME_FLOAT: 1746221305.8097
   * REQUEST_TIME: 1746221305
+Dash.php sendo executado:
+- Data/Hora: 2025-05-03 00:08:43
+- Diretório atual: C:\xampp\htdocs\sistema_promais
+- Variáveis de ambiente:
+  * MIBDIRS: C:/xampp/php/extras/mibs
+  * MYSQL_HOME: \xampp\mysql\bin
+  * OPENSSL_CONF: C:/xampp/apache/bin/openssl.cnf
+  * PHP_PEAR_SYSCONF_DIR: \xampp\php
+  * PHPRC: \xampp\php
+  * TMP: \xampp\tmp
+  * HTTP_HOST: localhost
+  * HTTP_USER_AGENT: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0
+  * HTTP_ACCEPT: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+  * HTTP_ACCEPT_LANGUAGE: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3
+  * HTTP_ACCEPT_ENCODING: gzip, deflate, br, zstd
+  * HTTP_CONNECTION: keep-alive
+  * HTTP_REFERER: http://localhost/sistema_promais/login.php
+  * HTTP_COOKIE: PHPSESSID=imifs7jvfljip3nin34b401n3a
+  * HTTP_UPGRADE_INSECURE_REQUESTS: 1
+  * HTTP_SEC_FETCH_DEST: document
+  * HTTP_SEC_FETCH_MODE: navigate
+  * HTTP_SEC_FETCH_SITE: same-origin
+  * HTTP_SEC_FETCH_USER: ?1
+  * HTTP_PRIORITY: u=0, i
+  * PATH: C:\Program Files\Eclipse Adoptium\jdk-17.0.15.6-hotspot\bin;C:\Program Files\Eclipse Adoptium\jdk-11.0.27.6-hotspot\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;c:\src\flutter\bin;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps
+  * SystemRoot: C:\Windows
+  * COMSPEC: C:\Windows\system32\cmd.exe
+  * PATHEXT: .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+  * WINDIR: C:\Windows
+  * SERVER_SIGNATURE: <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+  * SERVER_SOFTWARE: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+  * SERVER_NAME: localhost
+  * SERVER_ADDR: 127.0.0.1
+  * SERVER_PORT: 80
+  * REMOTE_ADDR: 127.0.0.1
+  * DOCUMENT_ROOT: C:/xampp/htdocs
+  * REQUEST_SCHEME: http
+  * CONTEXT_PREFIX: 
+  * CONTEXT_DOCUMENT_ROOT: C:/xampp/htdocs
+  * SERVER_ADMIN: postmaster@localhost
+  * SCRIPT_FILENAME: C:/xampp/htdocs/sistema_promais/painel.php
+  * REMOTE_PORT: 57818
+  * GATEWAY_INTERFACE: CGI/1.1
+  * SERVER_PROTOCOL: HTTP/1.1
+  * REQUEST_METHOD: GET
+  * QUERY_STRING: 
+  * REQUEST_URI: /sistema_promais/painel.php
+  * SCRIPT_NAME: /sistema_promais/painel.php
+  * PHP_SELF: /sistema_promais/painel.php
+  * REQUEST_TIME_FLOAT: 1746223723.4341
+  * REQUEST_TIME: 1746223723
+Dash.php sendo executado:
+- Data/Hora: 2025-05-03 00:32:42
+- Diretório atual: C:\xampp\htdocs\sistema_promais
+- Variáveis de ambiente:
+  * MIBDIRS: C:/xampp/php/extras/mibs
+  * MYSQL_HOME: \xampp\mysql\bin
+  * OPENSSL_CONF: C:/xampp/apache/bin/openssl.cnf
+  * PHP_PEAR_SYSCONF_DIR: \xampp\php
+  * PHPRC: \xampp\php
+  * TMP: \xampp\tmp
+  * HTTP_HOST: localhost
+  * HTTP_USER_AGENT: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0
+  * HTTP_ACCEPT: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+  * HTTP_ACCEPT_LANGUAGE: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3
+  * HTTP_ACCEPT_ENCODING: gzip, deflate, br, zstd
+  * HTTP_CONNECTION: keep-alive
+  * HTTP_REFERER: http://localhost/sistema_promais/login.php
+  * HTTP_COOKIE: PHPSESSID=olpe4v1bf3na8blttbipre80tg
+  * HTTP_UPGRADE_INSECURE_REQUESTS: 1
+  * HTTP_SEC_FETCH_DEST: document
+  * HTTP_SEC_FETCH_MODE: navigate
+  * HTTP_SEC_FETCH_SITE: same-origin
+  * HTTP_SEC_FETCH_USER: ?1
+  * HTTP_PRIORITY: u=0, i
+  * PATH: C:\Program Files\Eclipse Adoptium\jdk-17.0.15.6-hotspot\bin;C:\Program Files\Eclipse Adoptium\jdk-11.0.27.6-hotspot\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;c:\src\flutter\bin;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps
+  * SystemRoot: C:\Windows
+  * COMSPEC: C:\Windows\system32\cmd.exe
+  * PATHEXT: .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+  * WINDIR: C:\Windows
+  * SERVER_SIGNATURE: <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+  * SERVER_SOFTWARE: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+  * SERVER_NAME: localhost
+  * SERVER_ADDR: 127.0.0.1
+  * SERVER_PORT: 80
+  * REMOTE_ADDR: 127.0.0.1
+  * DOCUMENT_ROOT: C:/xampp/htdocs
+  * REQUEST_SCHEME: http
+  * CONTEXT_PREFIX: 
+  * CONTEXT_DOCUMENT_ROOT: C:/xampp/htdocs
+  * SERVER_ADMIN: postmaster@localhost
+  * SCRIPT_FILENAME: C:/xampp/htdocs/sistema_promais/painel.php
+  * REMOTE_PORT: 58084
+  * GATEWAY_INTERFACE: CGI/1.1
+  * SERVER_PROTOCOL: HTTP/1.1
+  * REQUEST_METHOD: GET
+  * QUERY_STRING: 
+  * REQUEST_URI: /sistema_promais/painel.php
+  * SCRIPT_NAME: /sistema_promais/painel.php
+  * PHP_SELF: /sistema_promais/painel.php
+  * REQUEST_TIME_FLOAT: 1746225162.7807
+  * REQUEST_TIME: 1746225162
+Dash.php sendo executado:
+- Data/Hora: 2025-05-03 00:33:51
+- Diretório atual: C:\xampp\htdocs\sistema_promais
+- Variáveis de ambiente:
+  * MIBDIRS: C:/xampp/php/extras/mibs
+  * MYSQL_HOME: \xampp\mysql\bin
+  * OPENSSL_CONF: C:/xampp/apache/bin/openssl.cnf
+  * PHP_PEAR_SYSCONF_DIR: \xampp\php
+  * PHPRC: \xampp\php
+  * TMP: \xampp\tmp
+  * HTTP_HOST: localhost
+  * HTTP_CONNECTION: keep-alive
+  * HTTP_SEC_CH_UA: "Microsoft Edge";v="135", "Not-A.Brand";v="8", "Chromium";v="135"
+  * HTTP_SEC_CH_UA_MOBILE: ?0
+  * HTTP_SEC_CH_UA_PLATFORM: "Windows"
+  * HTTP_UPGRADE_INSECURE_REQUESTS: 1
+  * HTTP_USER_AGENT: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0
+  * HTTP_ACCEPT: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+  * HTTP_SEC_FETCH_SITE: same-origin
+  * HTTP_SEC_FETCH_MODE: navigate
+  * HTTP_SEC_FETCH_USER: ?1
+  * HTTP_SEC_FETCH_DEST: document
+  * HTTP_REFERER: http://localhost/sistema_promais/login.php
+  * HTTP_ACCEPT_ENCODING: gzip, deflate, br, zstd
+  * HTTP_ACCEPT_LANGUAGE: pt-BR,pt;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+  * HTTP_COOKIE: PHPSESSID=20qg424n5fnjl6foth9diun1tq
+  * PATH: C:\Program Files\Eclipse Adoptium\jdk-17.0.15.6-hotspot\bin;C:\Program Files\Eclipse Adoptium\jdk-11.0.27.6-hotspot\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;c:\src\flutter\bin;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps
+  * SystemRoot: C:\Windows
+  * COMSPEC: C:\Windows\system32\cmd.exe
+  * PATHEXT: .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+  * WINDIR: C:\Windows
+  * SERVER_SIGNATURE: <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+  * SERVER_SOFTWARE: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+  * SERVER_NAME: localhost
+  * SERVER_ADDR: ::1
+  * SERVER_PORT: 80
+  * REMOTE_ADDR: ::1
+  * DOCUMENT_ROOT: C:/xampp/htdocs
+  * REQUEST_SCHEME: http
+  * CONTEXT_PREFIX: 
+  * CONTEXT_DOCUMENT_ROOT: C:/xampp/htdocs
+  * SERVER_ADMIN: postmaster@localhost
+  * SCRIPT_FILENAME: C:/xampp/htdocs/sistema_promais/painel.php
+  * REMOTE_PORT: 58149
+  * GATEWAY_INTERFACE: CGI/1.1
+  * SERVER_PROTOCOL: HTTP/1.1
+  * REQUEST_METHOD: GET
+  * QUERY_STRING: 
+  * REQUEST_URI: /sistema_promais/painel.php
+  * SCRIPT_NAME: /sistema_promais/painel.php
+  * PHP_SELF: /sistema_promais/painel.php
+  * REQUEST_TIME_FLOAT: 1746225231.4481
+  * REQUEST_TIME: 1746225231
+Dash.php sendo executado:
+- Data/Hora: 2025-05-03 00:40:34
+- Diretório atual: C:\xampp\htdocs\sistema_promais
+- Variáveis de ambiente:
+  * MIBDIRS: C:/xampp/php/extras/mibs
+  * MYSQL_HOME: \xampp\mysql\bin
+  * OPENSSL_CONF: C:/xampp/apache/bin/openssl.cnf
+  * PHP_PEAR_SYSCONF_DIR: \xampp\php
+  * PHPRC: \xampp\php
+  * TMP: \xampp\tmp
+  * HTTP_HOST: localhost
+  * HTTP_USER_AGENT: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0
+  * HTTP_ACCEPT: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+  * HTTP_ACCEPT_LANGUAGE: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3
+  * HTTP_ACCEPT_ENCODING: gzip, deflate, br, zstd
+  * HTTP_CONNECTION: keep-alive
+  * HTTP_REFERER: http://localhost/sistema_promais/login.php
+  * HTTP_COOKIE: PHPSESSID=g4cpu5bstuvjjdl44osagjemp4
+  * HTTP_UPGRADE_INSECURE_REQUESTS: 1
+  * HTTP_SEC_FETCH_DEST: document
+  * HTTP_SEC_FETCH_MODE: navigate
+  * HTTP_SEC_FETCH_SITE: same-origin
+  * HTTP_SEC_FETCH_USER: ?1
+  * HTTP_PRIORITY: u=0, i
+  * PATH: C:\Program Files\Eclipse Adoptium\jdk-17.0.15.6-hotspot\bin;C:\Program Files\Eclipse Adoptium\jdk-11.0.27.6-hotspot\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;c:\src\flutter\bin;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps
+  * SystemRoot: C:\Windows
+  * COMSPEC: C:\Windows\system32\cmd.exe
+  * PATHEXT: .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+  * WINDIR: C:\Windows
+  * SERVER_SIGNATURE: <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+  * SERVER_SOFTWARE: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+  * SERVER_NAME: localhost
+  * SERVER_ADDR: 127.0.0.1
+  * SERVER_PORT: 80
+  * REMOTE_ADDR: 127.0.0.1
+  * DOCUMENT_ROOT: C:/xampp/htdocs
+  * REQUEST_SCHEME: http
+  * CONTEXT_PREFIX: 
+  * CONTEXT_DOCUMENT_ROOT: C:/xampp/htdocs
+  * SERVER_ADMIN: postmaster@localhost
+  * SCRIPT_FILENAME: C:/xampp/htdocs/sistema_promais/painel.php
+  * REMOTE_PORT: 58340
+  * GATEWAY_INTERFACE: CGI/1.1
+  * SERVER_PROTOCOL: HTTP/1.1
+  * REQUEST_METHOD: GET
+  * QUERY_STRING: 
+  * REQUEST_URI: /sistema_promais/painel.php
+  * SCRIPT_NAME: /sistema_promais/painel.php
+  * PHP_SELF: /sistema_promais/painel.php
+  * REQUEST_TIME_FLOAT: 1746225634.7406
+  * REQUEST_TIME: 1746225634
