@@ -784,6 +784,10 @@
         let recebe_nome_fantasia_empresa = $("#nome_fantasia").val()
         let recebe_razao_social_empresa = $("#razao_social").val();
         let recebe_endereco_empresa = $("#endereco").val();
+
+        if(recebe_id_cidade === "" || recebe_id_cidade === undefined)
+          recebe_id_cidade = $("#cidade_id").val();
+
         // let recebe_cidade_id_empresa = $("#cidade_id").val();
         let recebe_numero_empresa = $("#numero").val();
         let recebe_complemento_empresa = $("#complemento").val();
