@@ -217,6 +217,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_informacoes_empresa_alteracao->execute();
         $resultado_busca_informacoes_empresa_alteracao = $comando_busca_informacoes_empresa_alteracao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_empresa_alteracao);
+    }else if($recebe_processo_empresa === "buscar_informacoes_rapidas_empresa")
+    {
+        $recebe_codigo_empresa_informacoes_rapidas = $_GET["valor_id_empresa_informacoes_rapidas"];
+
+        $instrucao_busca_empresa_informacoes_rapidas = "select * from empresas where id = :recebe_id_empresa_informacoes_rapidas";
+        $comando_busca_empresa_informacoes_rapidas = $pdo->prepare($instrucao_busca_empresa_informacoes_rapidas);
+        $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_id_empresa_informacoes_rapidas",$recebe_codigo_empresa_informacoes_rapidas);
+        $comando_busca_empresa_informacoes_rapidas->execute();
+        $resultado_busca_informacoes_rapidas_empresa = $comando_busca_empresa_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_informacoes_rapidas_empresa);
     }
 }
 ?>
