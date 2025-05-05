@@ -34,6 +34,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_complemento_empresa = $_POST["valor_complemento_empresa"];
         $recebe_chave_id_empresa = $_SESSION["user_plan"];
 
+        // $informacoes = "nome fantasia empresa:".$recebe_nome_fantasia_empresa."\n 
+        // cnpj empresa:".$recebe_cnpj_empresa."\n endereco empresa:".$recebe_endereco_empresa.".n 
+        // telefone empresa:".$recebe_telefone_empresa."\n
+        // email empresa:".$recebe_email_empresa."\n id cidade empresa:".$recebe_id_cidade_empresa."\n
+        // razao social empresa:".$recebe_razao_social_empresa."\n bairro empresa:".$recebe_bairro_empresa."\n
+        // cep empresa:".$recebe_cep_empresa."\n complemento empresa:".$recebe_complemento_empresa."\n
+        // chave id empresa:".$recebe_chave_id_empresa;
+
+        // echo json_encode($informacoes);
+
         $instrucao_cadastra_empresa = "insert into empresas(nome,cnpj,endereco,id_cidade,telefone,email,chave_id,razao_social
         ,bairro,cep,complemento)values(:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,
         :recebe_id_cidade_empresa,:recebe_telefone_empresa,

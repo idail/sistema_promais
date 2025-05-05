@@ -142,7 +142,50 @@
 
         // Iniciar a busca dos dados ao carregar a página
         buscar_empresas();
+
+        async function buscar_informacoes_rapidas_empresa() {
+            await popula_cidades_informacoes_rapidas_empresa();
+        }
+
+        buscar_informacoes_rapidas_empresa();
     });
+
+
+    async function popula_cidades_informacoes_rapidas_empresa(cidadeSelecionada = "", estadoSelecionado = "") {
+        debugger;
+        const apiUrl = 'api/list/cidades.php';
+        const cidadeSelect = document.getElementById('cidade_id');
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+
+                data.data.cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.id;
+                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
+                    cidadeSelect.appendChild(option);
+                });
+
+                if (cidadeSelecionada && estadoSelecionado) {
+                    for (let i = 0; i < cidadeSelect.options.length; i++) {
+                        const optionText = cidadeSelect.options[i].text;
+                        if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
+                            cidadeSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                console.error('Erro ao carregar cidades:', data.message);
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+        }
+    }
 
 
     // Função para preencher a tabela com os dados das clínicas
@@ -279,15 +322,17 @@
 
                     if (resposta.length > 0) {
                         for (let indice = 0; indice < resposta.length; indice++) {
+                            let recebe_endereco_cortado = resposta[indice].endereco.split(",");
+
                             $("#created_at").val(resposta[indice].created_at);
                             $("#cnpj").val(resposta[indice].cnpj);
                             $("#nome_fantasia").val(resposta[indice].nome);
                             $("#razao_social").val(resposta[indice].razao_social);
                             $("#endereco").val(resposta[indice].endereco);
-                            $("#numero").val(resposta[indice].numero);
+                            $("#numero").val(recebe_endereco_cortado[1]);
                             $("#complemento").val(resposta[indice].complemento);
                             $("#bairro").val(resposta[indice].bairro);
-                            $("#cidade_id").val(resposta[indice].cidade_id);
+                            $("#cidade_id").val(resposta[indice].id_cidade);
                             $("#cep").val(resposta[indice].cep);
                             $("#email").val(resposta[indice].email);
                             $("#telefone").val(resposta[indice].telefone);

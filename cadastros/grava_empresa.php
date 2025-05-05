@@ -784,6 +784,7 @@
         let recebe_nome_fantasia_empresa = $("#nome_fantasia").val()
         let recebe_razao_social_empresa = $("#razao_social").val();
         let recebe_endereco_empresa = $("#endereco").val();
+        // let recebe_cidade_id_empresa = $("#cidade_id").val();
         let recebe_numero_empresa = $("#numero").val();
         let recebe_complemento_empresa = $("#complemento").val();
         let recebe_bairro_empresa = $("#bairro").val();
@@ -849,6 +850,8 @@
                 },
                 success: function(retorno_empresa) {
                     debugger;
+
+                    console.log(retorno_empresa);
 
                     if (retorno_empresa) {
                         console.log("Empresa cadastrada com sucesso");
