@@ -128,7 +128,7 @@
             <div style="display: flex; align-items: flex-start; gap: 40px;">
                 <!-- Coluna esquerda: select + botão -->
                 <div class="form-group">
-                    <label for="cidade_id_2">Vincular Médico Examinador</label>
+                    <label for="cidade_id_2">Vincular Médico Coordenador</label>
                     <div class="input-with-icon" style="display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-user-md"></i>
                         <select id="medico-associado-empresa" name="medico_associado" class="form-control" style="max-width: 250px;"></select>
@@ -141,7 +141,7 @@
                     <table id="tabela-medico-associado-coordenador" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Médicos examinadores coordenadores vinculados a essa empresa</th>
+                                <th style="padding-right: 30px;">Médicos coordenadores vinculados a essa empresa</th>
                                 <th>Opção</th>
                             </tr>
                         </thead>
@@ -442,7 +442,7 @@
                         for (let indice = 0; indice < resposta_medicos.length; indice++) {
                             let recebe_botao_desvincular_medico_empresa;
                             if (resposta_medicos[indice].id !== "" && resposta_medicos[indice].medico_id !== "") {
-                                recebe_botao_desvincular_medico_empresa = "<td><i class='fas fa-trash' title='Desvincular Médico' id='exclui-medico-ja-associado'" +
+                                recebe_botao_desvincular_medico_empresa = "<td style='text-align:center;'><i class='fas fa-trash' title='Desvincular Médico' id='exclui-medico-ja-associado'" +
                                     " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
                             }
 
@@ -578,7 +578,7 @@
             recebe_tabela_associar_medico_empresa.innerHTML +=
                 "<tr data-index='" + indice + "'>" +
                 "<td>" + recebe_nome_medico_selecionado_associar_empresa + "</td>" +
-                "<td><i class='fas fa-trash' id='exclui-medico-associado-empresa'></i></td>" +
+                "<td style='text-align:center;'><i class='fas fa-trash' id='exclui-medico-associado-empresa'></i></td>" +
                 "</tr>";
 
             valores_codigos_medicos_empresas.push(recebe_codigo_medico_selecionado_associar_empresa);
