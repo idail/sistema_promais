@@ -6,7 +6,11 @@ $debugLog .= "- Data/Hora: " . date('Y-m-d H:i:s') . "\n";
 $debugLog .= "- Diretório atual: " . getcwd() . "\n";
 $debugLog .= "- Variáveis de ambiente:\n";
 foreach ($_SERVER as $key => $value) {
-    $debugLog .= "  * $key: $value\n";
+  // Verifica se o valor é um array ou objeto e usa var_export para exibir de forma legível
+  if (is_array($value) || is_object($value)) {
+      $value = var_export($value, true);
+  }
+  $debugLog .= "  * $key: $value\n";
 }
 file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
 ?>

@@ -5,13 +5,24 @@ header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Methods: POST , GET");
 
 // conexao.php
-$host = 'localhost';
-$dbname = 'promais';
-$user = 'root';
-$password = ''; // Sem senha
+// $host = 'localhost';
+// $dbname = 'promais';
+// $user = 'root';
+// $password = ''; // Sem senha
+
+$host = 'mysql.idailneto.com.br';
+$dbname = 'idailneto06';
+$username = 'idailneto06';
+$password = 'Sei20020615';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8", // charset adicionado aqui
+        $username,
+        $password,
+        array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8") // comando adicional
+    );
+    // Configurar o modo de erro
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Erro ao conectar ao banco de dados: " . $e->getMessage());

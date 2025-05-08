@@ -137,12 +137,12 @@
 </style>
 
 <div>
-    <h1 class="dashboard">Clínicas</h1>
+    <h1 class="dashboard">Funcionários</h1>
 </div>
 
 <!-- Botão Cadastrar -->
 <div>
-    <button class="btn-cadastrar" onclick="window.location.href='?pg=pro_cli&acao=cadastrar';">
+    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_funcionario&acao=cadastrar';">
         <i class="fas fa-plus"></i> Cadastrar
     </button>
 </div>
@@ -154,12 +154,12 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome Fantasia</th>
-                <th>CNPJ</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Cargo</th>
                 <th>Endereço</th>
                 <th>Cidade/Estado</th>
                 <th>Telefone</th>
-                <th>Status</th>
                 <th>Ações</th> <!-- Nova coluna para os botões de ação -->
             </tr>
         </thead>
@@ -182,7 +182,6 @@
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
-                    debugger;
                     if (response.status === "success") {
                         preencherTabela(response.data.clinicas);
                         inicializarDataTable();
@@ -198,7 +197,6 @@
 
         // Função para preencher a tabela com os dados das clínicas
         function preencherTabela(clinicas) {
-            debugger;
             const tbody = document.querySelector("#clinicasTable tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
 

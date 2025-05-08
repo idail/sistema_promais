@@ -8,10 +8,15 @@ if (isset($_SESSION['user_id'])) {
 }
 
 // Configurações do banco de dados
-$host = 'localhost';
-$dbname = 'promais';
-$username = 'root';
-$password = '';
+// $host = 'localhost';
+// $dbname = 'promais';
+// $username = 'root';
+// $password = '';
+
+$host = 'mysql.idailneto.com.br';
+$dbname = 'idailneto06';
+$username = 'idailneto06';
+$password = 'Sei20020615';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

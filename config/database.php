@@ -7,12 +7,16 @@
  */
 
 // Configurações do banco de dados
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'promais');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_CHARSET', 'utf8mb4');
-
+// define('DB_HOST', 'localhost');
+// define('DB_NAME', 'promais');
+// define('DB_USER', 'root');
+// define('DB_PASS', '');
+// define('DB_CHARSET', 'utf8mb4');
+define("DB_HOST","mysql.idailneto.com.br");
+define("DB_NAME","idailneto06");
+define("DB_USER","idailneto06");
+define("DB_PASS","Sei20020615");
+define("DB_CHARSET","utf8mb4");
 /**
  * Obtém uma conexão PDO com o banco de dados
  * 

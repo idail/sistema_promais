@@ -14,10 +14,14 @@ function buscarClinica($conexao, $id)
 }
 
 // Conectar ao banco de dados
-$conexao = new mysqli("localhost", "root", "", "promais");
+// $conexao = new mysqli("localhost", "root", "", "promais")
+$conexao = new mysqli("mysql.idailneto.com.br","idailneto06","Sei20020615","idailneto06");
+
 if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
 }
+
+$conexao->set_charset("utf8");
 
 // Obtendo o ID da URL
 $id = isset($_GET['id']) ? $_GET['id'] : 0;

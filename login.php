@@ -6,7 +6,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_name']) && isset($_SESS
     // Verificar se a sessão não expirou antes de redirecionar
     if (strtotime($_SESSION['user_expire']) > time()) {
         // Se o usuário já estiver logado, redirecioná-lo para o painel
-        header("Location: painel.php");
+        // header("Location: painel.php");
         exit();  // Impede que o restante da página seja carregado
     } else {
         // Se expirou, limpar a sessão
@@ -412,6 +412,7 @@ body {
         throw new Error('Erro na conexão com o servidor.');
       }
 
+      debugger;
       const data = await response.json();
       updateProgress(60);
       
