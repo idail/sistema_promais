@@ -5,22 +5,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #clinicasTable {
+    #funcionarios_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #clinicasTable th,
-    #clinicasTable td {
+    #funcionarios_tabela th,
+    #funcionarios_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #clinicasTable th {
+    #funcionarios_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -150,7 +150,7 @@
 
 
 <div>
-    <table id="clinicasTable">
+    <table id="funcionarios_tabela">
         <thead>
             <tr>
                 <th>ID</th>
@@ -176,17 +176,22 @@
     let recebe_codigo_clinica_informacoes_rapida;
     $(document).ready(function() {
         // Função para buscar dados da API
-        function buscarDados() {
+        function buscar_funcionarios() {
             $.ajax({
-                url: "api/list/clinicas.php", // Endpoint da API
+                url: "cadastros/processa_funcionario.php", // Endpoint da API
                 method: "GET",
                 dataType: "json",
-                success: function(response) {
-                    if (response.status === "success") {
-                        preencherTabela(response.data.clinicas);
+                data: {
+                    "processo_funcionario": "buscar_funcionarios"
+                },
+                success: function(resposta_funcionario) {
+                    debugger;
+                    if (resposta_funcionario.length > 0) {
+                        console.log(resposta_funcionario);
+                        preencher_tabela(resposta_funcionario);
                         inicializarDataTable();
-                    } else {
-                        console.error("Erro ao buscar dados:", response.message);
+                    }else{
+                        preencher_tabela(resposta_funcionario);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -196,26 +201,36 @@
         }
 
         // Função para preencher a tabela com os dados das clínicas
-        function preencherTabela(clinicas) {
-            const tbody = document.querySelector("#clinicasTable tbody");
+        function preencher_tabela(funcionarios) {
+            debugger;
+            let tbody = document.querySelector("#funcionarios_tabela tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-            clinicas.forEach(clinica => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                        <td>${clinica.id}</td>
-                        <td>${clinica.nome_fantasia}</td>
-                        <td>${clinica.cnpj}</td>
-                        <td>${clinica.endereco}, ${clinica.numero}, ${clinica.complemento}</td>
-                        <td>${clinica.cidade_nome}/${clinica.cidade_estado}</td>
-                        <td>${clinica.telefone}</td>
-                        <td>${clinica.status}</td>
+            if (funcionarios.length > 0) {
+                for (let index = 0; index < funcionarios.length; index++) {
+                    let funcionario = funcionarios[index];
+
+                    // Separar o endereço
+                    let partesEndereco = funcionario.endereco.split(',');
+                    let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
+                    let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${funcionario.id}</td>
+                        <td>${funcionario.nome}</td>
+                        <td>${funcionario.cpf}</td>
+                        <td>${funcionario.cargo}</td>
+                        <td>${ruaNumero}</td>
+                        <td>${cidadeEstado}</td>
+                        <td>${funcionario.telefone}</td>
+                        <td>${funcionario.status}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica' data-codigo-clinica='${clinica.id}'>
+                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-funcionario' data-codigo-clinica='${funcionario.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=pro_cli&acao=editar&id=${funcionario.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${clinica.id}" class="delete" title="Apagar">
@@ -224,28 +239,29 @@
                             </div>
                         </td>
                     `;
-                tbody.appendChild(row);
-            });
+                    tbody.appendChild(row);
+                }
+            } else {
+                $("#funcionarios_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+            }
         }
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            $('#clinicasTable').DataTable({
+            $('#funcionarios_tabela').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 }
             });
         }
+        
+        buscar_funcionarios();
 
-        // Iniciar a busca dos dados ao carregar a página
-        buscarDados();
+        // async function buscar_informacoes_rapidas_clinica() {
+        //     await popula_cidades_informacoes_rapidas();
+        // }
 
-        async function buscar_informacoes_rapidas_clinica() 
-        {
-            await popula_cidades_informacoes_rapidas();
-        }
-
-        buscar_informacoes_rapidas_clinica();
+        // buscar_informacoes_rapidas_clinica();
     });
 
     $(document).on("click", "#visualizar-informacoes-clinica", function(e) {
@@ -284,8 +300,7 @@
                         else
                             $("#status").prop("checked", false);
 
-                        async function exibi_medicos_associados_clinica() 
-                        {
+                        async function exibi_medicos_associados_clinica() {
                             await popula_medicos_associados_clinica();
                         }
 
@@ -305,8 +320,7 @@
         document.getElementById('informacoes-clinica').classList.add('hidden'); // fechar
     });
 
-    async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "")
-    {
+    async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {
         debugger;
         const apiUrl = 'api/list/cidades.php';
         const cidadeSelect = document.getElementById('cidade_id');
