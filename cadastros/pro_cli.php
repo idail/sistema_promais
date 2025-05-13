@@ -432,8 +432,36 @@ $conexao->close();
             }
         }
 
+        carregarCidades();
+
         buscar_informacoes_clinica();
     });
+
+    // $("#cep").blur(function(e){
+    //     e.preventDefault();
+
+    //     let cep = $(this).val();
+
+    //     $.ajax({
+    //         url: `https://viacep.com.br/ws/${cep}/json/`,
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         success: function(dados) {
+    //             debugger;
+    //             if (dados.erro) {
+    //                 $('#resultado').text('CEP não encontrado.');
+    //             } else {
+    //                 console.log(dados);
+    //                 let cidade = dados.localidade;
+    //                 let estado = dados.uf;
+    //                 // $('#resultado').text(`${cidade} - ${estado}`);
+    //             }
+    //         },
+    //         error: function() {
+    //             $('#resultado').text('Erro ao buscar o CEP.');
+    //         }
+    //     });
+    // });
 
     async function popula_lista_cidade_clinica_alteracao() {
         return new Promise((resolve, reject) => {
@@ -522,6 +550,8 @@ $conexao->close();
                                 "</tr>";
                         }
                         $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+                    }else{
+                        $("#tabela-medico-associado tbody").html("");
                     }
 
                     resolve(); // sinaliza que terminou

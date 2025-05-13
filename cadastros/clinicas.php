@@ -534,7 +534,7 @@
                     <thead>
                         <tr>
                             <th>Médicos examinadores vinculados a essa clínica</th>
-                            <th>Opção</th>
+                            <!-- <th>Opção</th> -->
                         </tr>
                     </thead>
                     <tbody>
