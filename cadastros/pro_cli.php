@@ -15,7 +15,7 @@ function buscarClinica($conexao, $id)
 
 // Conectar ao banco de dados
 // $conexao = new mysqli("localhost", "root", "", "promais")
-$conexao = new mysqli("mysql.idailneto.com.br","idailneto06","Sei20020615","idailneto06");
+$conexao = new mysqli("mysql.idailneto.com.br", "idailneto06", "Sei20020615", "idailneto06");
 
 if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
@@ -156,8 +156,10 @@ $conexao->close();
                                 id="status"
                                 name="status"
                                 class="toggle-checkbox"
-                                
-                                <?php if (isset($clinica["status"]) && $clinica["status"] == "Ativo"){echo 'checked' ?? "";} ?>>
+
+                                <?php if (isset($clinica["status"]) && $clinica["status"] == "Ativo") {
+                                    echo 'checked' ?? "";
+                                } ?>>
                             <label for="status" class="toggle-label"></label>
                         </div>
                     </div>
@@ -412,6 +414,21 @@ $conexao->close();
                 await popula_medicos_associados_clinica();
             } else {
                 await popula_medicos_associar_clinica();
+
+                let atual = new Date();
+
+                let ano = atual.getFullYear();
+                let mes = String(atual.getMonth() + 1).padStart(2, '0');
+                let dia = String(atual.getDate()).padStart(2, '0');
+                let horas = String(atual.getHours()).padStart(2, '0');
+                let minutos = String(atual.getMinutes()).padStart(2, '0');
+
+                // Formato aceito por <input type="datetime-local">
+                let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+
+                console.log("Data formatada para input datetime-local:", data_formatada);
+                document.getElementById('created_at').value = data_formatada;
+
             }
         }
 
@@ -739,19 +756,47 @@ $conexao->close();
 
                 carregarCidades(data.address.city, data.address.state);
 
-                const now = new Date();
-                const formattedDateTime = now.toISOString().slice(0, 16);
-                document.getElementById('created_at').value = formattedDateTime;
+                // const now = new Date();
+                // const formattedDateTime = now.toISOString().slice(0, 16);
+
+                // const now = new Date();
+
+                // Formatar data e hora local no formato "dd/mm/yyyy hh:mm"
+                // const dia = String(now.getDate()).padStart(2, '0');
+                // const mes = String(now.getMonth() + 1).padStart(2, '0'); // mês começa do 0
+                // const ano = now.getFullYear();
+                // const horas = String(now.getHours()).padStart(2, '0');
+                // const minutos = String(now.getMinutes()).padStart(2, '0');
+
+                // const formattedDateTime = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+
+                // console.log("Hora local:", formattedDateTime);
+
+
+                // document.getElementById('created_at').value = formattedDateTime;
             })
             .catch(error => console.error('Erro ao buscar CNPJ:', error));
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        carregarCidades();
+        //carregarCidades();
 
-        const now = new Date();
-        const formattedDateTime = now.toISOString().slice(0, 16);
-        document.getElementById('created_at').value = formattedDateTime;
+        // const now = new Date();
+        // const formattedDateTime = now.toISOString().slice(0, 16);
+
+        // const now = new Date();
+
+        // Formatar data e hora local no formato "dd/mm/yyyy hh:mm"
+        // const dia = String(now.getDate()).padStart(2, '0');
+        // const mes = String(now.getMonth() + 1).padStart(2, '0'); // mês começa do 0
+        // const ano = now.getFullYear();
+        // const horas = String(now.getHours()).padStart(2, '0');
+        // const minutos = String(now.getMinutes()).padStart(2, '0');
+
+        // const formattedDateTime = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+
+        // console.log("Hora local:", formattedDateTime);
+        // document.getElementById('created_at').value = formattedDateTime;
     });
 
     document.getElementById('empresaForm').addEventListener('submit', function(event) {

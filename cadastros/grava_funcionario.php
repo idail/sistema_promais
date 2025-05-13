@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label for="nome">Nome Completo:</label>
                         <div class="input-with-icon">
-                            <i class="fas fa-building"></i>
+                            <i class="fas fa-user"></i>
                             <input type="text" id="nome" name="nome" class="form-control">
                         </div>
                     </div>
@@ -32,22 +32,22 @@
                         <label for="cpf">CPF:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-address-card"></i>
-                            <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" onblur="fetchCompanyData(this.value)" oninput="formatCNPJ(this)">
+                            <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="cargo">Cargo:</label>
+                    <!-- <div class="form-group">
+                        <label for="cargo">Idail:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-file-signature"></i>
                             <input type="text" id="cargo" name="cargo" class="form-control">
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group">
-                        <label for="cargo">Data Nascimento:</label>
+                        <label for="nascimento">Data Nascimento:</label>
                         <div class="input-with-icon" style="flex: 25%; margin-left: 10px;">
-                            <i class="fas fa-envelope"></i>
+                            <i class="fas fa-calendar-alt"></i>
                             <input type="date" id="nascimento" name="nascimento" class="form-control">
                         </div>
                     </div>
@@ -64,18 +64,18 @@
                         </div>
 
                         <div class="form-group" style="flex: 40%;">
-                            <label for="bairro">Número:</label>
+                            <label for="numero">Número:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-map"></i>
-                                <input type="text" id="bairro" name="bairro" class="form-control">
+                                <i class="fas fa-map-pin"></i>
+                                <input type="text" id="numero" name="numero" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group" style="flex: 90%;">
-                            <label for="endereco">Complemento:</label>
+                            <label for="complemento">Complemento:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" id="endereco" name="endereco" class="form-control">
+                                <i class="fas fa-map-signs"></i>
+                                <input type="text" id="complemento" name="complemento" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -91,10 +91,10 @@
                         </div>
 
                         <div class="form-group" style="flex: 90%;">
-                            <label for="endereco">CEP:</label>
+                            <label for="cep">CEP:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" id="endereco" name="endereco" class="form-control">
+                                <input type="text" id="cep" name="cep" class="form-control" oninput="formatCEP(this);">
                             </div>
                         </div>
                     </div>
@@ -102,12 +102,33 @@
                     <div class="address-container">
 
                         <div class="form-group" style="flex: 50%;">
-                            <label for="bairro">E-mail:</label>
+                            <label for="email">E-mail:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-map"></i>
-                                <input type="text" id="bairro" name="bairro" class="form-control">
+                                <i class="fas fa-envelope"></i>
+                                <input type="text" id="email" name="email" class="form-control">
                             </div>
                         </div>
+
+                        <div class="form-group" style="flex: 40%;">
+                            <label for="senha">Senha:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="text" id="senha" name="senha" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex:30%;">
+                        <label for="acesso-funcionario">Nível Acesso:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-city"></i>
+                            <select id="acesso-funcionario" name="acesso_funcionario" class="form-control">
+                                <option value="selecione">Selecione</option>
+                                <option value="admin">Admin</option>
+                                <option value="operador">Operador</option>
+                                <option value="cliente">Cliente</option>
+                            </select>
+                        </div>
+                    </div>
                     </div>
                 </div>
 
@@ -127,7 +148,7 @@
                     <div class="form-group">
                         <label for="cargo">Cargo:</label>
                         <div class="input-with-icon">
-                            <i class="fas fa-map-marked-alt"></i>
+                            <i class="fas fa-briefcase"></i>
                             <input type="text" id="cargo" name="cargo" class="form-control" oninput="formatCEP(this)">
                         </div>
                     </div>
@@ -137,7 +158,7 @@
                         <div class="form-group" style="flex: 75%;">
                             <label for="cbo">CBO:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <i class="fas fa-briefcase"></i>
                                 <input type="text" id="cbo" name="cbo" class="form-control">
                             </div>
                         </div>
@@ -148,7 +169,7 @@
                     <div class="form-group">
                         <label for="idade">Idade:</label>
                         <div class="input-with-icon">
-                            <i class="fas fa-map-pin"></i>
+                            <i class="fas fa-birthday-cake"></i>
                             <input type="text" id="idade" name="idade" class="form-control">
                         </div>
                     </div>
@@ -163,7 +184,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary" id="grava-empresa">Salvar</button>
+            <button type="button" class="btn btn-primary" id="grava-funcionario">Salvar</button>
         </form>
     </div>
 
@@ -337,8 +358,7 @@
 
 <script>
     let recebe_codigo_alteracao_empresa;
-    let recebe_acao_alteracao_empresa = "cadastrar";
-    let verifica_vinculacao_medico_empresa;
+    let recebe_acao_alteracao_funcionario = "cadastrar";
 
     $(document).ready(function(e) {
         debugger;
@@ -353,31 +373,20 @@
         let recebe_acao_empresa = recebe_parametro_acao_empresa.get("acao");
 
         if (recebe_acao_empresa !== "" && recebe_acao_empresa !== null)
-            recebe_acao_alteracao_empresa = recebe_acao_empresa;
+            recebe_acao_alteracao_funcionario = recebe_acao_empresa;
 
-        async function buscar_informacoes_empresa() {
+        async function buscar_informacoes_funcionario() {
             debugger;
-            if (recebe_acao_alteracao_empresa === "editar") {
+            if (recebe_acao_alteracao_funcionario === "editar") {
                 carrega_cidades();
                 await popula_lista_cidade_empresa_alteracao();
-                await popula_medicos_associar_empresa();
-                await popula_medicos_associados_empresa();
                 await popula_informacoes_empresa_alteracao();
-
-                if (!verifica_vinculacao_medico_empresa) {
-                    $("#medico-associado-empresa").prop("disabled", false);
-                    $("#associar-medico-empresa").prop("disabled", false);
-                } else {
-                    $("#medico-associado-empresa").prop("disabled", true);
-                    $("#associar-medico-empresa").prop("disabled", true);
-                }
             } else {
                 carrega_cidades();
-                await popula_medicos_associar_empresa();
             }
         }
 
-        buscar_informacoes_empresa();
+        buscar_informacoes_funcionario();
     });
 
     async function popula_lista_cidade_empresa_alteracao() {
@@ -400,88 +409,6 @@
                 },
                 error: function(xhr, status, error) {
                     console.log("Falha ao buscar cidade da clinica:" + error);
-                    reject(error);
-                },
-            });
-        });
-    }
-
-    async function popula_medicos_associar_empresa() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: "cadastros/processa_medico.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_medico": "buscar_medicos_associar_empresa"
-                },
-                success: function(resposta_medicos) {
-                    debugger;
-                    console.log(resposta_medicos);
-                    if (resposta_medicos.length > 0) {
-                        let select_medicos = document.getElementById('medico-associado-empresa');
-                        let options = '<option value="">Selecione um médico</option>';
-                        for (let i = 0; i < resposta_medicos.length; i++) {
-                            let medico = resposta_medicos[i];
-                            options += `<option value="${medico.id}">${medico.nome}</option>`;
-                        }
-                        select_medicos.innerHTML = options;
-                    }
-                    resolve(); // sinaliza que terminou
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao buscar médicos:" + error);
-                    reject(error);
-                },
-            });
-        });
-    }
-
-    async function popula_medicos_associados_empresa() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: "cadastros/processa_medico.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_medico": "buscar_medicos_associados_empresa",
-                    valor_codigo_empresa_medicos_associados: recebe_codigo_alteracao_empresa,
-                },
-                success: function(resposta_medicos) {
-                    debugger;
-                    console.log(resposta_medicos);
-
-                    if (resposta_medicos.length > 0) {
-                        verifica_vinculacao_medico_empresa = true;
-                        let recebe_tabela_associar_medico_empresa = document.querySelector(
-                            "#tabela-medico-associado-coordenador tbody"
-                        );
-
-                        $("#tabela-medico-associado-coordenador tbody").html("");
-
-                        for (let indice = 0; indice < resposta_medicos.length; indice++) {
-                            let recebe_botao_desvincular_medico_empresa;
-                            if (resposta_medicos[indice].id !== "" && resposta_medicos[indice].medico_id !== "") {
-                                recebe_botao_desvincular_medico_empresa = "<td style='text-align:center;'><i class='fas fa-trash' title='Desvincular Médico' id='exclui-medico-ja-associado'" +
-                                    " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
-                            }
-
-                            recebe_tabela_associar_medico_empresa +=
-                                "<tr>" +
-                                "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
-                                recebe_botao_desvincular_medico_empresa +
-                                "</tr>";
-                        }
-                        $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
-                    } else {
-                        verifica_vinculacao_medico_empresa = false;
-                        $("#tabela-medico-associado-coordenador tbody").html("");
-                    }
-
-                    resolve(); // sinaliza que terminou
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao buscar médicos:" + error);
                     reject(error);
                 },
             });
@@ -530,158 +457,41 @@
         });
     }
 
-    $(document).on("click", "#exclui-medico-ja-associado", function(e) {
-        e.preventDefault();
+    function formatCEP(input) {
+        let value = input.value.replace(/\D/g, ''); // remove tudo que não for número
 
-        debugger;
-
-        let recebe_codigo_medico_ja_associado = $(this).data("codigo-medico-empresa");
-
-        let recebe_codigo_medico = $(this).data("codigo-medico");
-
-        $.ajax({
-            url: "cadastros/processa_empresa.php",
-            method: "POST",
-            dataType: "json",
-            data: {
-                "processo_empresa": "desvincular_medico_empresa",
-                valor_medico_empresa_id: recebe_codigo_medico_ja_associado,
-                valor_codigo_medico: recebe_codigo_medico
-            },
-            success: function(resposta_medicos_clinicas) {
-                debugger;
-
-                console.log(resposta_medicos_clinicas);
-
-                if (resposta_medicos_clinicas) {
-                    verifica_vinculacao_medico_empresa = false;
-
-                    if (!verifica_vinculacao_medico_empresa) {
-                        $("#medico-associado-empresa").prop("disabled", false);
-                        $("#associar-medico-empresa").prop("disabled", false);
-                    } else {
-                        $("#medico-associado-empresa").prop("disabled", true);
-                        $("#associar-medico-empresa").prop("disabled", true);
-                    }
-
-
-                    async function buscar_informacoes_empresa() {
-                        debugger;
-                        if (recebe_acao_alteracao_empresa === "editar") {
-                            await popula_medicos_associados_empresa();
-                        }
-                    }
-
-                    buscar_informacoes_empresa();
-                }
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-    });
-
-    let valores_codigos_medicos_empresas = Array();
-    let limpou_tabela_alteracao_empresa;
-
-    $("#associar-medico-empresa").click(function(e) {
-        e.preventDefault();
-
-        debugger;
-
-        if (recebe_acao_alteracao_empresa === "editar") {
-            let recebe_codigo_medico_selecionado_associar_empresa = $("#medico-associado-empresa").val();
-
-            let recebe_nome_medico_selecionado_associar_empresa = $('#medico-associado-empresa option:selected').text();
-
-            console.log(recebe_codigo_medico_selecionado_associar_empresa + " - " + recebe_nome_medico_selecionado_associar_empresa);
-
-            let recebe_tabela_associar_medico_empresa = document.querySelector(
-                "#tabela-medico-associado-coordenador tbody"
-            );
-
-            let indice = recebe_tabela_associar_medico_empresa.querySelectorAll("tr").length;
-
-            recebe_tabela_associar_medico_empresa.innerHTML +=
-                "<tr data-index='" + indice + "'>" +
-                "<td>" + recebe_nome_medico_selecionado_associar_empresa + "</td>" +
-                "<td style='text-align:center;'><i class='fas fa-trash' id='exclui-medico-associado-empresa'></i></td>" +
-                "</tr>";
-
-            valores_codigos_medicos_empresas.push(recebe_codigo_medico_selecionado_associar_empresa);
-
-            $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
-
-            $("#medico-associado-empresa").prop('disabled', true);
-
-            // Desabilita o botão
-            $('#associar-medico-empresa').prop('disabled', true);
-
-            verifica_vinculacao_medico_empresa = true;
-        } else {
-            let recebe_codigo_medico_selecionado_associar_empresa = $("#medico-associado-empresa").val();
-
-            let recebe_nome_medico_selecionado_associar_empresa = $('#medico-associado-empresa option:selected').text();
-
-            console.log(recebe_codigo_medico_selecionado_associar_empresa + " - " + recebe_nome_medico_selecionado_associar_empresa);
-
-            let recebe_tabela_associar_medico_empresa = document.querySelector(
-                "#tabela-medico-associado-coordenador tbody"
-            );
-
-            let indice = recebe_tabela_associar_medico_empresa.querySelectorAll("tr").length;
-
-            recebe_tabela_associar_medico_empresa.innerHTML +=
-                "<tr data-index='" + indice + "'>" +
-                "<td>" + recebe_nome_medico_selecionado_associar_empresa + "</td>" +
-                "<td><i class='fas fa-trash' id='exclui-medico-associado-empresa'></i></td>" +
-                "</tr>";
-
-            valores_codigos_medicos_empresas.push(recebe_codigo_medico_selecionado_associar_empresa);
-
-            $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
-
-            $("#medico-associado-empresa").prop('disabled', true);
-
-            // Desabilita o botão
-            $('#associar-medico-empresa').prop('disabled', true);
+        // Limita a quantidade de dígitos para 8
+        if (value.length > 8) {
+            value = value.substring(0, 8);
         }
-    });
 
-    $(document).on("click", "#exclui-medico-associado-empresa", function(e) {
-        e.preventDefault();
-
-        debugger;
-
-        let linha = $(this).closest("tr");
-        let index = linha.data("index");
-
-        linha.remove();
-
-        valores_codigos_medicos_empresas.splice(index, 1);
-
-        console.log(valores_codigos_medicos_empresas);
-
-        let recebe_tabela_associar_medico_empresa = document.querySelector("#tabela-medico-associado-coordenador tbody");
-
-        // Pega todas as linhas <tr> dentro do tbody
-        let linhas = recebe_tabela_associar_medico_empresa.querySelectorAll("tr");
-
-        // Itera usando for tradicional
-        for (let i = 0; i < linhas.length; i++) {
-            linhas[i].setAttribute("data-index", i);
+        // Aplica a máscara
+        if (value.length > 5) {
+            value = value.replace(/(\d{5})(\d{1,3})/, '$1-$2');
         }
-    });
 
-    function openTab(event, tabName) {
-        const tabContents = document.querySelectorAll('.tab-content');
-        const tabButtons = document.querySelectorAll('.tab-button');
+        input.value = value; // atualiza o valor do input
+    }
 
-        tabContents.forEach(tab => tab.classList.remove('active'));
-        tabButtons.forEach(button => button.classList.remove('active'));
 
-        document.getElementById(tabName).classList.add('active');
-        event.currentTarget.classList.add('active');
+    function formatCPF(input) {
+        let value = input.value.replace(/\D/g, ''); // remove tudo que não for número
+
+        // Limita a quantidade de dígitos para 11
+        if (value.length > 11) {
+            value = value.substring(0, 11);
+        }
+
+        // Aplica a máscara
+        if (value.length > 9) {
+            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        } else if (value.length > 6) {
+            value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        } else if (value.length > 3) {
+            value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        }
+
+        input.value = value; // atualiza o valor do input
     }
 
     function formatCNPJ(input) {
@@ -788,7 +598,7 @@
         });
     }
 
-    let recebe_nome_cidade_empresa;
+    let recebe_nome_cidade_funcionario;
     let recebe_id_cidade;
 
     $("#cidade_id").change(function(e) {
@@ -796,44 +606,46 @@
 
         debugger;
         recebe_id_cidade = $(this).val();
-        let recebe_cidade_empresa = $('#cidade_id option:selected').text(); // Nome da cidade
-        let recebe_array_informacoes_cidade_empresa = recebe_cidade_empresa.split("-");
-        let recebe_informacao_cidade_empresa = recebe_array_informacoes_cidade_empresa[0];
-        let recebe_informacao_estado_empresa = recebe_array_informacoes_cidade_empresa[1];
-        recebe_nome_cidade_empresa = recebe_informacao_cidade_empresa + "," + recebe_informacao_estado_empresa;
+        let recebe_cidade_funcionario = $('#cidade_id option:selected').text(); // Nome da cidade
+        let recebe_array_informacoes_cidade_funcionario = recebe_cidade_funcionario.split("-");
+        let recebe_informacao_cidade_funcionario = recebe_array_informacoes_cidade_funcionario[0];
+        let recebe_informacao_estado_funcionario = recebe_array_informacoes_cidade_funcionario[1];
+        recebe_nome_cidade_funcionario = recebe_informacao_cidade_funcionario + "," + recebe_informacao_estado_funcionario;
     });
 
-    $("#grava-empresa").click(function(e) {
+    $("#grava-funcionario").click(function(e) {
         e.preventDefault();
 
         debugger;
-        let recebe_cnpj_empresa = $("#cnpj").val();
-        let recebe_nome_fantasia_empresa = $("#nome_fantasia").val()
-        let recebe_razao_social_empresa = $("#razao_social").val();
-        let recebe_endereco_empresa = $("#endereco").val();
+        let recebe_nome_funcionario = $("#nome").val();
+        let recebe_cpf_funcionario = $("#cpf").val()
+        let recebe_cargo_funcionario = $("#cargo").val();
+        let recebe_nascimento_funcionario = $("#nascimento").val();
 
         if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
             recebe_id_cidade = $("#cidade_id").val();
 
         // let recebe_cidade_id_empresa = $("#cidade_id").val();
-        let recebe_numero_empresa = $("#numero").val();
-        let recebe_complemento_empresa = $("#complemento").val();
-        let recebe_bairro_empresa = $("#bairro").val();
-        let recebe_cep_empresa = $("#cep").val();
-        let recebe_email_empresa = $("#email").val();
-        let recebe_telefone_empresa = $("#telefone").val();
+        let recebe_endereco_funcionario = $("#endereco").val();
+        let recebe_numero_funcionario = $("#numero").val();
+        let recebe_complemento_funcionario = $("#complemento").val();
+        let recebe_bairro_funcionario = $("#bairro").val();
+        let recebe_cep_funcionario = $("#cep").val();
+        let recebe_email_funcionario = $("#email").val();
+        let recebe_cbo_funcionario = $("#cbo").val();
+        let recebe_idade_funcionario = $("#idade").val();
 
-        let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa + "," + recebe_nome_cidade_empresa;
+        let recebe_endereco_completo = recebe_endereco_funcionario + "," + recebe_numero_funcionario + "," + recebe_nome_cidade_funcionario;
 
         console.log(recebe_endereco_completo);
 
-        if (recebe_acao_alteracao_empresa === "editar") {
+        if (recebe_acao_alteracao_funcionario === "editar") {
             $.ajax({
-                url: "cadastros/processa_empresa.php",
+                url: "cadastros/processa_funcionario.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_empresa: "alterar_empresa",
+                    processo_empresa: "inserir_funcionario",
                     valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
                     valor_cnpj_empresa: recebe_cnpj_empresa,
                     valor_endereco_empresa: recebe_endereco_completo,
