@@ -118,10 +118,10 @@
                         </div>
 
                         <div class="form-group" style="flex:30%;">
-                        <label for="acesso-funcionario">Nível Acesso:</label>
+                        <label for="acesso-pessoa">Nível Acesso:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-city"></i>
-                            <select id="acesso-funcionario" name="acesso_funcionario" class="form-control">
+                            <select id="acesso-pessoa" name="acesso_pessoa" class="form-control">
                                 <option value="selecione">Selecione</option>
                                 <option value="admin">Admin</option>
                                 <option value="operador">Operador</option>
@@ -149,7 +149,7 @@
                         <label for="cargo">Cargo:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-briefcase"></i>
-                            <input type="text" id="cargo" name="cargo" class="form-control" oninput="formatCEP(this)">
+                            <input type="text" id="cargo" name="cargo" class="form-control">
                         </div>
                     </div>
 
@@ -184,7 +184,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary" id="grava-funcionario">Salvar</button>
+            <button type="button" class="btn btn-primary" id="grava-pessoa">Salvar</button>
         </form>
     </div>
 
@@ -358,7 +358,7 @@
 
 <script>
     let recebe_codigo_alteracao_empresa;
-    let recebe_acao_alteracao_funcionario = "cadastrar";
+    let recebe_acao_alteracao_pessoa = "cadastrar";
 
     $(document).ready(function(e) {
         debugger;
@@ -373,20 +373,34 @@
         let recebe_acao_empresa = recebe_parametro_acao_empresa.get("acao");
 
         if (recebe_acao_empresa !== "" && recebe_acao_empresa !== null)
-            recebe_acao_alteracao_funcionario = recebe_acao_empresa;
+            recebe_acao_alteracao_pessoa = recebe_acao_empresa;
 
-        async function buscar_informacoes_funcionario() {
+        async function buscar_informacoes_pessoa() {
             debugger;
-            if (recebe_acao_alteracao_funcionario === "editar") {
+            if (recebe_acao_alteracao_pessoa === "editar") {
                 carrega_cidades();
                 await popula_lista_cidade_empresa_alteracao();
                 await popula_informacoes_empresa_alteracao();
             } else {
                 carrega_cidades();
+
+                let atual = new Date();
+
+                let ano = atual.getFullYear();
+                let mes = String(atual.getMonth() + 1).padStart(2, '0');
+                let dia = String(atual.getDate()).padStart(2, '0');
+                let horas = String(atual.getHours()).padStart(2, '0');
+                let minutos = String(atual.getMinutes()).padStart(2, '0');
+
+                // Formato aceito por <input type="datetime-local">
+                let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+
+                console.log("Data formatada para input datetime-local:", data_formatada);
+                document.getElementById('created_at').value = data_formatada;
             }
         }
 
-        buscar_informacoes_funcionario();
+        buscar_informacoes_pessoa();
     });
 
     async function popula_lista_cidade_empresa_alteracao() {
@@ -538,33 +552,6 @@
         input.value = value;
     }
 
-    function fetchCompanyData(cnpj) {
-        const cleanedCNPJ = cnpj.replace(/[.\/-]/g, '');
-
-        fetch(`https://open.cnpja.com/office/${cleanedCNPJ}`)
-            .then(response => response.json())
-            .then(data => {
-                debugger;
-                console.log(data);
-                document.getElementById('nome_fantasia').value = data.alias || '';
-                document.getElementById('razao_social').value = data.company.name || '';
-                document.getElementById('endereco').value = data.address.street || '';
-                document.getElementById('numero').value = data.address.number || '';
-                document.getElementById('complemento').value = data.address.details || '';
-                document.getElementById('bairro').value = data.address.district || '';
-                document.getElementById('cep').value = formatCEPValue(data.address.zip || '');
-                document.getElementById('email').value = data.emails[0]?.address || '';
-                document.getElementById('telefone').value = formatPhoneValue(data.phones[0] ? `${data.phones[0].area}${data.phones[0].number}` : '');
-
-                carrega_cidades(data.address.city, data.address.state);
-
-                const now = new Date();
-                const formattedDateTime = now.toISOString().slice(0, 16);
-                document.getElementById('created_at').value = formattedDateTime;
-            })
-            .catch(error => console.error('Erro ao buscar CNPJ:', error));
-    }
-
     function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
         $.ajax({
             url: "api/list/cidades.php",
@@ -598,7 +585,7 @@
         });
     }
 
-    let recebe_nome_cidade_funcionario;
+    let recebe_nome_cidade_pessoa;
     let recebe_id_cidade;
 
     $("#cidade_id").change(function(e) {
@@ -606,46 +593,49 @@
 
         debugger;
         recebe_id_cidade = $(this).val();
-        let recebe_cidade_funcionario = $('#cidade_id option:selected').text(); // Nome da cidade
-        let recebe_array_informacoes_cidade_funcionario = recebe_cidade_funcionario.split("-");
-        let recebe_informacao_cidade_funcionario = recebe_array_informacoes_cidade_funcionario[0];
-        let recebe_informacao_estado_funcionario = recebe_array_informacoes_cidade_funcionario[1];
-        recebe_nome_cidade_funcionario = recebe_informacao_cidade_funcionario + "," + recebe_informacao_estado_funcionario;
+        let recebe_cidade_pessoa = $('#cidade_id option:selected').text(); // Nome da cidade
+        let recebe_array_informacoes_cidade_pessoa = recebe_cidade_pessoa.split("-");
+        let recebe_informacao_cidade_pessoa = recebe_array_informacoes_cidade_pessoa[0];
+        let recebe_informacao_estado_pessoa = recebe_array_informacoes_cidade_pessoa[1];
+        recebe_nome_cidade_pessoa = recebe_informacao_cidade_pessoa + "," + recebe_informacao_estado_pessoa;
     });
 
-    $("#grava-funcionario").click(function(e) {
+    $("#grava-pessoa").click(function(e) {
         e.preventDefault();
 
         debugger;
-        let recebe_nome_funcionario = $("#nome").val();
-        let recebe_cpf_funcionario = $("#cpf").val()
-        let recebe_cargo_funcionario = $("#cargo").val();
-        let recebe_nascimento_funcionario = $("#nascimento").val();
+        let recebe_nome_pessoa = $("#nome").val();
+        let recebe_cpf_pessoa = $("#cpf").val()
+        let recebe_cargo_pessoa = $("#cargo").val();
+        let recebe_nascimento_pessoa = $("#nascimento").val();
 
         if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
             recebe_id_cidade = $("#cidade_id").val();
 
         // let recebe_cidade_id_empresa = $("#cidade_id").val();
-        let recebe_endereco_funcionario = $("#endereco").val();
-        let recebe_numero_funcionario = $("#numero").val();
-        let recebe_complemento_funcionario = $("#complemento").val();
-        let recebe_bairro_funcionario = $("#bairro").val();
-        let recebe_cep_funcionario = $("#cep").val();
-        let recebe_email_funcionario = $("#email").val();
-        let recebe_cbo_funcionario = $("#cbo").val();
-        let recebe_idade_funcionario = $("#idade").val();
+        let recebe_endereco_pessoa = $("#endereco").val();
+        let recebe_numero_pessoa = $("#numero").val();
+        let recebe_complemento_pessoa = $("#complemento").val();
+        let recebe_bairro_pessoa = $("#bairro").val();
+        let recebe_cep_pessoa = $("#cep").val();
+        let recebe_email_pessoa = $("#email").val();
+        let recebe_senha_pessoa = $("#senha").val();
+        let recebe_cbo_pessoa = $("#cbo").val();
+        let recebe_idade_pessoa = $("#idade").val();
+        let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
+        let recebe_data_cadastro_pessoa = $("#created_at").val();
 
-        let recebe_endereco_completo = recebe_endereco_funcionario + "," + recebe_numero_funcionario + "," + recebe_nome_cidade_funcionario;
+        let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
 
         console.log(recebe_endereco_completo);
 
-        if (recebe_acao_alteracao_funcionario === "editar") {
+        if (recebe_acao_alteracao_pessoa === "editar") {
             $.ajax({
-                url: "cadastros/processa_funcionario.php",
+                url: "cadastros/processa_pessoa.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_empresa: "inserir_funcionario",
+                    processo_empresa: "inserir_pessoa",
                     valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
                     valor_cnpj_empresa: recebe_cnpj_empresa,
                     valor_endereco_empresa: recebe_endereco_completo,
@@ -674,31 +664,36 @@
             });
         } else {
             $.ajax({
-                url: "cadastros/processa_empresa.php",
+                url: "cadastros/processa_pessoa.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_empresa: "inserir_empresa",
-                    valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
-                    valor_cnpj_empresa: recebe_cnpj_empresa,
-                    valor_endereco_empresa: recebe_endereco_completo,
-                    valor_telefone_empresa: recebe_telefone_empresa,
-                    valor_email_empresa: recebe_email_empresa,
-                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
-                    valor_id_cidade: recebe_id_cidade,
-                    valor_razao_social_empresa: recebe_razao_social_empresa,
-                    valor_bairro_empresa: recebe_bairro_empresa,
-                    valor_cep_empresa: recebe_cep_empresa,
-                    valor_complemento_empresa: recebe_complemento_empresa,
+                    processo_pessoa: "inserir_pessoa",
+                    valor_nome_pessoa: recebe_nome_pessoa,
+                    valor_cpf_pessoa: recebe_cpf_pessoa,
+                    valor_cargo_pessoa: recebe_cargo_pessoa,
+                    valor_cbo_pessoa: recebe_cbo_pessoa,
+                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
+                    valor_idade_pessoa: recebe_idade_pessoa,
+                    valor_endereco_pessoa: recebe_endereco_completo,
+                    valor_numero_pessoa: recebe_numero_pessoa,
+                    valor_complemento_pessoa: recebe_complemento_pessoa,
+                    valor_bairro_pessoa: recebe_bairro_pessoa,
+                    valor_cep_pessoa: recebe_cep_pessoa,
+                    valor_id_cidade_pessoa:recebe_id_cidade,
+                    valor_email_pessoa:recebe_email_pessoa,
+                    valor_senha_pessoa:recebe_senha_pessoa,
+                    valor_nivel_acesso_pessoa:recebe_nivel_acesso_pessoa,
+                    valor_data_cadastro_pessoa:recebe_data_cadastro_pessoa
                 },
-                success: function(retorno_empresa) {
+                success: function(retorno_pessoa) {
                     debugger;
 
-                    console.log(retorno_empresa);
+                    console.log(retorno_pessoa);
 
-                    if (retorno_empresa) {
-                        console.log("Empresa cadastrada com sucesso");
-                        window.location.href = "painel.php?pg=empresas";
+                    if (retorno_pessoa) {
+                        console.log("Pessoa cadastrada com sucesso");
+                        window.location.href = "painel.php?pg=pessoas";
                     }
                 },
                 error: function(xhr, status, error) {

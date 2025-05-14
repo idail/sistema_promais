@@ -47,7 +47,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                         <div class="submenu">
                             <a href="?pg=clinicas">Cl&#xed;nicas</a>
                             <a href="?pg=empresas">Empresas</a>
-                            <a href="?pg=funcionarios">Funcion&#xe1;rios</a>
+                            <a href="?pg=pessoas">Pessoas</a>
                             <a href="?pg=medicos">M&#xe9;dicos</a>
                             <a href="?pg=riscos">Riscos</a>
                             <a href="?pg=exames">Cadastro de Exames</a>

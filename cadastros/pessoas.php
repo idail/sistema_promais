@@ -142,7 +142,7 @@
 
 <!-- Botão Cadastrar -->
 <div>
-    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_funcionario&acao=cadastrar';">
+    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_pessoa&acao=cadastrar';">
         <i class="fas fa-plus"></i> Cadastrar
     </button>
 </div>
@@ -150,7 +150,7 @@
 
 
 <div>
-    <table id="funcionarios_tabela">
+    <table id="pessoas_tabela">
         <thead>
             <tr>
                 <th>ID</th>
@@ -176,22 +176,22 @@
     let recebe_codigo_clinica_informacoes_rapida;
     $(document).ready(function() {
         // Função para buscar dados da API
-        function buscar_funcionarios() {
+        function buscar_pessoas() {
             $.ajax({
-                url: "cadastros/processa_funcionario.php", // Endpoint da API
+                url: "cadastros/processa_pessoa.php", // Endpoint da API
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_funcionario": "buscar_funcionarios"
+                    "processo_pessoa": "buscar_pessoas"
                 },
-                success: function(resposta_funcionario) {
+                success: function(resposta_pessoa) {
                     debugger;
-                    if (resposta_funcionario.length > 0) {
-                        console.log(resposta_funcionario);
-                        preencher_tabela(resposta_funcionario);
+                    if (resposta_pessoa.length > 0) {
+                        console.log(resposta_pessoa);
+                        preencher_tabela(resposta_pessoa);
                         inicializarDataTable();
                     }else{
-                        preencher_tabela(resposta_funcionario);
+                        preencher_tabela(resposta_pessoa);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -201,39 +201,39 @@
         }
 
         // Função para preencher a tabela com os dados das clínicas
-        function preencher_tabela(funcionarios) {
+        function preencher_tabela(pessoas) {
             debugger;
-            let tbody = document.querySelector("#funcionarios_tabela tbody");
+            let tbody = document.querySelector("#pessoas_tabela tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-            if (funcionarios.length > 0) {
-                for (let index = 0; index < funcionarios.length; index++) {
-                    let funcionario = funcionarios[index];
+            if (pessoas.length > 0) {
+                for (let index = 0; index < pessoas.length; index++) {
+                    let pessoa = pessoas[index];
 
                     // Separar o endereço
-                    let partesEndereco = funcionario.endereco.split(',');
+                    let partesEndereco = pessoa.endereco.split(',');
                     let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
                     let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
                     let row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${funcionario.id}</td>
-                        <td>${funcionario.nome}</td>
-                        <td>${funcionario.cpf}</td>
-                        <td>${funcionario.cargo}</td>
+                        <td>${pessoa.id}</td>
+                        <td>${pessoa.nome}</td>
+                        <td>${pessoa.cpf}</td>
+                        <td>${pessoa.cargo}</td>
                         <td>${ruaNumero}</td>
                         <td>${cidadeEstado}</td>
-                        <td>${funcionario.telefone}</td>
-                        <td>${funcionario.status}</td>
+                        <td>${pessoa.telefone}</td>
+                        <td>${pessoa.status}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-funcionario' data-codigo-clinica='${funcionario.id}'>
+                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-clinica='${pessoa.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="?pg=pro_cli&acao=editar&id=${funcionario.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=pro_cli&acao=editar&id=${pessoa.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${clinica.id}" class="delete" title="Apagar">
+                                <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${pessoa.id}" class="delete" title="Apagar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -242,20 +242,20 @@
                     tbody.appendChild(row);
                 }
             } else {
-                $("#funcionarios_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                $("#pessoas_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
             }
         }
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            $('#funcionarios_tabela').DataTable({
+            $('#pessoas_tabela').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 }
             });
         }
         
-        buscar_funcionarios();
+        buscar_pessoas();
 
         // async function buscar_informacoes_rapidas_clinica() {
         //     await popula_cidades_informacoes_rapidas();
