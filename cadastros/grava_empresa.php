@@ -361,6 +361,20 @@
                     $("#associar-medico-empresa").prop("disabled", true);
                 }
             } else {
+                let atual = new Date();
+
+                let ano = atual.getFullYear();
+                let mes = String(atual.getMonth() + 1).padStart(2, '0');
+                let dia = String(atual.getDate()).padStart(2, '0');
+                let horas = String(atual.getHours()).padStart(2, '0');
+                let minutos = String(atual.getMinutes()).padStart(2, '0');
+
+                // Formato aceito por <input type="datetime-local">
+                let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+
+                console.log("Data formatada para input datetime-local:", data_formatada);
+                document.getElementById('created_at').value = data_formatada;
+
                 carrega_cidades();
                 await popula_medicos_associar_empresa();
             }
@@ -737,9 +751,9 @@
 
                 carrega_cidades(data.address.city, data.address.state);
 
-                const now = new Date();
-                const formattedDateTime = now.toISOString().slice(0, 16);
-                document.getElementById('created_at').value = formattedDateTime;
+                // const now = new Date();
+                // const formattedDateTime = now.toISOString().slice(0, 16);
+                // document.getElementById('created_at').value = formattedDateTime;
             })
             .catch(error => console.error('Erro ao buscar CNPJ:', error));
     }
@@ -811,6 +825,7 @@
         let recebe_cep_empresa = $("#cep").val();
         let recebe_email_empresa = $("#email").val();
         let recebe_telefone_empresa = $("#telefone").val();
+        let recebe_data_cadastro_empresa = $("#created_at").val();
 
         let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa + "," + recebe_nome_cidade_empresa;
 
@@ -867,6 +882,7 @@
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
                     valor_complemento_empresa: recebe_complemento_empresa,
+                    valor_data_cadastro_empresa:recebe_data_cadastro_empresa
                 },
                 success: function(retorno_empresa) {
                     debugger;

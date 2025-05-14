@@ -27,6 +27,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     $recebe_processo_empresa = $_POST["processo_empresa"];
     if($recebe_processo_empresa === "inserir_empresa")
     {
+        $recebe_data_cadastro_empresa = $_POST["valor_data_cadastro_empresa"];
         $recebe_nome_fantasia_empresa = $_POST["valor_nome_fantasia_empresa"];
         $recebe_cnpj_empresa = $_POST["valor_cnpj_empresa"];
         $recebe_endereco_empresa = $_POST["valor_endereco_empresa"];
@@ -39,6 +40,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_complemento_empresa = $_POST["valor_complemento_empresa"];
         $recebe_chave_id_empresa = $_SESSION["user_plan"];
 
+        // echo json_encode($recebe_data_cadastro_empresa);
+
         // $informacoes = "nome fantasia empresa:".$recebe_nome_fantasia_empresa."\n 
         // cnpj empresa:".$recebe_cnpj_empresa."\n endereco empresa:".$recebe_endereco_empresa.".n 
         // telefone empresa:".$recebe_telefone_empresa."\n
@@ -50,10 +53,10 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         // echo json_encode($informacoes);
 
         $instrucao_cadastra_empresa = "insert into empresas(nome,cnpj,endereco,id_cidade,telefone,email,chave_id,razao_social
-        ,bairro,cep,complemento)values(:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,
+        ,bairro,cep,complemento,created_at,updated_at)values(:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,
         :recebe_id_cidade_empresa,:recebe_telefone_empresa,
         :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,
-        :recebe_complemento)";
+        :recebe_complemento,:created_at,:updated_at)";
         $comando_cadastra_empresa = $pdo->prepare($instrucao_cadastra_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_nome_empresa",$recebe_nome_fantasia_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_cnpj_empresa",$recebe_cnpj_empresa);
@@ -66,6 +69,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_empresa->bindValue(":recebe_bairro",$recebe_bairro_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_cep",$recebe_cep_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_complemento",$recebe_complemento_empresa);
+        $comando_cadastra_empresa->bindValue(":created_at",$recebe_data_cadastro_empresa);
+        $comando_cadastra_empresa->bindValue(":updated_at",$recebe_data_cadastro_empresa);
         $comando_cadastra_empresa->execute();
         $recebe_ultimo_codigo_gerado_cadastramento_empresa = $pdo->lastInsertId();
 
