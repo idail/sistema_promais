@@ -113,9 +113,10 @@ function cadastrarEmpresa($pdo) {
 
     // Query SQL (incluindo empresa_id)
     $sql = "INSERT INTO clinicas (
-        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id, cep, email, telefone, status
+        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id, cep, email, telefone, status, created_at,updated_at
     ) VALUES (
-        :empresa_id, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :cep, :email, :telefone, :status
+        :empresa_id, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :cep, :email, :telefone, :status,
+        :created_at,:updated_at
     )";
 
     $comando_cadastra_clinica = $pdo->prepare($sql);
@@ -133,6 +134,8 @@ function cadastrarEmpresa($pdo) {
     $comando_cadastra_clinica->bindValue(":email",$recebe_email_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":telefone",$recebe_telefone_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":status",$status);
+    $comando_cadastra_clinica->bindValue(":created_at",$recebe_clinica_data_criacao_cadastrar);
+    $comando_cadastra_clinica->bindValue(":updated_at",$recebe_clinica_data_criacao_cadastrar);
     $comando_cadastra_clinica->execute();
     $recebe_ultimo_codigo_gerado_cadastramento_clinica = $pdo->lastInsertId();
     
