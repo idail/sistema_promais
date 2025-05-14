@@ -353,13 +353,13 @@
                 await popula_medicos_associados_empresa();
                 await popula_informacoes_empresa_alteracao();
 
-                if (!verifica_vinculacao_medico_empresa) {
-                    $("#medico-associado-empresa").prop("disabled", false);
-                    $("#associar-medico-empresa").prop("disabled", false);
-                } else {
-                    $("#medico-associado-empresa").prop("disabled", true);
-                    $("#associar-medico-empresa").prop("disabled", true);
-                }
+                // if (!verifica_vinculacao_medico_empresa) {
+                //     $("#medico-associado-empresa").prop("disabled", false);
+                //     $("#associar-medico-empresa").prop("disabled", false);
+                // } else {
+                //     $("#medico-associado-empresa").prop("disabled", true);
+                //     $("#associar-medico-empresa").prop("disabled", true);
+                // }
             } else {
                 let atual = new Date();
 
@@ -615,10 +615,10 @@
 
             $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
 
-            $("#medico-associado-empresa").prop('disabled', true);
+            // $("#medico-associado-empresa").prop('disabled', true);
 
-            // Desabilita o botão
-            $('#associar-medico-empresa').prop('disabled', true);
+            // // Desabilita o botão
+            // $('#associar-medico-empresa').prop('disabled', true);
 
             verifica_vinculacao_medico_empresa = true;
         } else {
@@ -644,10 +644,10 @@
 
             $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
 
-            $("#medico-associado-empresa").prop('disabled', true);
+            // $("#medico-associado-empresa").prop('disabled', true);
 
-            // Desabilita o botão
-            $('#associar-medico-empresa').prop('disabled', true);
+            // // Desabilita o botão
+            // $('#associar-medico-empresa').prop('disabled', true);
         }
     });
 
