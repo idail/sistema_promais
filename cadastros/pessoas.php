@@ -5,22 +5,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #funcionarios_tabela {
+    #pessoas_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #funcionarios_tabela th,
-    #funcionarios_tabela td {
+    #pessoas_tabela th,
+    #pessoas_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #funcionarios_tabela th {
+    #pessoas_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -137,7 +137,7 @@
 </style>
 
 <div>
-    <h1 class="dashboard">Funcionários</h1>
+    <h1 class="dashboard">Pessoas</h1>
 </div>
 
 <!-- Botão Cadastrar -->
@@ -159,7 +159,6 @@
                 <th>Cargo</th>
                 <th>Endereço</th>
                 <th>Cidade/Estado</th>
-                <th>Telefone</th>
                 <th>Ações</th> <!-- Nova coluna para os botões de ação -->
             </tr>
         </thead>
@@ -223,8 +222,6 @@
                         <td>${pessoa.cargo}</td>
                         <td>${ruaNumero}</td>
                         <td>${cidadeEstado}</td>
-                        <td>${pessoa.telefone}</td>
-                        <td>${pessoa.status}</td>
                         <td>
                             <div class="action-buttons">
                                 <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-clinica='${pessoa.id}'>

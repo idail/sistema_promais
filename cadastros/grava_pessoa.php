@@ -624,6 +624,7 @@
         let recebe_idade_pessoa = $("#idade").val();
         let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
         let recebe_data_cadastro_pessoa = $("#created_at").val();
+        let recebe_empresa_id = $("#empresa_id").val();
 
         let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
 
@@ -684,7 +685,8 @@
                     valor_email_pessoa:recebe_email_pessoa,
                     valor_senha_pessoa:recebe_senha_pessoa,
                     valor_nivel_acesso_pessoa:recebe_nivel_acesso_pessoa,
-                    valor_data_cadastro_pessoa:recebe_data_cadastro_pessoa
+                    valor_data_cadastro_pessoa:recebe_data_cadastro_pessoa,
+                    valor_empresa_id:recebe_empresa_id,
                 },
                 success: function(retorno_pessoa) {
                     debugger;

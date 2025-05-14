@@ -44,6 +44,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_senha_pessoa = $_POST["valor_senha_pessoa"];
         $recebe_nivel_acesso_pessoa = $_POST["valor_nivel_acesso_pessoa"];
         $recebe_data_cadastro_pessoa = $_POST["valor_data_cadastro_pessoa"];
+        $recebe_empresa_id_cadastro_pessoa = $_POST["valor_empresa_id"];
 
         $instrucao_cadastra_pessoa = 
         "insert into pessoas(nome,cpf,cargo,cbo,nascimento,idade,endereco,
@@ -68,7 +69,24 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_pessoa->bindValue(":recebe_updated_at",$recebe_data_cadastro_pessoa);
         $comando_cadastra_pessoa->execute();
         $resultado_cadastra_pessoa = $pdo->lastInsertId();
-        echo json_encode($resultado_cadastra_pessoa);
+
+        if(!empty($resultado_cadastra_pessoa))
+        {
+            $recebe_senha_criptografada = md5($recebe_senha_pessoa);
+            $instrucao_cadastra_usuario = 
+            "insert into usuarios(nome,email,senha_hash,nivel_acesso,criado_em,empresa_id)values
+            (:nome,:email,:senha_hash,:nivel_acesso,:criado_em,:empresa_id)";
+            $comando_cadastra_usuario = $pdo->prepare($instrucao_cadastra_usuario);
+            $comando_cadastra_usuario->bindValue(":nome",$recebe_nome_pessoa);
+            $comando_cadastra_usuario->bindValue(":email",$recebe_email_pessoa);
+            $comando_cadastra_usuario->bindValue(":senha_hash",$recebe_senha_criptografada);
+            $comando_cadastra_usuario->bindValue(":nivel_acesso",$recebe_nivel_acesso_pessoa);
+            $comando_cadastra_usuario->bindValue(":criado_em",$recebe_data_cadastro_pessoa);
+            $comando_cadastra_usuario->bindValue(":empresa_id",$recebe_empresa_id_cadastro_pessoa);
+            $comando_cadastra_usuario->execute();
+            $resultado_cadastra_usuario = $pdo->lastInsertId();
+            echo json_encode($resultado_cadastra_usuario);
+        }
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
