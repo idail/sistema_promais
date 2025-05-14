@@ -20,167 +20,56 @@
 
             <div class="form-columns">
                 <div class="form-column">
-                    <div class="form-group">
-                        <label for="nome">Nome Completo:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="nome" name="nome" class="form-control">
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="cpf">CPF:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-address-card"></i>
-                            <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)">
-                        </div>
-                    </div>
-
-                    <!-- <div class="form-group">
-                        <label for="cargo">Idail:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-file-signature"></i>
-                            <input type="text" id="cargo" name="cargo" class="form-control">
-                        </div>
-                    </div> -->
-
-                    <div class="form-group">
-                        <label for="nascimento">Data Nascimento:</label>
-                        <div class="input-with-icon" style="flex: 25%; margin-left: 10px;">
-                            <i class="fas fa-calendar-alt"></i>
-                            <input type="date" id="nascimento" name="nascimento" class="form-control">
-                        </div>
-                    </div>
-
-
-
-                    <div class="address-container">
-                        <div class="form-group" style="flex: 75%;">
-                            <label for="endereco">Endereço:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" id="endereco" name="endereco" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 40%;">
-                            <label for="numero">Número:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-map-pin"></i>
-                                <input type="text" id="numero" name="numero" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 90%;">
-                            <label for="complemento">Complemento:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-map-signs"></i>
-                                <input type="text" id="complemento" name="complemento" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="address-container">
-
-                        <div class="form-group" style="flex: 90%;">
-                            <label for="bairro">Bairro:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-map"></i>
-                                <input type="text" id="bairro" name="bairro" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 90%;">
-                            <label for="cep">CEP:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" id="cep" name="cep" class="form-control" oninput="formatCEP(this);">
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="address-container">
 
                         <div class="form-group" style="flex: 50%;">
-                            <label for="email">E-mail:</label>
+                            <label for="nome">Nome Completo:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-envelope"></i>
-                                <input type="text" id="email" name="email" class="form-control">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="nome" name="nome" class="form-control">
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex: 40%;">
-                            <label for="senha">Senha:</label>
+                        <div class="form-group" style="flex: 50%;">
+                            <label for="cpf">CPF:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-lock"></i>
-                                <input type="text" id="senha" name="senha" class="form-control">
+                                <i class="fas fa-address-card"></i>
+                                <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex:20%;">
+                            <label for="nascimento">Data Nascimento:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 10px;">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" id="nascimento" name="nascimento" class="form-control">
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex:30%;">
-                        <label for="acesso-pessoa">Nível Acesso:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-city"></i>
-                            <select id="acesso-pessoa" name="acesso_pessoa" class="form-control">
-                                <option value="selecione">Selecione</option>
-                                <option value="admin">Admin</option>
-                                <option value="operador">Operador</option>
-                                <option value="cliente">Cliente</option>
-                            </select>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-
-
-                <div class="form-column">
-                    <div class="form-group">
-                        <label for="cidade_id">Cidade:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-city"></i>
-                            <select id="cidade_id" name="cidade_id" class="form-control">
-                                <!-- As opções serão adicionadas dinamicamente aqui -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cargo">Cargo:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-briefcase"></i>
-                            <input type="text" id="cargo" name="cargo" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group" style="flex: 75%;">
-                            <label for="cbo">CBO:</label>
+                        <div class="form-group" style="flex:20%;">
+                            <label for="sexo-pessoa">Sexo:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-briefcase"></i>
-                                <input type="text" id="cbo" name="cbo" class="form-control">
+                                <i class="fas fa-mars"></i>
+                                <select id="sexo-pessoa" name="sexo_pessoa" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="masculino">Masculino</option>
+                                </select>
                             </div>
                         </div>
 
-
-                    </div>
-
-                    <div class="form-group">
-                        <label for="idade">Idade:</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-birthday-cake"></i>
-                            <input type="text" id="idade" name="idade" class="form-control">
+                        <div class="form-group" style="flex: 20%;">
+                            <label for="telefone">Telefone:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="text" id="telefone" name="telefone" class="form-control cnpj-input">
+                            </div>
                         </div>
                     </div>
-
-                    <!-- <div class="form-group">
-                        <label for="status">Status: Ativa/Inativa</label>
-                        <div class="status-toggle">
-                            <input type="checkbox" id="status" name="status" class="toggle-checkbox" value="1">
-                            <label for="status" class="toggle-label"></label>
-                        </div>
-                    </div> -->
                 </div>
             </div>
 
@@ -605,30 +494,32 @@
 
         debugger;
         let recebe_nome_pessoa = $("#nome").val();
-        let recebe_cpf_pessoa = $("#cpf").val()
-        let recebe_cargo_pessoa = $("#cargo").val();
+        let recebe_cpf_pessoa = $("#cpf").val();
         let recebe_nascimento_pessoa = $("#nascimento").val();
+        let recebe_sexo_pessoa = $("#sexo-pessoa").val();
+        let recebe_telefone_pessoa = $("#telefone").val();
+        let recebe_data_cadastro_pessoa = $("#created_at").val();
+        // let recebe_cargo_pessoa = $("#cargo").val();
 
-        if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
-            recebe_id_cidade = $("#cidade_id").val();
+        // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
+        //     recebe_id_cidade = $("#cidade_id").val();
 
         // let recebe_cidade_id_empresa = $("#cidade_id").val();
-        let recebe_endereco_pessoa = $("#endereco").val();
-        let recebe_numero_pessoa = $("#numero").val();
-        let recebe_complemento_pessoa = $("#complemento").val();
-        let recebe_bairro_pessoa = $("#bairro").val();
-        let recebe_cep_pessoa = $("#cep").val();
-        let recebe_email_pessoa = $("#email").val();
-        let recebe_senha_pessoa = $("#senha").val();
-        let recebe_cbo_pessoa = $("#cbo").val();
-        let recebe_idade_pessoa = $("#idade").val();
-        let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
-        let recebe_data_cadastro_pessoa = $("#created_at").val();
-        let recebe_empresa_id = $("#empresa_id").val();
+        // let recebe_endereco_pessoa = $("#endereco").val();
+        // let recebe_numero_pessoa = $("#numero").val();
+        // let recebe_complemento_pessoa = $("#complemento").val();
+        // let recebe_bairro_pessoa = $("#bairro").val();
+        // let recebe_cep_pessoa = $("#cep").val();
+        // let recebe_email_pessoa = $("#email").val();
+        // let recebe_senha_pessoa = $("#senha").val();
+        // let recebe_cbo_pessoa = $("#cbo").val();
+        // let recebe_idade_pessoa = $("#idade").val();
+        // let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
+        // let recebe_empresa_id = $("#empresa_id").val();
 
-        let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
+        // let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
 
-        console.log(recebe_endereco_completo);
+        // console.log(recebe_endereco_completo);
 
         if (recebe_acao_alteracao_pessoa === "editar") {
             $.ajax({
@@ -672,21 +563,23 @@
                     processo_pessoa: "inserir_pessoa",
                     valor_nome_pessoa: recebe_nome_pessoa,
                     valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_cargo_pessoa: recebe_cargo_pessoa,
-                    valor_cbo_pessoa: recebe_cbo_pessoa,
                     valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_idade_pessoa: recebe_idade_pessoa,
-                    valor_endereco_pessoa: recebe_endereco_completo,
-                    valor_numero_pessoa: recebe_numero_pessoa,
-                    valor_complemento_pessoa: recebe_complemento_pessoa,
-                    valor_bairro_pessoa: recebe_bairro_pessoa,
-                    valor_cep_pessoa: recebe_cep_pessoa,
-                    valor_id_cidade_pessoa:recebe_id_cidade,
-                    valor_email_pessoa:recebe_email_pessoa,
-                    valor_senha_pessoa:recebe_senha_pessoa,
-                    valor_nivel_acesso_pessoa:recebe_nivel_acesso_pessoa,
-                    valor_data_cadastro_pessoa:recebe_data_cadastro_pessoa,
-                    valor_empresa_id:recebe_empresa_id,
+                    valor_sexo_pessoa:recebe_sexo_pessoa,
+                    valor_telefone_pessoa:recebe_telefone_pessoa,
+                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
+                    // valor_cargo_pessoa: recebe_cargo_pessoa,
+                    // valor_cbo_pessoa: recebe_cbo_pessoa,
+                    // valor_idade_pessoa: recebe_idade_pessoa,
+                    // valor_endereco_pessoa: recebe_endereco_completo,
+                    // valor_numero_pessoa: recebe_numero_pessoa,
+                    // valor_complemento_pessoa: recebe_complemento_pessoa,
+                    // valor_bairro_pessoa: recebe_bairro_pessoa,
+                    // valor_cep_pessoa: recebe_cep_pessoa,
+                    // valor_id_cidade_pessoa: recebe_id_cidade,
+                    // valor_email_pessoa: recebe_email_pessoa,
+                    // valor_senha_pessoa: recebe_senha_pessoa,
+                    // valor_nivel_acesso_pessoa: recebe_nivel_acesso_pessoa,
+                    // valor_empresa_id: recebe_empresa_id,
                 },
                 success: function(retorno_pessoa) {
                     debugger;

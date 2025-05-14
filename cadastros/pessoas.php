@@ -155,10 +155,10 @@
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
+                <th>Telefone</th>
                 <th>CPF</th>
-                <th>Cargo</th>
-                <th>Endereço</th>
-                <th>Cidade/Estado</th>
+                <th>Nascimento</th>
+                <th>Sexo</th>
                 <th>Ações</th> <!-- Nova coluna para os botões de ação -->
             </tr>
         </thead>
@@ -210,18 +210,18 @@
                     let pessoa = pessoas[index];
 
                     // Separar o endereço
-                    let partesEndereco = pessoa.endereco.split(',');
-                    let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
-                    let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+                    // let partesEndereco = pessoa.endereco.split(',');
+                    // let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
+                    // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
                     let row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${pessoa.id}</td>
                         <td>${pessoa.nome}</td>
+                        <td>${pessoa.telefone}</td>
                         <td>${pessoa.cpf}</td>
-                        <td>${pessoa.cargo}</td>
-                        <td>${ruaNumero}</td>
-                        <td>${cidadeEstado}</td>
+                        <td>${pessoa.nascimento}</td>
+                        <td>${pessoa.sexo}</td>
                         <td>
                             <div class="action-buttons">
                                 <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-clinica='${pessoa.id}'>
