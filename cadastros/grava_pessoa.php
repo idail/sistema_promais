@@ -8,7 +8,7 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
-            <input type="hidden" name="empresa_id_alteracao" id="empresa_id_alteracao">
+            <input type="hidden" name="pessoa_id_alteracao" id="pessoa_id_alteracao">
 
             <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
@@ -36,7 +36,8 @@
                             <label for="cpf">CPF:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-address-card"></i>
-                                <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)">
+                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
+                                <input type="text" id="cpf" name="cpf" class="form-control" oninput="formatCPF(this)">
                             </div>
                         </div>
                     </div>
@@ -66,7 +67,15 @@
                             <label for="telefone">Telefone:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-phone"></i>
-                                <input type="text" id="telefone" name="telefone" class="form-control cnpj-input">
+                                <input type="text" id="telefone" name="telefone" oninput="mascaraTelefone(this);" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex: 20%;">
+                            <label for="telefone">Whatsapp:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="text" id="whatsapp" name="whatsapp" oninput="mascaraTelefone(this);" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -246,32 +255,32 @@
 </style>
 
 <script>
-    let recebe_codigo_alteracao_empresa;
+    let recebe_codigo_alteracao_pessoa;
     let recebe_acao_alteracao_pessoa = "cadastrar";
 
     $(document).ready(function(e) {
         debugger;
         let recebe_url_atual = window.location.href;
 
-        let recebe_parametro_acao_empresa = new URLSearchParams(recebe_url_atual.split("&")[1]);
+        let recebe_parametro_acao_pessoa = new URLSearchParams(recebe_url_atual.split("&")[1]);
 
-        let recebe_parametro_codigo_empresa = new URLSearchParams(recebe_url_atual.split("&")[2]);
+        let recebe_parametro_codigo_pessoa = new URLSearchParams(recebe_url_atual.split("&")[2]);
 
-        recebe_codigo_alteracao_empresa = recebe_parametro_codigo_empresa.get("id");
+        recebe_codigo_alteracao_pessoa = recebe_parametro_codigo_pessoa.get("id");
 
-        let recebe_acao_empresa = recebe_parametro_acao_empresa.get("acao");
+        let recebe_acao_pessoa = recebe_parametro_acao_pessoa.get("acao");
 
-        if (recebe_acao_empresa !== "" && recebe_acao_empresa !== null)
-            recebe_acao_alteracao_pessoa = recebe_acao_empresa;
+        if (recebe_acao_pessoa !== "" && recebe_acao_pessoa !== null)
+            recebe_acao_alteracao_pessoa = recebe_acao_pessoa;
 
         async function buscar_informacoes_pessoa() {
             debugger;
             if (recebe_acao_alteracao_pessoa === "editar") {
-                carrega_cidades();
-                await popula_lista_cidade_empresa_alteracao();
-                await popula_informacoes_empresa_alteracao();
+                // carrega_cidades();
+                // await popula_lista_cidade_empresa_alteracao();
+                await popula_informacoes_pessoa_alteracao();
             } else {
-                carrega_cidades();
+                // carrega_cidades();
 
                 let atual = new Date();
 
@@ -292,61 +301,30 @@
         buscar_informacoes_pessoa();
     });
 
-    async function popula_lista_cidade_empresa_alteracao() {
+    async function popula_informacoes_pessoa_alteracao() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: "cadastros/processa_empresa.php",
+                url: "cadastros/processa_pessoa.php",
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_empresa": "buscar_cidade_empresa",
-                    "valor_id_empresa": recebe_codigo_alteracao_empresa,
+                    "processo_pessoa": "buscar_informacoes_pessoa_alteracao",
+                    valor_codigo_pessoa_alteracao: recebe_codigo_alteracao_pessoa,
                 },
-                success: function(resposta) {
+                success: function(resposta_pessoa) {
                     debugger;
-                    console.log(resposta);
-                    for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#cidade_id").val(resposta[0].id);
-                    }
-                    resolve(); // sinaliza que terminou
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao buscar cidade da clinica:" + error);
-                    reject(error);
-                },
-            });
-        });
-    }
+                    console.log(resposta_pessoa);
 
-    async function popula_informacoes_empresa_alteracao() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: "cadastros/processa_empresa.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_empresa": "buscar_informacoes_empresa_alteracao",
-                    valor_codigo_empresa_alteracao: recebe_codigo_alteracao_empresa,
-                },
-                success: function(resposta_empresa) {
-                    debugger;
-                    console.log(resposta_empresa);
-
-                    if (resposta_empresa.length > 0) {
-                        for (let indice = 0; indice < resposta_empresa.length; indice++) {
-                            $("#created_at").val(resposta_empresa[indice].created_at);
-                            $("#cnpj").val(resposta_empresa[indice].cnpj);
-                            $("#nome_fantasia").val(resposta_empresa[indice].nome);
-                            $("#razao_social").val(resposta_empresa[indice].razao_social);
-                            $("#cep").val(resposta_empresa[indice].cep);
-                            let recebe_endereco_empresa = resposta_empresa[indice].endereco.split(",");
-                            $("#endereco").val(recebe_endereco_empresa[0]);
-                            $("#numero").val(recebe_endereco_empresa[1]);
-                            $("#complemento").val(resposta_empresa[indice].complemento);
-                            $("#bairro").val(resposta_empresa[indice].bairro);
-                            $("#email").val(resposta_empresa[indice].email);
-                            $("#telefone").val(resposta_empresa[indice].telefone);
-                            $("#empresa_id_alteracao").val(resposta_empresa[indice].id);
+                    if (resposta_pessoa.length > 0) {
+                        for (let indice = 0; indice < resposta_pessoa.length; indice++) {
+                            $("#created_at").val(resposta_pessoa[indice].created_at);
+                            $("#pessoa_id_alteracao").val(resposta_pessoa[indice].id);
+                            $("#nome").val(resposta_pessoa[indice].nome);
+                            $("#cpf").val(resposta_pessoa[indice].cpf);
+                            $("#nascimento").val(resposta_pessoa[indice].nascimento);
+                            $("#sexo-pessoa").val(resposta_pessoa[indice].sexo);
+                            $("#telefone").val(resposta_pessoa[indice].telefone);
+                            $("#whatsapp").val(resposta_pessoa[indice].whatsapp);
                         }
                     }
 
@@ -374,6 +352,25 @@
         }
 
         input.value = value; // atualiza o valor do input
+    }
+
+
+    function mascaraTelefone(campo) {
+        let valor = campo.value.replace(/\D/g, ""); // Remove não numéricos
+
+        if (valor.length > 11) {
+            valor = valor.slice(0, 11);
+        }
+
+        if (valor.length <= 10) {
+            // Fixo: (99) 9999-9999
+            valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+        } else {
+            // Celular: (99) 99999-9999
+            valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+        }
+
+        campo.value = valor;
     }
 
 
@@ -499,6 +496,7 @@
         let recebe_sexo_pessoa = $("#sexo-pessoa").val();
         let recebe_telefone_pessoa = $("#telefone").val();
         let recebe_data_cadastro_pessoa = $("#created_at").val();
+        let recebe_whatsapp_pessoa = $("#whatsapp").val();
         // let recebe_cargo_pessoa = $("#cargo").val();
 
         // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
@@ -527,27 +525,23 @@
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_empresa: "inserir_pessoa",
-                    valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
-                    valor_cnpj_empresa: recebe_cnpj_empresa,
-                    valor_endereco_empresa: recebe_endereco_completo,
-                    valor_telefone_empresa: recebe_telefone_empresa,
-                    valor_email_empresa: recebe_email_empresa,
-                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
-                    valor_id_cidade: recebe_id_cidade,
-                    valor_razao_social_empresa: recebe_razao_social_empresa,
-                    valor_bairro_empresa: recebe_bairro_empresa,
-                    valor_cep_empresa: recebe_cep_empresa,
-                    valor_complemento_empresa: recebe_complemento_empresa,
-                    valor_id_empresa: $("#empresa_id_alteracao").val(),
+                    processo_pessoa: "alterar_pessoa",
+                    valor_nome_pessoa: recebe_nome_pessoa,
+                    valor_cpf_pessoa: recebe_cpf_pessoa,
+                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
+                    valor_sexo_pessoa: recebe_sexo_pessoa,
+                    valor_telefone_pessoa: recebe_telefone_pessoa,
+                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
+                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa,
+                    valor_id_pessoa: $("#pessoa_id_alteracao").val(),
                 },
-                success: function(retorno_empresa) {
+                success: function(retorno_pessoa) {
                     debugger;
 
-                    console.log(retorno_empresa);
-                    if (retorno_empresa) {
-                        console.log("Empresa alterada com sucesso");
-                        window.location.href = "painel.php?pg=empresas";
+                    console.log(retorno_pessoa);
+                    if (retorno_pessoa) {
+                        console.log("Pessoa alterada com sucesso");
+                        window.location.href = "painel.php?pg=pessoas";
                     }
                 },
                 error: function(xhr, status, error) {
@@ -564,9 +558,10 @@
                     valor_nome_pessoa: recebe_nome_pessoa,
                     valor_cpf_pessoa: recebe_cpf_pessoa,
                     valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa:recebe_sexo_pessoa,
-                    valor_telefone_pessoa:recebe_telefone_pessoa,
+                    valor_sexo_pessoa: recebe_sexo_pessoa,
+                    valor_telefone_pessoa: recebe_telefone_pessoa,
                     valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
+                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,

@@ -34,6 +34,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_sexo_pessoa = $_POST["valor_sexo_pessoa"];
         $recebe_telefone_pessoa = $_POST["valor_telefone_pessoa"];
         $recebe_data_cadastro_pessoa = $_POST["valor_data_cadastro_pessoa"];
+        $recebe_whatsapp_pessoa = $_POST["valor_whatsapp_pessoa"];
         
         // $recebe_cargo_pessoa = $_POST["valor_cargo_pessoa"];
         // $recebe_cbo_pessoa = $_POST["valor_cbo_pessoa"];
@@ -51,12 +52,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         // $recebe_empresa_id_cadastro_pessoa = $_POST["valor_empresa_id"];
 
         $instrucao_cadastra_pessoa = 
-        "insert into pessoas(nome,cpf,telefone,nascimento,sexo,created_at,updated_at)values(:recebe_nome_pessoa,:recebe_cpf_pessoa,
-        :recebe_telefone_pessoa,:recebe_nascimento_pessoa,:recebe_sexo_pessoa,:recebe_created_at,:recebe_updated_at)";
+        "insert into pessoas(nome,cpf,telefone,whatsapp,nascimento,sexo,created_at,updated_at)values(:recebe_nome_pessoa,:recebe_cpf_pessoa,
+        :recebe_telefone_pessoa,:recebe_whatsapp_pessoa,:recebe_nascimento_pessoa,:recebe_sexo_pessoa,:recebe_created_at,:recebe_updated_at)";
         $comando_cadastra_pessoa = $pdo->prepare($instrucao_cadastra_pessoa);
         $comando_cadastra_pessoa->bindValue(":recebe_nome_pessoa",$recebe_nome_pessoa);
         $comando_cadastra_pessoa->bindValue(":recebe_cpf_pessoa",$recebe_cpf_pessoa);
         $comando_cadastra_pessoa->bindValue(":recebe_telefone_pessoa",$recebe_telefone_pessoa);
+        $comando_cadastra_pessoa->bindValue(":recebe_whatsapp_pessoa",$recebe_whatsapp_pessoa);
         $comando_cadastra_pessoa->bindValue(":recebe_nascimento_pessoa",$recebe_nascimento_pessoa);
         $comando_cadastra_pessoa->bindValue(":recebe_sexo_pessoa",$recebe_sexo_pessoa);
         $comando_cadastra_pessoa->bindValue(":recebe_created_at",$recebe_data_cadastro_pessoa);
@@ -65,6 +67,32 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $resultado_cadastra_pessoa = $pdo->lastInsertId();
 
         echo json_encode($resultado_cadastra_pessoa);
+    }else if($recebe_processo_pessoa === "alterar_pessoa")
+    {
+        $recebe_nome_pessoa_alterar = $_POST["valor_nome_pessoa"];
+        $recebe_cpf_pessoa_alterar = $_POST["valor_cpf_pessoa"];
+        $recebe_nascimento_pessoa_alterar = $_POST["valor_nascimento_pessoa"];
+        $recebe_sexo_pessoa_alterar = $_POST["valor_sexo_pessoa"];
+        $recebe_telefone_pessoa_alterar = $_POST["valor_telefone_pessoa"];
+        $recebe_whatsapp_pessoa_alterar = $_POST["valor_whatsapp_pessoa"];
+        $recebe_data_cadastro_pessoa_alterar = $_POST["valor_data_cadastro_pessoa"];
+        $recebe_id_pessoa_alterar = $_POST["valor_id_pessoa"];
+
+        $instrucao_alterar_pessoa = 
+        "update pessoas set nome = :recebe_nome_pessoa_alterar,cpf = :recebe_cpf_pessoa_alterar,telefone = :recebe_telefone_pessoa_alterar,
+        whatsapp = :recebe_whatsapp_pessoa_alterar,nascimento = :recebe_nascimento_pessoa_alterar,sexo = :recebe_sexo_pessoa_alterar,
+        updated_at = :recebe_updated_at_pessoa_alterar where id = :recebe_id_pessoa_alterar";
+        $comando_alterar_pessoa = $pdo->prepare($instrucao_alterar_pessoa);
+        $comando_alterar_pessoa->bindValue(":recebe_nome_pessoa_alterar",$recebe_nome_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_cpf_pessoa_alterar",$recebe_cpf_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_telefone_pessoa_alterar",$recebe_telefone_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_whatsapp_pessoa_alterar",$recebe_whatsapp_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_nascimento_pessoa_alterar",$recebe_nascimento_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_sexo_pessoa_alterar",$recebe_sexo_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_updated_at_pessoa_alterar",$recebe_data_cadastro_pessoa_alterar);
+        $comando_alterar_pessoa->bindValue(":recebe_id_pessoa_alterar",$recebe_id_pessoa_alterar);
+        $resultado_alterar_pessoa = $comando_alterar_pessoa->execute();
+        echo json_encode($resultado_alterar_pessoa);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
@@ -77,6 +105,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_buca_pessoas->execute();
         $resultado_busca_pessoas = $comando_buca_pessoas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_pessoas);
+    }else if($recebe_processo_pessoa === "buscar_informacoes_pessoa_alteracao")
+    {
+        $recebe_id_pessoa = $_GET["valor_codigo_pessoa_alteracao"];
+
+        $instrucao_busca_informacoes_pessoa_alteracao = 
+        "select * from pessoas where id = :recebe_id_pessoa_alteracao";
+        $comando_busca_informacoes_pessoa_alteracao = $pdo->prepare($instrucao_busca_informacoes_pessoa_alteracao);
+        $comando_busca_informacoes_pessoa_alteracao->bindValue(":recebe_id_pessoa_alteracao",$recebe_id_pessoa);
+        $comando_busca_informacoes_pessoa_alteracao->execute();
+        $resultado_busca_informacoes_pessoa_alteracao = $comando_busca_informacoes_pessoa_alteracao->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_informacoes_pessoa_alteracao);
     }
 }
 ?>

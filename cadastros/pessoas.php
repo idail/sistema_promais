@@ -227,7 +227,7 @@
                                 <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-clinica='${pessoa.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="?pg=pro_cli&acao=editar&id=${pessoa.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=grava_pessoa&acao=editar&id=${pessoa.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${pessoa.id}" class="delete" title="Apagar">
