@@ -189,7 +189,7 @@
                         console.log(resposta_pessoa);
                         preencher_tabela(resposta_pessoa);
                         inicializarDataTable();
-                    }else{
+                    } else {
                         preencher_tabela(resposta_pessoa);
                     }
                 },
@@ -230,7 +230,7 @@
                                 <a href="?pg=grava_pessoa&acao=editar&id=${pessoa.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${pessoa.id}" class="delete" title="Apagar">
+                                <a href="#" id='excluir-pessoa' data-codigo-pessoa="${pessoa.id}" class="delete" title="Apagar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -251,7 +251,7 @@
                 }
             });
         }
-        
+
         buscar_pessoas();
 
         // async function buscar_informacoes_rapidas_clinica() {
@@ -259,6 +259,42 @@
         // }
 
         // buscar_informacoes_rapidas_clinica();
+    });
+
+    $(document).on("click", "#excluir-pessoa", function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_id_pessoa = $(this).data("codigo-pessoa");
+
+        let recebe_resposta_excluir_pessoa = window.confirm(
+            "Tem certeza que deseja excluir a pessoa?"
+        );
+
+        if (recebe_resposta_excluir_pessoa) {
+            $.ajax({
+                url: "cadastros/processa_pessoa.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_pessoa: "excluir_pessoa",
+                    valor_id_pessoa: recebe_id_pessoa,
+                },
+                success: function(retorno_pessoa) {
+                    debugger;
+                    console.log(retorno_pessoa);
+                    if (retorno_pessoa) {
+                        window.location.href = "painel.php?pg=pessoas";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao excluir pessoa:" + error);
+                },
+            });
+        } else {
+            return;
+        }
     });
 
     $(document).on("click", "#visualizar-informacoes-clinica", function(e) {

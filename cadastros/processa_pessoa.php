@@ -93,6 +93,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_alterar_pessoa->bindValue(":recebe_id_pessoa_alterar",$recebe_id_pessoa_alterar);
         $resultado_alterar_pessoa = $comando_alterar_pessoa->execute();
         echo json_encode($resultado_alterar_pessoa);
+    }else if($recebe_processo_pessoa === "excluir_pessoa")
+    {
+        $recebe_codigo_excluir_pessoa = $_POST["valor_id_pessoa"];
+
+        $instrucao_excluir_pessoa = 
+        "delete from pessoas where id = :recebe_id_pessoa_excluir";
+        $comando_excluir_pessoa = $pdo->prepare($instrucao_excluir_pessoa);
+        $comando_excluir_pessoa->bindValue(":recebe_id_pessoa_excluir",$recebe_codigo_excluir_pessoa);
+        $resultado_excluir_pessoa = $comando_excluir_pessoa->execute();
+        echo json_encode($resultado_excluir_pessoa);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
