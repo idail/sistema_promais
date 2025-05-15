@@ -126,6 +126,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_informacoes_pessoa_alteracao->execute();
         $resultado_busca_informacoes_pessoa_alteracao = $comando_busca_informacoes_pessoa_alteracao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_pessoa_alteracao);
+    }else if($recebe_processo_pessoa === "buscar_informacoes_rapidas_pessoas")
+    {
+        $recebe_codigo_pessoa_informacoes_rapidas = $_GET["valor_codigo_pessoa_informacoes_rapidas"];
+
+        $instrucao_busca_pessoa_informacoes_rapidas = 
+        "select * from pessoas where id = :recebe_id_pessoa_informacoes_rapidas";
+        $comando_busca_pessoa_informacoes_rapidas = $pdo->prepare($instrucao_busca_pessoa_informacoes_rapidas);
+        $comando_busca_pessoa_informacoes_rapidas->bindValue(":recebe_id_pessoa_informacoes_rapidas",$recebe_codigo_pessoa_informacoes_rapidas);
+        $comando_busca_pessoa_informacoes_rapidas->execute();
+        $resultado_busca_pessoa_informacoes_rapidas = $comando_busca_pessoa_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_pessoa_informacoes_rapidas);
     }
 }
 ?>
