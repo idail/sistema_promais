@@ -214,13 +214,20 @@
                     // let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
                     // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
+                    // Converter data de nascimento para formato brasileiro
+                    let data_nascimento_formatado = "";
+                    if (pessoa.nascimento) {
+                        let data = new Date(pessoa.nascimento);
+                        data_nascimento_formatado = data.toLocaleDateString("pt-BR");
+                    }
+
                     let row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${pessoa.id}</td>
                         <td>${pessoa.nome}</td>
                         <td>${pessoa.telefone}</td>
                         <td>${pessoa.cpf}</td>
-                        <td>${pessoa.nascimento}</td>
+                        <td>${data_nascimento_formatado}</td>
                         <td>${pessoa.sexo}</td>
                         <td>
                             <div class="action-buttons">

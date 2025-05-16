@@ -137,6 +137,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_pessoa_informacoes_rapidas->execute();
         $resultado_busca_pessoa_informacoes_rapidas = $comando_busca_pessoa_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_pessoa_informacoes_rapidas);
+    }else if($recebe_processo_pessoa === "buscar_total_pessoas")
+    {
+        $instrucao_busca_total_pessoas = "select count(id) as total from pessoas";
+        $comando_busca_total_pessoas = $pdo->prepare($instrucao_busca_total_pessoas);
+        $comando_busca_total_pessoas->execute();
+        $resultado_busca_total_pessoas = $comando_busca_total_pessoas->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_total_pessoas);
     }
 }
 ?>

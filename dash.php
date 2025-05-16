@@ -50,17 +50,17 @@ file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
         <div class="card-main">
           <i class="fas fa-users card-icon"></i>
           <div class="card-info">
-            <span class="card-value">3,487</span>
-            <div class="card-trend up">
+            <span class="card-value" id="informativo-total-pessoas"></span>
+            <!-- <div class="card-trend up">
               <i class="fas fa-arrow-up"></i>
               <span class="trend-value">8%</span>
               <span class="trend-period">último mês</span>
-            </div>
+            </div> -->
           </div>
         </div>
-        <div class="card-footer">
+        <!-- <div class="card-footer">
           <span class="card-compare">+279 funcionários desde o mês anterior</span>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -161,6 +161,25 @@ file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
         console.log(retorno_empresa);
 
         $("#informativo-total-empresas").html(retorno_empresa.total);
+      },
+      error: function(xhr, status, error) {
+
+      },
+    });
+
+    $.ajax({
+      url: "cadastros/processa_pessoa.php",
+      method: "GET",
+      dataType: "json",
+      data: {
+        "processo_pessoa": "buscar_total_pessoas",
+      },
+      success: function(retorno_pessoas) {
+        debugger;
+
+        console.log(retorno_pessoas);
+
+        $("#informativo-total-pessoas").html(retorno_pessoas.total);
       },
       error: function(xhr, status, error) {
 
