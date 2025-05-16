@@ -247,6 +247,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_empresa_informacoes_rapidas->execute();
         $resultado_busca_informacoes_rapidas_empresa = $comando_busca_empresa_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_rapidas_empresa);
+    }else if($recebe_processo_empresa === "buscar_total_empresas")
+    {
+        $instrucao_busca_total_empresas = "select COUNT(id) as total from empresas";
+        $comando_busca_total_empresas = $pdo->prepare($instrucao_busca_total_empresas);
+        $comando_busca_total_empresas->execute();
+        $resultado_busca_total_empresas = $comando_busca_total_empresas->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_total_empresas);
     }
 }
 ?>

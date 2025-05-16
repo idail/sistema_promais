@@ -8,7 +8,7 @@ $debugLog .= "- Variáveis de ambiente:\n";
 foreach ($_SERVER as $key => $value) {
   // Verifica se o valor é um array ou objeto e usa var_export para exibir de forma legível
   if (is_array($value) || is_object($value)) {
-      $value = var_export($value, true);
+    $value = var_export($value, true);
   }
   $debugLog .= "  * $key: $value\n";
 }
@@ -27,17 +27,17 @@ file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
         <div class="card-main">
           <i class="fas fa-building card-icon"></i>
           <div class="card-info">
-            <span class="card-value">152</span>
-            <div class="card-trend up">
+            <span class="card-value" id="informativo-total-empresas"></span>
+            <!-- <div class="card-trend up">
               <i class="fas fa-arrow-up"></i>
               <span class="trend-value">12%</span>
               <span class="trend-period">último mês</span>
-            </div>
+            </div> -->
           </div>
         </div>
-        <div class="card-footer">
+        <!-- <div class="card-footer">
           <span class="card-compare">+18 empresas desde o mês anterior</span>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -144,3 +144,27 @@ file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
     </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  $(document).ready(function(e) {
+    $.ajax({
+      url: "cadastros/processa_empresa.php",
+      method: "GET",
+      dataType: "json",
+      data: {
+        "processo_empresa": "buscar_total_empresas",
+      },
+      success: function(retorno_empresa) {
+        debugger;
+
+        console.log(retorno_empresa);
+
+        $("#informativo-total-empresas").html(retorno_empresa.total);
+      },
+      error: function(xhr, status, error) {
+
+      },
+    });
+  });
+</script>
