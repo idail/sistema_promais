@@ -115,6 +115,7 @@
 
 <script>
     let recebe_codigo_empresa_informacoes_rapida;
+    let recebe_tabela_empresas;
     $(document).ready(function(e) {
         function buscar_empresas() {
             $.ajax({
@@ -142,6 +143,10 @@
 
         // Iniciar a busca dos dados ao carregar a página
         buscar_empresas();
+
+        $('.search-bar').on('keyup', function() {
+            recebe_tabela_empresas.search(this.value).draw();
+        });
 
         async function buscar_informacoes_rapidas_empresa() {
             await popula_cidades_informacoes_rapidas_empresa();
@@ -393,10 +398,11 @@
 
     // Função para inicializar o DataTables
     function inicializarDataTable() {
-        $('#empresas_tabela').DataTable({
+        recebe_tabela_empresas = $('#empresas_tabela').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-            }
+            },
+            "dom": 'lrtip' // Remove a barra de pesquisa padrão
         });
     }
 </script>
