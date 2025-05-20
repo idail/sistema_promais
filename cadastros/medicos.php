@@ -5,22 +5,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #clinicasTable {
+    #medicos_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #clinicasTable th,
-    #clinicasTable td {
+    #medicos_tabela th,
+    #medicos_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #clinicasTable th {
+    #medicos_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -137,12 +137,12 @@
 </style>
 
 <div>
-    <h1 class="dashboard">Clínicas</h1>
+    <h1 class="dashboard">Médicos</h1>
 </div>
 
 <!-- Botão Cadastrar -->
 <div>
-    <button class="btn-cadastrar" onclick="window.location.href='?pg=pro_cli&acao=cadastrar';">
+    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_medico&acao=cadastrar';">
         <i class="fas fa-plus"></i> Cadastrar
     </button>
 </div>
@@ -150,16 +150,14 @@
 
 
 <div>
-    <table id="clinicasTable">
+    <table id="medicos_tabela">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome Fantasia</th>
-                <th>CNPJ</th>
-                <th>Endereço</th>
-                <th>Cidade/Estado</th>
-                <th>Telefone</th>
-                <th>Status</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Número Registro</th>
+                <th>Data Cadastro</th>
                 <th>Ações</th> <!-- Nova coluna para os botões de ação -->
             </tr>
         </thead>
@@ -350,47 +348,47 @@
         }
     }
 
-    async function popula_medicos_associados_clinica() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: "cadastros/processa_medico.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_medico": "buscar_medicos_associados_clinica",
-                    valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_informacoes_rapida,
-                },
-                success: function(resposta_medicos) {
-                    debugger;
-                    console.log(resposta_medicos);
+    // async function popula_medicos_associados_clinica() {
+    //     return new Promise((resolve, reject) => {
+    //         $.ajax({
+    //             url: "cadastros/processa_medico.php",
+    //             method: "GET",
+    //             dataType: "json",
+    //             data: {
+    //                 "processo_medico": "buscar_medicos_associados_clinica",
+    //                 valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_informacoes_rapida,
+    //             },
+    //             success: function(resposta_medicos) {
+    //                 debugger;
+    //                 console.log(resposta_medicos);
 
-                    if (resposta_medicos.length > 0) {
-                        let recebe_tabela_associar_medico_clinica = document.querySelector(
-                            "#tabela-medico-associado tbody"
-                        );
+    //                 if (resposta_medicos.length > 0) {
+    //                     let recebe_tabela_associar_medico_clinica = document.querySelector(
+    //                         "#tabela-medico-associado tbody"
+    //                     );
 
-                        $("#tabela-medico-associado tbody").html("");
+    //                     $("#tabela-medico-associado tbody").html("");
 
-                        for (let indice = 0; indice < resposta_medicos.length; indice++) {
-                            recebe_tabela_associar_medico_clinica +=
-                                "<tr>" +
-                                "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
-                                // "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
-                                // " data-codigo-medico-clinica='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
-                                "</tr>";
-                        }
-                        $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
-                    }
+    //                     for (let indice = 0; indice < resposta_medicos.length; indice++) {
+    //                         recebe_tabela_associar_medico_clinica +=
+    //                             "<tr>" +
+    //                             "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
+    //                             // "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
+    //                             // " data-codigo-medico-clinica='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
+    //                             "</tr>";
+    //                     }
+    //                     $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+    //                 }
 
-                    resolve(); // sinaliza que terminou
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao buscar médicos:" + error);
-                    reject(error);
-                },
-            });
-        });
-    }
+    //                 resolve(); // sinaliza que terminou
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.log("Falha ao buscar médicos:" + error);
+    //                 reject(error);
+    //             },
+    //         });
+    //     });
+    // }
 </script>
 
 <!-- Modal -->

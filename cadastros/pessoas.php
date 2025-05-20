@@ -173,6 +173,7 @@
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
     let recebe_codigo_clinica_informacoes_rapida;
+    let recebe_tabela_pessoas;
     $(document).ready(function() {
         // Função para buscar dados da API
         function buscar_pessoas() {
@@ -252,14 +253,19 @@
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            $('#pessoas_tabela').DataTable({
+            recebe_tabela_pessoas = $("#pessoas_tabela").DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                }
+                },
+                "dom": 'lrtip' // Remove a barra de pesquisa padrão
             });
         }
 
         buscar_pessoas();
+
+        $(".search-bar").on('keyup', function() {
+            recebe_tabela_pessoas.search(this.value).draw();
+        });
 
         // async function buscar_informacoes_rapidas_clinica() {
         //     await popula_cidades_informacoes_rapidas();
