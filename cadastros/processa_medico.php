@@ -67,6 +67,57 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_busca_medicos_associados_empresa->execute();
         $resultado_busca_medicos_associados_empresa = $comando_busca_medicos_associados_empresa->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_medicos_associados_empresa);
+    }else if($recebe_processo_medico === "buscar_medicos")
+    {
+        $instrucao_busca_medicos = "select * from medicos";
+        $comando_busca_medicos = $pdo->prepare($instrucao_busca_medicos);
+        $comando_busca_medicos->execute();
+        $resultado_busca_medicos = $comando_busca_medicos->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_medicos);
+    }else if($recebe_processo_medico === "buscar_informacoes_medico_alteracao")
+    {
+        $recebe_id_medico = $_GET["valor_codigo_medico_alteracao"];
+
+        $instrucao_busca_informacoes_medico_alteracao = 
+        "select * from medicos where id = :recebe_id_medico_alteracao";
+        $comando_busca_informacoes_medico_alteracao = $pdo->prepare($instrucao_busca_informacoes_medico_alteracao);
+        $comando_busca_informacoes_medico_alteracao->bindValue(":recebe_id_medico_alteracao",$recebe_id_medico);
+        $comando_busca_informacoes_medico_alteracao->execute();
+        $resultado_busca_informacoes_medico_alteracao = $comando_busca_informacoes_medico_alteracao->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_informacoes_medico_alteracao);
+    }
+}else if($_SERVER["REQUEST_METHOD"] === "POST")
+{
+    $recebe_processo_medico = $_POST["processo_medico"];
+
+    if($recebe_processo_medico === "inserir_medico")
+    {
+        $recebe_empresa_id_medico = $_POST["valor_empresa_id_medico"];
+        $recebe_nome_medico = $_POST["valor_nome_medico"];
+        $recebe_cpf_medico = $_POST["valor_cpf_medico"];
+        // $recebe_especialidade_medico = $_POST["valor_especialidade_medico"];
+        $recebe_crm_medico = $_POST["valor_crm_medico"];
+        // $recebe_pcmso_medico = $_POST["valor_pcmso_medico"];
+        $recebe_contato_medico = $_POST["valor_contato_medico"];
+        $recebe_data_cadastro_medico = $_POST["valor_data_cadastro_medico"];
+
+        $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,crm,contato,status,created_at,updated_at)
+        values(:recebe_empresa_id,:recebe_nome_medico,:recebe_cpf_medico,:recebe_crm_medico,:recebe_contato_medico,
+        :recebe_status_medico,:recebe_created_at,:recebe_updated_at)";
+        $comando_cadastra_medico = $pdo->prepare($instrucao_cadastra_medico);
+        $comando_cadastra_medico->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico);
+        $comando_cadastra_medico->bindValue(":recebe_nome_medico",$recebe_nome_medico);
+        $comando_cadastra_medico->bindValue(":recebe_cpf_medico",$recebe_cpf_medico);
+        // $comando_cadastra_medico->bindValue(":recebe_especialidade_medico",$recebe_especialidade_medico);
+        $comando_cadastra_medico->bindValue(":recebe_crm_medico",$recebe_crm_medico);
+        // $comando_cadastra_medico->bindValue(":recebe_pcmso_medico",$recebe_pcmso_medico);
+        $comando_cadastra_medico->bindValue(":recebe_contato_medico",$recebe_contato_medico);
+        $comando_cadastra_medico->bindValue(":recebe_status_medico","Ativo");
+        $comando_cadastra_medico->bindValue(":recebe_created_at",$recebe_data_cadastro_medico);
+        $comando_cadastra_medico->bindValue(":recebe_updated_at",$recebe_data_cadastro_medico);
+        $comando_cadastra_medico->execute();
+        $recebe_ultimo_codigo_registrado_cadastra_medico = $pdo->lastInsertId();
+        echo json_encode($recebe_ultimo_codigo_registrado_cadastra_medico);
     }
 }
 ?>

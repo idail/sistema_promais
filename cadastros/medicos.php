@@ -171,22 +171,26 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
-    let recebe_codigo_clinica_informacoes_rapida;
-    let recebe_tabela_clinicas;
+    let recebe_codigo_medico_informacoes_rapida;
+    let recebe_tabela_medicos;
     $(document).ready(function() {
         // Função para buscar dados da API
-        function buscarDados() {
+        function buscar_medicos() {
             $.ajax({
-                url: "api/list/clinicas.php", // Endpoint da API
+                url: "cadastros/processa_medico.php", // Endpoint da API
                 method: "GET",
                 dataType: "json",
-                success: function(response) {
+                data: {
+                    "processo_medico": "buscar_medicos"
+                },
+                success: function(retorno_medico) {
                     debugger;
-                    if (response.status === "success") {
-                        preencherTabela(response.data.clinicas);
+                    if (retorno_medico.length > 0) {
+                        preencherTabela(retorno_medico);
                         inicializarDataTable();
                     } else {
                         console.error("Erro ao buscar dados:", response.message);
+                        preencherTabela(retorno_medico);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -196,42 +200,52 @@
         }
 
         // Função para preencher a tabela com os dados das clínicas
-        function preencherTabela(clinicas) {
+        function preencherTabela(medicos) {
             debugger;
-            const tbody = document.querySelector("#clinicasTable tbody");
+            const tbody = document.querySelector("#medicos_tabela tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
+            if (medicos.length > 0) {
+                for (let i = 0; i < medicos.length; i++) {
+                    const medico = medicos[i];
 
-            clinicas.forEach(clinica => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                        <td>${clinica.id}</td>
-                        <td>${clinica.nome_fantasia}</td>
-                        <td>${clinica.cnpj}</td>
-                        <td>${clinica.endereco}, ${clinica.numero}, ${clinica.complemento}</td>
-                        <td>${clinica.cidade_nome}/${clinica.cidade_estado}</td>
-                        <td>${clinica.telefone}</td>
-                        <td>${clinica.status}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica' data-codigo-clinica='${clinica.id}'>
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${clinica.id}" class="delete" title="Apagar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    `;
-                tbody.appendChild(row);
-            });
+                    let data_cadastro_formatada = "";
+                    if (medico.created_at) {
+                        let data = new Date(medico.created_at);
+                        data_cadastro_formatada = data.toLocaleDateString("pt-BR");
+                    }
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                <td>${medico.id}</td>
+                <td>${medico.nome}</td>
+                <td>${medico.cpf}</td>
+                <td>${medico.pcmso}</td>
+                <td>${data_cadastro_formatada}</td>
+                <td>
+                <div class="action-buttons">
+                    <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-medico' data-codigo-medico='${medico.id}'>
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="?pg=grava_medico&acao=editar&id=${medico.id}" target="_parent" class="edit" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="#" data-codigo-medico="${medico.id}" class="delete" title="Apagar">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+                </td>
+                `;
+                    tbody.appendChild(row);
+                }
+            } else {
+                $("#medicos_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+            }
         }
+
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            recebe_tabela_clinicas = $('#clinicasTable').DataTable({
+            recebe_tabela_medicos = $('#medicos_tabela').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 },
@@ -240,14 +254,13 @@
         }
 
         // Iniciar a busca dos dados ao carregar a página
-        buscarDados();
+        buscar_medicos();
 
         $(".search-bar").on('keyup', function() {
-            recebe_tabela_clinicas.search(this.value).draw();
+            recebe_tabela_medicos.search(this.value).draw();
         });
 
-        async function buscar_informacoes_rapidas_clinica() 
-        {
+        async function buscar_informacoes_rapidas_clinica() {
             await popula_cidades_informacoes_rapidas();
         }
 
@@ -290,8 +303,7 @@
                         else
                             $("#status").prop("checked", false);
 
-                        async function exibi_medicos_associados_clinica() 
-                        {
+                        async function exibi_medicos_associados_clinica() {
                             await popula_medicos_associados_clinica();
                         }
 
@@ -311,42 +323,42 @@
         document.getElementById('informacoes-clinica').classList.add('hidden'); // fechar
     });
 
-    async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "")
-    {
-        debugger;
-        const apiUrl = 'api/list/cidades.php';
-        const cidadeSelect = document.getElementById('cidade_id');
+    // async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "")
+    // {
+    //     debugger;
+    //     const apiUrl = 'api/list/cidades.php';
+    //     const cidadeSelect = document.getElementById('cidade_id');
 
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
+    //     try {
+    //         const response = await fetch(apiUrl);
+    //         const data = await response.json();
 
-            if (data.status === 'success') {
-                cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+    //         if (data.status === 'success') {
+    //             cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
 
-                data.data.cidades.forEach(cidade => {
-                    const option = document.createElement('option');
-                    option.value = cidade.id;
-                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
-                    cidadeSelect.appendChild(option);
-                });
+    //             data.data.cidades.forEach(cidade => {
+    //                 const option = document.createElement('option');
+    //                 option.value = cidade.id;
+    //                 option.textContent = `${cidade.nome} - ${cidade.estado}`;
+    //                 cidadeSelect.appendChild(option);
+    //             });
 
-                if (cidadeSelecionada && estadoSelecionado) {
-                    for (let i = 0; i < cidadeSelect.options.length; i++) {
-                        const optionText = cidadeSelect.options[i].text;
-                        if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
-                            cidadeSelect.selectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-            } else {
-                console.error('Erro ao carregar cidades:', data.message);
-            }
-        } catch (error) {
-            console.error('Erro na requisição:', error);
-        }
-    }
+    //             if (cidadeSelecionada && estadoSelecionado) {
+    //                 for (let i = 0; i < cidadeSelect.options.length; i++) {
+    //                     const optionText = cidadeSelect.options[i].text;
+    //                     if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
+    //                         cidadeSelect.selectedIndex = i;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         } else {
+    //             console.error('Erro ao carregar cidades:', data.message);
+    //         }
+    //     } catch (error) {
+    //         console.error('Erro na requisição:', error);
+    //     }
+    // }
 
     // async function popula_medicos_associados_clinica() {
     //     return new Promise((resolve, reject) => {

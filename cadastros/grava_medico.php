@@ -42,27 +42,49 @@
                         </div>
                     </div>
 
-                    <div class="address-container">
-                        <div class="form-group" style="flex:20%;">
-                            <label for="nascimento">Número PCMSO:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 10px;">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input type="text" id="pcmso" name="pcmso" class="form-control">
+                    <!-- <div class="address-container">
+                        <div class="form-group" style="flex: 15%; min-width: 150px;">
+                            <label for="pcmso">Número PCMSO:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-receipt"></i>
+
+                                <input type="text" id="pcmso" name="pcmso" class="form-control" style="width: 100%;">
                             </div>
                         </div>
 
-                        <!-- <div class="form-group" style="flex: 20%;">
-                            <label for="telefone">Telefone:</label>
+                        <div class="form-group" style="flex: 15%; min-width: 150px;">
+                            <label for="especialidade">Especialidade:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-phone"></i>
-                                <input type="text" id="telefone" name="telefone" oninput="mascaraTelefone(this);" class="form-control">
+                                <i class="fas fa-user-tag"></i>
+
+                                <input type="text" id="especialidade" name="especialidade" class="form-control" style="width: 100%;">
                             </div>
-                        </div> -->
+                        </div>
+                    </div> -->
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex: 15%; min-width: 150px;">
+                            <label for="crm">CRM:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+
+                                <input type="text" id="crm" name="crm" class="form-control" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex: 15%; min-width: 150px;">
+                            <label for="contato">Contato:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+
+                                <input type="text" id="contato" name="contato" class="form-control" style="width: 100%;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary" id="grava-pessoa">Salvar</button>
+            <button type="button" class="btn btn-primary" id="grava-medico">Salvar</button>
         </form>
     </div>
 
@@ -242,23 +264,23 @@
         debugger;
         let recebe_url_atual = window.location.href;
 
-        let recebe_parametro_acao_pessoa = new URLSearchParams(recebe_url_atual.split("&")[1]);
+        let recebe_parametro_acao_medico = new URLSearchParams(recebe_url_atual.split("&")[1]);
 
-        let recebe_parametro_codigo_pessoa = new URLSearchParams(recebe_url_atual.split("&")[2]);
+        let recebe_parametro_codigo_medico = new URLSearchParams(recebe_url_atual.split("&")[2]);
 
-        recebe_codigo_alteracao_pessoa = recebe_parametro_codigo_pessoa.get("id");
+        recebe_codigo_alteracao_medico = recebe_parametro_codigo_medico.get("id");
 
-        let recebe_acao_pessoa = recebe_parametro_acao_pessoa.get("acao");
+        let recebe_acao_medico = recebe_parametro_acao_medico.get("acao");
 
-        if (recebe_acao_pessoa !== "" && recebe_acao_pessoa !== null)
-            recebe_acao_alteracao_pessoa = recebe_acao_pessoa;
+        if (recebe_acao_medico !== "" && recebe_acao_medico !== null)
+            recebe_acao_alteracao_medico = recebe_acao_medico;
 
-        async function buscar_informacoes_pessoa() {
+        async function buscar_informacoes_medico() {
             debugger;
-            if (recebe_acao_alteracao_pessoa === "editar") {
+            if (recebe_acao_alteracao_medico === "editar") {
                 // carrega_cidades();
                 // await popula_lista_cidade_empresa_alteracao();
-                await popula_informacoes_pessoa_alteracao();
+                await popula_informacoes_medico_alteracao();
             } else {
                 // carrega_cidades();
 
@@ -278,33 +300,31 @@
             }
         }
 
-        buscar_informacoes_pessoa();
+        buscar_informacoes_medico();
     });
 
-    async function popula_informacoes_pessoa_alteracao() {
+    async function popula_informacoes_medico_alteracao() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_medico.php",
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_pessoa": "buscar_informacoes_pessoa_alteracao",
-                    valor_codigo_pessoa_alteracao: recebe_codigo_alteracao_pessoa,
+                    "processo_medico": "buscar_informacoes_medico_alteracao",
+                    valor_codigo_medico_alteracao: recebe_codigo_alteracao_medico,
                 },
-                success: function(resposta_pessoa) {
+                success: function(resposta_medico) {
                     debugger;
-                    console.log(resposta_pessoa);
+                    console.log(resposta_medico);
 
-                    if (resposta_pessoa.length > 0) {
-                        for (let indice = 0; indice < resposta_pessoa.length; indice++) {
-                            $("#created_at").val(resposta_pessoa[indice].created_at);
-                            $("#pessoa_id_alteracao").val(resposta_pessoa[indice].id);
-                            $("#nome").val(resposta_pessoa[indice].nome);
-                            $("#cpf").val(resposta_pessoa[indice].cpf);
-                            $("#nascimento").val(resposta_pessoa[indice].nascimento);
-                            $("#sexo-pessoa").val(resposta_pessoa[indice].sexo);
-                            $("#telefone").val(resposta_pessoa[indice].telefone);
-                            $("#whatsapp").val(resposta_pessoa[indice].whatsapp);
+                    if (resposta_medico.length > 0) {
+                        for (let indice = 0; indice < resposta_medico.length; indice++) {
+                            $("#created_at").val(resposta_medico[indice].created_at);
+                            $("#medico_id_alteracao").val(resposta_medico[indice].id);
+                            $("#nome").val(resposta_medico[indice].nome);
+                            $("#cpf").val(resposta_medico[indice].cpf);
+                            $("#crm").val(resposta_medico[indice].crm);
+                            $("#contato").val(resposta_medico[indice].contato);
                         }
                     }
 
@@ -451,32 +471,35 @@
         });
     }
 
-    let recebe_nome_cidade_pessoa;
-    let recebe_id_cidade;
+    // let recebe_nome_cidade_pessoa;
+    // let recebe_id_cidade;
 
-    $("#cidade_id").change(function(e) {
+    // $("#cidade_id").change(function(e) {
+    //     e.preventDefault();
+
+    //     debugger;
+    //     recebe_id_cidade = $(this).val();
+    //     let recebe_cidade_pessoa = $('#cidade_id option:selected').text(); // Nome da cidade
+    //     let recebe_array_informacoes_cidade_pessoa = recebe_cidade_pessoa.split("-");
+    //     let recebe_informacao_cidade_pessoa = recebe_array_informacoes_cidade_pessoa[0];
+    //     let recebe_informacao_estado_pessoa = recebe_array_informacoes_cidade_pessoa[1];
+    //     recebe_nome_cidade_pessoa = recebe_informacao_cidade_pessoa + "," + recebe_informacao_estado_pessoa;
+    // });
+
+    $("#grava-medico").click(function(e) {
         e.preventDefault();
 
         debugger;
-        recebe_id_cidade = $(this).val();
-        let recebe_cidade_pessoa = $('#cidade_id option:selected').text(); // Nome da cidade
-        let recebe_array_informacoes_cidade_pessoa = recebe_cidade_pessoa.split("-");
-        let recebe_informacao_cidade_pessoa = recebe_array_informacoes_cidade_pessoa[0];
-        let recebe_informacao_estado_pessoa = recebe_array_informacoes_cidade_pessoa[1];
-        recebe_nome_cidade_pessoa = recebe_informacao_cidade_pessoa + "," + recebe_informacao_estado_pessoa;
-    });
+        let recebe_nome_medico = $("#nome").val();
+        let recebe_cpf_medico = $("#cpf").val();
+        let recebe_pcmso_medico = $("#pcmso").val();
+        let recebe_especialidade_medico = $("#especialidade").val();
+        let recebe_crm_medico = $("#crm").val();
+        let recebe_contato_medico = $("#contato").val();
+        let recebe_data_cadastro_medico = $("#created_at").val();
+        let recebe_empresa_id_medico = $("#empresa_id").val();
 
-    $("#grava-pessoa").click(function(e) {
-        e.preventDefault();
-
-        debugger;
-        let recebe_nome_pessoa = $("#nome").val();
-        let recebe_cpf_pessoa = $("#cpf").val();
-        let recebe_nascimento_pessoa = $("#nascimento").val();
-        let recebe_sexo_pessoa = $("#sexo-pessoa").val();
-        let recebe_telefone_pessoa = $("#telefone").val();
-        let recebe_data_cadastro_pessoa = $("#created_at").val();
-        let recebe_whatsapp_pessoa = $("#whatsapp").val();
+        console.log(recebe_empresa_id_medico);
         // let recebe_cargo_pessoa = $("#cargo").val();
 
         // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
@@ -499,7 +522,7 @@
 
         // console.log(recebe_endereco_completo);
 
-        if (recebe_acao_alteracao_pessoa === "editar") {
+        if (recebe_acao_alteracao_medico === "editar") {
             $.ajax({
                 url: "cadastros/processa_pessoa.php",
                 type: "POST",
@@ -512,7 +535,7 @@
                     valor_sexo_pessoa: recebe_sexo_pessoa,
                     valor_telefone_pessoa: recebe_telefone_pessoa,
                     valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa,
+                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
                     valor_id_pessoa: $("#pessoa_id_alteracao").val(),
                 },
                 success: function(retorno_pessoa) {
@@ -530,18 +553,19 @@
             });
         } else {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_medico.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "inserir_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa
+                    processo_medico: "inserir_medico",
+                    valor_nome_medico: recebe_nome_medico,
+                    valor_cpf_medico: recebe_cpf_medico,
+                    // valor_pcmso_medico: recebe_pcmso_medico,
+                    // valor_especialidade_medico: recebe_especialidade_medico,
+                    valor_crm_medico: recebe_crm_medico,
+                    valor_contato_medico: recebe_contato_medico,
+                    valor_data_cadastro_medico: recebe_data_cadastro_medico,
+                    valor_empresa_id_medico:recebe_empresa_id_medico,
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,
@@ -556,14 +580,14 @@
                     // valor_nivel_acesso_pessoa: recebe_nivel_acesso_pessoa,
                     // valor_empresa_id: recebe_empresa_id,
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_medico) {
                     debugger;
 
-                    console.log(retorno_pessoa);
+                    console.log(retorno_medico);
 
-                    if (retorno_pessoa) {
-                        console.log("Pessoa cadastrada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                    if (retorno_medico) {
+                        console.log("Médico cadastrada com sucesso");
+                        window.location.href = "painel.php?pg=medicos";
                     }
                 },
                 error: function(xhr, status, error) {
