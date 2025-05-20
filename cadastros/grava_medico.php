@@ -42,26 +42,6 @@
                         </div>
                     </div>
 
-                    <!-- <div class="address-container">
-                        <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="pcmso">Número PCMSO:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-receipt"></i>
-
-                                <input type="text" id="pcmso" name="pcmso" class="form-control" style="width: 100%;">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="especialidade">Especialidade:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-user-tag"></i>
-
-                                <input type="text" id="especialidade" name="especialidade" class="form-control" style="width: 100%;">
-                            </div>
-                        </div>
-                    </div> -->
-
                     <div class="address-container">
                         <div class="form-group" style="flex: 15%; min-width: 150px;">
                             <label for="crm">CRM:</label>
@@ -78,6 +58,78 @@
                                 <i class="fas fa-envelope"></i>
 
                                 <input type="text" id="contato" name="contato" class="form-control" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex:20%;">
+                            <label for="sexo-medico">Sexo:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-mars"></i>
+                                <select id="sexo-medico" name="sexo_medico" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="masculino">Masculino</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex:20%;">
+                            <label for="nascimento">Data Nascimento:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" id="nascimento" name="nascimento" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex:20%;">
+                            <label for="numero_rg">Número do RG:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-id-card"></i>
+
+                                <input type="text" id="numero_rg" name="numero_rg" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex:20%;">
+                            <label for="uf_rg">UF/RG:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-map-marker-alt"></i> <!-- Representa UF ou localização -->
+
+                                <input type="text" id="uf_rg" name="uf_rg" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex:20%;">
+                            <label for="documento_classe">Documento de Classe:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-address-card"></i>
+                                <select id="documento_classe" name="documento_classe" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="feminino">RQE</option>
+                                    <option value="masculino">CRM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex:20%;">
+                            <label for="numero_documento_classe">N° Documento de Classe:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="numero_documento_classe" name="numero_documento_classe" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex:20%;">
+                            <label for="uf_documento_classe">UF/Documento de Classe:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-map-marker-alt"></i> <!-- Representa UF ou localização -->
+                                <input type="text" id="uf_documento_classe" name="uf_documento_classe" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -524,18 +576,15 @@
 
         if (recebe_acao_alteracao_medico === "editar") {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_medico.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "alterar_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
+                    processo_pessoa: "alterar_medico",
+                    valor_nome_medico: recebe_nome_pessoa,
+                    valor_cpf_medico: recebe_cpf_pessoa,
+                    valor_crm_medico: recebe_nascimento_pessoa,
+                    valor_contato_medico: recebe_sexo_pessoa,
                     valor_id_pessoa: $("#pessoa_id_alteracao").val(),
                 },
                 success: function(retorno_pessoa) {
@@ -565,7 +614,7 @@
                     valor_crm_medico: recebe_crm_medico,
                     valor_contato_medico: recebe_contato_medico,
                     valor_data_cadastro_medico: recebe_data_cadastro_medico,
-                    valor_empresa_id_medico:recebe_empresa_id_medico,
+                    valor_empresa_id_medico: recebe_empresa_id_medico,
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,
