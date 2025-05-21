@@ -203,33 +203,70 @@
             const tbody = document.querySelector("#clinicasTable tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-            clinicas.forEach(clinica => {
+            for (let i = 0; i < clinicas.length; i++) {
+                const clinica = clinicas[i];
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                        <td>${clinica.id}</td>
-                        <td>${clinica.nome_fantasia}</td>
-                        <td>${clinica.cnpj}</td>
-                        <td>${clinica.endereco}, ${clinica.numero}, ${clinica.complemento}</td>
-                        <td>${clinica.cidade_nome}/${clinica.cidade_estado}</td>
-                        <td>${clinica.telefone}</td>
-                        <td>${clinica.status}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica' data-codigo-clinica='${clinica.id}'>
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${clinica.id}" class="delete" title="Apagar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    `;
+            <td>${clinica.id}</td>
+            <td>${clinica.nome_fantasia}</td>
+            <td>${clinica.cnpj}</td>
+            <td>${clinica.endereco}, ${clinica.numero}, ${clinica.complemento}</td>
+            <td>${clinica.cidade_nome}/${clinica.cidade_estado}</td>
+            <td>${clinica.telefone}</td>
+            <td>${clinica.status}</td>
+            <td>
+                <div class="action-buttons">
+                    <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica' data-codigo-clinica='${clinica.id}'>
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="#" id="exclui-clinica" data-codigo-clinica="${clinica.id}" class="delete" title="Apagar">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        `;
                 tbody.appendChild(row);
-            });
+            }
         }
+
+        $(document).on("click", "#exclui-clinica", function(e) {
+            e.preventDefault();
+
+            debugger;
+
+            let recebe_confirmacao_excluir_clinica = window.confirm("Tem certeza que deseja excluir a clínica?");
+
+            if (recebe_confirmacao_excluir_clinica) {
+
+                let recebe_id_clinica = $(this).data("codigo-clinica");
+
+                $.ajax({
+                    url: "cadastros/processa_clinica.php",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        processo_clinica: "excluir_clinica",
+                        valor_id_clinica: recebe_id_clinica,
+                    },
+                    success: function(retorno_clinica) {
+                        debugger;
+                        console.log(retorno_clinica);
+                        if (retorno_clinica) {
+                            window.location.href = "painel.php?pg=clinicas";
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Falha ao excluir empresa:" + error);
+                    },
+                });
+            } else {
+                return;
+            }
+        });
+
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
@@ -248,8 +285,7 @@
             recebe_tabela_clinicas.search(this.value).draw();
         });
 
-        async function buscar_informacoes_rapidas_clinica() 
-        {
+        async function buscar_informacoes_rapidas_clinica() {
             await popula_cidades_informacoes_rapidas();
         }
 
@@ -292,8 +328,7 @@
                         else
                             $("#status").prop("checked", false);
 
-                        async function exibi_medicos_associados_clinica() 
-                        {
+                        async function exibi_medicos_associados_clinica() {
                             await popula_medicos_associados_clinica();
                         }
 
@@ -313,8 +348,7 @@
         document.getElementById('informacoes-clinica').classList.add('hidden'); // fechar
     });
 
-    async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "")
-    {
+    async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {
         debugger;
         const apiUrl = 'api/list/cidades.php';
         const cidadeSelect = document.getElementById('cidade_id');

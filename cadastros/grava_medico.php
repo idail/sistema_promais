@@ -67,7 +67,7 @@
                             <label for="sexo-medico">Sexo:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-mars"></i>
-                                <select id="sexo-medico" name="sexo_medico" class="form-control">
+                                <select id="sexo_medico" name="sexo_medico" class="form-control">
                                     <option value="selecione">Selecione</option>
                                     <option value="feminino">Feminino</option>
                                     <option value="masculino">Masculino</option>
@@ -544,12 +544,19 @@
         debugger;
         let recebe_nome_medico = $("#nome").val();
         let recebe_cpf_medico = $("#cpf").val();
-        let recebe_pcmso_medico = $("#pcmso").val();
-        let recebe_especialidade_medico = $("#especialidade").val();
+        // let recebe_pcmso_medico = $("#pcmso").val();
+        // let recebe_especialidade_medico = $("#especialidade").val();
         let recebe_crm_medico = $("#crm").val();
         let recebe_contato_medico = $("#contato").val();
         let recebe_data_cadastro_medico = $("#created_at").val();
         let recebe_empresa_id_medico = $("#empresa_id").val();
+        let recebe_sexo_medico = $("#sexo_medico").val();
+        let recebe_nascimento_medico = $("#nascimento").val();
+        let recebe_numero_rg_medico = $("#numero_rg").val();
+        let recebe_uf_rg_medico = $("#uf_rg").val();
+        let recebe_documento_classe_medico = $("#documento_classe").val();
+        let recebe_n_documento_classe_medico = $("#numero_documento_classe").val();
+        let recebe_uf_documento_classe_medico = $("#uf_documento_classe").val();
 
         console.log(recebe_empresa_id_medico);
         // let recebe_cargo_pessoa = $("#cargo").val();
@@ -615,6 +622,13 @@
                     valor_contato_medico: recebe_contato_medico,
                     valor_data_cadastro_medico: recebe_data_cadastro_medico,
                     valor_empresa_id_medico: recebe_empresa_id_medico,
+                    valor_sexo_medico:recebe_sexo_medico,
+                    valor_nascimento_medico:recebe_nascimento_medico,
+                    valor_numero_rg_medico:recebe_numero_rg_medico,
+                    valor_uf_rg_medico:recebe_uf_rg_medico,
+                    valor_documento_classe_medico:recebe_documento_classe_medico,
+                    valor_n_documento_classe_medico:recebe_n_documento_classe_medico,
+                    valor_uf_documento_classe_medico:recebe_uf_documento_classe_medico
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,

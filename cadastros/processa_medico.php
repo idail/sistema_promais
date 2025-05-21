@@ -100,8 +100,16 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         // $recebe_pcmso_medico = $_POST["valor_pcmso_medico"];
         $recebe_contato_medico = $_POST["valor_contato_medico"];
         $recebe_data_cadastro_medico = $_POST["valor_data_cadastro_medico"];
+        $recebe_sexo_medico = $_POST["valor_sexo_medico"];
+        $recebe_nascimento_medico = $_POST["valor_nascimento_medico"];
+        $recebe_numero_rg_medico = $_POST["valor_numero_rg_medico"];
+        $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
+        $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
+        $recebe_n_documento_classe_medico = $_POST["valor_n_documento_classe_medico"];
+        $recebe_uf_documento_classe_medico = $_POST["valor_uf_documento_classe_medico"];
 
-        $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,crm,contato,status,created_at,updated_at)
+        $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,nascimento,sexo,rg,uf_rg,
+        documento_classe,n_documento_classe,uf_documento_classe,crm,contato,status,created_at,updated_at)
         values(:recebe_empresa_id,:recebe_nome_medico,:recebe_cpf_medico,:recebe_crm_medico,:recebe_contato_medico,
         :recebe_status_medico,:recebe_created_at,:recebe_updated_at)";
         $comando_cadastra_medico = $pdo->prepare($instrucao_cadastra_medico);

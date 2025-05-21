@@ -78,5 +78,14 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_desvincular_medicos_clinica->bindValue(":recebe_codigo_medico_desvincular",$recebe_codigo_medico);
         $resultado_desvincular_medicos_clinica = $comando_desvincular_medicos_clinica->execute();
         echo json_encode($resultado_desvincular_medicos_clinica);
+    }else if($recebe_processo_clinica === "excluir_clinica")
+    {
+        $recebe_id_clinica = $_POST["valor_id_clinica"];
+
+        $instrucao_exclui_clinica = "delete from clinicas where id = :recebe_id_clinica";
+        $comando_exclui_clinica = $pdo->prepare($instrucao_exclui_clinica);
+        $comando_exclui_clinica->bindValue(":recebe_id_clinica",$recebe_id_clinica);
+        $resultado_excluir_clinica = $comando_exclui_clinica->execute();
+        echo json_encode($resultado_excluir_clinica);
     }
 }
