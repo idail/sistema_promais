@@ -229,7 +229,7 @@
                     <a href="?pg=grava_medico&acao=editar&id=${medico.id}" target="_parent" class="edit" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="#" data-codigo-medico="${medico.id}" class="delete" title="Apagar">
+                    <a href="#" id='excluir-medico' data-codigo-medico="${medico.id}" class="delete" title="Apagar">
                         <i class="fas fa-trash"></i>
                     </a>
                 </div>
@@ -265,6 +265,42 @@
         }
 
         buscar_informacoes_rapidas_clinica();
+    });
+
+    $(document).on("click", "#excluir-medico", function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_id_medico = $(this).data("codigo-medico");
+
+        let recebe_resposta_excluir_medico = window.confirm(
+            "Tem certeza que deseja excluir o médico?"
+        );
+
+        if (recebe_resposta_excluir_medico) {
+            $.ajax({
+                url: "cadastros/processa_medico.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_medico: "excluir_medico",
+                    valor_id_medico: recebe_id_medico,
+                },
+                success: function(retorno_medico) {
+                    debugger;
+                    console.log(retorno_medico);
+                    if (retorno_medico) {
+                        window.location.href = "painel.php?pg=medicos";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao excluir pessoa:" + error);
+                },
+            });
+        } else {
+            return;
+        }
     });
 
     $(document).on("click", "#visualizar-informacoes-medico", function(e) {

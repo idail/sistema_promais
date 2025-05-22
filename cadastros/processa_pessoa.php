@@ -102,10 +102,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     {
         $recebe_codigo_excluir_pessoa = $_POST["valor_id_pessoa"];
 
+        $recebe_id_empresa_excluir_pessoa = $_SESSION["empresa_id"];
+
         $instrucao_excluir_pessoa = 
-        "delete from pessoas where id = :recebe_id_pessoa_excluir";
+        "delete from pessoas where id = :recebe_id_pessoa_excluir and empresa_id = :recebe_id_empresa_pessoa_excluir";
         $comando_excluir_pessoa = $pdo->prepare($instrucao_excluir_pessoa);
         $comando_excluir_pessoa->bindValue(":recebe_id_pessoa_excluir",$recebe_codigo_excluir_pessoa);
+        $comando_excluir_pessoa->bindValue(":recebe_id_empresa_pessoa_excluir",$recebe_id_empresa_excluir_pessoa);
         $resultado_excluir_pessoa = $comando_excluir_pessoa->execute();
         echo json_encode($resultado_excluir_pessoa);
     }

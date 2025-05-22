@@ -164,6 +164,22 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_cadastra_medico->execute();
         $recebe_ultimo_codigo_registrado_cadastra_medico = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_registrado_cadastra_medico);
+    }else if($recebe_processo_medico === "")
+    {
+
+    }else if($recebe_processo_medico === "excluir_medico")
+    {
+        $recebe_codigo_excluir_medico = $_POST["valor_id_medico"];
+
+        $recebe_id_empresa_excluir_medico = $_SESSION["empresa_id"];
+
+        $instrucao_excluir_medico = 
+        "delete from medicos where id = :recebe_id_medico_excluir and empresa_id = :recebe_empresa_id_medico_excluir";
+        $comando_excluir_medico = $pdo->prepare($instrucao_excluir_medico);
+        $comando_excluir_medico->bindValue(":recebe_id_medico_excluir",$recebe_codigo_excluir_medico);
+        $comando_excluir_medico->bindValue(":recebe_empresa_id_medico_excluir",$recebe_id_empresa_excluir_medico);
+        $resultado_excluir_medico = $comando_excluir_medico->execute();
+        echo json_encode($resultado_excluir_medico);
     }
 }
 ?>
