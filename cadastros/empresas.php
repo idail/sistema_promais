@@ -243,29 +243,35 @@
 
             debugger;
 
-            let recebe_id_empresa = $(this).data("codigo-empresa");
+            let recebe_confirmacao_excluir_empresa = window.confirm("Tem certeza que deseja excluir a empresa?");
 
-            // alert(recebe_id_empresa);
+            if (recebe_confirmacao_excluir_empresa) {
+                let recebe_id_empresa = $(this).data("codigo-empresa");
 
-            $.ajax({
-                url: "cadastros/processa_empresa.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    processo_empresa: "excluir_empresa",
-                    valor_id_empresa: recebe_id_empresa,
-                },
-                success: function(retorno_empresa) {
-                    debugger;
-                    console.log(retorno_empresa);
-                    if (retorno_empresa) {
-                        window.location.href = "painel.php?pg=empresas";
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao excluir empresa:" + error);
-                },
-            });
+                // alert(recebe_id_empresa);
+
+                $.ajax({
+                    url: "cadastros/processa_empresa.php",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        processo_empresa: "excluir_empresa",
+                        valor_id_empresa: recebe_id_empresa,
+                    },
+                    success: function(retorno_empresa) {
+                        debugger;
+                        console.log(retorno_empresa);
+                        if (retorno_empresa) {
+                            window.location.href = "painel.php?pg=empresas";
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Falha ao excluir empresa:" + error);
+                    },
+                });
+            } else {
+                return;
+            }
         });
 
         async function popula_medicos_associados_empresa() {
