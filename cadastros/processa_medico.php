@@ -95,6 +95,20 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_busca_total_medicos->execute();
         $resultado_busca_total_medicos = $comando_busca_total_medicos->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_total_medicos);
+    }else if($recebe_processo_medico === "buscar_informacoes_rapidas_medicos")
+    {
+        $recebe_codigo_medico_informacoes_rapidas = $_GET["valor_codigo_medico_informacoes_rapidas"];
+
+        $recebe_id_empresa_medico_informacoes_rapidas = $_SESSION["empresa_id"];
+
+        $instrucao_busca_medico_informacoes_rapidas = 
+        "select * from medicos where id = :recebe_id_medicos_informacoes_rapidas and empresa_id = :recebe_empresa_id_medicos_informacoes_rapidas";
+        $comando_busca_medicos_informacoes_rapidas = $pdo->prepare($instrucao_busca_medico_informacoes_rapidas);
+        $comando_busca_medicos_informacoes_rapidas->bindValue(":recebe_id_medicos_informacoes_rapidas",$recebe_codigo_medico_informacoes_rapidas);
+        $comando_busca_medicos_informacoes_rapidas->bindValue(":recebe_empresa_id_medicos_informacoes_rapidas",$recebe_id_empresa_medico_informacoes_rapidas);
+        $comando_busca_medicos_informacoes_rapidas->execute();
+        $resultado_busca_medicos_informacoes_rapidas = $comando_busca_medicos_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_medicos_informacoes_rapidas);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "POST")
 {
