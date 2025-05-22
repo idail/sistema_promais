@@ -497,6 +497,7 @@
         let recebe_telefone_pessoa = $("#telefone").val();
         let recebe_data_cadastro_pessoa = $("#created_at").val();
         let recebe_whatsapp_pessoa = $("#whatsapp").val();
+        let recebe_empresa_id_pessoa = $("#empresa_id").val();
         // let recebe_cargo_pessoa = $("#cargo").val();
 
         // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
@@ -561,7 +562,8 @@
                     valor_sexo_pessoa: recebe_sexo_pessoa,
                     valor_telefone_pessoa: recebe_telefone_pessoa,
                     valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa
+                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa,
+                    valor_empresa_id_pessoa:recebe_empresa_id_pessoa,
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,
