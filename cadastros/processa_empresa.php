@@ -137,12 +137,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_cep_empresa_alterar = $_POST["valor_cep_empresa"];
         $recebe_complemento_empresa_alterar = $_POST["valor_complemento_empresa"];
         $recebe_chave_id_empresa_alterar = $_SESSION["user_plan"];
-        $recebe_id_empresa_alterar = $_POST["valor_id_empresa"];
+        $recebe_codigo_empresa_alterar = $_POST["valor_id_empresa"];
+
+        $recebe_id_empresa_aterar = $_SESSION["empresa_id"];
 
         $instrucao_altera_empresa = 
-        "update empresas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
+        "update empresas_novas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
         telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
-        bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar where id = :recebe_id_empresa_alterar";
+        bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
         $comando_altera_empresa = $pdo->prepare($instrucao_altera_empresa);
         $comando_altera_empresa->bindValue(":recebe_nome_alterar",$recebe_nome_fantasia_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_cnpj_alterar",$recebe_cnpj_empresa_alterar);
@@ -155,7 +157,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_empresa->bindValue(":recebe_bairro_alterar",$recebe_bairro_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_cep_alterar",$recebe_cep_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_complemento_alterar",$recebe_complemento_empresa_alterar);
-        $comando_altera_empresa->bindValue(":recebe_id_empresa_alterar",$recebe_id_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_id_empresa_alterar",$recebe_codigo_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_empresa_id",$recebe_id_empresa_aterar);
         $resultado_altera_empresa = $comando_altera_empresa->execute();
 
         if(!empty($_POST["valor_medico_coordenador_empresa"]))
@@ -168,7 +171,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
                 for ($i = 0; $i < count($recebe_id_medico_associado_empresa); $i++) 
                 { 
-                    array_push($valores_id_cadastramento_empresa,$recebe_id_empresa_alterar);
+                    array_push($valores_id_cadastramento_empresa,$recebe_id_empresa_aterar);
                 }
 
                 $data_hora_atual = date("Y-m-d H:i:s");
@@ -193,13 +196,15 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         }
     }else if($recebe_processo_empresa === "excluir_empresa")
     {
-        $recebe_id_empresa_excluir = $_POST["valor_id_empresa"];
+        $recebe_codigo_empresa_excluir = $_POST["valor_id_empresa"];
+        $recebe_id_empresa_excluir = $_SESSION["empresa_id"];
 
         if(!empty($recebe_id_empresa_excluir))
         {
-            $instrucao_excluir_empresa = "delete from empresas where id = :recebe_id_empresa_excluir";
+            $instrucao_excluir_empresa = "delete from empresas_novas where id = :recebe_id_empresa_excluir and empresa_id = :recebe_empresa_id";
             $comando_excluir_empresa = $pdo->prepare($instrucao_excluir_empresa);
-            $comando_excluir_empresa->bindValue(":recebe_id_empresa_excluir",$recebe_id_empresa_excluir);
+            $comando_excluir_empresa->bindValue(":recebe_id_empresa_excluir",$recebe_codigo_empresa_excluir);
+            $comando_excluir_empresa->bindValue(":recebe_empresa_id",$recebe_id_empresa_excluir);
             $resultado_excluir_empresa = $comando_excluir_empresa->execute();
             echo json_encode($resultado_excluir_empresa);   
         }

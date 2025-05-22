@@ -132,6 +132,8 @@
                         preencher_tabela(resposta_empresa);
                         inicializarDataTable();
                     } else {
+                        preencher_tabela(resposta_empresa);
+                        inicializarDataTable();
                         console.error("Erro ao buscar dados:", resposta_empresa);
                     }
                 },
@@ -199,16 +201,17 @@
         let tbody = document.querySelector("#empresas_tabela tbody");
         tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-        for (let i = 0; i < resposta_empresa.length; i++) {
-            let empresa = resposta_empresa[i];
+        if (resposta_empresa.length > 0) {
+            for (let i = 0; i < resposta_empresa.length; i++) {
+                let empresa = resposta_empresa[i];
 
-            // Separar o endereço
-            let partesEndereco = empresa.endereco.split(',');
-            let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
-            let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+                // Separar o endereço
+                let partesEndereco = empresa.endereco.split(',');
+                let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
+                let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
-            let row = document.createElement("tr");
-            row.innerHTML = `
+                let row = document.createElement("tr");
+                row.innerHTML = `
             <td>${empresa.id}</td>
             <td>${empresa.nome}</td>
             <td>${empresa.cnpj}</td>
@@ -229,7 +232,10 @@
                 </div>
             </td>
         `;
-            tbody.appendChild(row);
+                tbody.appendChild(row);
+            }
+        } else {
+            $("#empresas_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
         }
 
         $(document).on("click", "#exclui-empresa", function(e) {
