@@ -8,6 +8,8 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
+            <?php echo $_SESSION["empresa_id"]; ?>
+
             <input type="hidden" name="empresa_id_alteracao" id="empresa_id_alteracao">
 
             <div class="form-group">
@@ -826,6 +828,7 @@
         let recebe_email_empresa = $("#email").val();
         let recebe_telefone_empresa = $("#telefone").val();
         let recebe_data_cadastro_empresa = $("#created_at").val();
+        let recebe_empresa_id = $("#empresa_id").val();
 
         let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa + "," + recebe_nome_cidade_empresa;
 
@@ -882,7 +885,8 @@
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
                     valor_complemento_empresa: recebe_complemento_empresa,
-                    valor_data_cadastro_empresa:recebe_data_cadastro_empresa
+                    valor_data_cadastro_empresa:recebe_data_cadastro_empresa,
+                    valor_empresa_id:recebe_empresa_id,
                 },
                 success: function(retorno_empresa) {
                     debugger;

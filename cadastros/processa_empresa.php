@@ -39,6 +39,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_cep_empresa = $_POST["valor_cep_empresa"];
         $recebe_complemento_empresa = $_POST["valor_complemento_empresa"];
         $recebe_chave_id_empresa = $_SESSION["user_plan"];
+        $recebe_empresa_id = $_POST["valor_empresa_id"];
 
         // echo json_encode($recebe_data_cadastro_empresa);
 
@@ -52,13 +53,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
         // echo json_encode($informacoes);
 
-        $instrucao_cadastra_empresa = "insert into empresas(nome,cnpj,endereco,id_cidade,telefone,email,chave_id,razao_social
-        ,bairro,cep,complemento,created_at,updated_at)values(:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,
+        $instrucao_cadastra_empresa = "insert into empresas_novas(nome,empresa_id,cnpj,endereco,id_cidade,telefone,email,chave_id,razao_social
+        ,bairro,cep,complemento,created_at,updated_at)values(:recebe_nome_empresa,:recebe_empresa_id,:recebe_cnpj_empresa,:recebe_endereco_empresa,
         :recebe_id_cidade_empresa,:recebe_telefone_empresa,
         :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,
         :recebe_complemento,:created_at,:updated_at)";
         $comando_cadastra_empresa = $pdo->prepare($instrucao_cadastra_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_nome_empresa",$recebe_nome_fantasia_empresa);
+        $comando_cadastra_empresa->bindValue(":recebe_empresa_id",$recebe_empresa_id);
         $comando_cadastra_empresa->bindValue(":recebe_cnpj_empresa",$recebe_cnpj_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_endereco_empresa",$recebe_endereco_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_id_cidade_empresa",$recebe_id_cidade_empresa);
@@ -208,49 +210,59 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
     if($recebe_processo_empresa === "buscar_empresas")
     {
-        $instrucao_busca_empresas = "select * from empresas";
+        $recebe_id_empresa = $_SESSION["empresa_id"];
+        $instrucao_busca_empresas = "select * from empresas_novas where empresa_id = :recebe_id_empresa";
         $comando_buca_empresas = $pdo->prepare($instrucao_busca_empresas);
+        $comando_buca_empresas->bindValue(":recebe_id_empresa",$recebe_id_empresa);
         $comando_buca_empresas->execute();
         $resultado_busca_empresas = $comando_buca_empresas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_empresas);
     }else if($recebe_processo_empresa === "buscar_cidade_empresa")
     {
-        $recebe_id_empresa = $_GET["valor_id_empresa"];
+        $recebe_codigo_empresa = $_GET["valor_id_empresa"];
+        $recebe_id_empresa = $_SESSION["empresa_id"];
 
         $instrucao_busca_cidade_empresa_alteracao = "SELECT c.id, c.nome
         FROM cidades c
-        JOIN empresas e ON e.id_cidade = c.id
-        WHERE e.id = :recebe_codigo_empresa_alteracao";
+        JOIN empresas_novas en ON en.id_cidade = c.id
+        WHERE en.id = :recebe_codigo_empresa_alteracao and en.empresa_id = :recebe_empresa_id";
         $comando_busca_empresa_cidade_alteracao = $pdo->prepare($instrucao_busca_cidade_empresa_alteracao);
-        $comando_busca_empresa_cidade_alteracao->bindValue(":recebe_codigo_empresa_alteracao",$recebe_id_empresa);
+        $comando_busca_empresa_cidade_alteracao->bindValue(":recebe_codigo_empresa_alteracao",$recebe_codigo_empresa);
+        $comando_busca_empresa_cidade_alteracao->bindValue(":recebe_empresa_id",$recebe_id_empresa);
         $comando_busca_empresa_cidade_alteracao->execute();
         $resultado_busca_cidade_empresa_alteracao = $comando_busca_empresa_cidade_alteracao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_cidade_empresa_alteracao);
     }else if($recebe_processo_empresa === "buscar_informacoes_empresa_alteracao")
     {
-        $recebe_id_empresa = $_GET["valor_codigo_empresa_alteracao"];
+        $recebe_codigo_empresa = $_GET["valor_codigo_empresa_alteracao"];
+        $recebe_id_empresa = $_SESSION["empresa_id"];
 
         $instrucao_busca_informacoes_empresa_alteracao = 
-        "select * from empresas where id = :recebe_id_empresa_alteracao";
+        "select * from empresas_novas where id = :recebe_id_empresa_alteracao and empresa_id = :recebe_id_empresa";
         $comando_busca_informacoes_empresa_alteracao = $pdo->prepare($instrucao_busca_informacoes_empresa_alteracao);
-        $comando_busca_informacoes_empresa_alteracao->bindValue(":recebe_id_empresa_alteracao",$recebe_id_empresa);
+        $comando_busca_informacoes_empresa_alteracao->bindValue(":recebe_id_empresa_alteracao",$recebe_codigo_empresa);
+        $comando_busca_informacoes_empresa_alteracao->bindValue(":recebe_id_empresa",$recebe_id_empresa);
         $comando_busca_informacoes_empresa_alteracao->execute();
         $resultado_busca_informacoes_empresa_alteracao = $comando_busca_informacoes_empresa_alteracao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_empresa_alteracao);
     }else if($recebe_processo_empresa === "buscar_informacoes_rapidas_empresa")
     {
         $recebe_codigo_empresa_informacoes_rapidas = $_GET["valor_id_empresa_informacoes_rapidas"];
+        $recebe_id_empresa = $_SESSION["empresa_id"];
 
-        $instrucao_busca_empresa_informacoes_rapidas = "select * from empresas where id = :recebe_id_empresa_informacoes_rapidas";
+        $instrucao_busca_empresa_informacoes_rapidas = "select * from empresas_novas where id = :recebe_id_empresa_informacoes_rapidas and empresa_id = :recebe_empresa_id";
         $comando_busca_empresa_informacoes_rapidas = $pdo->prepare($instrucao_busca_empresa_informacoes_rapidas);
         $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_id_empresa_informacoes_rapidas",$recebe_codigo_empresa_informacoes_rapidas);
+        $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_empresa_id",$recebe_id_empresa);
         $comando_busca_empresa_informacoes_rapidas->execute();
         $resultado_busca_informacoes_rapidas_empresa = $comando_busca_empresa_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_rapidas_empresa);
     }else if($recebe_processo_empresa === "buscar_total_empresas")
     {
-        $instrucao_busca_total_empresas = "select COUNT(id) as total from empresas";
+        $recebe_id_empresa = $_SESSION["empresa_id"];
+        $instrucao_busca_total_empresas = "select COUNT(id) as total from empresas_novas where empresa_id = :recebe_empresa_id";
         $comando_busca_total_empresas = $pdo->prepare($instrucao_busca_total_empresas);
+        $comando_busca_total_empresas->bindValue(":recebe_empresa_id",$recebe_id_empresa);
         $comando_busca_total_empresas->execute();
         $resultado_busca_total_empresas = $comando_busca_total_empresas->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_total_empresas);

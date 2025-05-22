@@ -60,10 +60,11 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
     }else if($recebe_processo_medico === "buscar_medicos_associados_empresa")
     {
         $recebe_codigo_empresa_medicos_associados = $_GET["valor_codigo_empresa_medicos_associados"];
+        $recebe_id_empresa = $_SESSION["empresa_id"];
         $instrucao_busca_medicos_associados_empresa = "SELECT DISTINCT m.id AS medico_id,me.id, m.nome AS nome_medico FROM 
-        medicos_empresas me JOIN medicos m ON me.medico_id = m.id WHERE me.status = 'Ativo' AND me.empresa_id = :recebe_codigo_empresa";
+        medicos_empresas me JOIN medicos m ON me.medico_id = m.id WHERE me.status = 'Ativo' AND me.empresa_id = :recebe_id_empresa";
         $comando_busca_medicos_associados_empresa = $pdo->prepare($instrucao_busca_medicos_associados_empresa);
-        $comando_busca_medicos_associados_empresa->bindValue(":recebe_codigo_empresa",$recebe_codigo_empresa_medicos_associados);
+        $comando_busca_medicos_associados_empresa->bindValue(":recebe_id_empresa",$recebe_id_empresa);
         $comando_busca_medicos_associados_empresa->execute();
         $resultado_busca_medicos_associados_empresa = $comando_busca_medicos_associados_empresa->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_medicos_associados_empresa);
