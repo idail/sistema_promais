@@ -155,6 +155,7 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-empresa">Salvar</button>
+            <button type="button" id="retornar-listagem-empresas" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -324,6 +325,22 @@
         border-color: #45a049;
         box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
+
+    .botao-cinza {
+        background-color: #6c757d;
+        /* cinza escuro */
+        color: white;
+        /* texto branco */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .botao-cinza:hover {
+        background-color: #5a6268;
+        /* cinza mais escuro no hover */
+    }
 </style>
 
 <script>
@@ -383,6 +400,14 @@
         }
 
         buscar_informacoes_empresa();
+    });
+
+    $("#retornar-listagem-empresas").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        window.location.href = "painel.php?pg=empresas";
     });
 
     async function popula_lista_cidade_empresa_alteracao() {
@@ -885,8 +910,8 @@
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
                     valor_complemento_empresa: recebe_complemento_empresa,
-                    valor_data_cadastro_empresa:recebe_data_cadastro_empresa,
-                    valor_empresa_id:recebe_empresa_id,
+                    valor_data_cadastro_empresa: recebe_data_cadastro_empresa,
+                    valor_empresa_id: recebe_empresa_id,
                 },
                 success: function(retorno_empresa) {
                     debugger;

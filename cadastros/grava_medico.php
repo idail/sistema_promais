@@ -137,6 +137,7 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-medico">Salvar</button>
+            <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -306,6 +307,22 @@
         border-color: #45a049;
         box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
+
+    .botao-cinza {
+        background-color: #6c757d;
+        /* cinza escuro */
+        color: white;
+        /* texto branco */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .botao-cinza:hover {
+        background-color: #5a6268;
+        /* cinza mais escuro no hover */
+    }
 </style>
 
 <script>
@@ -353,6 +370,14 @@
         }
 
         buscar_informacoes_medico();
+    });
+
+    $("#retornar-listagem-medicos").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        window.location.href = "painel.php?pg=medicos";
     });
 
     async function popula_informacoes_medico_alteracao() {
@@ -622,13 +647,13 @@
                     valor_contato_medico: recebe_contato_medico,
                     valor_data_cadastro_medico: recebe_data_cadastro_medico,
                     valor_empresa_id_medico: recebe_empresa_id_medico,
-                    valor_sexo_medico:recebe_sexo_medico,
-                    valor_nascimento_medico:recebe_nascimento_medico,
-                    valor_numero_rg_medico:recebe_numero_rg_medico,
-                    valor_uf_rg_medico:recebe_uf_rg_medico,
-                    valor_documento_classe_medico:recebe_documento_classe_medico,
-                    valor_n_documento_classe_medico:recebe_n_documento_classe_medico,
-                    valor_uf_documento_classe_medico:recebe_uf_documento_classe_medico
+                    valor_sexo_medico: recebe_sexo_medico,
+                    valor_nascimento_medico: recebe_nascimento_medico,
+                    valor_numero_rg_medico: recebe_numero_rg_medico,
+                    valor_uf_rg_medico: recebe_uf_rg_medico,
+                    valor_documento_classe_medico: recebe_documento_classe_medico,
+                    valor_n_documento_classe_medico: recebe_n_documento_classe_medico,
+                    valor_uf_documento_classe_medico: recebe_uf_documento_classe_medico
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,

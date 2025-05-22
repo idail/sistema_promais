@@ -83,6 +83,7 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-pessoa">Salvar</button>
+            <button type="button" id="retornar-listagem-pessoas" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -252,6 +253,22 @@
         border-color: #45a049;
         box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
+
+    .botao-cinza {
+        background-color: #6c757d;
+        /* cinza escuro */
+        color: white;
+        /* texto branco */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .botao-cinza:hover {
+        background-color: #5a6268;
+        /* cinza mais escuro no hover */
+    }
 </style>
 
 <script>
@@ -299,6 +316,14 @@
         }
 
         buscar_informacoes_pessoa();
+    });
+
+    $("#retornar-listagem-pessoas").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        window.location.href = "painel.php?pg=pessoas";
     });
 
     async function popula_informacoes_pessoa_alteracao() {
@@ -533,7 +558,7 @@
                     valor_sexo_pessoa: recebe_sexo_pessoa,
                     valor_telefone_pessoa: recebe_telefone_pessoa,
                     valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa,
+                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
                     valor_id_pessoa: $("#pessoa_id_alteracao").val(),
                 },
                 success: function(retorno_pessoa) {
@@ -562,8 +587,8 @@
                     valor_sexo_pessoa: recebe_sexo_pessoa,
                     valor_telefone_pessoa: recebe_telefone_pessoa,
                     valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa:recebe_whatsapp_pessoa,
-                    valor_empresa_id_pessoa:recebe_empresa_id_pessoa,
+                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
+                    valor_empresa_id_pessoa: recebe_empresa_id_pessoa,
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,

@@ -31,6 +31,8 @@ $conexao->close();
 
 ?>
 
+<!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+
 <div class="tab-container">
     <div class="tab-buttons">
         <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
@@ -196,6 +198,7 @@ $conexao->close();
 
 
             <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" id="retornar-listagem-clinicas" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -383,6 +386,22 @@ $conexao->close();
         border-color: #45a049;
         box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
+
+    .botao-cinza {
+        background-color: #6c757d;
+        /* cinza escuro */
+        color: white;
+        /* texto branco */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .botao-cinza:hover {
+        background-color: #5a6268;
+        /* cinza mais escuro no hover */
+    }
 </style>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -435,6 +454,14 @@ $conexao->close();
         carregarCidades();
 
         buscar_informacoes_clinica();
+    });
+
+    $("#retornar-listagem-clinicas").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        window.location.href = "painel.php?pg=clinicas";
     });
 
     // $("#cep").blur(function(e){
@@ -550,7 +577,7 @@ $conexao->close();
                                 "</tr>";
                         }
                         $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
-                    }else{
+                    } else {
                         $("#tabela-medico-associado tbody").html("");
                     }
 
