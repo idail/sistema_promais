@@ -59,6 +59,16 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_busca_clinica_informacoes_rapidas->execute();
         $resultado_busca_informacoes_rapidas_clinica = $comando_busca_clinica_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_rapidas_clinica);
+    }else if($recebe_processo_clinica === "buscar_total_clinicas")
+    {
+        $recebe_id_empresa = $_SESSION["empresa_id"];
+
+        $instrucao_busca_total_clinicas = "select count(id) as total from clinicas where empresa_id = :recebe_empresa_id";
+        $comando_busca_total_clinicas = $pdo->prepare($instrucao_busca_total_clinicas);
+        $comando_busca_total_clinicas->bindValue(":recebe_empresa_id",$recebe_id_empresa);
+        $comando_busca_total_clinicas->execute();
+        $resultado_busca_total_clinicas = $comando_busca_total_clinicas->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_total_clinicas);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "POST")
 {

@@ -66,47 +66,49 @@ file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
 
     <div class="card" style="--card-color: var(--card3-bg)">
       <div class="card-header">
-        <span class="card-title">ASOs em Rascunho</span>
-        <span class="card-subtitle">Pendentes de finalização</span>
+        <span class="card-title">Total de Clínicas</span>
+        <span class="card-subtitle">Ativos no sistema</span>
       </div>
       <div class="card-body">
         <div class="card-main">
           <i class="fas fa-file-medical card-icon"></i>
           <div class="card-info">
-            <span class="card-value">28</span>
-            <div class="card-trend down">
+            <span class="card-value" id="informativo-total-clinicas"></span>
+            <!-- <div class="card-trend down">
               <i class="fas fa-arrow-down"></i>
               <span class="trend-value">5%</span>
               <span class="trend-period">última semana</span>
-            </div>
+            </div> -->
           </div>
         </div>
-        <div class="card-footer">
+        <!-- <div class="card-footer">
           <span class="card-compare">-3 ASOs comparado à semana anterior</span>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div class="card" style="--card-color: var(--card4-bg)">
       <div class="card-header">
-        <span class="card-title">Kits Gerados</span>
-        <span class="card-subtitle">Total do mês atual</span>
+        <span class="card-title">Total de Médicos</span>
+        <!-- <span class="card-subtitle">Total do mês atual</span> -->
+        <span class="card-subtitle">Ativos no sistema</span>
       </div>
       <div class="card-body">
         <div class="card-main">
-          <i class="fas fa-box-open card-icon"></i>
+          <i class="fas fa-stethoscope card-icon"></i>
+
           <div class="card-info">
-            <span class="card-value">945</span>
-            <div class="card-trend up">
+            <span class="card-value" id="informativo-total-medicos"></span>
+            <!-- <div class="card-trend up">
               <i class="fas fa-arrow-up"></i>
               <span class="trend-value">15%</span>
               <span class="trend-period">último mês</span>
-            </div>
+            </div> -->
           </div>
         </div>
-        <div class="card-footer">
+        <!-- <div class="card-footer">
           <span class="card-compare">+142 kits comparado ao mês anterior</span>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -180,6 +182,44 @@ file_put_contents($debugLogFile, $debugLog, FILE_APPEND);
         console.log(retorno_pessoas);
 
         $("#informativo-total-pessoas").html(retorno_pessoas.total);
+      },
+      error: function(xhr, status, error) {
+
+      },
+    });
+
+    $.ajax({
+      url: "cadastros/processa_clinica.php",
+      method: "GET",
+      dataType: "json",
+      data: {
+        "processo_clinica": "buscar_total_clinicas",
+      },
+      success: function(retorno_clinicas) {
+        debugger;
+
+        console.log(retorno_clinicas);
+
+        $("#informativo-total-clinicas").html(retorno_clinicas.total);
+      },
+      error: function(xhr, status, error) {
+
+      },
+    });
+
+    $.ajax({
+      url: "cadastros/processa_medico.php",
+      method: "GET",
+      dataType: "json",
+      data: {
+        "processo_medico": "buscar_total_medicos",
+      },
+      success: function(retorno_medicos) {
+        debugger;
+
+        console.log(retorno_medicos);
+
+        $("#informativo-total-medicos").html(retorno_medicos.total);
       },
       error: function(xhr, status, error) {
 

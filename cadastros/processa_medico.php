@@ -86,6 +86,15 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_busca_informacoes_medico_alteracao->execute();
         $resultado_busca_informacoes_medico_alteracao = $comando_busca_informacoes_medico_alteracao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_medico_alteracao);
+    }else if($recebe_processo_medico === "buscar_total_medicos")
+    {
+        $recebe_id_empresa = $_SESSION["empresa_id"];
+        $instrucao_busca_total_medicos = "select count(id) as total from medicos where empresa_id = :recebe_empresa_id";
+        $comando_busca_total_medicos = $pdo->prepare($instrucao_busca_total_medicos);
+        $comando_busca_total_medicos->bindValue(":recebe_empresa_id",$recebe_id_empresa);
+        $comando_busca_total_medicos->execute();
+        $resultado_busca_total_medicos = $comando_busca_total_medicos->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_total_medicos);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "POST")
 {
