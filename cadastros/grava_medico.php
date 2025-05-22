@@ -85,14 +85,14 @@
                     </div>
 
                     <div class="address-container">
-                        <div class="form-group" style="flex:20%;">
+                        <!-- <div class="form-group" style="flex:20%;">
                             <label for="numero_rg">Número do RG:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
                                 <i class="fas fa-id-card"></i>
 
                                 <input type="text" id="numero_rg" name="numero_rg" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group" style="flex:20%;">
                             <label for="uf_rg">UF/RG:</label>
@@ -111,8 +111,8 @@
                                 <i class="fas fa-address-card"></i>
                                 <select id="documento_classe" name="documento_classe" class="form-control">
                                     <option value="selecione">Selecione</option>
-                                    <option value="feminino">RQE</option>
-                                    <option value="masculino">CRM</option>
+                                    <option value="RQE">RQE</option>
+                                    <option value="CRM">CRM</option>
                                 </select>
                             </div>
                         </div>
