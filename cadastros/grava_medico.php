@@ -52,17 +52,61 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="contato">Contato:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-envelope"></i>
+                        <div class="form-group" style="flex:20%;">
+                            <label for="uf_crm">UF/CRM:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-map-marker-alt"></i> <!-- Representa UF ou localização -->
 
-                                <input type="text" id="contato" name="contato" class="form-control" style="width: 100%;">
+                                <input type="text" id="uf_crm" name="uf_crm" class="form-control">
                             </div>
                         </div>
                     </div>
 
                     <div class="address-container">
+
+                        <div class="form-group" style="flex: 15%; min-width: 150px;">
+                            <label for="especialidade">Especialidade:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user-cog"></i>
+
+                                <input type="text" id="especialidade" name="especialidade" class="form-control" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex:20%;">
+                            <label for="documento_classe">Documento de Classe:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-address-card"></i>
+                                <select id="documento_classe" name="documento_classe" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="RQE" selected>RQE</option>
+                                    <option value="CRM">CRM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="address-container">
+                            <div class="form-group" style="flex: 15%; min-width: 150px;">
+                                <label for="uf_rqe">UF/RQE:</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-map-marker-alt"></i> 
+
+                                    <input type="text" id="uf_rqe" name="uf_rqe" class="form-control" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-container">
+                        <div class="form-group" style="flex:20%;">
+                            <label for="nascimento">Data Nascimento:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" id="nascimento" name="nascimento" class="form-control">
+                            </div>
+                        </div>
+
+
                         <div class="form-group" style="flex:20%;">
                             <label for="sexo-medico">Sexo:</label>
                             <div class="input-with-icon">
@@ -76,15 +120,13 @@
                         </div>
 
                         <div class="form-group" style="flex:20%;">
-                            <label for="nascimento">Data Nascimento:</label>
+                            <label for="contato">Contato:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
                                 <i class="fas fa-calendar-alt"></i>
-                                <input type="date" id="nascimento" name="nascimento" class="form-control">
+                                <input type="text" id="contato" name="contato" class="form-control">
                             </div>
                         </div>
-                    </div>
 
-                    <div class="address-container">
                         <!-- <div class="form-group" style="flex:20%;">
                             <label for="numero_rg">Número do RG:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
@@ -94,28 +136,18 @@
                             </div>
                         </div> -->
 
-                        <div class="form-group" style="flex:20%;">
+                        <!-- <div class="form-group" style="flex:20%;">
                             <label for="uf_rg">UF/RG:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-map-marker-alt"></i> <!-- Representa UF ou localização -->
+                                <i class="fas fa-map-marker-alt"></i>
 
                                 <input type="text" id="uf_rg" name="uf_rg" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="address-container">
-                        <div class="form-group" style="flex:20%;">
-                            <label for="documento_classe">Documento de Classe:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-address-card"></i>
-                                <select id="documento_classe" name="documento_classe" class="form-control">
-                                    <option value="selecione">Selecione</option>
-                                    <option value="RQE">RQE</option>
-                                    <option value="CRM">CRM</option>
-                                </select>
-                            </div>
-                        </div>
+
 
                         <!-- <div class="form-group" style="flex:20%;">
                             <label for="numero_documento_classe">N° Documento de Classe:</label>
@@ -125,13 +157,13 @@
                             </div>
                         </div> -->
 
-                        <div class="form-group" style="flex:20%;">
+                        <!-- <div class="form-group" style="flex:20%;">
                             <label for="uf_documento_classe">UF/Documento de Classe:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-map-marker-alt"></i> <!-- Representa UF ou localização -->
+                                <i class="fas fa-map-marker-alt"></i>
                                 <input type="text" id="uf_documento_classe" name="uf_documento_classe" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
