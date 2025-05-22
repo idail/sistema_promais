@@ -123,7 +123,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_sexo_medico = $_POST["valor_sexo_medico"];
         $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
         $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
-        $recebe_n_documento_classe_medico = $_POST["valor_n_documento_classe_medico"];
+        // $recebe_n_documento_classe_medico = $_POST["valor_n_documento_classe_medico"];
         $recebe_uf_documento_classe_medico = $_POST["valor_uf_documento_classe_medico"];
         $recebe_crm_medico = $_POST["valor_crm_medico"];
         $recebe_contato_medico = $_POST["valor_contato_medico"];
@@ -132,10 +132,9 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         
 
         $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,nascimento,sexo,uf_rg,
-        documento_classe,n_documento_classe,uf_documento_classe,crm,contato,status,created_at,updated_at)
+        documento_classe,uf_documento_classe,crm,contato,status,created_at,updated_at)
         values(:recebe_empresa_id,:recebe_nome_medico,:recebe_cpf_medico,:recebe_nascimento_medico
         ,:recebe_sexo_medico,:recebe_uf_rg_medico,:recebe_documento_classe_medico,
-        :recebe_n_documento_classe_medico,
         :recebe_uf_documento_classe,:recebe_crm_medico,:recebe_contato_medico,
         :recebe_status_medico,:recebe_created_at,:recebe_updated_at)";
         $comando_cadastra_medico = $pdo->prepare($instrucao_cadastra_medico);
@@ -152,7 +151,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_cadastra_medico->bindValue(":recebe_sexo_medico",$recebe_sexo_medico);
         $comando_cadastra_medico->bindValue(":recebe_uf_rg_medico",$recebe_uf_rg_medico);
         $comando_cadastra_medico->bindValue(":recebe_documento_classe_medico",$recebe_documento_classe_medico);
-        $comando_cadastra_medico->bindValue(":recebe_n_documento_classe_medico",$recebe_n_documento_classe_medico);
+        // $comando_cadastra_medico->bindValue(":recebe_n_documento_classe_medico",$recebe_n_documento_classe_medico);
         $comando_cadastra_medico->bindValue(":recebe_uf_documento_classe",$recebe_uf_documento_classe_medico);
         // $comando_cadastra_medico->bindValue(":recebe_especialidade_medico",$recebe_especialidade_medico);
         $comando_cadastra_medico->bindValue(":recebe_crm_medico",$recebe_crm_medico);

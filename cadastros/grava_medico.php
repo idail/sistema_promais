@@ -117,13 +117,13 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex:20%;">
+                        <!-- <div class="form-group" style="flex:20%;">
                             <label for="numero_documento_classe">N° Documento de Classe:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
                                 <i class="fas fa-id-card"></i>
                                 <input type="text" id="numero_documento_classe" name="numero_documento_classe" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group" style="flex:20%;">
                             <label for="uf_documento_classe">UF/Documento de Classe:</label>
