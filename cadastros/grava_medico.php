@@ -442,6 +442,12 @@
                             $("#nome").val(resposta_medico[indice].nome);
                             $("#cpf").val(resposta_medico[indice].cpf);
                             $("#crm").val(resposta_medico[indice].crm);
+                            $("#uf_crm").val(resposta_medico[indice].uf_crm);
+                            $("#especialidade").val(resposta_medico[indice].especialidade);
+                            $("#rqe").val(resposta_medico[indice].rqe);
+                            $("#uf_rqe").val(resposta_medico[indice].uf_rqe);
+                            $("#nascimento").val(resposta_medico[indice].nascimento);
+                            $("#sexo-medico").val(resposta_medico[indice].sexo);
                             $("#contato").val(resposta_medico[indice].contato);
                         }
                     }
@@ -659,12 +665,21 @@
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "alterar_medico",
-                    valor_nome_medico: recebe_nome_pessoa,
-                    valor_cpf_medico: recebe_cpf_pessoa,
-                    valor_crm_medico: recebe_nascimento_pessoa,
-                    valor_contato_medico: recebe_sexo_pessoa,
-                    valor_id_pessoa: $("#pessoa_id_alteracao").val(),
+                    processo_medico: "alterar_medico",
+                    valor_data_cadastro_medico: recebe_data_cadastro_medico,
+                    valor_nome_medico: recebe_nome_medico,
+                    valor_cpf_medico: recebe_cpf_medico,
+                    valor_crm_medico: recebe_crm_medico,
+                    valor_uf_crm_medico: recebe_uf_crm_medico,
+                    valor_especialidade_medico: recebe_especialidade_medico,
+                    valor_rqe_medico: recebe_rqe_medico,
+                    valor_uf_rqe_medico: recebe_uf_rqe_medico,
+                    valor_nascimento_medico: recebe_nascimento_medico,
+                    valor_sexo_medico: recebe_sexo_medico,
+                    valor_contato_medico: recebe_contato_medico,
+
+                    valor_empresa_id_medico: recebe_empresa_id_medico,
+                    valor_id_medico: $("#medico_id_alteracao").val(),
                 },
                 success: function(retorno_pessoa) {
                     debugger;
@@ -672,11 +687,11 @@
                     console.log(retorno_pessoa);
                     if (retorno_pessoa) {
                         console.log("Pessoa alterada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                        window.location.href = "painel.php?pg=medicos";
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao inserir empresa:" + error);
+                    console.log("Falha ao alterar médico:" + error);
                 },
             });
         } else {
