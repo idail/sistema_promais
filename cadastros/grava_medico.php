@@ -73,15 +73,24 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex:20%;">
-                            <label for="documento_classe">Documento de Classe:</label>
+                        <!-- <div class="form-group" style="flex:20%;">
+                            <label for="rqe">RQE:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-address-card"></i>
-                                <select id="documento_classe" name="documento_classe" class="form-control">
+                                <select id="rqe" name="rqe" class="form-control">
                                     <option value="selecione">Selecione</option>
                                     <option value="RQE" selected>RQE</option>
                                     <option value="CRM">CRM</option>
                                 </select>
+                            </div>
+                        </div> -->
+
+                        <div class="form-group" style="flex: 15%; min-width: 150px;">
+                            <label for="rqe">RQE:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+
+                                <input type="text" id="rqe" name="rqe" class="form-control" style="width: 100%;">
                             </div>
                         </div>
 
@@ -89,7 +98,7 @@
                             <div class="form-group" style="flex: 15%; min-width: 150px;">
                                 <label for="uf_rqe">UF/RQE:</label>
                                 <div class="input-with-icon">
-                                    <i class="fas fa-map-marker-alt"></i> 
+                                    <i class="fas fa-map-marker-alt"></i>
 
                                     <input type="text" id="uf_rqe" name="uf_rqe" class="form-control" style="width: 100%;">
                                 </div>
@@ -599,23 +608,29 @@
         e.preventDefault();
 
         debugger;
+        let recebe_data_cadastro_medico = $("#created_at").val();
         let recebe_nome_medico = $("#nome").val();
         let recebe_cpf_medico = $("#cpf").val();
-        // let recebe_pcmso_medico = $("#pcmso").val();
-        // let recebe_especialidade_medico = $("#especialidade").val();
         let recebe_crm_medico = $("#crm").val();
-        let recebe_contato_medico = $("#contato").val();
-        let recebe_data_cadastro_medico = $("#created_at").val();
-        let recebe_empresa_id_medico = $("#empresa_id").val();
-        let recebe_sexo_medico = $("#sexo_medico").val();
+        let recebe_uf_crm_medico = $("#uf_crm").val();
+        let recebe_especialidade_medico = $("#especialidade").val();
+        let recebe_rqe_medico = $("#rqe").val();
+        let recebe_uf_rqe_medico = $("#uf_rqe").val();
         let recebe_nascimento_medico = $("#nascimento").val();
-        let recebe_numero_rg_medico = $("#numero_rg").val();
-        let recebe_uf_rg_medico = $("#uf_rg").val();
-        let recebe_documento_classe_medico = $("#documento_classe").val();
-        let recebe_n_documento_classe_medico = $("#numero_documento_classe").val();
-        let recebe_uf_documento_classe_medico = $("#uf_documento_classe").val();
+        let recebe_sexo_medico = $("#sexo_medico").val();
+        let recebe_contato_medico = $("#contato").val();
+        let recebe_empresa_id_medico = $("#empresa_id").val();
 
+
+        // let recebe_numero_rg_medico = $("#numero_rg").val();
+        // let recebe_uf_rg_medico = $("#uf_rg").val();
+        // let recebe_documento_classe_medico = $("#documento_classe").val();
+        // let recebe_n_documento_classe_medico = $("#numero_documento_classe").val();
+        // let recebe_uf_documento_classe_medico = $("#uf_documento_classe").val();
+
+        // let recebe_pcmso_medico = $("#pcmso").val();
         console.log(recebe_empresa_id_medico);
+
         // let recebe_cargo_pessoa = $("#cargo").val();
 
         // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
@@ -671,21 +686,26 @@
                 dataType: "json",
                 data: {
                     processo_medico: "inserir_medico",
+                    valor_data_cadastro_medico: recebe_data_cadastro_medico,
                     valor_nome_medico: recebe_nome_medico,
                     valor_cpf_medico: recebe_cpf_medico,
-                    // valor_pcmso_medico: recebe_pcmso_medico,
-                    // valor_especialidade_medico: recebe_especialidade_medico,
                     valor_crm_medico: recebe_crm_medico,
-                    valor_contato_medico: recebe_contato_medico,
-                    valor_data_cadastro_medico: recebe_data_cadastro_medico,
-                    valor_empresa_id_medico: recebe_empresa_id_medico,
-                    valor_sexo_medico: recebe_sexo_medico,
+                    valor_uf_crm_medico: recebe_uf_crm_medico,
+                    valor_especialidade_medico: recebe_especialidade_medico,
+                    valor_rqe_medico: recebe_rqe_medico,
+                    valor_uf_rqe_medico: recebe_uf_rqe_medico,
                     valor_nascimento_medico: recebe_nascimento_medico,
-                    valor_numero_rg_medico: recebe_numero_rg_medico,
-                    valor_uf_rg_medico: recebe_uf_rg_medico,
-                    valor_documento_classe_medico: recebe_documento_classe_medico,
-                    valor_n_documento_classe_medico: recebe_n_documento_classe_medico,
-                    valor_uf_documento_classe_medico: recebe_uf_documento_classe_medico
+                    valor_sexo_medico: recebe_sexo_medico,
+                    valor_contato_medico: recebe_contato_medico,
+
+                    valor_empresa_id_medico: recebe_empresa_id_medico,
+
+                    // valor_pcmso_medico: recebe_pcmso_medico,
+                    // valor_numero_rg_medico: recebe_numero_rg_medico,
+                    // valor_uf_rg_medico: recebe_uf_rg_medico,
+                    // valor_documento_classe_medico: recebe_documento_classe_medico,
+                    // valor_n_documento_classe_medico: recebe_n_documento_classe_medico,
+                    // valor_uf_documento_classe_medico: recebe_uf_documento_classe_medico
                     // valor_cargo_pessoa: recebe_cargo_pessoa,
                     // valor_cbo_pessoa: recebe_cbo_pessoa,
                     // valor_idade_pessoa: recebe_idade_pessoa,

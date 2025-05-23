@@ -116,48 +116,54 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
 
     if($recebe_processo_medico === "inserir_medico")
     {
-        $recebe_empresa_id_medico = $_POST["valor_empresa_id_medico"];
+        $recebe_data_cadastro_medico = $_POST["valor_data_cadastro_medico"];
         $recebe_nome_medico = $_POST["valor_nome_medico"];
         $recebe_cpf_medico = $_POST["valor_cpf_medico"];
-        $recebe_nascimento_medico = !empty($_POST["valor_nascimento_medico"]) ? $_POST["valor_nascimento_medico"] : null;
-        $recebe_sexo_medico = $_POST["valor_sexo_medico"];
-        $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
-        $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
-        // $recebe_n_documento_classe_medico = $_POST["valor_n_documento_classe_medico"];
-        $recebe_uf_documento_classe_medico = $_POST["valor_uf_documento_classe_medico"];
         $recebe_crm_medico = $_POST["valor_crm_medico"];
-        $recebe_contato_medico = $_POST["valor_contato_medico"];
-        $recebe_data_cadastro_medico = $_POST["valor_data_cadastro_medico"];
+        $recebe_uf_crm_medico = !empty($_POST["valor_uf_crm_medico"]) ? $_POST["valor_uf_crm_medico"] : null;
+        $recebe_especialidade_medico = !empty($_POST["valor_especialidade_medico"]) ? $_POST["valor_especialidade_medico"] : null;
+        $recebe_rqe_medico = !empty($_POST["valor_rqe_medico"]) ? $_POST["valor_rqe_medico"] : null;
+        $recebe_uf_rqe_medico = !empty($_POST["valor_uf_rqe_medico"]) ? $_POST["valor_uf_rqe_medico"] : null;
+        $recebe_nascimento_medico = !empty($_POST["valor_nascimento_medico"]) ? $_POST["valor_nascimento_medico"] : null;
+        $recebe_sexo_medico = !empty($_POST["valor_sexo_medico"]) ? $_POST["valor_sexo_medico"] : null;
+        $recebe_contato_medico = !empty($_POST["valor_contato_medico"]) ? $_POST["valor_contato_medico"] : null;
+        $recebe_empresa_id_medico = $_POST["valor_empresa_id_medico"];
+        
+        // $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
+        // $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
+        // $recebe_n_documento_classe_medico = $_POST["valor_n_documento_classe_medico"];
+        // $recebe_uf_documento_classe_medico = $_POST["valor_uf_documento_classe_medico"];
+        
+        
+        
         // $recebe_numero_rg_medico = $_POST["valor_numero_rg_medico"];
         
 
-        $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,nascimento,sexo,uf_rg,
-        documento_classe,uf_documento_classe,crm,contato,status,created_at,updated_at)
-        values(:recebe_empresa_id,:recebe_nome_medico,:recebe_cpf_medico,:recebe_nascimento_medico
-        ,:recebe_sexo_medico,:recebe_uf_rg_medico,:recebe_documento_classe_medico,
-        :recebe_uf_documento_classe,:recebe_crm_medico,:recebe_contato_medico,
-        :recebe_status_medico,:recebe_created_at,:recebe_updated_at)";
+        $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,nascimento,sexo,
+        especialidade,crm,uf_crm,rqe,uf_rqe,contato,status,created_at,updated_at)
+        values(:recebe_empresa_id,:recebe_nome,:recebe_cpf,:recebe_nascimento,:recebe_sexo,:recebe_especialidade,
+        :recebe_crm,:recebe_uf_crm,:recebe_rqe,:recebe_uf_rqe,:recebe_contato,
+        :recebe_status,:recebe_created_at,:recebe_updated_at)";
         $comando_cadastra_medico = $pdo->prepare($instrucao_cadastra_medico);
         $comando_cadastra_medico->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico);
-        $comando_cadastra_medico->bindValue(":recebe_nome_medico",$recebe_nome_medico);
-        $comando_cadastra_medico->bindValue(":recebe_cpf_medico",$recebe_cpf_medico);
-
+        $comando_cadastra_medico->bindValue(":recebe_nome",$recebe_nome_medico);
+        $comando_cadastra_medico->bindValue(":recebe_cpf",$recebe_cpf_medico);
+        
         if ($recebe_nascimento_medico === null) {
-            $comando_cadastra_medico->bindValue(":recebe_nascimento_medico", null, PDO::PARAM_NULL);
+            $comando_cadastra_medico->bindValue(":recebe_nascimento", null, PDO::PARAM_NULL);
         } else {
-            $comando_cadastra_medico->bindValue(":recebe_nascimento_medico", $recebe_nascimento_medico);
+            $comando_cadastra_medico->bindValue(":recebe_nascimento", $recebe_nascimento_medico);
         }
 
-        $comando_cadastra_medico->bindValue(":recebe_sexo_medico",$recebe_sexo_medico);
-        $comando_cadastra_medico->bindValue(":recebe_uf_rg_medico",$recebe_uf_rg_medico);
-        $comando_cadastra_medico->bindValue(":recebe_documento_classe_medico",$recebe_documento_classe_medico);
-        // $comando_cadastra_medico->bindValue(":recebe_n_documento_classe_medico",$recebe_n_documento_classe_medico);
-        $comando_cadastra_medico->bindValue(":recebe_uf_documento_classe",$recebe_uf_documento_classe_medico);
-        // $comando_cadastra_medico->bindValue(":recebe_especialidade_medico",$recebe_especialidade_medico);
-        $comando_cadastra_medico->bindValue(":recebe_crm_medico",$recebe_crm_medico);
-        // $comando_cadastra_medico->bindValue(":recebe_pcmso_medico",$recebe_pcmso_medico);
-        $comando_cadastra_medico->bindValue(":recebe_contato_medico",$recebe_contato_medico);
-        $comando_cadastra_medico->bindValue(":recebe_status_medico","Ativo");
+        $comando_cadastra_medico->bindValue(":recebe_sexo",$recebe_sexo_medico);
+        $comando_cadastra_medico->bindValue(":recebe_especialidade",$recebe_especialidade_medico);
+
+        $comando_cadastra_medico->bindValue(":recebe_crm",$recebe_crm_medico);
+        $comando_cadastra_medico->bindValue(":recebe_uf_crm",$recebe_uf_crm_medico);
+        $comando_cadastra_medico->bindValue(":recebe_rqe",$recebe_rqe_medico);
+        $comando_cadastra_medico->bindValue(":recebe_uf_rqe",$recebe_uf_rqe_medico);
+        $comando_cadastra_medico->bindValue(":recebe_contato",$recebe_contato_medico);
+        $comando_cadastra_medico->bindValue(":recebe_status","Ativo");
         $comando_cadastra_medico->bindValue(":recebe_created_at",$recebe_data_cadastro_medico);
         $comando_cadastra_medico->bindValue(":recebe_updated_at",$recebe_data_cadastro_medico);
         $comando_cadastra_medico->execute();
