@@ -156,7 +156,7 @@
                 <th>ID</th>
                 <th>Nome</th>
                 <th>CPF</th>
-                <th>Número Registro</th>
+                <th>CRM</th>
                 <th>Data Cadastro</th>
                 <th>Ações</th> <!-- Nova coluna para os botões de ação -->
             </tr>
@@ -219,7 +219,7 @@
                 <td>${medico.id}</td>
                 <td>${medico.nome}</td>
                 <td>${medico.cpf}</td>
-                <td>${medico.pcmso}</td>
+                <td>${medico.crm}</td>
                 <td>${data_cadastro_formatada}</td>
                 <td>
                 <div class="action-buttons">
