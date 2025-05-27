@@ -10,13 +10,13 @@
 
             <input type="hidden" name="medico_id_alteracao" id="medico_id_alteracao">
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
                 <div class="input-with-icon">
                     <i class="fas fa-calendar-alt"></i>
                     <input type="datetime-local" id="created_at" name="created_at" class="form-control" readonly>
                 </div>
-            </div>
+            </div> -->
 
             <div class="form-columns">
                 <div class="form-column">
@@ -25,37 +25,45 @@
                     <div class="address-container">
 
                         <div class="form-group" style="flex: 50%;">
-                            <label for="nome">Nome Completo:</label>
+                            <label for="codigo_risco">Código:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="nome" name="nome" class="form-control">
+                                <input type="text" id="codigo_risco" name="codigo_risco" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group" style="flex: 50%;">
-                            <label for="cpf">CPF:</label>
+                            <label for="descricao_risco">Descrição do Risco:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-address-card"></i>
                                 <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="cpf" name="cpf" class="form-control" oninput="formatCPF(this)">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="address-container">
-                        <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="crm">CRM:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-id-card"></i>
-
-                                <input type="text" id="crm" name="crm" class="form-control" style="width: 100%;">
+                                <input type="text" id="descricao_risco" name="descricao_risco" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group" style="flex:20%;">
+                            <label for="rqe">Grupo de Risco:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-address-card"></i>
+                                <select id="rqe" name="rqe" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="ergonomico" selected>Ergonômico</option>
+                                    <option value="acidente">Acidente</option>
+                                    <option value="quimico">Químico</option>
+                                    <option value="fisico">Físico</option>
+                                    <option value="biologico">Biológico</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="address-container">
+                        
+
+                        <div class="form-group" style="flex:20%;">
                             <label for="uf_crm">UF/CRM:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-map-marker-alt"></i> <!-- Representa UF ou localização -->
+                                <i class="fas fa-map-marker-alt"></i>
 
                                 <input type="text" id="uf_crm" name="uf_crm" class="form-control">
                             </div>
@@ -73,17 +81,7 @@
                             </div>
                         </div>
 
-                        <!-- <div class="form-group" style="flex:20%;">
-                            <label for="rqe">RQE:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-address-card"></i>
-                                <select id="rqe" name="rqe" class="form-control">
-                                    <option value="selecione">Selecione</option>
-                                    <option value="RQE" selected>RQE</option>
-                                    <option value="CRM">CRM</option>
-                                </select>
-                            </div>
-                        </div> -->
+                        
 
                         <div class="form-group" style="flex: 15%; min-width: 150px;">
                             <label for="rqe">RQE:</label>
@@ -135,45 +133,10 @@
                                 <input type="text" id="contato" name="contato" class="form-control">
                             </div>
                         </div>
-
-                        <!-- <div class="form-group" style="flex:20%;">
-                            <label for="numero_rg">Número do RG:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-id-card"></i>
-
-                                <input type="text" id="numero_rg" name="numero_rg" class="form-control">
-                            </div>
-                        </div> -->
-
-                        <!-- <div class="form-group" style="flex:20%;">
-                            <label for="uf_rg">UF/RG:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-map-marker-alt"></i>
-
-                                <input type="text" id="uf_rg" name="uf_rg" class="form-control">
-                            </div>
-                        </div> -->
                     </div>
 
                     <div class="address-container">
-
-
-                        <!-- <div class="form-group" style="flex:20%;">
-                            <label for="numero_documento_classe">N° Documento de Classe:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-id-card"></i>
-                                <input type="text" id="numero_documento_classe" name="numero_documento_classe" class="form-control">
-                            </div>
-                        </div> -->
-
-                        <!-- <div class="form-group" style="flex:20%;">
-                            <label for="uf_documento_classe">UF/Documento de Classe:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" id="uf_documento_classe" name="uf_documento_classe" class="form-control">
-                            </div>
-                        </div> -->
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -185,6 +148,51 @@
             <button type="button" class="btn btn-primary" id="grava-medico">Salvar</button>
             <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
         </form>
+
+        <div class="form-columns">
+
+            <div class="accordion" id="accordion-riscos">
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section1" id="accordion1">Risco
+                        Ergonômico</button>
+                    <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1">
+                        Conteúdo da Seção 1
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section2" id="accordion2">Acidentes</button>
+                    <div class="accordion-content hidden" id="section2" role="region" aria-labelledby="accordion2">
+                        Conteúdo da Seção 2
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section3" id="accordion3">Físicos</button>
+                    <div class="accordion-content hidden" id="section3" role="region" aria-labelledby="accordion3">
+                        Conteúdo da Seção 3
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section4" id="accordion4">Químicos</button>
+                    <div class="accordion-content hidden" id="section4" role="region" aria-labelledby="accordion4">
+                        Conteúdo da Seção 4
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section5"
+                        id="accordion5">Biológicos</button>
+                    <div class="accordion-content hidden" id="section5" role="region" aria-labelledby="accordion5">
+                        Conteúdo da Seção 5
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
     </div>
 
     <!-- <div id="profissionais" class="tab-content">
@@ -369,6 +377,89 @@
         background-color: #5a6268;
         /* cinza mais escuro no hover */
     }
+
+    .accordion {
+    margin-top: 30px;
+}
+
+.accordion-item {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.accordion-header {
+    width: 100%;
+    text-align: left;
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: 600;
+    padding: 14px 20px; /* Ajuste do padding do cabeçalho */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.accordion-header:hover {
+    background-color: #ddd;
+}
+
+.accordion-header[aria-expanded="true"] {
+    background-color: #ccc;
+}
+
+.accordion-content {
+    padding: 20px 30px; /* Aumentei o padding interno */
+    background-color: #fafafa;
+    color: #555;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.accordion-content.hidden {
+    display: none;
+}
+
+
+
+
+    /* Botões de salvar e cancelar ajustados */
+    #grava-medico,
+    #retornar-listagem-medicos {
+        margin-top: 20px;
+    }
+
+    /* Ajuste opcional no botão 'Cancelar' */
+    #retornar-listagem-medicos.botao-cinza {
+        background-color: #bbb;
+        color: #333;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    #retornar-listagem-medicos.botao-cinza:hover {
+        background-color: #999;
+    }
+
+    /* Ajuste no container */
+    .tab-content {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .accordion-content {
+        padding: 10px;
+        background-color: #f2f2f2;
+        border: 1px solid #ddd;
+    }
 </style>
 
 <script>
@@ -420,6 +511,27 @@
 
         buscar_informacoes_medico();
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const headers = document.querySelectorAll(".accordion-header");
+
+        headers.forEach((header) => {
+            header.addEventListener("click", () => {
+                const content = header.nextElementSibling;
+
+                // Fechar todos os outros
+                document.querySelectorAll(".accordion-content").forEach((el) => {
+                    if (el !== content) {
+                        el.classList.add("hidden");
+                    }
+                });
+
+                // Alternar visibilidade do clicado
+                content.classList.toggle("hidden");
+            });
+        });
+    });
+
 
     $("#retornar-listagem-medicos").click(function(e) {
         e.preventDefault();
@@ -607,15 +719,15 @@
     // let recebe_id_cidade;
 
     // $("#cidade_id").change(function(e) {
-    //     e.preventDefault();
+    // e.preventDefault();
 
-    //     debugger;
-    //     recebe_id_cidade = $(this).val();
-    //     let recebe_cidade_pessoa = $('#cidade_id option:selected').text(); // Nome da cidade
-    //     let recebe_array_informacoes_cidade_pessoa = recebe_cidade_pessoa.split("-");
-    //     let recebe_informacao_cidade_pessoa = recebe_array_informacoes_cidade_pessoa[0];
-    //     let recebe_informacao_estado_pessoa = recebe_array_informacoes_cidade_pessoa[1];
-    //     recebe_nome_cidade_pessoa = recebe_informacao_cidade_pessoa + "," + recebe_informacao_estado_pessoa;
+    // debugger;
+    // recebe_id_cidade=$(this).val();
+    // let recebe_cidade_pessoa=$('#cidade_id option:selected').text(); // Nome da cidade
+    // let recebe_array_informacoes_cidade_pessoa=recebe_cidade_pessoa.split("-");
+    // let recebe_informacao_cidade_pessoa=recebe_array_informacoes_cidade_pessoa[0];
+    // let recebe_informacao_estado_pessoa=recebe_array_informacoes_cidade_pessoa[1];
+    // recebe_nome_cidade_pessoa=recebe_informacao_cidade_pessoa + "," + recebe_informacao_estado_pessoa;
     // });
 
     $("#grava-medico").click(function(e) {
@@ -636,34 +748,34 @@
         let recebe_empresa_id_medico = $("#empresa_id").val();
 
 
-        // let recebe_numero_rg_medico = $("#numero_rg").val();
-        // let recebe_uf_rg_medico = $("#uf_rg").val();
-        // let recebe_documento_classe_medico = $("#documento_classe").val();
-        // let recebe_n_documento_classe_medico = $("#numero_documento_classe").val();
-        // let recebe_uf_documento_classe_medico = $("#uf_documento_classe").val();
+        // let recebe_numero_rg_medico=$("#numero_rg").val();
+        // let recebe_uf_rg_medico=$("#uf_rg").val();
+        // let recebe_documento_classe_medico=$("#documento_classe").val();
+        // let recebe_n_documento_classe_medico=$("#numero_documento_classe").val();
+        // let recebe_uf_documento_classe_medico=$("#uf_documento_classe").val();
 
-        // let recebe_pcmso_medico = $("#pcmso").val();
+        // let recebe_pcmso_medico=$("#pcmso").val();
         console.log(recebe_empresa_id_medico);
 
-        // let recebe_cargo_pessoa = $("#cargo").val();
+        // let recebe_cargo_pessoa=$("#cargo").val();
 
-        // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
-        //     recebe_id_cidade = $("#cidade_id").val();
+        // if (recebe_id_cidade==="" || recebe_id_cidade===undefined)
+        // recebe_id_cidade=$("#cidade_id").val();
 
-        // let recebe_cidade_id_empresa = $("#cidade_id").val();
-        // let recebe_endereco_pessoa = $("#endereco").val();
-        // let recebe_numero_pessoa = $("#numero").val();
-        // let recebe_complemento_pessoa = $("#complemento").val();
-        // let recebe_bairro_pessoa = $("#bairro").val();
-        // let recebe_cep_pessoa = $("#cep").val();
-        // let recebe_email_pessoa = $("#email").val();
-        // let recebe_senha_pessoa = $("#senha").val();
-        // let recebe_cbo_pessoa = $("#cbo").val();
-        // let recebe_idade_pessoa = $("#idade").val();
-        // let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
-        // let recebe_empresa_id = $("#empresa_id").val();
+        // let recebe_cidade_id_empresa=$("#cidade_id").val();
+        // let recebe_endereco_pessoa=$("#endereco").val();
+        // let recebe_numero_pessoa=$("#numero").val();
+        // let recebe_complemento_pessoa=$("#complemento").val();
+        // let recebe_bairro_pessoa=$("#bairro").val();
+        // let recebe_cep_pessoa=$("#cep").val();
+        // let recebe_email_pessoa=$("#email").val();
+        // let recebe_senha_pessoa=$("#senha").val();
+        // let recebe_cbo_pessoa=$("#cbo").val();
+        // let recebe_idade_pessoa=$("#idade").val();
+        // let recebe_nivel_acesso_pessoa=$("#acesso-pessoa").val();
+        // let recebe_empresa_id=$("#empresa_id").val();
 
-        // let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
+        // let recebe_endereco_completo=recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
 
         // console.log(recebe_endereco_completo);
 

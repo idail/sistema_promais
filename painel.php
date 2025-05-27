@@ -49,11 +49,11 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                             <a href="?pg=empresas">Empresas</a>
                             <a href="?pg=pessoas">Pessoas</a>
                             <a href="?pg=medicos">M&#xe9;dicos</a>
-                            <a href="?pg=riscos">Riscos</a>
-                            <a href="?pg=exames">Cadastro de Exames</a>
-                            <a href="?pg=cargos">Cargos/CBO</a>
+                            <a href="?pg=grava_risco">Riscos</a>
+                            <a href="?pg=exames">Exames</a>
+                            <a href="?pg=cargos">Cidades/CEP</a>
                             <a href="?pg=cidades">Cidades</a>
-                            <a href="?pg=bairros">Bairros</a>
+                            <a href="?pg=bairros">Estados/UF</a>
                         </div>
                     </li>
                     <li>
