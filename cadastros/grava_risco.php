@@ -24,7 +24,7 @@
 
                     <div class="address-container">
 
-                        <div class="form-group" style="flex: 50%;">
+                        <div class="form-group" style="flex: 30%;">
                             <label for="codigo_risco">Código:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-cogs"></i>
@@ -33,7 +33,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex: 50%;">
+                        <div class="form-group" style="flex: 30%;">
                             <label for="descricao_risco">Descrição do Risco:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -43,103 +43,23 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="flex:20%;">
-                            <label for="rqe">Grupo de Risco:</label>
+                        <div class="form-group" style="flex:30%;">
+                            <label for="grupo_risco">Grupo de Risco:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-users"></i>
 
-                                <select id="rqe" name="rqe" class="form-control">
+                                <select id="grupo_risco" name="grupo_risco" class="form-control">
                                     <option value="selecione">Selecione</option>
-                                    <option value="ergonomico" selected>Ergonômico</option>
-                                    <option value="acidente">Acidente</option>
-                                    <option value="quimico">Químico</option>
-                                    <option value="fisico">Físico</option>
-                                    <option value="biologico">Biológico</option>
+                                    <option value="ergonomico" selected>Riscos Ergonômicos</option>
+                                    <option value="acidente_mecanico">Riscos Acidentes - Mecânicos</option>
+                                    <option value="fisico">Riscos Físicos</option>
+                                    <option value="quimico">Riscos Químicos</option>
+                                    <option value="biologico">Riscos Biológicos</option>
+                                    <option value="outro">Outros</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-
-                    <!-- <div class="address-container">
-                        
-
-                        <div class="form-group" style="flex:20%;">
-                            <label for="uf_crm">UF/CRM:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-map-marker-alt"></i>
-
-                                <input type="text" id="uf_crm" name="uf_crm" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="address-container">
-
-                        <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="especialidade">Especialidade:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-user-cog"></i>
-
-                                <input type="text" id="especialidade" name="especialidade" class="form-control" style="width: 100%;">
-                            </div>
-                        </div>
-
-                        
-
-                        <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="rqe">RQE:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-id-card"></i>
-
-                                <input type="text" id="rqe" name="rqe" class="form-control" style="width: 100%;">
-                            </div>
-                        </div>
-
-                        <div class="address-container">
-                            <div class="form-group" style="flex: 15%; min-width: 150px;">
-                                <label for="uf_rqe">UF/RQE:</label>
-                                <div class="input-with-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-
-                                    <input type="text" id="uf_rqe" name="uf_rqe" class="form-control" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="address-container">
-                        <div class="form-group" style="flex:20%;">
-                            <label for="nascimento">Data Nascimento:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input type="date" id="nascimento" name="nascimento" class="form-control">
-                            </div>
-                        </div>
-
-
-                        <div class="form-group" style="flex:20%;">
-                            <label for="sexo-medico">Sexo:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-mars"></i>
-                                <select id="sexo_medico" name="sexo_medico" class="form-control">
-                                    <option value="selecione">Selecione</option>
-                                    <option value="feminino">Feminino</option>
-                                    <option value="masculino">Masculino</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex:20%;">
-                            <label for="contato">Contato:</label>
-                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input type="text" id="contato" name="contato" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="address-container">
-                    </div> -->
                 </div>
             </div>
 
@@ -147,8 +67,9 @@
                 <span id="corpo-mensagem-campo-vazio"></span>
             </div>
 
+            <input type="hidden" name="id_risco_alteracao" id="id_risco_alteracao">
 
-            <button type="button" class="btn btn-primary" id="grava-medico">Salvar</button>
+            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-risco">Salvar</button>
             <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
         </form>
 
@@ -157,39 +78,152 @@
             <div class="accordion" id="accordion-riscos">
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" aria-controls="section1" id="accordion1">Risco
-                        Ergonômico</button>
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section1" id="accordion1">
+                        Riscos Ergonômicos
+                        <span class="accordion-arrow">▼</span>
+                    </button>
                     <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1">
-                        Conteúdo da Seção 1
+                        <div>
+                            <table id="risco_ergonomico">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                        <th>Grupo</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" aria-controls="section2" id="accordion2">Acidentes</button>
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section2" id="accordion2">
+                        Riscos Acidentes - Mecânicos
+                        <span class="accordion-arrow">▼</span>
+                    </button>
                     <div class="accordion-content hidden" id="section2" role="region" aria-labelledby="accordion2">
-                        Conteúdo da Seção 2
+                        <div>
+                            <table id="risco_acidente_mecanico">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                        <th>Grupo</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" aria-controls="section3" id="accordion3">Físicos</button>
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section3" id="accordion3">
+                        Riscos Físicos
+                        <span class="accordion-arrow">▼</span>
+                    </button>
                     <div class="accordion-content hidden" id="section3" role="region" aria-labelledby="accordion3">
-                        Conteúdo da Seção 3
+                        <div>
+                            <table id="risco_fisico">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                        <th>Grupo</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" aria-controls="section4" id="accordion4">Químicos</button>
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section4" id="accordion4">
+                        Riscos Químicos
+                        <span class="accordion-arrow">▼</span>
+                    </button>
                     <div class="accordion-content hidden" id="section4" role="region" aria-labelledby="accordion4">
-                        Conteúdo da Seção 4
+                        <div>
+                            <table id="risco_quimico">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                        <th>Grupo</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" aria-controls="section5"
-                        id="accordion5">Biológicos</button>
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section5" id="accordion5">
+                        Riscos Biológicos
+                        <span class="accordion-arrow">▼</span>
+                    </button>
                     <div class="accordion-content hidden" id="section5" role="region" aria-labelledby="accordion5">
-                        Conteúdo da Seção 5
+                        <div>
+                            <table id="risco_biologico">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                        <th>Grupo</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section6" id="accordion6">
+                        Outros
+                        <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-content hidden" id="section6" role="region" aria-labelledby="accordion6">
+                        <div>
+                            <table id="risco_outros">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                        <th>Grupo</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -465,77 +499,207 @@
         background-color: #f2f2f2;
         border: 1px solid #ddd;
     }
+
+    #risco_ergonomico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_ergonomico th,
+    #risco_ergonomico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_ergonomico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+
+    #risco_acidente_mecanico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_acidente_mecanico th,
+    #risco_acidente_mecanico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_acidente_mecanico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_fisico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_fisico th,
+    #risco_fisico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_fisico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_quimico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_quimico th,
+    #risco_quimico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_quimico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_biologico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_biologico th,
+    #risco_biologico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_biologico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_outros {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_outros th,
+    #risco_outros td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_outros th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    .accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .accordion-arrow {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .accordion-header[aria-expanded="true"] .accordion-arrow {
+        transform: rotate(180deg);
+    }
 </style>
 
 <script>
-    let recebe_codigo_alteracao_medico;
-    let recebe_acao_alteracao_medico = "cadastrar";
+    let recebe_codigo_alteracao_risco;
+    let recebe_acao_alteracao_risco = "cadastrar";
 
     $(document).ready(function(e) {
         debugger;
 
         $("#mensagem-campo-vazio").hide();
 
-        let recebe_url_atual = window.location.href;
+        // let recebe_url_atual = window.location.href;
 
-        let recebe_parametro_acao_medico = new URLSearchParams(recebe_url_atual.split("&")[1]);
+        // let recebe_parametro_acao_risco = new URLSearchParams(recebe_url_atual.split("&")[1]);
 
-        let recebe_parametro_codigo_medico = new URLSearchParams(recebe_url_atual.split("&")[2]);
+        // let recebe_parametro_codigo_risco = new URLSearchParams(recebe_url_atual.split("&")[2]);
 
-        recebe_codigo_alteracao_medico = recebe_parametro_codigo_medico.get("id");
+        // recebe_codigo_alteracao_risco = recebe_parametro_codigo_risco.get("id");
 
-        let recebe_acao_medico = recebe_parametro_acao_medico.get("acao");
+        // let recebe_acao_risco = recebe_parametro_acao_risco.get("acao");
 
-        if (recebe_acao_medico !== "" && recebe_acao_medico !== null)
-            recebe_acao_alteracao_medico = recebe_acao_medico;
+        // if (recebe_acao_risco !== "" && recebe_acao_risco !== null)
+        //     recebe_acao_alteracao_risco = recebe_acao_risco;
 
-        async function buscar_informacoes_medico() {
-            debugger;
-            if (recebe_acao_alteracao_medico === "editar") {
-                // carrega_cidades();
-                // await popula_lista_cidade_empresa_alteracao();
-                await popula_informacoes_medico_alteracao();
-            } else {
-                // carrega_cidades();
+        // async function buscar_informacoes_medico() {
+        //     debugger;
+        //     if (recebe_acao_alteracao_risco === "editar") {
+        //         // carrega_cidades();
+        //         // await popula_lista_cidade_empresa_alteracao();
+        //         await popula_informacoes_medico_alteracao();
+        //     } else {
+        //         // carrega_cidades();
 
-                let atual = new Date();
+        //         // let atual = new Date();
 
-                let ano = atual.getFullYear();
-                let mes = String(atual.getMonth() + 1).padStart(2, '0');
-                let dia = String(atual.getDate()).padStart(2, '0');
-                let horas = String(atual.getHours()).padStart(2, '0');
-                let minutos = String(atual.getMinutes()).padStart(2, '0');
+        //         // let ano = atual.getFullYear();
+        //         // let mes = String(atual.getMonth() + 1).padStart(2, '0');
+        //         // let dia = String(atual.getDate()).padStart(2, '0');
+        //         // let horas = String(atual.getHours()).padStart(2, '0');
+        //         // let minutos = String(atual.getMinutes()).padStart(2, '0');
 
-                // Formato aceito por <input type="datetime-local">
-                let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+        //         // // Formato aceito por <input type="datetime-local">
+        //         // let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
 
-                console.log("Data formatada para input datetime-local:", data_formatada);
-                document.getElementById('created_at').value = data_formatada;
-            }
-        }
+        //         // console.log("Data formatada para input datetime-local:", data_formatada);
+        //         // document.getElementById('created_at').value = data_formatada;
+        //     }
+        // }
 
-        buscar_informacoes_medico();
+        // buscar_informacoes_medico();
+
+        buscar_grupos_riscos();
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const headers = document.querySelectorAll(".accordion-header");
+    // Accordion toggle
+    document.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', !expanded);
 
-        headers.forEach((header) => {
-            header.addEventListener("click", () => {
-                const content = header.nextElementSibling;
-
-                // Fechar todos os outros
-                document.querySelectorAll(".accordion-content").forEach((el) => {
-                    if (el !== content) {
-                        el.classList.add("hidden");
-                    }
-                });
-
-                // Alternar visibilidade do clicado
-                content.classList.toggle("hidden");
-            });
+            const content = document.getElementById(button.getAttribute('aria-controls'));
+            content.classList.toggle('hidden');
         });
     });
+
 
 
     $("#retornar-listagem-medicos").click(function(e) {
@@ -546,179 +710,537 @@
         window.location.href = "painel.php?pg=medicos";
     });
 
-    async function popula_informacoes_medico_alteracao() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: "cadastros/processa_medico.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_medico": "buscar_informacoes_medico_alteracao",
-                    valor_codigo_medico_alteracao: recebe_codigo_alteracao_medico,
-                },
-                success: function(resposta_medico) {
-                    debugger;
-                    console.log(resposta_medico);
+    // async function popula_informacoes_medico_alteracao() {
+    //     return new Promise((resolve, reject) => {
+    //         $.ajax({
+    //             url: "cadastros/processa_medico.php",
+    //             method: "GET",
+    //             dataType: "json",
+    //             data: {
+    //                 "processo_medico": "buscar_informacoes_medico_alteracao",
+    //                 valor_codigo_medico_alteracao: recebe_codigo_alteracao_risco,
+    //             },
+    //             success: function(resposta_medico) {
+    //                 debugger;
+    //                 console.log(resposta_medico);
 
-                    if (resposta_medico.length > 0) {
-                        for (let indice = 0; indice < resposta_medico.length; indice++) {
-                            $("#created_at").val(resposta_medico[indice].created_at);
-                            $("#medico_id_alteracao").val(resposta_medico[indice].id);
-                            $("#nome").val(resposta_medico[indice].nome);
-                            $("#cpf").val(resposta_medico[indice].cpf);
-                            $("#crm").val(resposta_medico[indice].crm);
-                            $("#uf_crm").val(resposta_medico[indice].uf_crm);
-                            $("#especialidade").val(resposta_medico[indice].especialidade);
-                            $("#rqe").val(resposta_medico[indice].rqe);
-                            $("#uf_rqe").val(resposta_medico[indice].uf_rqe);
-                            $("#nascimento").val(resposta_medico[indice].nascimento);
-                            $("#sexo-medico").val(resposta_medico[indice].sexo);
-                            $("#contato").val(resposta_medico[indice].contato);
-                        }
-                    }
+    //                 if (resposta_medico.length > 0) {
+    //                     for (let indice = 0; indice < resposta_medico.length; indice++) {
+    //                         $("#created_at").val(resposta_medico[indice].created_at);
+    //                         $("#medico_id_alteracao").val(resposta_medico[indice].id);
+    //                         $("#nome").val(resposta_medico[indice].nome);
+    //                         $("#cpf").val(resposta_medico[indice].cpf);
+    //                         $("#crm").val(resposta_medico[indice].crm);
+    //                         $("#uf_crm").val(resposta_medico[indice].uf_crm);
+    //                         $("#especialidade").val(resposta_medico[indice].especialidade);
+    //                         $("#rqe").val(resposta_medico[indice].rqe);
+    //                         $("#uf_rqe").val(resposta_medico[indice].uf_rqe);
+    //                         $("#nascimento").val(resposta_medico[indice].nascimento);
+    //                         $("#sexo-medico").val(resposta_medico[indice].sexo);
+    //                         $("#contato").val(resposta_medico[indice].contato);
+    //                     }
+    //                 }
 
-                    resolve(); // sinaliza que terminou
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao buscar médicos:" + error);
-                    reject(error);
-                },
-            });
-        });
-    }
+    //                 resolve(); // sinaliza que terminou
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.log("Falha ao buscar médicos:" + error);
+    //                 reject(error);
+    //             },
+    //         });
+    //     });
+    // }
 
-    function formatCEP(input) {
-        let value = input.value.replace(/\D/g, ''); // remove tudo que não for número
-
-        // Limita a quantidade de dígitos para 8
-        if (value.length > 8) {
-            value = value.substring(0, 8);
-        }
-
-        // Aplica a máscara
-        if (value.length > 5) {
-            value = value.replace(/(\d{5})(\d{1,3})/, '$1-$2');
-        }
-
-        input.value = value; // atualiza o valor do input
-    }
-
-
-    function mascaraTelefone(campo) {
-        let valor = campo.value.replace(/\D/g, ""); // Remove não numéricos
-
-        if (valor.length > 11) {
-            valor = valor.slice(0, 11);
-        }
-
-        if (valor.length <= 10) {
-            // Fixo: (99) 9999-9999
-            valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
-        } else {
-            // Celular: (99) 99999-9999
-            valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
-        }
-
-        campo.value = valor;
-    }
-
-
-    function formatCPF(input) {
-        let value = input.value.replace(/\D/g, ''); // remove tudo que não for número
-
-        // Limita a quantidade de dígitos para 11
-        if (value.length > 11) {
-            value = value.substring(0, 11);
-        }
-
-        // Aplica a máscara
-        if (value.length > 9) {
-            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
-        } else if (value.length > 6) {
-            value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-        } else if (value.length > 3) {
-            value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-        }
-
-        input.value = value; // atualiza o valor do input
-    }
-
-    function formatCNPJ(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 14) value = value.slice(0, 14);
-        value = value.replace(/^(\d{2})(\d)/, '$1.$2');
-        value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
-        value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
-        value = value.replace(/(\d{4})(\d)/, '$1-$2');
-        input.value = value;
-    }
-
-    function validateCNPJ(cnpj) {
-        cnpj = cnpj.replace(/[^\d]+/g, '');
-        if (cnpj.length !== 14) return false;
-        fetchCompanyData(cnpj);
-    }
-
-    function formatCEPValue(cep) {
-        cep = cep.replace(/\D/g, '');
-        if (cep.length > 8) cep = cep.slice(0, 8);
-        return cep.replace(/^(\d{5})(\d{3})$/, '$1-$2');
-    }
-
-    function formatPhoneValue(phone) {
+    function buscar_grupos_riscos(e) {
         debugger;
-        phone = phone.replace(/\D/g, '');
-        if (phone.length > 11) phone = phone.slice(0, 11);
-        return phone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
-    }
 
-    function formatCEP(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 8) value = value.slice(0, 8);
-        value = value.replace(/^(\d{5})(\d{3})$/, '$1-$2');
-        input.value = value;
-    }
-
-    function formatPhone(input) {
-        debugger;
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 11) value = value.slice(0, 11);
-        value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
-        input.value = value;
-    }
-
-    function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
         $.ajax({
-            url: "api/list/cidades.php",
-            type: "get",
+            url: "cadastros/processa_risco.php",
+            method: "GET",
             dataType: "json",
-            data: {},
-            success: function(retorno_cidades) {
-                //debugger;
+            data: {
+                "processo_risco": "buscar_riscos_ergonomico",
+            },
+            success: function(resposta_risco) {
+                debugger;
 
-                console.log(retorno_cidades.data.cidades);
+                console.log(resposta_risco);
 
-                let recebe_select_list_cidades = document.getElementById('cidade_id');
+                if (resposta_risco.length > 0) {
+                    let corpo = document.querySelector("#risco_ergonomico tbody");
+                    corpo.innerHTML = "";
+                    for (let index = 0; index < resposta_risco.length; index++) {
+                        let risco = resposta_risco[index];
 
-                // Limpa opções anteriores
-                recebe_select_list_cidades.innerHTML = '<option value="">Selecione uma cidade</option>';
 
-                let cidades = retorno_cidades.data.cidades;
+                        // let dicionario = {
+                        //     'ergonomico': 'ergonômico',
+                        //     'ergonomicos': 'ergonômicos',
+                        //     'economico': 'econômico',
+                        //     'economicos': 'econômicos',
+                        //     // Adicione mais palavras aqui se precisar
+                        // };
 
-                if (cidades.length > 0) {
-                    for (let i = 0; i < cidades.length; i++) {
-                        let option = document.createElement('option');
-                        option.value = cidades[i].id;
-                        option.text = cidades[i].nome + ' - ' + cidades[i].estado;
-                        recebe_select_list_cidades.appendChild(option);
+                        // let palavraOriginal = risco.grupo_risco.toLocaleLowerCase('pt-BR');
+
+                        // // Verifica no dicionário se há correção
+                        // let palavraCorrigida = dicionario[palavraOriginal] || palavraOriginal;
+
+                        // // Formata a primeira letra maiúscula
+                        // resultado = palavraCorrigida.charAt(0).toLocaleUpperCase('pt-BR') + palavraCorrigida.slice(1);
+
+                        // if (risco.grupo_risco.includes("_")) {
+                        //     resultado = risco.grupo_risco
+                        //         .replace(/_/g, " ")
+                        //         .split(" ")
+                        //         .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
+                        //         .join(" ");
+                        // } else {
+
+                        // }
+
+                        let resultado;
+                        if (risco.grupo_risco !== "") {
+                            resultado = "Ergonômico";
+                        }
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML =
+                            `<td>${risco.id}</td>
+                        <td>${risco.codigo}</td>
+                        <td>${risco.descricao_grupo_risco}</td>
+                        <td>${resultado}</td>
+                        <td>
+                        <div class='action-buttons'>
+                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
+                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                        </td>`;
+                        corpo.appendChild(linha);
                     }
+                } else {
+                    $("#risco_ergonomico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
                 }
+
+                // section1
             },
             error: function(xhr, status, error) {
-                console.log("Erro ao pegar cidades:" + error);
+
             },
         });
+
+        $.ajax({
+            url: "cadastros/processa_risco.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_risco": "buscar_riscos_acidente_mecanico",
+            },
+            success: function(resposta_risco) {
+                debugger;
+
+                console.log(resposta_risco);
+
+                if (resposta_risco.length > 0) {
+                    let corpo = document.querySelector("#risco_acidente_mecanico tbody");
+                    corpo.innerHTML = "";
+                    for (let index = 0; index < resposta_risco.length; index++) {
+                        let risco = resposta_risco[index];
+
+                        // let resultado;
+
+                        // if (risco.grupo_risco.includes("_")) {
+                        //     resultado = risco.grupo_risco
+                        //         .replace(/_/g, " ")
+                        //         .split(" ")
+                        //         .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
+                        //         .join(" ");
+                        // } else {
+                        //     resultado = risco.grupo_risco.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+                        // }
+
+                        let resultado;
+
+                        if (risco.grupo_risco !== "") {
+                            resultado = "Acidente Mecânico";
+                        }
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML =
+                            `<td>${risco.id}</td>
+                        <td>${risco.codigo}</td>
+                        <td>${risco.descricao_grupo_risco}</td>
+                        <td>${resultado}</td>
+                        <td>
+                        <div class='action-buttons'>
+                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
+                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                        </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#risco_acidente_mecanico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // section1
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
+
+        $.ajax({
+            url: "cadastros/processa_risco.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_risco": "buscar_riscos_quimico",
+            },
+            success: function(resposta_risco) {
+                debugger;
+
+                console.log(resposta_risco);
+
+                if (resposta_risco.length > 0) {
+                    let corpo = document.querySelector("#risco_quimico tbody");
+                    corpo.innerHTML = "";
+                    for (let index = 0; index < resposta_risco.length; index++) {
+                        let risco = resposta_risco[index];
+
+                        let resultado;
+                        if (risco.grupo_risco !== "") {
+                            resultado = "Químico";
+                        }
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML =
+                            `<td>${risco.id}</td>
+                        <td>${risco.codigo}</td>
+                        <td>${risco.descricao_grupo_risco}</td>
+                        <td>${resultado}</td>
+                        <td>
+                        <div class='action-buttons'>
+                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
+                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                        </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#risco_quimico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // section1
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
+
+        $.ajax({
+            url: "cadastros/processa_risco.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_risco": "buscar_riscos_fisicos",
+            },
+            success: function(resposta_risco) {
+                debugger;
+
+                console.log(resposta_risco);
+
+                if (resposta_risco.length > 0) {
+                    let corpo = document.querySelector("#risco_fisico tbody");
+                    corpo.innerHTML = "";
+                    for (let index = 0; index < resposta_risco.length; index++) {
+                        let risco = resposta_risco[index];
+
+                        let resultado;
+                        if (risco.grupo_risco !== "") {
+                            resultado = "Físico";
+                        }
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML =
+                            `<td>${risco.id}</td>
+                        <td>${risco.codigo}</td>
+                        <td>${risco.descricao_grupo_risco}</td>
+                        <td>${resultado}</td>
+                        <td>
+                        <div class='action-buttons'>
+                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
+                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                        </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#risco_fisico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // section1
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
+
+
+        $.ajax({
+            url: "cadastros/processa_risco.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_risco": "buscar_riscos_biologico",
+            },
+            success: function(resposta_risco) {
+                debugger;
+
+                console.log(resposta_risco);
+
+                if (resposta_risco.length > 0) {
+                    let corpo = document.querySelector("#risco_biologico tbody");
+                    corpo.innerHTML = "";
+                    for (let index = 0; index < resposta_risco.length; index++) {
+                        let risco = resposta_risco[index];
+
+                        let resultado;
+                        if (risco.grupo_risco !== "") {
+                            resultado = "Biológico";
+                        }
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML =
+                            `<td>${risco.id}</td>
+                        <td>${risco.codigo}</td>
+                        <td>${risco.descricao_grupo_risco}</td>
+                        <td>${resultado}</td>
+                        <td>
+                        <div class='action-buttons'>
+                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
+                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                        </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#risco_biologico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // section1
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
+
+        $.ajax({
+            url: "cadastros/processa_risco.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_risco": "buscar_riscos_outros",
+            },
+            success: function(resposta_risco) {
+                debugger;
+
+                console.log(resposta_risco);
+
+                if (resposta_risco.length > 0) {
+                    let corpo = document.querySelector("#risco_outros tbody");
+                    corpo.innerHTML = "";
+                    for (let index = 0; index < resposta_risco.length; index++) {
+                        let risco = resposta_risco[index];
+
+                        let resultado;
+                        if (risco.grupo_risco !== "") {
+                            resultado = "Outros";
+                        }
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML =
+                            `<td>${risco.id}</td>
+                        <td>${risco.codigo}</td>
+                        <td>${risco.descricao_grupo_risco}</td>
+                        <td>${resultado}</td>
+                        <td>
+                        <div class='action-buttons'>
+                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
+                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                        </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#risco_outros tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // section1
+            },
+            error: function(xhr, status, error) {
+
+            },
+        });
+
+        $(document).on("click","#alterar-risco",function(e){
+            e.preventDefault();
+
+            debugger;
+
+            let recebe_id_risco = $(this).data("id-risco");
+            let recebe_codigo_risco = $(this).data("codigo-risco");
+            let recebe_descricao_risco = $(this).data("descricao-risco");
+            let recebe_grupo_risco = $(this).data("grupo-risco");
+
+            $("#id_risco_alteracao").val(recebe_id_risco);
+            $("#codigo_risco").val(recebe_codigo_risco);
+            $("#descricao_risco").val(recebe_descricao_risco);
+            $("#grupo_risco").val(recebe_grupo_risco);
+
+            // $('button[name="grava_risco"]').attr('id', 'altera-risco');
+            recebe_acao_alteracao_risco = "editar";
+        });
     }
+
+    // function formatCEP(input) {
+    //     let value = input.value.replace(/\D/g, ''); // remove tudo que não for número
+
+    //     // Limita a quantidade de dígitos para 8
+    //     if (value.length > 8) {
+    //         value = value.substring(0, 8);
+    //     }
+
+    //     // Aplica a máscara
+    //     if (value.length > 5) {
+    //         value = value.replace(/(\d{5})(\d{1,3})/, '$1-$2');
+    //     }
+
+    //     input.value = value; // atualiza o valor do input
+    // }
+
+
+    // function mascaraTelefone(campo) {
+    //     let valor = campo.value.replace(/\D/g, ""); // Remove não numéricos
+
+    //     if (valor.length > 11) {
+    //         valor = valor.slice(0, 11);
+    //     }
+
+    //     if (valor.length <= 10) {
+    //         // Fixo: (99) 9999-9999
+    //         valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+    //     } else {
+    //         // Celular: (99) 99999-9999
+    //         valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+    //     }
+
+    //     campo.value = valor;
+    // }
+
+
+    // function formatCPF(input) {
+    //     let value = input.value.replace(/\D/g, ''); // remove tudo que não for número
+
+    //     // Limita a quantidade de dígitos para 11
+    //     if (value.length > 11) {
+    //         value = value.substring(0, 11);
+    //     }
+
+    //     // Aplica a máscara
+    //     if (value.length > 9) {
+    //         value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    //     } else if (value.length > 6) {
+    //         value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    //     } else if (value.length > 3) {
+    //         value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    //     }
+
+    //     input.value = value; // atualiza o valor do input
+    // }
+
+    // function formatCNPJ(input) {
+    //     let value = input.value.replace(/\D/g, '');
+    //     if (value.length > 14) value = value.slice(0, 14);
+    //     value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+    //     value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+    //     value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+    //     value = value.replace(/(\d{4})(\d)/, '$1-$2');
+    //     input.value = value;
+    // }
+
+    // function validateCNPJ(cnpj) {
+    //     cnpj = cnpj.replace(/[^\d]+/g, '');
+    //     if (cnpj.length !== 14) return false;
+    //     fetchCompanyData(cnpj);
+    // }
+
+    // function formatCEPValue(cep) {
+    //     cep = cep.replace(/\D/g, '');
+    //     if (cep.length > 8) cep = cep.slice(0, 8);
+    //     return cep.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+    // }
+
+    // function formatPhoneValue(phone) {
+    //     debugger;
+    //     phone = phone.replace(/\D/g, '');
+    //     if (phone.length > 11) phone = phone.slice(0, 11);
+    //     return phone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    // }
+
+    // function formatCEP(input) {
+    //     let value = input.value.replace(/\D/g, '');
+    //     if (value.length > 8) value = value.slice(0, 8);
+    //     value = value.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+    //     input.value = value;
+    // }
+
+    // function formatPhone(input) {
+    //     debugger;
+    //     let value = input.value.replace(/\D/g, '');
+    //     if (value.length > 11) value = value.slice(0, 11);
+    //     value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    //     input.value = value;
+    // }
+
+    // function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
+    //     $.ajax({
+    //         url: "api/list/cidades.php",
+    //         type: "get",
+    //         dataType: "json",
+    //         data: {},
+    //         success: function(retorno_cidades) {
+    //             //debugger;
+
+    //             console.log(retorno_cidades.data.cidades);
+
+    //             let recebe_select_list_cidades = document.getElementById('cidade_id');
+
+    //             // Limpa opções anteriores
+    //             recebe_select_list_cidades.innerHTML = '<option value="">Selecione uma cidade</option>';
+
+    //             let cidades = retorno_cidades.data.cidades;
+
+    //             if (cidades.length > 0) {
+    //                 for (let i = 0; i < cidades.length; i++) {
+    //                     let option = document.createElement('option');
+    //                     option.value = cidades[i].id;
+    //                     option.text = cidades[i].nome + ' - ' + cidades[i].estado;
+    //                     recebe_select_list_cidades.appendChild(option);
+    //                 }
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.log("Erro ao pegar cidades:" + error);
+    //         },
+    //     });
+    // }
 
     // let recebe_nome_cidade_pessoa;
     // let recebe_id_cidade;
@@ -735,159 +1257,64 @@
     // recebe_nome_cidade_pessoa=recebe_informacao_cidade_pessoa + "," + recebe_informacao_estado_pessoa;
     // });
 
-    $("#grava-medico").click(function(e) {
+    $("#grava-risco").click(function(e) {
         e.preventDefault();
 
         debugger;
-        let recebe_data_cadastro_medico = $("#created_at").val();
-        let recebe_nome_medico = $("#nome").val();
-        let recebe_cpf_medico = $("#cpf").val();
-        let recebe_crm_medico = $("#crm").val();
-        let recebe_uf_crm_medico = $("#uf_crm").val();
-        let recebe_especialidade_medico = $("#especialidade").val();
-        let recebe_rqe_medico = $("#rqe").val();
-        let recebe_uf_rqe_medico = $("#uf_rqe").val();
-        let recebe_nascimento_medico = $("#nascimento").val();
-        let recebe_sexo_medico = $("#sexo_medico").val();
-        let recebe_contato_medico = $("#contato").val();
-        let recebe_empresa_id_medico = $("#empresa_id").val();
+        let recebe_codigo_risco = $("#codigo_risco").val();
+        let recebe_descricao_risco = $("#descricao_risco").val();
+        let recebe_grupo_risco = $("#grupo_risco").val();
 
+        if (recebe_acao_alteracao_risco === "editar") {
+            $.ajax({
+                url: "cadastros/processa_risco.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_risco: "alterar_risco",
+                    valor_codigo_risco: recebe_codigo_risco,
+                    valor_descricao_risco: recebe_descricao_risco,
+                    valor_grupo_risco: recebe_grupo_risco,
+                    valor_id_risco: $("#id_risco_alteracao").val(),
+                },
+                success: function(retorno_risco) {
+                    debugger;
 
-        // let recebe_numero_rg_medico=$("#numero_rg").val();
-        // let recebe_uf_rg_medico=$("#uf_rg").val();
-        // let recebe_documento_classe_medico=$("#documento_classe").val();
-        // let recebe_n_documento_classe_medico=$("#numero_documento_classe").val();
-        // let recebe_uf_documento_classe_medico=$("#uf_documento_classe").val();
-
-        // let recebe_pcmso_medico=$("#pcmso").val();
-        console.log(recebe_empresa_id_medico);
-
-        // let recebe_cargo_pessoa=$("#cargo").val();
-
-        // if (recebe_id_cidade==="" || recebe_id_cidade===undefined)
-        // recebe_id_cidade=$("#cidade_id").val();
-
-        // let recebe_cidade_id_empresa=$("#cidade_id").val();
-        // let recebe_endereco_pessoa=$("#endereco").val();
-        // let recebe_numero_pessoa=$("#numero").val();
-        // let recebe_complemento_pessoa=$("#complemento").val();
-        // let recebe_bairro_pessoa=$("#bairro").val();
-        // let recebe_cep_pessoa=$("#cep").val();
-        // let recebe_email_pessoa=$("#email").val();
-        // let recebe_senha_pessoa=$("#senha").val();
-        // let recebe_cbo_pessoa=$("#cbo").val();
-        // let recebe_idade_pessoa=$("#idade").val();
-        // let recebe_nivel_acesso_pessoa=$("#acesso-pessoa").val();
-        // let recebe_empresa_id=$("#empresa_id").val();
-
-        // let recebe_endereco_completo=recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
-
-        // console.log(recebe_endereco_completo);
-
-        if (recebe_nome_medico === "") {
-            $("#corpo-mensagem-campo-vazio").html("Favor preencher o campo nome do médico");
-            $("#mensagem-campo-vazio").show();
-            $("#mensagem-campo-vazio").fadeOut(4000);
-        } else if (recebe_cpf_medico === "") {
-            $("#corpo-mensagem-campo-vazio").html("Favor preencher o campo cpf do médico");
-            $("#mensagem-campo-vazio").show();
-            $("#mensagem-campo-vazio").fadeOut(4000);
-        } else if (recebe_crm_medico === "") {
-            $("#corpo-mensagem-campo-vazio").html("Favor preencher o campo crm do médico");
-            $("#mensagem-campo-vazio").show();
-            $("#mensagem-campo-vazio").fadeOut(4000);
+                    console.log(retorno_risco);
+                    if (retorno_risco) {
+                        console.log("Risco alterada com sucesso");
+                        window.location.href = "painel.php?pg=grava_risco";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao alterar médico:" + error);
+                },
+            });
         } else {
-            if (recebe_acao_alteracao_medico === "editar") {
-                $.ajax({
-                    url: "cadastros/processa_medico.php",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        processo_medico: "alterar_medico",
-                        valor_data_cadastro_medico: recebe_data_cadastro_medico,
-                        valor_nome_medico: recebe_nome_medico,
-                        valor_cpf_medico: recebe_cpf_medico,
-                        valor_crm_medico: recebe_crm_medico,
-                        valor_uf_crm_medico: recebe_uf_crm_medico,
-                        valor_especialidade_medico: recebe_especialidade_medico,
-                        valor_rqe_medico: recebe_rqe_medico,
-                        valor_uf_rqe_medico: recebe_uf_rqe_medico,
-                        valor_nascimento_medico: recebe_nascimento_medico,
-                        valor_sexo_medico: recebe_sexo_medico,
-                        valor_contato_medico: recebe_contato_medico,
+            $.ajax({
+                url: "cadastros/processa_risco.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_risco: "inserir_risco",
+                    valor_codigo_risco: recebe_codigo_risco,
+                    valor_descricao_risco: recebe_descricao_risco,
+                    valor_grupo_risco: recebe_grupo_risco
+                },
+                success: function(retorno_risco) {
+                    debugger;
 
-                        valor_empresa_id_medico: recebe_empresa_id_medico,
-                        valor_id_medico: $("#medico_id_alteracao").val(),
-                    },
-                    success: function(retorno_pessoa) {
-                        debugger;
+                    console.log(retorno_risco);
 
-                        console.log(retorno_pessoa);
-                        if (retorno_pessoa) {
-                            console.log("Pessoa alterada com sucesso");
-                            window.location.href = "painel.php?pg=medicos";
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("Falha ao alterar médico:" + error);
-                    },
-                });
-            } else {
-                $.ajax({
-                    url: "cadastros/processa_medico.php",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        processo_medico: "inserir_medico",
-                        valor_data_cadastro_medico: recebe_data_cadastro_medico,
-                        valor_nome_medico: recebe_nome_medico,
-                        valor_cpf_medico: recebe_cpf_medico,
-                        valor_crm_medico: recebe_crm_medico,
-                        valor_uf_crm_medico: recebe_uf_crm_medico,
-                        valor_especialidade_medico: recebe_especialidade_medico,
-                        valor_rqe_medico: recebe_rqe_medico,
-                        valor_uf_rqe_medico: recebe_uf_rqe_medico,
-                        valor_nascimento_medico: recebe_nascimento_medico,
-                        valor_sexo_medico: recebe_sexo_medico,
-                        valor_contato_medico: recebe_contato_medico,
-
-                        valor_empresa_id_medico: recebe_empresa_id_medico,
-
-                        // valor_pcmso_medico: recebe_pcmso_medico,
-                        // valor_numero_rg_medico: recebe_numero_rg_medico,
-                        // valor_uf_rg_medico: recebe_uf_rg_medico,
-                        // valor_documento_classe_medico: recebe_documento_classe_medico,
-                        // valor_n_documento_classe_medico: recebe_n_documento_classe_medico,
-                        // valor_uf_documento_classe_medico: recebe_uf_documento_classe_medico
-                        // valor_cargo_pessoa: recebe_cargo_pessoa,
-                        // valor_cbo_pessoa: recebe_cbo_pessoa,
-                        // valor_idade_pessoa: recebe_idade_pessoa,
-                        // valor_endereco_pessoa: recebe_endereco_completo,
-                        // valor_numero_pessoa: recebe_numero_pessoa,
-                        // valor_complemento_pessoa: recebe_complemento_pessoa,
-                        // valor_bairro_pessoa: recebe_bairro_pessoa,
-                        // valor_cep_pessoa: recebe_cep_pessoa,
-                        // valor_id_cidade_pessoa: recebe_id_cidade,
-                        // valor_email_pessoa: recebe_email_pessoa,
-                        // valor_senha_pessoa: recebe_senha_pessoa,
-                        // valor_nivel_acesso_pessoa: recebe_nivel_acesso_pessoa,
-                        // valor_empresa_id: recebe_empresa_id,
-                    },
-                    success: function(retorno_medico) {
-                        debugger;
-
-                        console.log(retorno_medico);
-
-                        if (retorno_medico) {
-                            console.log("Médico cadastrada com sucesso");
-                            window.location.href = "painel.php?pg=medicos";
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("Falha ao inserir empresa:" + error);
-                    },
-                });
-            }
+                    if (retorno_risco) {
+                        console.log("Risco cadastrada com sucesso");
+                        window.location.href = "painel.php?pg=grava_risco";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao inserir empresa:" + error);
+                },
+            });
         }
     });
 </script>
