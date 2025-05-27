@@ -27,7 +27,8 @@
                         <div class="form-group" style="flex: 50%;">
                             <label for="codigo_risco">Código:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-cogs"></i>
+
                                 <input type="text" id="codigo_risco" name="codigo_risco" class="form-control">
                             </div>
                         </div>
@@ -35,7 +36,8 @@
                         <div class="form-group" style="flex: 50%;">
                             <label for="descricao_risco">Descrição do Risco:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-address-card"></i>
+                                <i class="fas fa-exclamation-triangle"></i>
+
                                 <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
                                 <input type="text" id="descricao_risco" name="descricao_risco" class="form-control">
                             </div>
@@ -44,7 +46,8 @@
                         <div class="form-group" style="flex:20%;">
                             <label for="rqe">Grupo de Risco:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-address-card"></i>
+                                <i class="fas fa-users"></i>
+
                                 <select id="rqe" name="rqe" class="form-control">
                                     <option value="selecione">Selecione</option>
                                     <option value="ergonomico" selected>Ergonômico</option>
@@ -379,47 +382,49 @@
     }
 
     .accordion {
-    margin-top: 30px;
-}
+        margin-top: 30px;
+    }
 
-.accordion-item {
-    margin-bottom: 15px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+    .accordion-item {
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-.accordion-header {
-    width: 100%;
-    text-align: left;
-    background-color: #f1f1f1;
-    color: #333;
-    font-weight: 600;
-    padding: 14px 20px; /* Ajuste do padding do cabeçalho */
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+    .accordion-header {
+        width: 100%;
+        text-align: left;
+        background-color: #f1f1f1;
+        color: #333;
+        font-weight: 600;
+        padding: 14px 20px;
+        /* Ajuste do padding do cabeçalho */
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-.accordion-header:hover {
-    background-color: #ddd;
-}
+    .accordion-header:hover {
+        background-color: #ddd;
+    }
 
-.accordion-header[aria-expanded="true"] {
-    background-color: #ccc;
-}
+    .accordion-header[aria-expanded="true"] {
+        background-color: #ccc;
+    }
 
-.accordion-content {
-    padding: 20px 30px; /* Aumentei o padding interno */
-    background-color: #fafafa;
-    color: #555;
-    line-height: 1.6;
-    font-size: 14px;
-}
+    .accordion-content {
+        padding: 20px 30px;
+        /* Aumentei o padding interno */
+        background-color: #fafafa;
+        color: #555;
+        line-height: 1.6;
+        font-size: 14px;
+    }
 
-.accordion-content.hidden {
-    display: none;
-}
+    .accordion-content.hidden {
+        display: none;
+    }
 
 
 
