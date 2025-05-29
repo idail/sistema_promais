@@ -66,6 +66,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_risco->bindValue(":recebe_empresa_id_alterar",$recebe_empresa_id);
         $resultado_altera_risco = $comando_altera_risco->execute();
         echo json_encode($resultado_altera_risco);
+    }else if($recebe_processo_risco === "excluir_risco")
+    {
+        $recebe_id_risco = $_POST["valor_id_risco"];
+
+        $instrucao_exclui_risco = 
+        "delete from grupo_riscos where id = :recebe_id_excluir";
+        $comando_exclui_risco = $pdo->prepare($instrucao_exclui_risco);
+        $comando_exclui_risco->bindValue(":recebe_id_excluir",$recebe_id_risco);
+        $resultado_exclui_risco = $comando_exclui_risco->execute();
+        echo json_encode($resultado_exclui_risco);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
