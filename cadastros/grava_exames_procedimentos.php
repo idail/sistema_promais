@@ -378,7 +378,7 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
-            <input type="hidden" name="exames_procedimentos_id_alteracao" id="exames_procedimentos_id_alteracao">
+            <!-- <input type="hidden" name="exames_procedimentos_id_alteracao" id="exames_procedimentos_id_alteracao"> -->
 
             <!-- <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
@@ -414,12 +414,12 @@
                         </div>
 
                         <div class="form-group" style="flex: 30%;">
-                            <label for="valor_procedimento_valor">Valor:</label>
+                            <label for="valor_procedimento">Valor:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-money-bill-wave"></i>
 
                                 <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="valor_procedimento_valor" name="valor_procedimento_valor" class="form-control">
+                                <input type="text" id="valor_procedimento" name="valor_procedimento" class="form-control">
                             </div>
                         </div>
 
@@ -449,7 +449,7 @@
 
             <input type="hidden" name="id_exame_procedimento_alteracao" id="id_exame_procedimento_alteracao">
 
-            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-exame_procedimento">Salvar</button>
+            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-exame-procedimento">Salvar</button>
             <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
         </form>
 
@@ -491,6 +491,13 @@
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script>
+    debugger;
+    let recebe_acao_alteracao_exame_procedimento = "cadastrar";
+
+    $(document).ready(function(e){
+        buscar_exames_procedimentos();
+    });
+
     document.querySelectorAll('.accordion-header').forEach(button => {
         button.addEventListener('click', () => {
             const expanded = button.getAttribute('aria-expanded') === 'true';
@@ -499,5 +506,164 @@
             const content = document.getElementById(button.getAttribute('aria-controls'));
             content.classList.toggle('hidden');
         });
+    });
+
+    function buscar_exames_procedimentos(e) {
+        debugger;
+
+        $.ajax({
+            url: "cadastros/processa_exames_procedimentos.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_exame_procedimento": "buscar_exames_procedimentos",
+            },
+            success: function(resposta_exame_procedimento) {
+                debugger;
+                console.log(resposta_exame_procedimento);
+
+                if ($.fn.dataTable.isDataTable('#exames_procedimentos')) {
+                    $('#exames_procedimentos').DataTable().clear().destroy();
+                }
+
+                // Limpa o tbody manualmente (opcional, mas recomendado)
+                $("#exames_procedimentos tbody").empty();
+
+                let corpo = document.querySelector("#exames_procedimentos tbody");
+                corpo.innerHTML = "";
+
+                if (resposta_exame_procedimento.length > 0) {
+                    // $("#risco_ergonomico tbody").html("");
+                    for (let index = 0; index < resposta_exame_procedimento.length; index++) {
+                        let exame_procedimento = resposta_exame_procedimento[index];
+                        // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML = `
+                    <td>${exame_procedimento.id}</td>
+                    <td>${exame_procedimento.codigo}</td>
+                    <td>${exame_procedimento.procedimento}</td>
+                    <td>${exame_procedimento.valor}</td>
+                    <td>
+                        <div class='action-buttons'>
+                            <a href='#' id='alterar-exame-procedimento' data-id-exame-procedimento="${exame_procedimento.id}"
+                             data-codigo-exame-procedimento="${exame_procedimento.codigo}" data-exame-procedimento="${exame_procedimento.procedimento}"
+                             data-valor-procedimento="${exame_procedimento.valor}" title='Editar'><i class="fas fa-edit"></i></a>
+                            <a href='#' id='excluir-risco' data-id-exame-procedimento="${exame_procedimento.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                    </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#exames_procedimentos tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // 🧹 Destrói o DataTable antigo antes de recriar
+                if ($.fn.dataTable.isDataTable('#exames_procedimentos')) {
+                    $('#exames_procedimentos').DataTable().destroy();
+                }
+
+                $("#exames_procedimentos").DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+                    },
+                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+                    "pageLength": 5, // Exibir 5 registros por página
+                    "lengthMenu": [
+                        [5, 10, 25, 50, -1],
+                        [5, 10, 25, 50, "Todos"]
+                    ]
+                });
+
+
+            },
+            error: function(xhr, status, error) {
+                console.error("Erro ao carregar dados:", error);
+            },
+        });
+    };
+
+    $(document).on("click","#alterar-exame-procedimento",function(e){
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_id_exame_procedimento = $(this).data("id-exame-procedimento");
+        let recebe_codigo_exame_procedimento = $(this).data("codigo-exame-procedimento");
+        let recebe_procedimento_exame = $(this).data("exame-procedimento");
+        let recebe_valor_exame_procedimento = $(this).data("valor-procedimento");
+
+        $("#id_exame_procedimento_alteracao").val(recebe_id_exame_procedimento);
+        $("#codigo_exame_procedimento").val(recebe_codigo_exame_procedimento);
+        $("#procedimento_exame").val(recebe_procedimento_exame);
+        $("#valor_procedimento").val(recebe_valor_exame_procedimento);
+
+        recebe_acao_alteracao_exame_procedimento = "editar";
+    });
+
+    $("#grava-exame-procedimento").click(function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_codigo_exame_procedimento = $("#codigo_exame_procedimento").val();
+        let recebe_procedimento = $("#procedimento_exame").val();
+        let recebe_valor_procedimento = $("#valor_procedimento").val();
+
+        // let recebe_valor_convertido_float = parseFloat(recebe_valor_procedimento.replace(',', '.'));
+
+        if (recebe_acao_alteracao_exame_procedimento === "editar") {
+            $.ajax({
+                url: "cadastros/processa_exames_procedimentos.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_exame_procedimento: "alterar_exame_procedimento",
+                    valor_codigo_exame_procedimento: recebe_codigo_exame_procedimento,
+                    valor_procedimento: recebe_procedimento,
+                    valor_exame_procedimento: recebe_valor_procedimento,
+                    valor_id_exame_procedimento: $("#id_exame_procedimento_alteracao").val(),
+                },
+                success: function(retorno_risco) {
+                    debugger;
+
+                    console.log(retorno_risco);
+                    if (retorno_risco) {
+                        console.log("Risco alterada com sucesso");
+                        // window.location.href = "painel.php?pg=grava_risco";
+                        buscar_exames_procedimentos(e);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao alterar médico:" + error);
+                },
+            });
+        } else {
+            $.ajax({
+                url: "cadastros/processa_exames_procedimentos.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_exame_procedimento: "inserir_exame_procedimento",
+                    valor_codigo_exame_procedimento: recebe_codigo_exame_procedimento,
+                    valor_procedimento: recebe_procedimento,
+                    valor_exame_procedimento: recebe_valor_procedimento
+                },
+                success: function(retorno_risco) {
+                    debugger;
+
+                    console.log(retorno_risco);
+
+                    if (retorno_risco > 0) {
+                        console.log("Risco cadastrada com sucesso");
+                        // window.location.href = "painel.php?pg=grava_risco";
+                        buscar_exames_procedimentos(e);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao inserir empresa:" + error);
+                },
+            });
+        }
     });
 </script>
