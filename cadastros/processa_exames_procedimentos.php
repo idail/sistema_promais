@@ -64,6 +64,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_exame_procedimento->bindValue(":recebe_empresa_id_alterar",$recebe_empresa_id);
         $resultado_altera_exame_procedimento = $comando_altera_exame_procedimento->execute();
         echo json_encode($resultado_altera_exame_procedimento);
+    }else if($recebe_processo_exame_procedimento === "excluir_exame_procedimento")
+    {
+        $recebe_id_exame_procedimento = $_POST["valor_id_exame_procedimento"];
+        $recebe_empresa_id = $_SESSION["empresa_id"];
+        $instrucao_exclui_exame_procedimento = 
+        "delete from exames_procedimentos where id = :recebe_id_exame_procedimento
+        and empresa_id = :recebe_empresa_id";
+        $comando_exclui_exame_procedimento = $pdo->prepare($instrucao_exclui_exame_procedimento);
+        $comando_exclui_exame_procedimento->bindValue(":recebe_id_exame_procedimento",$recebe_id_exame_procedimento);
+        $comando_exclui_exame_procedimento->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $resultado_exclui_exame_procedimento = $comando_exclui_exame_procedimento->execute();
+        echo json_encode($resultado_exclui_exame_procedimento);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {

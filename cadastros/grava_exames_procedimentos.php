@@ -1,3 +1,125 @@
+<div class="tab-container">
+    <div class="tab-buttons">
+        <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
+        <!-- <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button> -->
+    </div>
+
+    <div id="dados" class="tab-content active">
+        <form class="custom-form">
+            <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
+
+            <!-- <input type="hidden" name="exames_procedimentos_id_alteracao" id="exames_procedimentos_id_alteracao"> -->
+
+            <!-- <div class="form-group">
+                <label for="created_at">Data de Cadastro:</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                    <input type="datetime-local" id="created_at" name="created_at" class="form-control" readonly>
+                </div>
+            </div> -->
+
+            <div class="form-columns">
+                <div class="form-column">
+
+
+                    <div class="address-container">
+
+                        <div class="form-group" style="flex: 30%;">
+                            <label for="codigo_exame_procedimento">Código:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-cogs"></i>
+
+                                <input type="text" id="codigo_exame_procedimento" name="codigo_exame_procedimento" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex: 30%;">
+                            <label for="procedimento_exame">Proedimento:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-tasks"></i>
+
+                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
+                                <input type="text" id="procedimento_exame" name="procedimento_exame" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="flex: 30%;">
+                            <label for="valor_procedimento">Valor:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+
+                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
+                                <input type="text" id="valor_procedimento" name="valor_procedimento" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-group" style="flex:30%;">
+                            <label for="grupo_risco">Grupo de Risco:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-users"></i>
+
+                                <select id="grupo_risco" name="grupo_risco" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="ergonomico" selected>Riscos Ergonômicos</option>
+                                    <option value="acidente_mecanico">Riscos Acidentes - Mecânicos</option>
+                                    <option value="fisico">Riscos Físicos</option>
+                                    <option value="quimico">Riscos Químicos</option>
+                                    <option value="biologico">Riscos Biológicos</option>
+                                    <option value="outro">Outros</option>
+                                </select>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-sm text-red-600 mt-3" id="mensagem-campo-vazio">
+                <span id="corpo-mensagem-campo-vazio"></span>
+            </div>
+
+            <input type="hidden" name="id_exame_procedimento_alteracao" id="id_exame_procedimento_alteracao">
+
+            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-exame-procedimento">Salvar</button>
+            <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
+        </form>
+
+        <div class="form-columns">
+
+            <div class="accordion" id="accordion-riscos">
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false" aria-controls="section1" id="accordion1">
+                        Exames/Procedimentos
+                        <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                        <div>
+                            <table id="exames_procedimentos">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Procedimento</th>
+                                        <th>Valor</th>
+                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dados serão preenchidos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
 <style>
     .tab-container {
         width: 100%;
@@ -368,133 +490,13 @@
         min-height: 150px;
         /* ou outro valor */
 </style>
-<div class="tab-container">
-    <div class="tab-buttons">
-        <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
-        <!-- <button class="tab-button" onclick="openTab(event, 'profissionais')">Profissionais da Medicina Relacionados</button> -->
-    </div>
 
-    <div id="dados" class="tab-content active">
-        <form class="custom-form">
-            <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
-
-            <!-- <input type="hidden" name="exames_procedimentos_id_alteracao" id="exames_procedimentos_id_alteracao"> -->
-
-            <!-- <div class="form-group">
-                <label for="created_at">Data de Cadastro:</label>
-                <div class="input-with-icon">
-                    <i class="fas fa-calendar-alt"></i>
-                    <input type="datetime-local" id="created_at" name="created_at" class="form-control" readonly>
-                </div>
-            </div> -->
-
-            <div class="form-columns">
-                <div class="form-column">
-
-
-                    <div class="address-container">
-
-                        <div class="form-group" style="flex: 30%;">
-                            <label for="codigo_exame_procedimento">Código:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-cogs"></i>
-
-                                <input type="text" id="codigo_exame_procedimento" name="codigo_exame_procedimento" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 30%;">
-                            <label for="procedimento_exame">Proedimento:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-tasks"></i>
-
-                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="procedimento_exame" name="procedimento_exame" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 30%;">
-                            <label for="valor_procedimento">Valor:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-money-bill-wave"></i>
-
-                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="valor_procedimento" name="valor_procedimento" class="form-control">
-                            </div>
-                        </div>
-
-                        <!-- <div class="form-group" style="flex:30%;">
-                            <label for="grupo_risco">Grupo de Risco:</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-users"></i>
-
-                                <select id="grupo_risco" name="grupo_risco" class="form-control">
-                                    <option value="selecione">Selecione</option>
-                                    <option value="ergonomico" selected>Riscos Ergonômicos</option>
-                                    <option value="acidente_mecanico">Riscos Acidentes - Mecânicos</option>
-                                    <option value="fisico">Riscos Físicos</option>
-                                    <option value="quimico">Riscos Químicos</option>
-                                    <option value="biologico">Riscos Biológicos</option>
-                                    <option value="outro">Outros</option>
-                                </select>
-                            </div>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-sm text-red-600 mt-3" id="mensagem-campo-vazio">
-                <span id="corpo-mensagem-campo-vazio"></span>
-            </div>
-
-            <input type="hidden" name="id_exame_procedimento_alteracao" id="id_exame_procedimento_alteracao">
-
-            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-exame-procedimento">Salvar</button>
-            <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
-        </form>
-
-        <div class="form-columns">
-
-            <div class="accordion" id="accordion-riscos">
-
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" aria-controls="section1" id="accordion1">
-                        Exames/Procedimentos
-                        <span class="accordion-arrow">▼</span>
-                    </button>
-                    <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1" style="height: 35%;">
-                        <div>
-                            <table id="exames_procedimentos">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Código</th>
-                                        <th>Procedimento</th>
-                                        <th>Valor</th>
-                                        <th>Ações</th> <!-- Nova coluna para os botões de ação -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Dados serão preenchidos via JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script>
     debugger;
     let recebe_acao_alteracao_exame_procedimento = "cadastrar";
 
-    $(document).ready(function(e){
+    $(document).ready(function(e) {
         buscar_exames_procedimentos();
     });
 
@@ -508,9 +510,24 @@
         });
     });
 
-    function buscar_exames_procedimentos(e) {
-        debugger;
+    function buscar_exames_procedimentos() {
+        // Desativa os alertas de erro do DataTables
+        $.fn.dataTable.ext.errMode = 'none';
 
+        // 🧹 Inicializa o DataTable apenas UMA vez quando a página carrega:
+        let tabelaExamesProcedimentos = $('#exames_procedimentos').DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+            },
+            dom: '<"top"lf>rt<"bottom"ip><"clear">',
+            pageLength: 5,
+            lengthMenu: [
+                [5, 10, 25, 50, -1],
+                [5, 10, 25, 50, "Todos"]
+            ]
+        });
+
+        // Seu AJAX normalmente...
         $.ajax({
             url: "cadastros/processa_exames_procedimentos.php",
             method: "GET",
@@ -519,71 +536,76 @@
                 "processo_exame_procedimento": "buscar_exames_procedimentos",
             },
             success: function(resposta_exame_procedimento) {
-                debugger;
                 console.log(resposta_exame_procedimento);
 
-                if ($.fn.dataTable.isDataTable('#exames_procedimentos')) {
-                    $('#exames_procedimentos').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#exames_procedimentos tbody").empty();
-
-                let corpo = document.querySelector("#exames_procedimentos tbody");
-                corpo.innerHTML = "";
+                tabelaExamesProcedimentos.clear();
 
                 if (resposta_exame_procedimento.length > 0) {
-                    // $("#risco_ergonomico tbody").html("");
                     for (let index = 0; index < resposta_exame_procedimento.length; index++) {
                         let exame_procedimento = resposta_exame_procedimento[index];
-                        // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
 
-                        let linha = document.createElement("tr");
-                        linha.innerHTML = `
-                    <td>${exame_procedimento.id}</td>
-                    <td>${exame_procedimento.codigo}</td>
-                    <td>${exame_procedimento.procedimento}</td>
-                    <td>${exame_procedimento.valor}</td>
-                    <td>
-                        <div class='action-buttons'>
-                            <a href='#' id='alterar-exame-procedimento' data-id-exame-procedimento="${exame_procedimento.id}"
-                             data-codigo-exame-procedimento="${exame_procedimento.codigo}" data-exame-procedimento="${exame_procedimento.procedimento}"
-                             data-valor-procedimento="${exame_procedimento.valor}" title='Editar'><i class="fas fa-edit"></i></a>
-                            <a href='#' id='excluir-risco' data-id-exame-procedimento="${exame_procedimento.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                    </td>`;
-                        corpo.appendChild(linha);
+                        tabelaExamesProcedimentos.row.add([
+                            exame_procedimento.id,
+                            exame_procedimento.codigo,
+                            exame_procedimento.procedimento,
+                            exame_procedimento.valor,
+                            `<div class='action-buttons'>
+                        <a href='#' id='alterar-exame-procedimento' data-id-exame-procedimento="${exame_procedimento.id}" data-codigo-exame-procedimento="${exame_procedimento.codigo}"
+                        data-exame-procedimento="${exame_procedimento.procedimento}" data-valor-procedimento="${exame_procedimento.valor}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' id='excluir-exame-procedimento' data-id-exame-procedimento="${exame_procedimento.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                    </div>`
+                        ]);
                     }
                 } else {
-                    $("#exames_procedimentos tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                    tabelaExamesProcedimentos.row.add([
+                        '', '', '', '', '<div style="text-align:center; width:100%">Nenhum registro localizado</div>'
+                    ]);
                 }
 
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#exames_procedimentos')) {
-                    $('#exames_procedimentos').DataTable().destroy();
-                }
-
-                $("#exames_procedimentos").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-
+                tabelaExamesProcedimentos.draw();
             },
             error: function(xhr, status, error) {
                 console.error("Erro ao carregar dados:", error);
-            },
+            }
         });
-    };
+    }
 
-    $(document).on("click","#alterar-exame-procedimento",function(e){
+
+    $(document).on("click", "#excluir-exame-procedimento", function(e) {
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_confirmacao_excluir_exame_procedimento = window.confirm("Tem certeza que deseja excluir o exame?");
+
+        if (recebe_confirmacao_excluir_exame_procedimento) {
+            let recebe_id_exame_procedimento = $(this).data("id-exame-procedimento");
+            $.ajax({
+                url: "cadastros/processa_exames_procedimentos.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_exame_procedimento: "excluir_exame_procedimento",
+                    valor_id_exame_procedimento: recebe_id_exame_procedimento,
+                },
+                success: function(retorno_exame_procedimento) {
+                    debugger;
+                    console.log(retorno_exame_procedimento);
+                    if (retorno_exame_procedimento) {
+                        // window.location.href = "painel.php?pg=grava_risco";
+                        buscar_exames_procedimentos();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao excluir pessoa:" + error);
+                },
+            });
+        } else {
+            return;
+        }
+    });
+
+    $(document).on("click", "#alterar-exame-procedimento", function(e) {
         e.preventDefault();
 
         debugger;
@@ -624,13 +646,17 @@
                     valor_exame_procedimento: recebe_valor_procedimento,
                     valor_id_exame_procedimento: $("#id_exame_procedimento_alteracao").val(),
                 },
-                success: function(retorno_risco) {
+                success: function(retorno_exame_procedimento) {
                     debugger;
 
-                    console.log(retorno_risco);
-                    if (retorno_risco) {
+                    console.log(retorno_exame_procedimento);
+                    if (retorno_exame_procedimento) {
                         console.log("Risco alterada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
+
+                        $("#codigo_exame_procedimento").val("");
+                        $("#procedimento_exame").val("");
+                        $("#valor_procedimento").val("");
                         buscar_exames_procedimentos(e);
                     }
                 },
@@ -649,14 +675,17 @@
                     valor_procedimento: recebe_procedimento,
                     valor_exame_procedimento: recebe_valor_procedimento
                 },
-                success: function(retorno_risco) {
+                success: function(retorno_exame_procedimento) {
                     debugger;
 
-                    console.log(retorno_risco);
+                    console.log(retorno_exame_procedimento);
 
-                    if (retorno_risco > 0) {
+                    if (retorno_exame_procedimento > 0) {
                         console.log("Risco cadastrada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
+                        $("#codigo_exame_procedimento").val("");
+                        $("#procedimento_exame").val("");
+                        $("#valor_procedimento").val("");
                         buscar_exames_procedimentos(e);
                     }
                 },
