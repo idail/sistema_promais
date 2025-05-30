@@ -569,6 +569,8 @@
 
         let recebe_codigo_medico = $(this).data("codigo-medico");
 
+        let receeb_id_empresa = $("#empresa_id_alteracao").val();
+
         $.ajax({
             url: "cadastros/processa_empresa.php",
             method: "POST",
@@ -576,7 +578,8 @@
             data: {
                 "processo_empresa": "desvincular_medico_empresa",
                 valor_medico_empresa_id: recebe_codigo_medico_ja_associado,
-                valor_codigo_medico: recebe_codigo_medico
+                valor_codigo_medico: recebe_codigo_medico,
+                valor_empresa_id:receeb_id_empresa
             },
             success: function(resposta_medicos_clinicas) {
                 debugger;

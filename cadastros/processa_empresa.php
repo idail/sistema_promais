@@ -97,7 +97,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
                     "insert into medicos_empresas(empresa_id,medico_id,status)
                     values(:recebe_empresa_id,:recebe_medico_id,:recebe_status)";
                     $comando_cadastra_relacao_medicos_empresas = $pdo->prepare($instrucao_cadastra_relacao_medicos_empresas);
-                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$valores_id_cadastramento_empresa[$i]);
+                    // $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$valores_id_cadastramento_empresa[$i]);
+                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$recebe_ultimo_codigo_gerado_cadastramento_empresa);
                     $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_medico_id",$recebe_id_medico_associado_empresa[$i]);
                     // $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_data_associacao",$data_hora_atual);
                     $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_status","Ativo");
@@ -115,13 +116,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
         $recebe_codigo_medico = $_POST["valor_codigo_medico"];
 
+        $recebe_id_empresa = $_POST["valor_empresa_id"];
+
         $instrucao_desvincular_medico_empresa =
         "update medicos_empresas set status = :recebe_status_desvincular where id = :recebe_codigo_medicos_empresas_desvincular
-        and medico_id = :recebe_codigo_medico_desvincular";
+        and medico_id = :recebe_codigo_medico_desvincular and empresa_id = :recebe_empresa_id";
         $comando_desvincular_medico_empresa = $pdo->prepare($instrucao_desvincular_medico_empresa);
         $comando_desvincular_medico_empresa->bindValue(":recebe_status_desvincular","Inativo");
         $comando_desvincular_medico_empresa->bindValue(":recebe_codigo_medicos_empresas_desvincular",$recebe_medico_empresa_id);
         $comando_desvincular_medico_empresa->bindValue(":recebe_codigo_medico_desvincular",$recebe_codigo_medico);
+        $comando_desvincular_medico_empresa->bindValue(":recebe_empresa_id",$recebe_id_empresa);
         $resultado_desvincular_medico_empresa = $comando_desvincular_medico_empresa->execute();
         echo json_encode($resultado_desvincular_medico_empresa);
     }else if($recebe_processo_empresa === "alterar_empresa")
@@ -182,7 +186,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
                     "insert into medicos_empresas(empresa_id,medico_id,status)
                     values(:recebe_empresa_id,:recebe_medico_id,:recebe_status)";
                     $comando_cadastra_relacao_medicos_empresas = $pdo->prepare($instrucao_cadastra_relacao_medicos_empresas);
-                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$valores_id_cadastramento_empresa[$i]);
+                    // $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$valores_id_cadastramento_empresa[$i]);
+                    $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_empresa_id",$recebe_codigo_empresa_alterar);
                     $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_medico_id",$recebe_id_medico_associado_empresa[$i]);
                     // $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_data_associacao",$data_hora_atual);
                     $comando_cadastra_relacao_medicos_empresas->bindValue(":recebe_status","Ativo");
