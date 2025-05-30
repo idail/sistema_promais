@@ -206,12 +206,19 @@
             for (let i = 0; i < clinicas.length; i++) {
                 const clinica = clinicas[i];
                 const row = document.createElement("tr");
+
+                let recebe_cidade_estado;
+
+                if(clinica.cidade_nome === null && clinica.cidade_estado === null)
+                    recebe_cidade_estado = "Não informado";
+                else
+                    recebe_cidade_estado = clinica.cidade_nome + "/" + clinica.cidade_estado;
                 row.innerHTML = `
             <td>${clinica.id}</td>
             <td>${clinica.nome_fantasia}</td>
             <td>${clinica.cnpj}</td>
             <td>${clinica.endereco}, ${clinica.numero}, ${clinica.complemento}</td>
-            <td>${clinica.cidade_nome}/${clinica.cidade_estado}</td>
+            <td>${recebe_cidade_estado}</td>
             <td>${clinica.telefone}</td>
             <td>${clinica.status}</td>
             <td>
