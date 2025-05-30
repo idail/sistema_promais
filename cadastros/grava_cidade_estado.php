@@ -760,7 +760,7 @@
                         <div class='action-buttons'>
                             <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
                             data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
-                            <a href='#' id='excluir-cidade-estado' data-id-risco="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                            <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
                         </div>
                     </td>`;
                         corpo.appendChild(linha);
@@ -794,7 +794,7 @@
         });
     }
 
-    $(document).on("click","#alterar-cidade-estado",function(e){
+    $(document).on("click", "#alterar-cidade-estado", function(e) {
         e.preventDefault();
 
         debugger;
@@ -812,6 +812,38 @@
         $("#uf").val(recebe_estado_uf);
 
         recebe_acao_alteracao_cidade_estado = "editar";
+    });
+
+    $(document).on("click","#excluir-cidade-estado", function(e) {
+        debugger;
+
+        let recebe_confirmar_exclusao_cidade_estado = window.confirm("Tem certeza que deseja excluir cidade?");
+
+        if (recebe_confirmar_exclusao_cidade_estado) {
+            let recebe_id_cidade_estado = $(this).data("id-cidade-estado");
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    processo_cidade_estado: "excluir_cidade_estado",
+                    valor_id_cidade_estado: recebe_id_cidade_estado,
+                },
+                success: function(retorno_cidade) {
+                    debugger;
+                    console.log(retorno_cidade);
+                    if (retorno_cidade) {
+                        // window.location.href = "painel.php?pg=grava_risco";
+                        buscar_cidades_estados();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao excluir pessoa:" + error);
+                },
+            });
+        } else {
+            return;
+        }
     });
 
     $("#grava-cidade-estado").click(function(e) {
@@ -834,8 +866,8 @@
                     valor_cidade: recebe_cidade,
                     valor_cep: recebe_cep,
                     valor_estado: recebe_estado,
-                    valor_uf:recebe_uf,
-                    valor_id_cidade_estado:$("#cidade_estado_id_alteracao").val()
+                    valor_uf: recebe_uf,
+                    valor_id_cidade_estado: $("#cidade_estado_id_alteracao").val()
                 },
                 success: function(retorno_cidade_estado) {
                     debugger;

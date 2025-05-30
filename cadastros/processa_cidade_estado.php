@@ -71,6 +71,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_cidade_estado->bindValue(":recebe_id_cidade",$recebe_id_cidade_estado);
         $resultado_altera_cidade_estado = $comando_altera_cidade_estado->execute();
         echo json_encode($resultado_altera_cidade_estado);
+    }else if($recebe_processo_cidade_estado === "excluir_cidade_estado")
+    {
+        $recebe_id_cidade_estado = $_POST["valor_id_cidade_estado"];
+
+        $instrucao_exclui_cidade_estado = 
+        "delete from cidades where id = :recebe_cidade_id";
+        $comando_exclui_cidade_estado = $pdo->prepare($instrucao_exclui_cidade_estado);
+        $comando_exclui_cidade_estado->bindValue(":recebe_cidade_id",$recebe_id_cidade_estado);
+        $resultado_exclui_cidade_estado = $comando_exclui_cidade_estado->execute();
+        echo json_encode($resultado_exclui_cidade_estado);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
