@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     if($recebe_processo_cidade_estado === "inserir_cidade_estado")
     {
         $recebe_cidade = $_POST["valor_cidade"];
-        $recebe_cep =$_POST["valor_cep"];
+        $recebe_cep = $_POST["valor_cep"];
         $recebe_estado = $_POST["valor_estado"];
         $recebe_uf = $_POST["valor_uf"];
         $recebe_empresa_id = $_SESSION["empresa_id"];
@@ -53,6 +53,24 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_cidade_estado->execute();
         $recebe_ultimo_codigo_cadastra_cidade_estado = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_cadastra_cidade_estado);
+    }else if($recebe_processo_cidade_estado === "alterar_cidade_estado")
+    {
+        $recebe_cidade = $_POST["valor_cidade"];
+        $recebe_cep = $_POST["valor_cep"];
+        $recebe_estado = $_POST["valor_estado"];
+        $recebe_uf = $_POST["valor_uf"];
+        $recebe_id_cidade_estado = $_POST["valor_id_cidade_estado"];
+        $instrucao_altera_cidade_estado = 
+        "update cidades set nome = :recebe_nome,cep = :recebe_cep,estado = :recebe_estado,
+        uf = :recebe_uf where id = :recebe_id_cidade";
+        $comando_altera_cidade_estado = $pdo->prepare($instrucao_altera_cidade_estado);
+        $comando_altera_cidade_estado->bindValue(":recebe_nome",$recebe_cidade);
+        $comando_altera_cidade_estado->bindValue(":recebe_cep",$recebe_cep);
+        $comando_altera_cidade_estado->bindValue(":recebe_estado",$recebe_estado);
+        $comando_altera_cidade_estado->bindValue(":recebe_uf",$recebe_uf);
+        $comando_altera_cidade_estado->bindValue(":recebe_id_cidade",$recebe_id_cidade_estado);
+        $resultado_altera_cidade_estado = $comando_altera_cidade_estado->execute();
+        echo json_encode($resultado_altera_cidade_estado);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
@@ -63,7 +81,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_empresa_id = $_SESSION["empresa_id"];
         $instrucao_busca_cidade_estado = "select * from cidades where uf = :recebe_uf and empresa_id = :recebe_empresa_id";
         $comando_busca_cidade_estado = $pdo->prepare($instrucao_busca_cidade_estado);
-        $comando_busca_cidade_estado->bindValue(":recebe_uf","mt");
+        $comando_busca_cidade_estado->bindValue(":recebe_uf","MT");
         $comando_busca_cidade_estado->bindValue(":recebe_empresa_id",$recebe_empresa_id);
         $comando_busca_cidade_estado->execute();
         $resultado_busca_cidade_estado = $comando_busca_cidade_estado->fetchAll(PDO::FETCH_ASSOC);

@@ -8,7 +8,7 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
-            <input type="hidden" name="medico_id_alteracao" id="medico_id_alteracao">
+            <input type="hidden" name="cidade_estado_id_alteracao" id="cidade_estado_id_alteracao">
 
             <!-- <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
@@ -103,8 +103,113 @@
                     </div>
                 </div>
             </div>
+
+            <div class="accordion-item" id="accordion-registros-ms">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section2" id="accordion1">
+                    Mato Grosso do Sul
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section2" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_ms">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-bh">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section3" id="accordion1">
+                    Bahia
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section3" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_bh">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section4" id="accordion1">
+                    Minas Gerais
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section4" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_mg">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section5" id="accordion1">
+                    São Paulo
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section5" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_sp">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -332,8 +437,6 @@
     }
 
 
-
-
     /* Botões de salvar e cancelar ajustados */
     #grava-medico,
     #retornar-listagem-medicos {
@@ -392,82 +495,82 @@
     }
 
 
-    #risco_acidente_mecanico {
+    #registros_ms {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #risco_acidente_mecanico th,
-    #risco_acidente_mecanico td {
+    #registros_ms th,
+    #registros_ms td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #risco_acidente_mecanico th {
+    #registros_ms th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
 
-    #risco_fisico {
+    #registros_bh {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #risco_fisico th,
-    #risco_fisico td {
+    #registros_bh th,
+    #registros_bh td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #risco_fisico th {
+    #registros_bh th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
 
-    #risco_quimico {
+    #registros_mg {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #risco_quimico th,
-    #risco_quimico td {
+    #registros_mg th,
+    #registros_mg td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #risco_quimico th {
+    #registros_mg th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
 
-    #risco_biologico {
+    #registros_sp {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #risco_biologico th,
-    #risco_biologico td {
+    #registros_sp th,
+    #registros_sp td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #risco_biologico th {
+    #registros_sp th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -535,15 +638,15 @@
         width: 100% !important;
     }
 
-    #risco_acidente_mecanico {
+    #registros_ms {
         width: 100% !important;
     }
 
-    #risco_fisico {
+    #registros_mg {
         width: 100% !important;
     }
 
-    #risco_biologico {
+    #registros_bh {
         width: 100% !important;
     }
 
@@ -655,7 +758,7 @@
                     <td>${cidade_estado.uf}</td>
                     <td>
                         <div class='action-buttons'>
-                            <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.cidade}"
+                            <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
                             data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
                             <a href='#' id='excluir-cidade-estado' data-id-risco="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
                         </div>
@@ -691,6 +794,26 @@
         });
     }
 
+    $(document).on("click","#alterar-cidade-estado",function(e){
+        e.preventDefault();
+
+        debugger;
+
+        let recebe_cidade_estado_id = $(this).data("id-cidade-estado");
+        let recebe_cidade = $(this).data("cidade");
+        let recebe_cep = $(this).data("cep");
+        let recebe_estado = $(this).data("estado");
+        let recebe_estado_uf = $(this).data("estado-uf");
+
+        $("#cidade_estado_id_alteracao").val(recebe_cidade_estado_id);
+        $("#cidade").val(recebe_cidade);
+        $("#cep").val(recebe_cep);
+        $("#estado").val(recebe_estado);
+        $("#uf").val(recebe_estado_uf);
+
+        recebe_acao_alteracao_cidade_estado = "editar";
+    });
+
     $("#grava-cidade-estado").click(function(e) {
         e.preventDefault();
 
@@ -699,6 +822,7 @@
         let recebe_cep = $("#cep").val();
         let recebe_estado = $("#estado").val();
         let recebe_uf = $("#uf").val();
+        // let recebe_id_cidade_estado = $("#cidade_estado_id_alteracao").val();
 
         if (recebe_acao_alteracao_cidade_estado === "editar") {
             $.ajax({
@@ -706,20 +830,21 @@
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_risco: "alterar_risco",
-                    valor_codigo_risco: recebe_codigo_risco,
-                    valor_descricao_risco: recebe_descricao_risco,
-                    valor_grupo_risco: recebe_grupo_risco,
-                    valor_id_risco: $("#id_risco_alteracao").val(),
+                    processo_cidade_estado: "alterar_cidade_estado",
+                    valor_cidade: recebe_cidade,
+                    valor_cep: recebe_cep,
+                    valor_estado: recebe_estado,
+                    valor_uf:recebe_uf,
+                    valor_id_cidade_estado:$("#cidade_estado_id_alteracao").val()
                 },
-                success: function(retorno_risco) {
+                success: function(retorno_cidade_estado) {
                     debugger;
 
-                    console.log(retorno_risco);
-                    if (retorno_risco) {
-                        console.log("Risco alterada com sucesso");
+                    console.log(retorno_cidade_estado);
+                    if (retorno_cidade_estado) {
+                        console.log("Cidade alterada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
-                        buscar_grupos_riscos();
+                        buscar_cidades_estados();
                     }
                 },
                 error: function(xhr, status, error) {
