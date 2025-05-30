@@ -8,7 +8,7 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
-            <!-- <input type="hidden" name="exames_procedimentos_id_alteracao" id="exames_procedimentos_id_alteracao"> -->
+            <input type="hidden" name="medico_id_alteracao" id="medico_id_alteracao">
 
             <!-- <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
@@ -25,50 +25,40 @@
                     <div class="address-container">
 
                         <div class="form-group" style="flex: 30%;">
-                            <label for="codigo_exame_procedimento">Código:</label>
+                            <label for="cidade">Cidade:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-cogs"></i>
+                                <i class="fas fa-city"></i>
 
-                                <input type="text" id="codigo_exame_procedimento" name="codigo_exame_procedimento" class="form-control">
+                                <input type="text" id="cidade" name="cidade" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group" style="flex: 30%;">
-                            <label for="procedimento_exame">Proedimento:</label>
+                            <label for="cep">CEP:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-tasks"></i>
-
+                                <i class="fas fa-envelope-open-text"></i>
                                 <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="procedimento_exame" name="procedimento_exame" class="form-control">
+                                <input type="text" id="cep" name="cep" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group" style="flex: 30%;">
-                            <label for="valor_procedimento">Valor:</label>
+                            <label for="estado">Estado:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-money-bill-wave"></i>
+                                <i class="fas fa-city"></i>
 
-                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="valor_procedimento" name="valor_procedimento" class="form-control">
+                                <input type="text" id="estado" name="estado" class="form-control">
                             </div>
                         </div>
 
-                        <!-- <div class="form-group" style="flex:30%;">
-                            <label for="grupo_risco">Grupo de Risco:</label>
+                        <div class="form-group" style="flex: 30%;">
+                            <label for="uf">UF:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-users"></i>
-
-                                <select id="grupo_risco" name="grupo_risco" class="form-control">
-                                    <option value="selecione">Selecione</option>
-                                    <option value="ergonomico" selected>Riscos Ergonômicos</option>
-                                    <option value="acidente_mecanico">Riscos Acidentes - Mecânicos</option>
-                                    <option value="fisico">Riscos Físicos</option>
-                                    <option value="quimico">Riscos Químicos</option>
-                                    <option value="biologico">Riscos Biológicos</option>
-                                    <option value="outro">Outros</option>
-                                </select>
+                                <i class="fas fa-map-marked-alt"></i>
+                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
+                                <input type="text" id="uf" name="uf" class="form-control">
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,30 +67,31 @@
                 <span id="corpo-mensagem-campo-vazio"></span>
             </div>
 
-            <input type="hidden" name="id_exame_procedimento_alteracao" id="id_exame_procedimento_alteracao">
+            <input type="hidden" name="id_risco_alteracao" id="id_risco_alteracao">
 
-            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-exame-procedimento">Salvar</button>
-            <button type="button" id="cancelar" class="botao-cinza">Cancelar</button>
+            <button type="button" class="btn btn-primary" name="grava_risco" id="grava-cidade-estado">Salvar</button>
+            <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
         </form>
 
         <div class="form-columns">
 
-            <div class="accordion" id="accordion-riscos">
+            <div class="accordion" id="accordion-registros-mt">
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false" aria-controls="section1" id="accordion1">
-                        Exames/Procedimentos
+                        Mato Grosso
                         <span class="accordion-arrow">▼</span>
                     </button>
                     <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1" style="height: 35%;">
                         <div>
-                            <table id="exames_procedimentos">
+                            <table id="registros_mt">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Código</th>
-                                        <th>Procedimento</th>
-                                        <th>Valor</th>
+                                        <th>Cidade</th>
+                                        <th>CEP</th>
+                                        <th>Estado</th>
+                                        <th>UF</th>
                                         <th>Ações</th> <!-- Nova coluna para os botões de ação -->
                                     </tr>
                                 </thead>
@@ -380,22 +371,123 @@
         border: 1px solid #ddd;
     }
 
-    #exames_procedimentos {
+    #registros_mt {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #exames_procedimentos th,
-    #exames_procedimentos td {
+    #registros_mt th,
+    #registros_mt td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #exames_procedimentos th {
+    #registros_mt th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+
+    #risco_acidente_mecanico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_acidente_mecanico th,
+    #risco_acidente_mecanico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_acidente_mecanico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_fisico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_fisico th,
+    #risco_fisico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_fisico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_quimico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_quimico th,
+    #risco_quimico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_quimico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_biologico {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_biologico th,
+    #risco_biologico td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_biologico th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #risco_outros {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #risco_outros th,
+    #risco_outros td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #risco_outros th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -439,7 +531,23 @@
         margin: 0 2px;
     }
 
-    #exames_procedimentos {
+    #registros_mt {
+        width: 100% !important;
+    }
+
+    #risco_acidente_mecanico {
+        width: 100% !important;
+    }
+
+    #risco_fisico {
+        width: 100% !important;
+    }
+
+    #risco_biologico {
+        width: 100% !important;
+    }
+
+    #risco_outros {
         width: 100% !important;
     }
 
@@ -491,13 +599,11 @@
         /* ou outro valor */
 </style>
 
-
 <script>
-    debugger;
-    let recebe_acao_alteracao_exame_procedimento = "cadastrar";
+    let recebe_acao_alteracao_cidade_estado = "cadastrar";
 
     $(document).ready(function(e) {
-        buscar_exames_procedimentos();
+        buscar_cidades_estados();
     });
 
     document.querySelectorAll('.accordion-header').forEach(button => {
@@ -510,165 +616,110 @@
         });
     });
 
-    function buscar_exames_procedimentos() {
-        // Desativa os alertas de erro do DataTables
-        $.fn.dataTable.ext.errMode = 'none';
+    function buscar_cidades_estados() {
+        debugger;
 
-        // 🧹 Inicializa o DataTable apenas UMA vez quando a página carrega:
-        let tabelaExamesProcedimentos = $('#exames_procedimentos').DataTable({
-            language: {
-                url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-            },
-            dom: '<"top"lf>rt<"bottom"ip><"clear">',
-            pageLength: 5,
-            lengthMenu: [
-                [5, 10, 25, 50, -1],
-                [5, 10, 25, 50, "Todos"]
-            ]
-        });
-
-        // Seu AJAX normalmente...
         $.ajax({
-            url: "cadastros/processa_exames_procedimentos.php",
+            url: "cadastros/processa_cidade_estado.php",
             method: "GET",
             dataType: "json",
             data: {
-                "processo_exame_procedimento": "buscar_exames_procedimentos",
+                "processa_cidade_estado": "buscar_cidade_estado_mt",
             },
-            success: function(resposta_exame_procedimento) {
-                console.log(resposta_exame_procedimento);
+            success: function(resposta_cidade_estado) {
+                debugger;
+                console.log(resposta_cidade_estado);
 
-                tabelaExamesProcedimentos.clear();
-
-                if (resposta_exame_procedimento.length > 0) {
-                    for (let index = 0; index < resposta_exame_procedimento.length; index++) {
-                        let exame_procedimento = resposta_exame_procedimento[index];
-
-                        tabelaExamesProcedimentos.row.add([
-                            exame_procedimento.id,
-                            exame_procedimento.codigo,
-                            exame_procedimento.procedimento,
-                            exame_procedimento.valor,
-                            `<div class='action-buttons'>
-                        <a href='#' id='alterar-exame-procedimento' data-id-exame-procedimento="${exame_procedimento.id}" data-codigo-exame-procedimento="${exame_procedimento.codigo}"
-                        data-exame-procedimento="${exame_procedimento.procedimento}" data-valor-procedimento="${exame_procedimento.valor}" title='Editar'><i class="fas fa-edit"></i></a>
-                        <a href='#' id='excluir-exame-procedimento' data-id-exame-procedimento="${exame_procedimento.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                    </div>`
-                        ]);
-                    }
-                } else {
-                    tabelaExamesProcedimentos.row.add([
-                        '', '', '', '', '<div style="text-align:center; width:100%">Nenhum registro localizado</div>'
-                    ]);
+                if ($.fn.dataTable.isDataTable('#registros_mt')) {
+                    $('#registros_mt').DataTable().clear().destroy();
                 }
 
-                tabelaExamesProcedimentos.draw();
+                // Limpa o tbody manualmente (opcional, mas recomendado)
+                $("#registros_mt tbody").empty();
+
+                let corpo = document.querySelector("#registros_mt tbody");
+                corpo.innerHTML = "";
+
+                if (resposta_cidade_estado.length > 0) {
+                    // $("#risco_ergonomico tbody").html("");
+                    for (let index = 0; index < resposta_cidade_estado.length; index++) {
+                        let cidade_estado = resposta_cidade_estado[index];
+                        // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+                        let linha = document.createElement("tr");
+                        linha.innerHTML = `
+                    <td>${cidade_estado.id}</td>
+                    <td>${cidade_estado.nome}</td>
+                    <td>${cidade_estado.cep}</td>
+                    <td>${cidade_estado.estado}</td>
+                    <td>${cidade_estado.uf}</td>
+                    <td>
+                        <div class='action-buttons'>
+                            <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.cidade}"
+                            data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+                            <a href='#' id='excluir-cidade-estado' data-id-risco="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                        </div>
+                    </td>`;
+                        corpo.appendChild(linha);
+                    }
+                } else {
+                    $("#registros_mt tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+
+                // 🧹 Destrói o DataTable antigo antes de recriar
+                if ($.fn.dataTable.isDataTable('#registros_mt')) {
+                    $('#registros_mt').DataTable().destroy();
+                }
+
+                $("#registros_mt").DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+                    },
+                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+                    "pageLength": 5, // Exibir 5 registros por página
+                    "lengthMenu": [
+                        [5, 10, 25, 50, -1],
+                        [5, 10, 25, 50, "Todos"]
+                    ]
+                });
+
+
             },
             error: function(xhr, status, error) {
                 console.error("Erro ao carregar dados:", error);
-            }
+            },
         });
     }
 
-
-    $(document).on("click", "#excluir-exame-procedimento", function(e) {
+    $("#grava-cidade-estado").click(function(e) {
         e.preventDefault();
 
         debugger;
+        let recebe_cidade = $("#cidade").val();
+        let recebe_cep = $("#cep").val();
+        let recebe_estado = $("#estado").val();
+        let recebe_uf = $("#uf").val();
 
-        let recebe_confirmacao_excluir_exame_procedimento = window.confirm("Tem certeza que deseja excluir o exame?");
-
-        if (recebe_confirmacao_excluir_exame_procedimento) {
-            let recebe_id_exame_procedimento = $(this).data("id-exame-procedimento");
+        if (recebe_acao_alteracao_cidade_estado === "editar") {
             $.ajax({
-                url: "cadastros/processa_exames_procedimentos.php",
+                url: "cadastros/processa_cidade_estado.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_exame_procedimento: "excluir_exame_procedimento",
-                    valor_id_exame_procedimento: recebe_id_exame_procedimento,
+                    processo_risco: "alterar_risco",
+                    valor_codigo_risco: recebe_codigo_risco,
+                    valor_descricao_risco: recebe_descricao_risco,
+                    valor_grupo_risco: recebe_grupo_risco,
+                    valor_id_risco: $("#id_risco_alteracao").val(),
                 },
-                success: function(retorno_exame_procedimento) {
-                    debugger;
-                    console.log(retorno_exame_procedimento);
-                    if (retorno_exame_procedimento) {
-                        // window.location.href = "painel.php?pg=grava_risco";
-                        buscar_exames_procedimentos();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao excluir pessoa:" + error);
-                },
-            });
-        } else {
-            return;
-        }
-    });
-
-    $("#cancelar").click(function(e){
-        e.preventDefault();
-
-        debugger;
-
-        $("#codigo_exame_procedimento").val("");
-        $("#procedimento_exame").val("");
-        $("#valor_procedimento").val("");
-    });
-
-    $(document).on("click", "#alterar-exame-procedimento", function(e) {
-        e.preventDefault();
-
-        debugger;
-
-        let recebe_id_exame_procedimento = $(this).data("id-exame-procedimento");
-        let recebe_codigo_exame_procedimento = $(this).data("codigo-exame-procedimento");
-        let recebe_procedimento_exame = $(this).data("exame-procedimento");
-        let recebe_valor_exame_procedimento = $(this).data("valor-procedimento");
-
-        $("#id_exame_procedimento_alteracao").val(recebe_id_exame_procedimento);
-        $("#codigo_exame_procedimento").val(recebe_codigo_exame_procedimento);
-        $("#procedimento_exame").val(recebe_procedimento_exame);
-        $("#valor_procedimento").val(recebe_valor_exame_procedimento);
-
-        recebe_acao_alteracao_exame_procedimento = "editar";
-        // $("#retornar-painel").hide();
-    });
-
-    $("#grava-exame-procedimento").click(function(e) {
-        e.preventDefault();
-
-        debugger;
-
-        let recebe_codigo_exame_procedimento = $("#codigo_exame_procedimento").val();
-        let recebe_procedimento = $("#procedimento_exame").val();
-        let recebe_valor_procedimento = $("#valor_procedimento").val();
-
-        // let recebe_valor_convertido_float = parseFloat(recebe_valor_procedimento.replace(',', '.'));
-
-        if (recebe_acao_alteracao_exame_procedimento === "editar") {
-            $.ajax({
-                url: "cadastros/processa_exames_procedimentos.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    processo_exame_procedimento: "alterar_exame_procedimento",
-                    valor_codigo_exame_procedimento: recebe_codigo_exame_procedimento,
-                    valor_procedimento: recebe_procedimento,
-                    valor_exame_procedimento: recebe_valor_procedimento,
-                    valor_id_exame_procedimento: $("#id_exame_procedimento_alteracao").val(),
-                },
-                success: function(retorno_exame_procedimento) {
+                success: function(retorno_risco) {
                     debugger;
 
-                    console.log(retorno_exame_procedimento);
-                    if (retorno_exame_procedimento) {
+                    console.log(retorno_risco);
+                    if (retorno_risco) {
                         console.log("Risco alterada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
-
-                        $("#codigo_exame_procedimento").val("");
-                        $("#procedimento_exame").val("");
-                        $("#valor_procedimento").val("");
-                        buscar_exames_procedimentos(e);
+                        buscar_grupos_riscos();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -677,27 +728,25 @@
             });
         } else {
             $.ajax({
-                url: "cadastros/processa_exames_procedimentos.php",
+                url: "cadastros/processa_cidade_estado.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_exame_procedimento: "inserir_exame_procedimento",
-                    valor_codigo_exame_procedimento: recebe_codigo_exame_procedimento,
-                    valor_procedimento: recebe_procedimento,
-                    valor_exame_procedimento: recebe_valor_procedimento
+                    processo_cidade_estado: "inserir_cidade_estado",
+                    valor_cidade: recebe_cidade,
+                    valor_cep: recebe_cep,
+                    valor_estado: recebe_estado,
+                    valor_uf: recebe_uf,
                 },
-                success: function(retorno_exame_procedimento) {
+                success: function(retorno_cidade_estado) {
                     debugger;
 
-                    console.log(retorno_exame_procedimento);
+                    console.log(retorno_cidade_estado);
 
-                    if (retorno_exame_procedimento > 0) {
-                        console.log("Risco cadastrada com sucesso");
+                    if (retorno_cidade_estado > 0) {
+                        console.log("Cidade cadastrada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
-                        $("#codigo_exame_procedimento").val("");
-                        $("#procedimento_exame").val("");
-                        $("#valor_procedimento").val("");
-                        buscar_exames_procedimentos(e);
+                        buscar_cidades_estados();
                     }
                 },
                 error: function(xhr, status, error) {
