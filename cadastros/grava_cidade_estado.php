@@ -207,6 +207,396 @@
                     </div>
                 </div>
             </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section6" id="accordion1">
+                    Santa Catarina
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section6" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_sc">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section7" id="accordion1">
+                    Paraná
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section7" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_pr">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section8" id="accordion1">
+                    Rio Grande do Sul
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section8" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_rs">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section9" id="accordion1">
+                    Goiás
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section9" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_go">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section10" id="accordion1">
+                    Ceará
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section10" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_ce">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section11" id="accordion1">
+                    Amazonas
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section11" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_am">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section12" id="accordion1">
+                    Rio de Janeiro
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section12" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_rj">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section13" id="accordion1">
+                    Pará
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section13" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_pa">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section14" id="accordion1">
+                    Pernambuco
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section14" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_pe">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section15" id="accordion1">
+                    Maranhão
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section15" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_ma">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section16" id="accordion1">
+                    Espírito Santo
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section16" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_es">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section17" id="accordion1">
+                    Amapá
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section17" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_ap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section18" id="accordion1">
+                    Rio Grande do Norte
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section18" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_rn">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section19" id="accordion1">
+                    Paraíba
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section19" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_pb">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section20" id="accordion1">
+                    Acre
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section20" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div>
+                        <table id="registros_ac">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -575,22 +965,302 @@
         font-weight: bold;
     }
 
-    #risco_outros {
+    #registros_sc {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #risco_outros th,
-    #risco_outros td {
+    #registros_sc th,
+    #registros_sc td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #risco_outros th {
+    #registros_sc th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_pr {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_pr th,
+    #registros_pr td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_pr th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_rs {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_rs th,
+    #registros_rs td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_rs th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_go {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_go th,
+    #registros_go td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_go th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_ce {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_ce th,
+    #registros_ce td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_ce th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_am {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_am th,
+    #registros_am td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_am th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_rj {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_rj th,
+    #registros_rj td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_rj th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_pa {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_pa th,
+    #registros_pa td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_pa th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_pe {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_pe th,
+    #registros_pe td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_pe th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_ma {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_ma th,
+    #registros_ma td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_ma th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_es {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_es th,
+    #registros_es td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_es th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_ap {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_ap th,
+    #registros_ap td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_ap th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_rn {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_rn th,
+    #registros_rn td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_rn th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_pb {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_pb th,
+    #registros_pb td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_pb th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_ac {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_ac th,
+    #registros_ac td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_ac th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -814,7 +1484,7 @@
         recebe_acao_alteracao_cidade_estado = "editar";
     });
 
-    $(document).on("click","#excluir-cidade-estado", function(e) {
+    $(document).on("click", "#excluir-cidade-estado", function(e) {
         debugger;
 
         let recebe_confirmar_exclusao_cidade_estado = window.confirm("Tem certeza que deseja excluir cidade?");
