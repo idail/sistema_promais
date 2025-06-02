@@ -82,7 +82,7 @@
                         Mato Grosso
                         <span class="accordion-arrow">▼</span>
                     </button>
-                    <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                    <div class="accordion-content hidden" id="section1" role="region" aria-labelledby="accordion1" style="height: 15%;">
                         <div>
                             <table id="registros_mt">
                                 <thead>
@@ -109,7 +109,7 @@
                     Mato Grosso do Sul
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section2" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section2" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_ms">
                             <thead>
@@ -135,7 +135,7 @@
                     Bahia
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section3" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section3" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_bh">
                             <thead>
@@ -161,7 +161,7 @@
                     Minas Gerais
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section4" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section4" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_mg">
                             <thead>
@@ -187,7 +187,7 @@
                     São Paulo
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section5" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section5" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_sp">
                             <thead>
@@ -213,7 +213,7 @@
                     Santa Catarina
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section6" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section6" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_sc">
                             <thead>
@@ -239,7 +239,7 @@
                     Paraná
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section7" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section7" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_pr">
                             <thead>
@@ -265,7 +265,7 @@
                     Rio Grande do Sul
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section8" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section8" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_rs">
                             <thead>
@@ -291,7 +291,7 @@
                     Goiás
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section9" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section9" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_go">
                             <thead>
@@ -317,7 +317,7 @@
                     Ceará
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section10" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section10" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_ce">
                             <thead>
@@ -343,7 +343,7 @@
                     Amazonas
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section11" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section11" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_am">
                             <thead>
@@ -369,7 +369,7 @@
                     Rio de Janeiro
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section12" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section12" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_rj">
                             <thead>
@@ -395,7 +395,7 @@
                     Pará
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section13" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section13" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_pa">
                             <thead>
@@ -421,7 +421,7 @@
                     Pernambuco
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section14" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section14" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_pe">
                             <thead>
@@ -447,7 +447,7 @@
                     Maranhão
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section15" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section15" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_ma">
                             <thead>
@@ -473,7 +473,7 @@
                     Espírito Santo
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section16" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section16" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_es">
                             <thead>
@@ -499,7 +499,7 @@
                     Amapá
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section17" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section17" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_ap">
                             <thead>
@@ -525,7 +525,7 @@
                     Rio Grande do Norte
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section18" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section18" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_rn">
                             <thead>
@@ -551,7 +551,7 @@
                     Paraíba
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section19" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section19" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_pb">
                             <thead>
@@ -577,9 +577,139 @@
                     Acre
                     <span class="accordion-arrow">▼</span>
                 </button>
-                <div class="accordion-content hidden" id="section20" role="region" aria-labelledby="accordion1" style="height: 35%;">
+                <div class="accordion-content hidden" id="section20" role="region" aria-labelledby="accordion1" style="height: 15%;">
                     <div>
                         <table id="registros_ac">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section21" id="accordion1">
+                    Alagoas
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section21" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_al">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section22" id="accordion1">
+                    Tocantins
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section22" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_to">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section23" id="accordion1">
+                    Piauí
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section23" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_pi">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section24" id="accordion1">
+                    Roraima
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section24" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_rr">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section25" id="accordion1">
+                    Rondônia
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section25" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_ro">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -1265,6 +1395,106 @@
         font-weight: bold;
     }
 
+    #registros_al {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_al th,
+    #registros_al td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_al th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_to {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_to th,
+    #registros_to td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_to th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_pi {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_pi th,
+    #registros_pi td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_pi th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_rr {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_rr th,
+    #registros_rr td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_rr th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_ro {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_ro th,
+    #registros_ro td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_ro th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
     .accordion-header {
         display: flex;
         justify-content: space-between;
@@ -1376,7 +1606,11 @@
     let recebe_acao_alteracao_cidade_estado = "cadastrar";
 
     $(document).ready(function(e) {
-        buscar_cidades_estados();
+        async function buscar_informacoes_cidades_estados() {
+            await todas_cidades_estados();
+        }
+
+        buscar_informacoes_cidades_estados();
     });
 
     document.querySelectorAll('.accordion-header').forEach(button => {
@@ -1389,78 +1623,2299 @@
         });
     });
 
-    function buscar_cidades_estados() {
+    async function todas_cidades_estados() {
+
+
+        return new Promise((resolve, reject) => {
+            // Cria um array de Promises para cada chamada AJAX
+            const promises = [];
+
+
+            let totalRequisicoes = 25; // Número de requisições
+            let concluidas = 0;
+            let erro_ocorrido = false;
+
+            function checkFinalizar() {
+                concluidas++;
+                if (concluidas === totalRequisicoes && !erro_ocorrido) {
+                    resolve(); // Todas concluídas
+                }
+            }
+
+            function handleErro(err) {
+                if (!erro_ocorrido) {
+                    erro_ocorrido = true;
+                    reject(err);
+                }
+            }
+
+            // 1️⃣ buscar_cidade_estado_mt
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_mt"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_mt", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 2️⃣ buscar_cidade_estado_ms
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_ms"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_ms", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 3️⃣ buscar_cidade_estado_bh
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_bh"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_bh", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_mg"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_mg", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_sp"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_sp", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_sc"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_sc", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_pr"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_pr", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_rs"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_rs", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_go"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_go", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_ce"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_ce", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_am"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_am", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_rj"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_rj", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_pa"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_pa", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_pe"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_pe", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_ma"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_ma", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_es"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_es", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_ap"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_ap", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_rn"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_rn", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_pb"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_pb", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_ac"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_ac", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_al"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_al", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_to"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_to", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_pi"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_pi", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_rr"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_rr", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_ro"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_ro", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+        });
+
+
+
+
+
+
+
+        // return new Promise((resolve, reject) => {
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_mt",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_mt')) {
+        //                 $('#registros_mt').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_mt tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_mt tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_mt tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_mt')) {
+        //                 $('#registros_mt').DataTable().destroy();
+        //             }
+
+        //             $("#registros_mt").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+        //             resolve();
+
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_ms",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_ms')) {
+        //                 $('#registros_ms').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_ms tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_ms tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_ms tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_ms')) {
+        //                 $('#registros_ms').DataTable().destroy();
+        //             }
+
+        //             $("#registros_ms").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+        //             resolve();
+
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_bh",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_bh')) {
+        //                 $('#registros_bh').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_bh tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_bh tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_bh tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_bh')) {
+        //                 $('#registros_bh').DataTable().destroy();
+        //             }
+
+        //             $("#registros_bh").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+        //             resolve();
+
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_mg",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             // ⚠️ Verifica e destrói o DataTables uma vez
+        //             if ($.fn.DataTable.isDataTable('#registros_mg')) {
+        //                 $('#registros_mg').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody
+        //             let corpo = document.querySelector("#registros_mg tbody");
+        //             corpo.innerHTML = "";
+
+        //             // Popula a tabela
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 resposta_cidade_estado.forEach((cidade_estado) => {
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //   <td>${cidade_estado.id}</td>
+        //   <td>${cidade_estado.nome}</td>
+        //   <td>${cidade_estado.cep}</td>
+        //   <td>${cidade_estado.estado}</td>
+        //   <td>${cidade_estado.uf}</td>
+        //   <td>
+        //     <div class='action-buttons'>
+        //       <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //       data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //       <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //     </div>
+        //   </td>`;
+        //                     corpo.appendChild(linha);
+        //                 });
+        //             } else {
+        //                 corpo.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Nenhum registro localizado</td></tr>";
+        //             }
+
+        //             // Recria o DataTables apenas uma vez
+        //             $('#registros_mg').DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5,
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //         },
+        //     });
+
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_sp",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_sp')) {
+        //                 $('#registros_sp').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_sp tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_sp tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_sp tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_sp')) {
+        //                 $('#registros_sp').DataTable().destroy();
+        //             }
+
+        //             $("#registros_sp").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_sc",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_sc')) {
+        //                 $('#registros_sc').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_sc tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_sc tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_sc tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_sc')) {
+        //                 $('#registros_sc').DataTable().destroy();
+        //             }
+
+        //             $("#registros_sc").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_pr",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_pr')) {
+        //                 $('#registros_pr').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_pr tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_pr tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_pr tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_pr')) {
+        //                 $('#registros_pr').DataTable().destroy();
+        //             }
+
+        //             $("#registros_pr").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_rs",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_rs')) {
+        //                 $('#registros_rs').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_rs tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_rs tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_rs tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_rs')) {
+        //                 $('#registros_rs').DataTable().destroy();
+        //             }
+
+        //             $("#registros_rs").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_go",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_go')) {
+        //                 $('#registros_go').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_go tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_go tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_go tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_go')) {
+        //                 $('#registros_go').DataTable().destroy();
+        //             }
+
+        //             $("#registros_go").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_ce",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_ce')) {
+        //                 $('#registros_ce').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_ce tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_ce tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_ce tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_ce')) {
+        //                 $('#registros_ce').DataTable().destroy();
+        //             }
+
+        //             $("#registros_ce").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+        //             resolve();
+
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_am",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_am')) {
+        //                 $('#registros_am').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_am tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_am tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_am tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_am')) {
+        //                 $('#registros_am').DataTable().destroy();
+        //             }
+
+        //             $("#registros_am").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_rj",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_rj')) {
+        //                 $('#registros_rj').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_rj tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_rj tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_rj tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_rj')) {
+        //                 $('#registros_rj').DataTable().destroy();
+        //             }
+
+        //             $("#registros_rj").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_pa",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_pa')) {
+        //                 $('#registros_pa').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_pa tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_pa tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_pa tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_pa')) {
+        //                 $('#registros_pa').DataTable().destroy();
+        //             }
+
+        //             $("#registros_pa").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_pe",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_pe')) {
+        //                 $('#registros_pe').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_pe tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_pe tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_pe tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_pe')) {
+        //                 $('#registros_pe').DataTable().destroy();
+        //             }
+
+        //             $("#registros_pe").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_ma",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_ma')) {
+        //                 $('#registros_ma').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_ma tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_ma tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_ma tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_ma')) {
+        //                 $('#registros_ma').DataTable().destroy();
+        //             }
+
+        //             $("#registros_ma").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error)
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_es",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_es')) {
+        //                 $('#registros_es').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_es tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_es tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_es tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_es')) {
+        //                 $('#registros_es').DataTable().destroy();
+        //             }
+
+        //             $("#registros_es").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_ap",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_ap')) {
+        //                 $('#registros_ap').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_ap tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_ap tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_ap tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_ap')) {
+        //                 $('#registros_ap').DataTable().destroy();
+        //             }
+
+        //             $("#registros_ap").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_rn",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_rn')) {
+        //                 $('#registros_rn').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_rn tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_rn tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_rn tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_rn')) {
+        //                 $('#registros_rn').DataTable().destroy();
+        //             }
+
+        //             $("#registros_rn").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_pb",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_pb')) {
+        //                 $('#registros_pb').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_pb tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_pb tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_pb tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_pb')) {
+        //                 $('#registros_pb').DataTable().destroy();
+        //             }
+
+        //             $("#registros_pb").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_ac",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_ac')) {
+        //                 $('#registros_ac').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_ac tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_ac tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_ac tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_ac')) {
+        //                 $('#registros_ac').DataTable().destroy();
+        //             }
+
+        //             $("#registros_ac").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_al",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_al')) {
+        //                 $('#registros_al').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_al tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_al tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_al tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_al')) {
+        //                 $('#registros_al').DataTable().destroy();
+        //             }
+
+        //             $("#registros_al").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error)
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_to",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_to')) {
+        //                 $('#registros_to').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_to tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_to tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_to tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_to')) {
+        //                 $('#registros_to').DataTable().destroy();
+        //             }
+
+        //             $("#registros_to").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+        //             resolve();
+
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_pi",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_pi')) {
+        //                 $('#registros_pi').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_pi tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_pi tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_pi tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_pi')) {
+        //                 $('#registros_pi').DataTable().destroy();
+        //             }
+
+        //             $("#registros_pi").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_rr",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_rr')) {
+        //                 $('#registros_rr').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_rr tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_rr tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_rr tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_rr')) {
+        //                 $('#registros_rr').DataTable().destroy();
+        //             }
+
+        //             $("#registros_rr").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+
+        //     $.ajax({
+        //         url: "cadastros/processa_cidade_estado.php",
+        //         method: "GET",
+        //         dataType: "json",
+        //         data: {
+        //             "processa_cidade_estado": "buscar_cidade_estado_ro",
+        //         },
+        //         success: function(resposta_cidade_estado) {
+        //             debugger;
+        //             console.log(resposta_cidade_estado);
+
+        //             if ($.fn.dataTable.isDataTable('#registros_ro')) {
+        //                 $('#registros_ro').DataTable().clear().destroy();
+        //             }
+
+        //             // Limpa o tbody manualmente (opcional, mas recomendado)
+        //             $("#registros_ro tbody").empty();
+
+        //             let corpo = document.querySelector("#registros_ro tbody");
+        //             corpo.innerHTML = "";
+
+        //             if (resposta_cidade_estado.length > 0) {
+        //                 // $("#risco_ergonomico tbody").html("");
+        //                 for (let index = 0; index < resposta_cidade_estado.length; index++) {
+        //                     let cidade_estado = resposta_cidade_estado[index];
+        //                     // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
+
+        //                     let linha = document.createElement("tr");
+        //                     linha.innerHTML = `
+        //             <td>${cidade_estado.id}</td>
+        //             <td>${cidade_estado.nome}</td>
+        //             <td>${cidade_estado.cep}</td>
+        //             <td>${cidade_estado.estado}</td>
+        //             <td>${cidade_estado.uf}</td>
+        //             <td>
+        //                 <div class='action-buttons'>
+        //                     <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+        //                     data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+        //                     <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+        //                 </div>
+        //             </td>`;
+        //                     corpo.appendChild(linha);
+        //                 }
+        //             } else {
+        //                 $("#registros_ro tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        //             }
+
+        //             // 🧹 Destrói o DataTable antigo antes de recriar
+        //             if ($.fn.dataTable.isDataTable('#registros_ro')) {
+        //                 $('#registros_ro').DataTable().destroy();
+        //             }
+
+        //             $("#registros_ro").DataTable({
+        //                 "language": {
+        //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+        //                 },
+        //                 "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+        //                 "pageLength": 5, // Exibir 5 registros por página
+        //                 "lengthMenu": [
+        //                     [5, 10, 25, 50, -1],
+        //                     [5, 10, 25, 50, "Todos"]
+        //                 ]
+        //             });
+
+        //             resolve();
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Erro ao carregar dados:", error);
+        //             reject(error);
+        //         },
+        //     });
+        // });
+    }
+
+    // 📦 Função auxiliar para atualizar as tabelas
+    function atualizarTabela(selector, resposta_cidade_estado) {
         debugger;
+        if ($.fn.dataTable.isDataTable(selector)) {
+            $(selector).DataTable().clear().destroy();
+        }
 
-        $.ajax({
-            url: "cadastros/processa_cidade_estado.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processa_cidade_estado": "buscar_cidade_estado_mt",
+        const corpo = document.querySelector(`${selector} tbody`);
+        corpo.innerHTML = "";
+
+        if (resposta_cidade_estado.length > 0) {
+            resposta_cidade_estado.forEach((cidade_estado) => {
+                const linha = document.createElement("tr");
+                linha.innerHTML = `
+        <td>${cidade_estado.id}</td>
+        <td>${cidade_estado.nome}</td>
+        <td>${cidade_estado.cep}</td>
+        <td>${cidade_estado.estado}</td>
+        <td>${cidade_estado.uf}</td>
+        <td>
+          <div class='action-buttons'>
+            <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+            data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+            <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+          </div>
+        </td>`;
+                corpo.appendChild(linha);
+            });
+        } else {
+            corpo.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>";
+        }
+
+        $(selector).DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
             },
-            success: function(resposta_cidade_estado) {
-                debugger;
-                console.log(resposta_cidade_estado);
-
-                if ($.fn.dataTable.isDataTable('#registros_mt')) {
-                    $('#registros_mt').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#registros_mt tbody").empty();
-
-                let corpo = document.querySelector("#registros_mt tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_cidade_estado.length > 0) {
-                    // $("#risco_ergonomico tbody").html("");
-                    for (let index = 0; index < resposta_cidade_estado.length; index++) {
-                        let cidade_estado = resposta_cidade_estado[index];
-                        // let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML = `
-                    <td>${cidade_estado.id}</td>
-                    <td>${cidade_estado.nome}</td>
-                    <td>${cidade_estado.cep}</td>
-                    <td>${cidade_estado.estado}</td>
-                    <td>${cidade_estado.uf}</td>
-                    <td>
-                        <div class='action-buttons'>
-                            <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
-                            data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
-                            <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                    </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#registros_mt tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#registros_mt')) {
-                    $('#registros_mt').DataTable().destroy();
-                }
-
-                $("#registros_mt").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao carregar dados:", error);
-            },
+            "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+            "pageLength": 5,
+            "lengthMenu": [
+                [5, 10, 25, 50, -1],
+                [5, 10, 25, 50, "Todos"]
+            ]
         });
     }
 
@@ -1499,12 +3954,12 @@
                     processo_cidade_estado: "excluir_cidade_estado",
                     valor_id_cidade_estado: recebe_id_cidade_estado,
                 },
-                success: function(retorno_cidade) {
+                success:async function(retorno_cidade) {
                     debugger;
                     console.log(retorno_cidade);
                     if (retorno_cidade) {
                         // window.location.href = "painel.php?pg=grava_risco";
-                        buscar_cidades_estados();
+                        await todas_cidades_estados();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -1539,14 +3994,14 @@
                     valor_uf: recebe_uf,
                     valor_id_cidade_estado: $("#cidade_estado_id_alteracao").val()
                 },
-                success: function(retorno_cidade_estado) {
+                success: async function(retorno_cidade_estado) {
                     debugger;
 
                     console.log(retorno_cidade_estado);
                     if (retorno_cidade_estado) {
                         console.log("Cidade alterada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
-                        buscar_cidades_estados();
+                        await todas_cidades_estados();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -1565,7 +4020,7 @@
                     valor_estado: recebe_estado,
                     valor_uf: recebe_uf,
                 },
-                success: function(retorno_cidade_estado) {
+                success: async function(retorno_cidade_estado) {
                     debugger;
 
                     console.log(retorno_cidade_estado);
@@ -1573,7 +4028,7 @@
                     if (retorno_cidade_estado > 0) {
                         console.log("Cidade cadastrada com sucesso");
                         // window.location.href = "painel.php?pg=grava_risco";
-                        buscar_cidades_estados();
+                        await todas_cidades_estados();
                     }
                 },
                 error: function(xhr, status, error) {
