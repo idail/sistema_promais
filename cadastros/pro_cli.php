@@ -428,10 +428,16 @@ $conexao->close();
         async function buscar_informacoes_clinica() {
             debugger;
             if (recebe_acao_alteracao_clinica === "editar") {
-                await popula_lista_cidade_clinica_alteracao();
+                let cidadeDados = await popula_lista_cidade_clinica_alteracao(); // Aguarda e recebe dados da cidade
+                if (cidadeDados) {
+                    carregarCidades(cidadeDados.nome, cidadeDados.estado); // Agora sim, carrega e seleciona a cidade certa
+                } else {
+                    carregarCidades(); // fallback
+                }
                 await popula_medicos_associar_clinica();
                 await popula_medicos_associados_clinica();
             } else {
+                carregarCidades();
                 await popula_medicos_associar_clinica();
 
                 let atual = new Date();
@@ -450,8 +456,6 @@ $conexao->close();
 
             }
         }
-
-        carregarCidades();
 
         buscar_informacoes_clinica();
     });
@@ -501,20 +505,25 @@ $conexao->close();
                     "valor_id_clinica": recebe_codigo_alteracao_clinica,
                 },
                 success: function(resposta) {
-                    debugger;
-                    console.log(resposta);
-                    for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#cidade_id").val(resposta[0].id);
+                    if (resposta && resposta.length > 0) {
+                        const cidadeInfo = {
+                            id: resposta[0].id,
+                            nome: resposta[0].nome,
+                            estado: resposta[0].estado
+                        };
+                        resolve(cidadeInfo);
+                    } else {
+                        resolve(null);
                     }
-                    resolve(); // sinaliza que terminou
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao buscar cidade da clinica:" + error);
+                    console.log("Falha ao buscar cidade da clínica:", error);
                     reject(error);
                 },
             });
         });
     }
+
 
     async function popula_medicos_associar_clinica() {
         return new Promise((resolve, reject) => {
@@ -762,7 +771,7 @@ $conexao->close();
         input.value = value;
     }
 
-    function carregarCidades(cidadeSelecionada = '', estadoSelecionado = '') {
+    async function carregarCidades(cidadeSelecionada = '', estadoSelecionado = '') {
         const apiUrl = 'api/list/cidades.php';
         const cidadeSelect = document.getElementById('cidade_id');
 
@@ -780,6 +789,7 @@ $conexao->close();
                     });
 
                     if (cidadeSelecionada) {
+                        debugger;
                         for (let i = 0; i < cidadeSelect.options.length; i++) {
                             if (cidadeSelect.options[i].text.includes(cidadeSelecionada) &&
                                 cidadeSelect.options[i].text.includes(estadoSelecionado)) {

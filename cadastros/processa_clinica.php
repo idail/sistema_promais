@@ -40,7 +40,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         // c.empresa_id and cl.cidade_id = c.id where cl.id = :recebe_codigo_clinica_alteracao";
         // $instrucao_busca_cidade_clinica_alteracao = "SELECT c.nome AS cidade, c.estado FROM clinicas cl 
         // JOIN cidades c ON cl.cidade_id = c.id WHERE cl.id = :recebe_codigo_clinica_alteracao";
-        $instrucao_busca_cidade_clinica_alteracao = "SELECT c.id, c.nome
+        $instrucao_busca_cidade_clinica_alteracao = "SELECT c.id, c.nome, c.estado
         FROM cidades c
         JOIN clinicas cl ON cl.cidade_id = c.id
         WHERE cl.id = :recebe_codigo_clinica_alteracao";
