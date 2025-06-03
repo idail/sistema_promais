@@ -8,8 +8,6 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
-            <?php echo $_SESSION["empresa_id"]; ?>
-
             <input type="hidden" name="empresa_id_alteracao" id="empresa_id_alteracao">
 
             <div class="form-group">

@@ -46,10 +46,39 @@
                             <label for="estado">Estado:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-city"></i>
-
-                                <input type="text" id="estado" name="estado" class="form-control">
+                                <select id="estado" name="estado" class="form-control">
+                                    <option value="">Selecione</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
                             </div>
                         </div>
+
 
                         <div class="form-group" style="flex: 30%;">
                             <label for="uf">UF:</label>
@@ -66,6 +95,17 @@
             <div class="text-sm text-red-600 mt-3" id="mensagem-campo-vazio">
                 <span id="corpo-mensagem-campo-vazio"></span>
             </div>
+
+            <div id="mensagem-gravacao"
+                class="hidden items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 transition-opacity duration-500"
+                role="alert">
+                <!-- <span class="sr-only">Sucesso</span> -->
+                <div>
+                    <span class="font-medium" id="corpo-mensagem-gravacao"></span>
+                </div>
+            </div>
+
+
 
             <input type="hidden" name="id_risco_alteracao" id="id_risco_alteracao">
 
@@ -727,6 +767,84 @@
                     </div>
                 </div>
             </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section26" id="accordion1">
+                    Distrito Federal
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section26" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_df">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section27" id="accordion1">
+                    Sergipe
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section27" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_se">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> <!-- Nova coluna para os botões de ação -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="accordion-item" id="accordion-registros-mg">
+                <button class="accordion-header" aria-expanded="false" aria-controls="section28" id="accordion1">
+                    Rio Grande do Sul
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content hidden" id="section28" role="region" aria-labelledby="accordion1" style="height: 15%;">
+                    <div>
+                        <table id="registros_rs">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cidade</th>
+                                    <th>CEP</th>
+                                    <th>Estado</th>
+                                    <th>UF</th>
+                                    <th>Ações</th> Nova coluna para os botões de ação
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -1495,6 +1613,66 @@
         font-weight: bold;
     }
 
+    #registros_df {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_df th,
+    #registros_df td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_df th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    #registros_se {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_se th,
+    #registros_se td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_se th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* #registros_rs {
+        font-size: 12px;
+        width: 100%;
+        border-collapse: collapse;
+        padding-top: 20px;
+    }
+
+    #registros_rs th,
+    #registros_rs td {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-align: left;
+
+    }
+
+    #registros_rs th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    } */
+
     .accordion-header {
         display: flex;
         justify-content: space-between;
@@ -1550,9 +1728,101 @@
         width: 100% !important;
     }
 
-    #risco_outros {
+    #registros_sp {
         width: 100% !important;
     }
+
+    #registros_sc {
+        width: 100% !important;
+    }
+
+    #registros_pr {
+        width: 100% !important;
+    }
+
+    #registros_rs {
+        width: 100% !important;
+    }
+
+    #registros_go {
+        width: 100% !important;
+    }
+
+    #registros_ce {
+        width: 100% !important;
+    }
+
+    #registros_am {
+        width: 100% !important;
+    }
+
+    #registros_rj {
+        width: 100% !important;
+    }
+
+    #registros_pa {
+        width: 100% !important;
+    }
+
+    #registros_pe {
+        width: 100% !important;
+    }
+
+    #registros_ma {
+        width: 100% !important;
+    }
+
+    #registros_es {
+        width: 100% !important;
+    }
+
+    #registros_ap {
+        width: 100% !important;
+    }
+
+    #registros_rn {
+        width: 100% !important;
+    }
+
+    #registros_pb {
+        width: 100% !important;
+    }
+
+    #registros_ac {
+        width: 100% !important;
+    }
+
+    #registros_al {
+        width: 100% !important;
+    }
+
+    #registros_to {
+        width: 100% !important;
+    }
+
+    #registros_pi {
+        width: 100% !important;
+    }
+
+    #registros_rr {
+        width: 100% !important;
+    }
+
+    #registros_ro {
+        width: 100% !important;
+    }
+
+    #registros_df {
+        width: 100% !important;
+    }
+
+    #registros_se {
+        width: 100% !important;
+    }
+
+    /* #registros_rs {
+        width: 100% !important;
+    } */
 
     /* Força o alinhamento horizontal entre a info e os botões */
     .dataTables_wrapper .dataTables_info,
@@ -1597,6 +1867,11 @@
         align-items: center;
     }
 
+    .dataTables_empty {
+        text-align: center !important;
+    }
+
+
     /* .accordion-content {
         min-height: 150px;
         /* ou outro valor */
@@ -1611,6 +1886,8 @@
         }
 
         buscar_informacoes_cidades_estados();
+
+        // $("#mensagem-gravacao").hide();
     });
 
     document.querySelectorAll('.accordion-header').forEach(button => {
@@ -1631,7 +1908,7 @@
             const promises = [];
 
 
-            let totalRequisicoes = 25; // Número de requisições
+            let totalRequisicoes = 28; // Número de requisições
             let concluidas = 0;
             let erro_ocorrido = false;
 
@@ -2073,6 +2350,57 @@
                     handleErro(error);
                 }
             });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_df"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_df", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            $.ajax({
+                url: "cadastros/processa_cidade_estado.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_cidade_estado": "buscar_cidade_estado_se"
+                },
+                success: function(resposta_cidade_estado) {
+                    atualizarTabela("#registros_se", resposta_cidade_estado);
+                    checkFinalizar();
+                },
+                error: function(xhr, status, error) {
+                    handleErro(error);
+                }
+            });
+
+            // 4️⃣ buscar_cidade_estado_mg
+            // $.ajax({
+            //     url: "cadastros/processa_cidade_estado.php",
+            //     method: "GET",
+            //     dataType: "json",
+            //     data: {
+            //         "processa_cidade_estado": "buscar_cidade_estado_rs"
+            //     },
+            //     success: function(resposta_cidade_estado) {
+            //         atualizarTabela("#registros_rs", resposta_cidade_estado);
+            //         checkFinalizar();
+            //     },
+            //     error: function(xhr, status, error) {
+            //         handleErro(error);
+            //     }
+            // });
         });
 
 
@@ -3874,50 +4202,104 @@
         // });
     }
 
-    // 📦 Função auxiliar para atualizar as tabelas
     function atualizarTabela(selector, resposta_cidade_estado) {
         debugger;
-        if ($.fn.dataTable.isDataTable(selector)) {
-            $(selector).DataTable().clear().destroy();
+        // Adiciona "#" ao seletor, se não tiver
+        if (!selector.startsWith('#')) {
+            selector = `#${selector}`;
         }
 
-        const corpo = document.querySelector(`${selector} tbody`);
-        corpo.innerHTML = "";
+        const tabela = $(selector);
 
-        if (resposta_cidade_estado.length > 0) {
-            resposta_cidade_estado.forEach((cidade_estado) => {
-                const linha = document.createElement("tr");
-                linha.innerHTML = `
-        <td>${cidade_estado.id}</td>
-        <td>${cidade_estado.nome}</td>
-        <td>${cidade_estado.cep}</td>
-        <td>${cidade_estado.estado}</td>
-        <td>${cidade_estado.uf}</td>
-        <td>
-          <div class='action-buttons'>
-            <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
-            data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
-            <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-          </div>
-        </td>`;
-                corpo.appendChild(linha);
-            });
+        // Verifica se o DataTable já está inicializado
+        if ($.fn.DataTable.isDataTable(selector)) {
+            const dt = tabela.DataTable();
+            dt.clear(); // Limpa os dados antigos
+
+            // Verifica se a resposta tem dados
+            if (Array.isArray(resposta_cidade_estado) && resposta_cidade_estado.length > 0) {
+                for (let i = 0; i < resposta_cidade_estado.length; i++) {
+                    const cidade_estado = resposta_cidade_estado[i];
+
+                    // Adiciona uma nova linha no DataTable
+                    dt.row.add([
+                        cidade_estado.id,
+                        cidade_estado.nome,
+                        cidade_estado.cep,
+                        cidade_estado.estado,
+                        cidade_estado.uf,
+                        `
+                    <div class='action-buttons'>
+                        <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+                        data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                    </div>`
+                    ]);
+                }
+            }
+
+            dt.draw(); // Atualiza a tabela
         } else {
-            corpo.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>";
-        }
+            // Inicializa o DataTable pela primeira vez
+            const dadosTabela = [];
 
-        $(selector).DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-            },
-            "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-            "pageLength": 5,
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [5, 10, 25, 50, "Todos"]
-            ]
-        });
+            if (Array.isArray(resposta_cidade_estado) && resposta_cidade_estado.length > 0) {
+                for (let i = 0; i < resposta_cidade_estado.length; i++) {
+                    const cidade_estado = resposta_cidade_estado[i];
+
+                    dadosTabela.push([
+                        cidade_estado.id,
+                        cidade_estado.nome,
+                        cidade_estado.cep,
+                        cidade_estado.estado,
+                        cidade_estado.uf,
+                        `
+                    <div class='action-buttons'>
+                        <a href='#' id='alterar-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" data-cidade="${cidade_estado.nome}"
+                        data-cep="${cidade_estado.cep}" data-estado="${cidade_estado.estado}" data-estado-uf="${cidade_estado.uf}" title='Editar'><i class="fas fa-edit"></i></a>
+                        <a href='#' id='excluir-cidade-estado' data-id-cidade-estado="${cidade_estado.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
+                    </div>`
+                    ]);
+                }
+            }
+
+            tabela.DataTable({
+                data: dadosTabela,
+                columns: [{
+                        title: 'ID'
+                    },
+                    {
+                        title: 'Nome'
+                    },
+                    {
+                        title: 'CEP'
+                    },
+                    {
+                        title: 'Estado'
+                    },
+                    {
+                        title: 'UF'
+                    },
+                    {
+                        title: 'Ações',
+                        orderable: false
+                    }
+                ],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+                },
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                pageLength: 5,
+                lengthMenu: [
+                    [5, 10, 25, 50, -1],
+                    [5, 10, 25, 50, "Todos"]
+                ]
+            });
+        }
     }
+
+
+
 
     $(document).on("click", "#alterar-cidade-estado", function(e) {
         e.preventDefault();
@@ -3954,7 +4336,7 @@
                     processo_cidade_estado: "excluir_cidade_estado",
                     valor_id_cidade_estado: recebe_id_cidade_estado,
                 },
-                success:async function(retorno_cidade) {
+                success: async function(retorno_cidade) {
                     debugger;
                     console.log(retorno_cidade);
                     if (retorno_cidade) {
@@ -4000,6 +4382,21 @@
                     console.log(retorno_cidade_estado);
                     if (retorno_cidade_estado) {
                         console.log("Cidade alterada com sucesso");
+                        $("#corpo-mensagem-gravacao").html("Cidade alterada com sucesso");
+                        $("#mensagem-gravacao").removeClass("hidden").addClass("opacity-100");
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("opacity-0");
+                        }, 4000);
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("hidden").removeClass("opacity-0 opacity-100");
+                        }, 4500);
+
+                        $("#cidade").val("");
+                        $("#cep").val("");
+                        $("#estado").val("");
+                        $("#uf").val("");
                         // window.location.href = "painel.php?pg=grava_risco";
                         await todas_cidades_estados();
                     }
@@ -4027,6 +4424,21 @@
 
                     if (retorno_cidade_estado > 0) {
                         console.log("Cidade cadastrada com sucesso");
+                        $("#corpo-mensagem-gravacao").html("Cidade gravada com sucesso");
+                        $("#mensagem-gravacao").removeClass("hidden").addClass("opacity-100");
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("opacity-0");
+                        }, 4000);
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("hidden").removeClass("opacity-0 opacity-100");
+                        }, 4500);
+
+                        $("#cidade").val("");
+                        $("#cep").val("");
+                        $("#estado").val("");
+                        $("#uf").val("");
                         // window.location.href = "painel.php?pg=grava_risco";
                         await todas_cidades_estados();
                     }

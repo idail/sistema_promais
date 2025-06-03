@@ -336,6 +336,36 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_cidade_estado->execute();
         $resultado_busca_cidade_estado = $comando_busca_cidade_estado->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_cidade_estado);
+    }else if($recebe_processo_cidade_estado === "buscar_cidade_estado_df")
+    {
+        $recebe_empresa_id = $_SESSION["empresa_id"];
+        $instrucao_busca_cidade_estado = "select * from cidades where uf = :recebe_uf and empresa_id = :recebe_empresa_id";
+        $comando_busca_cidade_estado = $pdo->prepare($instrucao_busca_cidade_estado);
+        $comando_busca_cidade_estado->bindValue(":recebe_uf","DF");
+        $comando_busca_cidade_estado->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_busca_cidade_estado->execute();
+        $resultado_busca_cidade_estado = $comando_busca_cidade_estado->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cidade_estado);
+    }else if($recebe_processo_cidade_estado === "buscar_cidade_estado_se")
+    {
+        $recebe_empresa_id = $_SESSION["empresa_id"];
+        $instrucao_busca_cidade_estado = "select * from cidades where uf = :recebe_uf and empresa_id = :recebe_empresa_id";
+        $comando_busca_cidade_estado = $pdo->prepare($instrucao_busca_cidade_estado);
+        $comando_busca_cidade_estado->bindValue(":recebe_uf","SE");
+        $comando_busca_cidade_estado->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_busca_cidade_estado->execute();
+        $resultado_busca_cidade_estado = $comando_busca_cidade_estado->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cidade_estado);
+    }else if($recebe_processo_cidade_estado === "buscar_cidade_estado_rs")
+    {
+        $recebe_empresa_id = $_SESSION["empresa_id"];
+        $instrucao_busca_cidade_estado = "select * from cidades where uf = :recebe_uf and empresa_id = :recebe_empresa_id";
+        $comando_busca_cidade_estado = $pdo->prepare($instrucao_busca_cidade_estado);
+        $comando_busca_cidade_estado->bindValue(":recebe_uf","RS");
+        $comando_busca_cidade_estado->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_busca_cidade_estado->execute();
+        $resultado_busca_cidade_estado = $comando_busca_cidade_estado->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cidade_estado);
     }
 }
 ?>
