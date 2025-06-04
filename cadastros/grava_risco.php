@@ -67,10 +67,19 @@
                 <span id="corpo-mensagem-campo-vazio"></span>
             </div>
 
+            <div id="mensagem-gravacao"
+                class="hidden items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 transition-opacity duration-500"
+                role="alert">
+                <!-- <span class="sr-only">Sucesso</span> -->
+                <div>
+                    <span class="font-medium" id="corpo-mensagem-gravacao"></span>
+                </div>
+            </div>
+
             <input type="hidden" name="id_risco_alteracao" id="id_risco_alteracao">
 
             <button type="button" class="btn btn-primary" name="grava_risco" id="grava-risco">Salvar</button>
-            <button type="button" id="retornar-listagem-medicos" class="botao-cinza">Cancelar</button>
+            <button type="button" id="cancelar-risco" class="botao-cinza">Cancelar</button>
         </form>
 
         <div class="form-columns">
@@ -796,12 +805,17 @@
 
 
 
-    $("#retornar-listagem-medicos").click(function(e) {
+    $("#cancelar-risco").click(function(e) {
         e.preventDefault();
 
         debugger;
 
-        window.location.href = "painel.php?pg=medicos";
+        $("#codigo_risco").val("");
+        $("#descricao_risco").val("");
+        let select_grupo_risco = document.querySelector(
+            "#grupo_risco"
+        );
+        select_grupo_risco.selectedIndex = 0;
     });
 
     // async function popula_informacoes_medico_alteracao() {
@@ -1773,6 +1787,23 @@
                     console.log(retorno_risco);
                     if (retorno_risco) {
                         console.log("Risco alterada com sucesso");
+                        $("#corpo-mensagem-gravacao").html("Risco alterada com sucesso");
+                        $("#mensagem-gravacao").removeClass("hidden").addClass("opacity-100");
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("opacity-0");
+                        }, 4000);
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("hidden").removeClass("opacity-0 opacity-100");
+                        }, 4500);
+
+                        $("#codigo_risco").val("");
+                        $("#descricao_risco").val("");
+                        let select_grupo_risco = document.querySelector(
+                            "#grupo_risco"
+                        );
+                        select_grupo_risco.selectedIndex = 0;
                         // window.location.href = "painel.php?pg=grava_risco";
                         buscar_grupos_riscos();
                     }
@@ -1799,6 +1830,23 @@
 
                     if (retorno_risco > 0) {
                         console.log("Risco cadastrada com sucesso");
+                        $("#corpo-mensagem-gravacao").html("Risco gravado com sucesso");
+                        $("#mensagem-gravacao").removeClass("hidden").addClass("opacity-100");
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("opacity-0");
+                        }, 4000);
+
+                        setTimeout(() => {
+                            $("#mensagem-gravacao").addClass("hidden").removeClass("opacity-0 opacity-100");
+                        }, 4500);
+
+                        $("#codigo_risco").val("");
+                        $("#descricao_risco").val("");
+                        let select_grupo_risco = document.querySelector(
+                            "#grupo_risco"
+                        );
+                        select_grupo_risco.selectedIndex = 0;
                         // window.location.href = "painel.php?pg=grava_risco";
                         buscar_grupos_riscos();
                     }
