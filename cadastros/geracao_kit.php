@@ -2,169 +2,245 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo de Abas Interativas</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modelo de Abas Interativas com Elevação</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .shadow-box {
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        .tab-container {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            padding-left: 10px;
+            gap: 0;
         }
+
+        .tab-button {
+            position: relative;
+            z-index: 1;
+            transition: all .3s cubic-bezier(.4, 0, .2, 1);
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            flex: 1 1 auto;
+            min-width: 100px;
+            padding: 1.25rem;
+            background-color: rgba(240, 240, 240, 0.3);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            color: #939393;
+            transform: translateY(10px);
+            text-align: center;
+            user-select: none;
+        }
+
+        /* REMOVIDO: .tab-button:hover, .tab-button:focus-visible */
 
         .active-tab {
             background-color: white;
-            border: 2px solid black;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .inactive-tab {
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 2px solid rgba(0, 0, 0, 0.2);
-        }
-
-        .tab-container {
-            display: flex;
-            gap: 0;
+            color: #111827;
+            box-shadow: 0 14px 20px rgba(0, 0, 0, 0.3);
+            z-index: 10 !important;
+            font-weight: 600;
+            transform: translateY(0);
         }
 
         .tab-content {
             width: 100%;
             padding: 30px;
             display: none;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             border-radius: 12px;
             background-color: white;
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: white;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            z-index: 5;
+            margin-top: -12px;
         }
 
-        .circle::before {
-            content: "";
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            top: -10px;
-            left: -10px;
-            background: conic-gradient(red 0% 20%,
-                    orange 20% 40%,
-                    yellow 40% 60%,
-                    green 60% 80%,
-                    blue 80% 100%);
-            z-index: -1;
+        .tab-content[aria-hidden="false"] {
+            display: flex;
         }
 
         .text-area {
             font-size: 18px;
             color: black;
         }
+
+        .exam-card {
+            flex: 1 1 200px;
+            max-width: 220px;
+            min-width: 180px;
+            height: 128px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .exam-card:hover,
+        .exam-card:focus-visible {
+            transform: scale(1.05);
+            outline: none;
+        }
+
+        .bg-admissional {
+            background-color: #00A759;
+        }
+
+        .bg-periodico {
+            background-color: #0086FF;
+        }
+
+        .bg-demissional {
+            background-color: #FF0066;
+        }
+
+        .bg-mudanca {
+            background-color: #750099;
+        }
+
+        .bg-retorno {
+            background-color: #606163;
+        }
+
+        .exam-card img {
+            margin-bottom: 0.5rem;
+            width: 50px;
+            height: 50px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .exames-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 1069px;
+        }
     </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
 
-    <!-- Linha de abas -->
-    <div class="w-full px-4">
-        <div class="tab-container">
-            <div class="flex-1 rounded-xl p-5 shadow-box active-tab relative" onclick="activateTab('exames')">
-                <h3 class="text-lg font-semibold text-black/70 text-center">Exames</h3>
+    <div class="w-full px-4 max-w-7xl">
+        <div class="tab-container" role="tablist" aria-label="Abas principais">
+            <div class="tab-button active-tab flex items-center justify-center gap-2" role="tab" tabindex="0" aria-selected="true" aria-controls="exames" id="tab-exames" data-tab="exames">
+                <i class="fas fa-vial text-xl"></i>
+                <h3 class="text-lg">Exames</h3>
             </div>
-            <div class="flex-1 rounded-xl p-5 text-center shadow-box inactive-tab" onclick="activateTab('selecao')">
-                <h3 class="text-lg font-medium text-gray-400">Seleção ECP</h3>
+
+
+            <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="selecao" id="tab-selecao" data-tab="selecao">
+                <i class="fas fa-tasks"></i>
+                <h3 class="text-lg">Seleção ECP</h3>
             </div>
-            <div class="flex-1 rounded-xl p-5 text-center shadow-box inactive-tab" onclick="activateTab('medicos')">
-                <h3 class="text-lg font-medium text-gray-400">Médicos</h3>
+            <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="medicos" id="tab-medicos" data-tab="medicos">
+                <i class="fas fa-user-md"></i>
+                <h3 class="text-lg">Médicos</h3>
             </div>
-            <div class="flex-1 rounded-xl p-5 text-center shadow-box inactive-tab" onclick="activateTab('riscos')">
-                <h3 class="text-lg font-medium text-gray-400">Fatores de Riscos</h3>
+            <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="riscos" id="tab-riscos" data-tab="riscos">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3 class="text-lg">Fatores de Riscos</h3>
             </div>
-            <div class="flex-1 rounded-xl p-5 text-center shadow-box inactive-tab" onclick="activateTab('procedimentos')">
-                <h3 class="text-lg font-medium text-gray-400">Procedimentos</h3>
+            <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="procedimentos" id="tab-procedimentos" data-tab="procedimentos">
+                <i class="fas fa-stethoscope"></i>
+                <h3 class="text-lg">Procedimentos</h3>
             </div>
         </div>
     </div>
 
-
-    <!-- Corpo das Abas -->
-    <div class="w-full px-4 mt-0">
-        <div id="exames" class="tab-content flex flex-col items-center gap-4">
-            <!-- SVG à esquerda e informativo ao lado -->
-            <div class="flex items-center gap-4" style="width: 100%;">
-                <img src="https://www.idailneto.com.br/promais/cadastros/circulo_exame.svg" alt="Círculo Exame" width="100" height="100">
-                <p class="text-area text-left" style="width: auto;">Selecione o tipo de exame / procedimento a ser realizado para Iniciar</p>
+    <main class="w-full px-4 max-w-7xl mt-0">
+        <section id="exames" class="tab-content" aria-labelledby="tab-exames" role="tabpanel" aria-hidden="false">
+            <div class="exames-header" style="margin-top: 30px;">
+                <img src="https://www.idailneto.com.br/promais/cadastros/circulo_exame.svg" alt="Círculo Exame" width="100" height="100" />
+                <p class="text-area text-left flex-1">Selecione o tipo de exame / procedimento a ser realizado para Iniciar</p>
             </div>
 
-            <!-- Cards abaixo do informativo -->
-            <!-- Cards abaixo do informativo -->
-            <div class="flex flex-wrap gap-4 w-full">
-                <div class="flex-1 bg-[#00A759] p-6 h-32 rounded-lg shadow-md text-center font-bold text-white cursor-pointer transition hover:shadow-lg hover:scale-105 flex flex-col items-center justify-center">
-                    <img src="https://www.idailneto.com.br/promais/cadastros/admissional.svg" alt="Admissional" width="50" height="50" class="mb-2">
-                    <span style="height: 0px;">Adminissional</span>
+            <div class="cards-container" style="margin-top: 50px;">
+                <div class="exam-card bg-admissional" role="button" tabindex="0" aria-label="Exame Admissional">
+                    <img src="https://www.idailneto.com.br/promais/cadastros/admissional.svg" alt="Ícone Admissional" />
+                    <span>Admissional</span>
                 </div>
-
-                <div class="flex-1 bg-[#0086FF] p-6 h-32 rounded-lg shadow-md text-center font-bold text-white cursor-pointer transition hover:shadow-lg hover:scale-105 flex flex-col items-center justify-center">
-                    <img src="https://www.idailneto.com.br/promais/cadastros/periodico.svg" alt="Periódico" width="50" height="50" class="mb-2">
-                    <span style="height: 0px;">Periódico</span>
+                <div class="exam-card bg-periodico" role="button" tabindex="0" aria-label="Exame Periódico">
+                    <img src="https://www.idailneto.com.br/promais/cadastros/periodico.svg" alt="Ícone Periódico" />
+                    <span>Periódico</span>
                 </div>
-
-                <div class="flex-1 bg-[#FF0066] p-6 h-32 rounded-lg shadow-md text-center font-bold text-white cursor-pointer transition hover:shadow-lg hover:scale-105 flex flex-col items-center justify-center">
-                    <img src="https://www.idailneto.com.br/promais/cadastros/demissional.svg" alt="Demissional" width="50" height="50" class="mb-2">
-                    <span style="height: 0px;">Demissional</span>
+                <div class="exam-card bg-demissional" role="button" tabindex="0" aria-label="Exame Demissional">
+                    <img src="https://www.idailneto.com.br/promais/cadastros/demissional.svg" alt="Ícone Demissional" />
+                    <span>Demissional</span>
                 </div>
-
-                <div class="flex-1 bg-[#750099] p-6 h-32 rounded-lg shadow-md text-center font-bold text-white cursor-pointer transition hover:shadow-lg hover:scale-105 flex flex-col items-center justify-center">
-                    <img src="https://www.idailneto.com.br/promais/cadastros/mud_rs_fn.svg" alt="Mud. Risco/Função" width="50" height="50" class="mb-2">
-                    <span style="height: 0px;">Mud. Risco/Função</span>
+                <div class="exam-card bg-mudanca" role="button" tabindex="0" aria-label="Mudança de Risco/Função">
+                    <img src="https://www.idailneto.com.br/promais/cadastros/mud_rs_fn.svg" alt="Ícone Mudança Risco/Função" />
+                    <span>Mud. Risco/Função</span>
                 </div>
-
-                <div class="flex-1 bg-[#606163] p-6 h-32 rounded-lg shadow-md text-center font-bold text-white cursor-pointer transition hover:shadow-lg hover:scale-105 flex flex-col items-center justify-center">
-                    <img src="https://www.idailneto.com.br/promais/cadastros/retorno_ao_trabalho.svg" alt="Retorno ao Trabalho" width="50" height="50" class="mb-2">
+                <div class="exam-card bg-retorno" role="button" tabindex="0" aria-label="Retorno ao Trabalho">
+                    <img src="https://www.idailneto.com.br/promais/cadastros/retorno_ao_trabalho.svg" alt="Ícone Retorno ao Trabalho" />
                     <span>Retorno ao Trabalho</span>
                 </div>
             </div>
+        </section>
 
-        </div>
-
-
-
-
-        <div id="selecao" class="tab-content">
+        <section id="selecao" class="tab-content" aria-labelledby="tab-selecao" role="tabpanel" aria-hidden="true">
             <p class="text-area">Conteúdo para Seleção ECP</p>
-        </div>
-        <div id="medicos" class="tab-content">
+        </section>
+        <section id="medicos" class="tab-content" aria-labelledby="tab-medicos" role="tabpanel" aria-hidden="true">
             <p class="text-area">Conteúdo para Médicos</p>
-        </div>
-        <div id="riscos" class="tab-content">
+        </section>
+        <section id="riscos" class="tab-content" aria-labelledby="tab-riscos" role="tabpanel" aria-hidden="true">
             <p class="text-area">Conteúdo para Fatores de Risco</p>
-        </div>
-        <div id="procedimentos" class="tab-content">
+        </section>
+        <section id="procedimentos" class="tab-content" aria-labelledby="tab-procedimentos" role="tabpanel" aria-hidden="true">
             <p class="text-area">Conteúdo para Procedimentos</p>
-        </div>
-    </div>
-
+        </section>
+    </main>
 
     <script>
-        function activateTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.style.display = 'none';
+        const tabs = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+
+        function activateTab(tabId) {
+            tabs.forEach(tab => {
+                const isSelected = tab.dataset.tab === tabId;
+                tab.classList.toggle('active-tab', isSelected);
+                tab.setAttribute('aria-selected', isSelected);
+                tab.tabIndex = isSelected ? 0 : -1;
             });
 
-            document.getElementById(tabName).style.display = 'flex';
+            contents.forEach(content => {
+                const isActive = content.id === tabId;
+                content.setAttribute('aria-hidden', !isActive);
+            });
+
+            // Mover foco para a aba ativa para acessibilidade
+            const activeTab = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
+            if (activeTab) activeTab.focus();
         }
 
-        activateTab('exames'); // Exibe a aba Exames por padrão
+        // Permitir ativar abas com teclado (Enter e Espaço)
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+            tab.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activateTab(tab.dataset.tab);
+                }
+            });
+        });
     </script>
 
 </body>
