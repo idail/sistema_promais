@@ -132,6 +132,136 @@
             width: 100%;
             max-width: 1069px;
         }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 20px;
+            margin-top: 40px;
+            z-index: 1;
+        }
+
+        .btn-nav {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            cursor: pointer;
+            border: none;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-nav:hover {
+            background-color: #eaeaea;
+            color: #007bff;
+        }
+
+        .bloco-selecao {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            border: 1px solid #E5E7EB;
+            width: 100%;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-container label {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #D1D5DB;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .input-container input:focus {
+            border-color: #00A759;
+            box-shadow: 0 0 0 4px rgba(0, 167, 89, 0.2);
+        }
+
+        .input-container ul {
+            position: absolute;
+            width: 100%;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            max-height: 160px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .input-uniforme {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #D1D5DB;
+            border-radius: 10px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .input-uniforme:focus {
+            border-color: #00A759;
+            box-shadow: 0 0 0 4px rgba(0, 167, 89, 0.2);
+        }
+
+        .btn-green {
+            background-color: #00A759;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+            border: none;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 7px;
+        }
+
+        .btn-green i {
+            font-size: 20px;
+        }
+
+        .btn-green:hover {
+            background-color: #008C4A;
+        }
+
+        .input-container {
+            flex-grow: 1;
+        }
+
+        .flex.items-center {
+            align-items: flex-end;
+            gap: 12px;
+        }
     </style>
 </head>
 
@@ -146,20 +276,20 @@
 
 
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="selecao" id="tab-selecao" data-tab="selecao">
-                <i class="fas fa-tasks"></i>
-                <h3 class="text-lg">Seleção ECP</h3>
+                <i class="fas fa-tasks" style="margin-bottom: 3px;"></i>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Seleção ECP</h3>
             </div>
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="medicos" id="tab-medicos" data-tab="medicos">
-                <i class="fas fa-user-md"></i>
-                <h3 class="text-lg">Médicos</h3>
+                <i class="fas fa-user-md" style="margin-bottom: 3px;"></i>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Médicos</h3>
             </div>
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="riscos" id="tab-riscos" data-tab="riscos">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3 class="text-lg">Fatores de Riscos</h3>
+                <i class="fas fa-exclamation-triangle" style="margin-bottom: 3px;"></i>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Fatores de Riscos</h3>
             </div>
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="procedimentos" id="tab-procedimentos" data-tab="procedimentos">
-                <i class="fas fa-stethoscope"></i>
-                <h3 class="text-lg">Procedimentos</h3>
+                <i class="fas fa-stethoscope" style="margin-bottom: 3px;"></i>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Procedimentos</h3>
             </div>
         </div>
     </div>
@@ -196,18 +326,207 @@
         </section>
 
         <section id="selecao" class="tab-content" aria-labelledby="tab-selecao" role="tabpanel" aria-hidden="true">
-            <p class="text-area">Conteúdo para Seleção ECP</p>
+            <div class="bloco-selecao w-full px-4 mx-auto">
+                <h4 class="text-2xl font-bold text-gray-700 mb-6">Selecione Empresa, Clínica e Colaborador</h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Coluna da Esquerda: Clínica -->
+                    <div class="col-span-1">
+                        <div class="flex items-center gap-3">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar clínica</label>
+                                <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('clinica')">
+                                <ul id="clinicaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoClinica"></div>
+                            </div>
+                            <button class="btn-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Coluna da Direita: Empresa acima, Colaborador abaixo -->
+                    <div class="col-span-1 space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar empresa</label>
+                                <input type="text" id="empresaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('empresa')">
+                                <ul id="empresaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoEmpresa"></div>
+                            </div>
+                            <button class="btn-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar pessoa/colaborador</label>
+                                <input type="text" id="pessoaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('pessoa')">
+                                <ul id="pessoaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoPessoa"></div>
+                            </div>
+                            <button class="btn-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
+
+
         <section id="medicos" class="tab-content" aria-labelledby="tab-medicos" role="tabpanel" aria-hidden="true">
-            <p class="text-area">Conteúdo para Médicos</p>
+            <div class="bloco-selecao w-full px-4 mx-auto">
+                <h4 class="text-2xl font-bold text-gray-700 mb-6">Selecione os Profissionais da Medicina</h4>
+                <h2>Profissinais relacionados a clínica:Nome da clínica</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="margin-top: 50px;">
+                    <!-- Coluna da Esquerda: Clínica -->
+                    <div class="col-span-1">
+                        <div class="flex items-center gap-3">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Profissional relacionado a empresa PCMSO</label>
+                                <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('profissional_relacionado_empresa')">
+                                <ul id="clinicaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoprofissionalrelacionadoempresa"></div>
+                            </div>
+                            <button class="btn-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Coluna da Direita: Empresa acima, Colaborador abaixo -->
+                    <div class="col-span-1 space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Profissional relacionado a clínica</label>
+                                <input type="text" id="empresaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('profissional_relacionado_clinica')">
+                                <ul id="empresaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoprofissionalrelacionadoclinica"></div>
+                            </div>
+                            <button class="btn-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
         <section id="riscos" class="tab-content" aria-labelledby="tab-riscos" role="tabpanel" aria-hidden="true">
-            <p class="text-area">Conteúdo para Fatores de Risco</p>
+            <div class="bloco-selecao w-full px-4 mx-auto">
+                <h4 class="text-2xl font-bold text-gray-700 mb-6">Selecione Fatores e Riscos</h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="margin-top: 50px;">
+                    <!-- Coluna da Esquerda: Clínica -->
+                    <div class="col-span-1">
+                        <div class="flex items-center gap-3">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Digite para buscar ou apenas digite</label>
+                                <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('fator_risco')">
+                                <ul id="clinicaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infofatoresderisco"></div>
+                            </div>
+                            <button class="btn-green flex items-center gap-2 px-4 py-2 min-w-max">
+                                <i class="fas fa-save" style="margin-bottom: 5px;"></i> Adicionar
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
         <section id="procedimentos" class="tab-content" aria-labelledby="tab-procedimentos" role="tabpanel" aria-hidden="true">
-            <p class="text-area">Conteúdo para Procedimentos</p>
+            <!-- Título principal -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold text-left text-gray-800">Procedimentos / Exames Realizados</h1>
+            </div>
+
+            <!-- Cabeçalho com "Selecionar Modelos" e contador -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-left">Selecionar Modelos</h2>
+                <div id="modelosSelecionados" class="text-sm text-gray-500 text-right">0 modelos selecionados</div>
+            </div>
+
+            <!-- Grid com os modelos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Modelo 1 -->
+                <label for="modelo1" class="relative group">
+                    <input type="checkbox" id="modelo1" name="modelos[]" value="guia" class="hidden peer" onchange="atualizarContadorModelos()">
+                    <div class="border rounded-xl shadow cursor-pointer p-4 transition-all peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:shadow-lg peer-checked:-translate-y-0.5 border-b-4 border-b-green-400">
+                        <div class="flex gap-2 items-center text-green-500 mb-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M3 10h4l3-8 4 16 3-8h4"></path>
+                            </svg>
+                            <span class="font-semibold text-left">Guia de encaminhamento</span>
+                        </div>
+                        <p class="text-sm text-gray-500 text-left">Gera guia de Encaminhamento com base no modelo</p>
+                    </div>
+                </label>
+
+                <!-- Modelo 2 -->
+                <label for="modelo2" class="relative group">
+                    <input type="checkbox" id="modelo2" name="modelos[]" value="prontuario" class="hidden peer" onchange="atualizarContadorModelos()">
+                    <div class="border rounded-xl shadow cursor-pointer p-4 transition-all peer-checked:ring-2 peer-checked:ring-yellow-500 peer-checked:shadow-lg peer-checked:-translate-y-0.5 border-b-4 border-b-yellow-400">
+                        <div class="flex gap-2 items-center text-yellow-500 mb-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span class="font-semibold text-left">Prontuário Médico</span>
+                        </div>
+                        <p class="text-sm text-gray-500 text-left">Gera guia de Prontuário com base no modelo</p>
+                    </div>
+                </label>
+
+                <!-- Modelo 3 -->
+                <label for="modelo3" class="relative group">
+                    <input type="checkbox" id="modelo3" name="modelos[]" value="aptidao" class="hidden peer" onchange="atualizarContadorModelos()">
+                    <div class="border rounded-xl shadow cursor-pointer p-4 transition-all peer-checked:ring-2 peer-checked:ring-cyan-500 peer-checked:shadow-lg peer-checked:-translate-y-0.5 border-b-4 border-b-cyan-400">
+                        <div class="flex gap-2 items-center text-cyan-500 mb-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="font-semibold text-left">Aptidão Física Mental</span>
+                        </div>
+                        <p class="text-sm text-gray-500 text-left">Gera guia de Aptidão com base no modelo</p>
+                    </div>
+                </label>
+
+                <!-- Modelo 4 -->
+                <label for="modelo4" class="relative group">
+                    <input type="checkbox" id="modelo4" name="modelos[]" value="aso" class="hidden peer" onchange="atualizarContadorModelos()">
+                    <div class="border rounded-xl shadow cursor-pointer p-4 transition-all peer-checked:ring-2 peer-checked:ring-violet-500 peer-checked:shadow-lg peer-checked:-translate-y-0.5 border-b-4 border-b-violet-400">
+                        <div class="flex gap-2 items-center text-violet-500 mb-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M5 12h14M12 5v14"></path>
+                            </svg>
+                            <span class="font-semibold text-left">ASO - Atestado de Saúde Ocupacional</span>
+                        </div>
+                        <p class="text-sm text-gray-500 text-left">Gera ASO com base no modelo</p>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Botões de navegação -->
+            <!-- <div class="flex justify-between items-center mt-8">
+                <button class="text-black text-lg font-medium">&lt; Anterior</button>
+                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow">
+                    GRAVAR KIT
+                </button>
+            </div> -->
         </section>
+
+
     </main>
+
+    <div class="navigation-buttons">
+        <button class="btn-nav" id="prevBtn"><i class="fas fa-arrow-left"></i> Anterior</button>
+        <button class="btn-nav" id="nextBtn">Próximo <i class="fas fa-arrow-right"></i></button>
+    </div>
+
 
     <script>
         const tabs = document.querySelectorAll('.tab-button');
