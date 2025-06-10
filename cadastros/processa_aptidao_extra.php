@@ -59,6 +59,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_aptidao_extra->bindValue(":recebe_empresa_id",$recebe_empresa_id);
         $resultado_alterar_aptidao_extra = $comando_altera_aptidao_extra->execute();
         echo json_encode($resultado_alterar_aptidao_extra);
+    }else if($recebe_processo_aptidao_extra === "excluir_aptidao")
+    {
+        $recebe_id_aptidao_extra_excluir = $_POST["valor_id_aptidao"];
+
+        $instrucao_exclui_aptidao_extra = 
+        "delete from aptidao_extra where id = :recebe_id_aptidao_extra_excluir and empresa_id = :recebe_empresa_id";
+        $comando_exclui_aptidao_extra = $pdo->prepare($instrucao_exclui_aptidao_extra);
+        $comando_exclui_aptidao_extra->bindValue(":recebe_id_aptidao_extra_excluir",$recebe_id_aptidao_extra_excluir);
+        $comando_exclui_aptidao_extra->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $resultado_exclui_aptidao_extra = $comando_exclui_aptidao_extra->execute();
+        echo json_encode($resultado_exclui_aptidao_extra);
     }
 }else{
     $recebe_processo_aptidao_extra = $_GET["processo_aptidao_extra"];

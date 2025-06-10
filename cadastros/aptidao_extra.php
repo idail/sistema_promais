@@ -220,7 +220,7 @@
                                 <a href="?pg=grava_aptidao_extra&acao=editar&id=${aptidao_extra.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="#" id='excluir-pessoa' data-codigo-pessoa="${aptidao_extra.id}" class="delete" title="Apagar">
+                                <a href="#" id='excluir-aptidao' data-codigo-aptidao="${aptidao_extra.id}" class="delete" title="Apagar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -256,31 +256,31 @@
         // buscar_informacoes_rapidas_clinica();
     });
 
-    $(document).on("click", "#excluir-pessoa", function(e) {
+    $(document).on("click", "#excluir-aptidao", function(e) {
         e.preventDefault();
 
         debugger;
 
-        let recebe_id_pessoa = $(this).data("codigo-pessoa");
+        let recebe_id_aptidao = $(this).data("codigo-aptidao");
 
-        let recebe_resposta_excluir_pessoa = window.confirm(
-            "Tem certeza que deseja excluir a pessoa?"
+        let recebe_resposta_excluir_aptidao = window.confirm(
+            "Tem certeza que deseja excluir a aptidão?"
         );
 
-        if (recebe_resposta_excluir_pessoa) {
+        if (recebe_resposta_excluir_aptidao) {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_aptidao_extra.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "excluir_pessoa",
-                    valor_id_pessoa: recebe_id_pessoa,
+                    processo_aptidao_extra: "excluir_aptidao",
+                    valor_id_aptidao: recebe_id_aptidao,
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_aptidao) {
                     debugger;
-                    console.log(retorno_pessoa);
-                    if (retorno_pessoa) {
-                        window.location.href = "painel.php?pg=pessoas";
+                    console.log(retorno_aptidao);
+                    if (retorno_aptidao) {
+                        window.location.href = "painel.php?pg=aptidao_extra";
                     }
                 },
                 error: function(xhr, status, error) {
