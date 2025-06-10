@@ -56,6 +56,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_aptidao_extra->execute();
         $resultado_busca_aptidao_extra = $comando_busca_aptidao_extra->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_aptidao_extra);
+    }else if($recebe_processo_aptidao_extra === "buscar_informacoes_rapidas_aptidao_extra")
+    {
+        $recebe_codigo_aptidao_extra = $_GET["valor_codigo_aptidao_extra_informacoes_rapidas"];
+
+        $instrucao_busca_aptidao_extra_informacoes_rapidas = 
+        "select * from aptidao_extra where id = :recebe_id_aptidao_extra_informacoes_rapidas and empresa_id = :recebe_empresa_id_aptidao_informacoes_rapidas";
+        $comando_busca_aptidao_extra_informacoes_rapidas = $pdo->prepare($instrucao_busca_aptidao_extra_informacoes_rapidas);
+        $comando_busca_aptidao_extra_informacoes_rapidas->bindValue(":recebe_id_aptidao_extra_informacoes_rapidas",$recebe_codigo_aptidao_extra);
+        $comando_busca_aptidao_extra_informacoes_rapidas->bindValue(":recebe_empresa_id_aptidao_informacoes_rapidas",$recebe_empresa_id);
+        $comando_busca_aptidao_extra_informacoes_rapidas->execute();
+        $resultado_busca_aptidao_extra_informacoes_rapidas = $comando_busca_aptidao_extra_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_aptidao_extra_informacoes_rapidas);
     }
 }
 ?>

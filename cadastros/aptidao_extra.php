@@ -214,7 +214,7 @@
                         <td>${aptidao_extra.nome}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-pessoa='${aptidao.id}'>
+                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-aptidao-extra' data-codigo-aptidao='${aptidao_extra.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <a href="?pg=grava_pessoa&acao=editar&id=${aptidao_extra.id}" target="_parent" class="edit" title="Editar">
@@ -292,30 +292,26 @@
         }
     });
 
-    $(document).on("click", "#visualizar-informacoes-pessoa", function(e) {
+    $(document).on("click", "#visualizar-informacoes-aptidao-extra", function(e) {
         debugger;
-        recebe_codigo_pessoa_informacoes_rapida = $(this).data("codigo-pessoa");
+        recebe_codigo_pessoa_informacoes_rapida = $(this).data("codigo-aptidao");
 
         $.ajax({
-            url: "cadastros/processa_pessoa.php",
+            url: "cadastros/processa_aptidao_extra.php",
             method: "GET",
             dataType: "json",
             data: {
-                "processo_pessoa": "buscar_informacoes_rapidas_pessoas",
-                "valor_codigo_pessoa_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
+                "processo_aptidao_extra": "buscar_informacoes_rapidas_aptidao_extra",
+                "valor_codigo_aptidao_extra_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
             },
             success: function(resposta) {
                 debugger;
 
                 if (resposta.length > 0) {
                     for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#created_at").val(resposta[indice].created_at);
-                        $("#nome").val(resposta[indice].nome);
-                        $("#cpf").val(resposta[indice].cpf);
-                        $("#nascimento").val(resposta[indice].nascimento);
-                        $("#sexo-pessoa").val(resposta[indice].sexo);
-                        $("#telefone").val(resposta[indice].telefone);
-                        $("#whatsapp").val(resposta[indice].whatsapp);
+                        // $("#created_at").val(resposta[indice].created_at);
+                        $("#codigo_aptidao").val(resposta[indice].codigo_aptidao);
+                        $("#nome_aptidao").val(resposta[indice].nome);
                     }
                 }
             },
@@ -323,12 +319,12 @@
 
             },
         });
-        document.getElementById('informacoes-pessoa').classList.remove('hidden'); // abrir
+        document.getElementById('informacoes-aptidao-extra').classList.remove('hidden'); // abrir
     });
 
-    $(document).on("click", "#fechar-modal-informacoes-pessoa", function(e) {
+    $(document).on("click", "#fechar-modal-informacoes-aptidao-extra", function(e) {
         debugger;
-        document.getElementById('informacoes-pessoa').classList.add('hidden'); // fechar
+        document.getElementById('informacoes-aptidao-extra').classList.add('hidden'); // fechar
     });
 
     // async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {
@@ -411,85 +407,49 @@
 </script>
 
 <!-- Modal -->
-<div id="informacoes-pessoa"
+<div id="informacoes-aptidao-extra"
     class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center h-screen">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl p-6 relative">
 
         <!-- Cabeçalho -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Informações da Pessoa</h2>
-            <button id="fechar-modal-informacoes-pessoa" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
+            <h2 class="text-2xl font-bold">Informações da Aptidão Extra</h2>
+            <button id="fechar-modal-informacoes-aptidao-extra" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
         </div>
 
         <!-- Corpo da modal -->
         <form method="post" id="empresaForm" class="space-y-6 text-sm text-gray-700">
             <!-- Data de Cadastro -->
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="created_at" class="block font-semibold mb-1">Data de Cadastro:</label>
                 <div class="flex items-center gap-2">
                     <i class="fas fa-calendar-alt text-gray-500"></i>
                     <input type="datetime-local" value="" id="created_at" name="created_at" class="form-control w-full" readonly>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Grid com 2 colunas maiores -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
-                    <label for="nome">Nome Completo:</label>
+                    <label for="nome">Código:</label>
                     <div class="input-with-icon flex items-center gap-2">
                         <i class="fas fa-user text-gray-500"></i>
-                        <input type="text" id="nome" name="nome" disabled class="form-control w-full">
+                        <input type="text" id="codigo_aptidao" name="codigo_aptidao" disabled class="form-control w-full">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="cpf">CPF:</label>
+                    <label for="cpf">Nome:</label>
                     <div class="input-with-icon flex items-center gap-2">
                         <i class="fas fa-address-card text-gray-500"></i>
-                        <input type="text" id="cpf" name="cpf" disabled oninput="formatCPF(this)" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="nascimento">Data Nascimento:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-gray-500"></i>
-                        <input type="date" id="nascimento" disabled name="nascimento" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="sexo-pessoa">Sexo:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-mars text-gray-500"></i>
-                        <select id="sexo-pessoa" disabled name="sexo_pessoa" class="form-control w-full">
-                            <option value="selecione">Selecione</option>
-                            <option value="feminino">Feminino</option>
-                            <option value="masculino">Masculino</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-phone text-gray-500"></i>
-                        <input type="text" disabled id="telefone" name="telefone" oninput="mascaraTelefone(this);" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="whatsapp">Whatsapp:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-phone text-gray-500"></i>
-                        <input type="text" disabled id="whatsapp" name="whatsapp" oninput="mascaraTelefone(this);" class="form-control w-full">
+                        <input type="text" id="nome_aptidao" name="nome_aptidao" disabled class="form-control w-full">
                     </div>
                 </div>
             </div>
 
             <!-- Botões -->
             <div class="flex justify-between mt-6">
-                <button id="fechar-modal-informacoes-pessoa" type="button"
+                <button id="fechar-modal-informacoes-aptidao-extra" type="button"
                     class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800">Fechar</button>
             </div>
         </form>
