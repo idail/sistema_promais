@@ -45,6 +45,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         echo json_encode($recebe_ultimo_codigo_registrado_aptidao_extra);
     }
 }else{
-
+    $recebe_processo_aptidao_extra = $_GET["processo_aptidao_extra"];
+    $recebe_empresa_id = $_SESSION["empresa_id"];
+    if($recebe_processo_aptidao_extra === "busca_aptidao_extra")
+    {
+        $instrucao_busca_aptidao_extra = 
+        "select * from aptidao_extra where empresa_id = :recebe_empresa_id";
+        $comando_busca_aptidao_extra = $pdo->prepare($instrucao_busca_aptidao_extra);
+        $comando_busca_aptidao_extra->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_busca_aptidao_extra->execute();
+        $resultado_busca_aptidao_extra = $comando_busca_aptidao_extra->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_aptidao_extra);
+    }
 }
 ?>
