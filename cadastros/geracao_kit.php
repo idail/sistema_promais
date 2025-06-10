@@ -68,9 +68,8 @@
         }
 
         .exam-card {
-            flex: 1 1 200px;
-            max-width: 220px;
-            min-width: 180px;
+            width: 160px;
+            /* largura fixa */
             height: 128px;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
@@ -83,6 +82,8 @@
             justify-content: center;
             padding: 1.5rem;
             transition: transform 0.2s ease-in-out;
+            flex: 0 0 auto;
+            /* impede o redimensionamento automático */
         }
 
         .exam-card:hover,
@@ -111,6 +112,10 @@
             background-color: #606163;
         }
 
+        .bg_exame_laudo {
+            background-color: #db5c00;
+        }
+
         .exam-card img {
             margin-bottom: 0.5rem;
             width: 50px;
@@ -119,10 +124,15 @@
 
         .cards-container {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            /* evita quebra de linha */
             gap: 1rem;
             width: 100%;
-            justify-content: center;
+            overflow-x: auto;
+            /* adiciona scroll horizontal se necessário */
+            justify-content: flex-start;
+            /* alinha ao início */
+            padding-bottom: 10px;
         }
 
         .exames-header {
@@ -262,6 +272,124 @@
             align-items: flex-end;
             gap: 12px;
         }
+
+        .passo-text {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            /* espaço abaixo do passo */
+            color: #555;
+            /* tom cinza discreto, se quiser */
+            font-weight: 600;
+            /* opcional para destacar */
+        }
+
+        .laudo-resumo {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+            padding: 30px;
+            margin: 0;
+        }
+
+        .laudo-resumo .container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .laudo-resumo .header {
+            background-color: #f57c00;
+            color: white;
+            padding: 16px;
+            border-radius: 16px 16px 0 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .laudo-resumo .title {
+            font-size: 22px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .laudo-resumo .dropdown-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .laudo-resumo .dropdown-wrapper {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .laudo-resumo label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: #333;
+            text-align: center;
+        }
+
+        .laudo-resumo .custom-dropdown {
+            background: #fff;
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: #333;
+            box-shadow: 0 8px 14px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            text-align: center;
+        }
+
+        .laudo-resumo .custom-dropdown::after {
+            content: '▼';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #666;
+        }
+
+        .laudo-resumo .options {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            padding: 6px 0;
+        }
+
+        .laudo-resumo .option {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #222;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .laudo-resumo .option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .laudo-resumo .active .options {
+            display: flex;
+        }
     </style>
 </head>
 
@@ -271,25 +399,23 @@
         <div class="tab-container" role="tablist" aria-label="Abas principais">
             <div class="tab-button active-tab flex items-center justify-center gap-2" role="tab" tabindex="0" aria-selected="true" aria-controls="exames" id="tab-exames" data-tab="exames">
                 <i class="fas fa-vial text-xl"></i>
-                <h3 class="text-lg">Exames</h3>
+                <h3 class="text-lg">Passo 01</h3>
             </div>
-
-
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="selecao" id="tab-selecao" data-tab="selecao">
                 <i class="fas fa-tasks" style="margin-bottom: 3px;"></i>
-                <h3 class="text-lg" style="margin-bottom: 0px;">Seleção ECP</h3>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Passo 02</h3>
             </div>
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="medicos" id="tab-medicos" data-tab="medicos">
                 <i class="fas fa-user-md" style="margin-bottom: 3px;"></i>
-                <h3 class="text-lg" style="margin-bottom: 0px;">Médicos</h3>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Passo 03</h3>
             </div>
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="riscos" id="tab-riscos" data-tab="riscos">
                 <i class="fas fa-exclamation-triangle" style="margin-bottom: 3px;"></i>
-                <h3 class="text-lg" style="margin-bottom: 0px;">Fatores de Riscos</h3>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Passo 04</h3>
             </div>
             <div class="tab-button flex items-center justify-center gap-2" role="tab" tabindex="-1" aria-selected="false" aria-controls="procedimentos" id="tab-procedimentos" data-tab="procedimentos">
                 <i class="fas fa-stethoscope" style="margin-bottom: 3px;"></i>
-                <h3 class="text-lg" style="margin-bottom: 0px;">Procedimentos</h3>
+                <h3 class="text-lg" style="margin-bottom: 0px;">Passo 05</h3>
             </div>
         </div>
     </div>
@@ -302,25 +428,29 @@
             </div>
 
             <div class="cards-container" style="margin-top: 50px;">
-                <div class="exam-card bg-admissional" role="button" tabindex="0" aria-label="Exame Admissional">
+                <div class="exam-card bg-admissional" role="button" tabindex="0" aria-label="Exame Admissional" style="margin-top: 5px;margin-left: 10px;">
                     <img src="https://www.idailneto.com.br/promais/cadastros/admissional.svg" alt="Ícone Admissional" />
                     <span>Admissional</span>
                 </div>
-                <div class="exam-card bg-periodico" role="button" tabindex="0" aria-label="Exame Periódico">
+                <div class="exam-card bg-periodico" role="button" tabindex="0" aria-label="Exame Periódico" style="margin-top: 5px;">
                     <img src="https://www.idailneto.com.br/promais/cadastros/periodico.svg" alt="Ícone Periódico" />
                     <span>Periódico</span>
                 </div>
-                <div class="exam-card bg-demissional" role="button" tabindex="0" aria-label="Exame Demissional">
+                <div class="exam-card bg-demissional" role="button" tabindex="0" aria-label="Exame Demissional" style="margin-top: 5px;">
                     <img src="https://www.idailneto.com.br/promais/cadastros/demissional.svg" alt="Ícone Demissional" />
                     <span>Demissional</span>
                 </div>
-                <div class="exam-card bg-mudanca" role="button" tabindex="0" aria-label="Mudança de Risco/Função">
+                <div class="exam-card bg-mudanca" role="button" tabindex="0" aria-label="Mudança de Risco/Função" style="margin-top: 5px;">
                     <img src="https://www.idailneto.com.br/promais/cadastros/mud_rs_fn.svg" alt="Ícone Mudança Risco/Função" />
                     <span>Mud. Risco/Função</span>
                 </div>
-                <div class="exam-card bg-retorno" role="button" tabindex="0" aria-label="Retorno ao Trabalho">
+                <div class="exam-card bg-retorno" role="button" tabindex="0" aria-label="Retorno ao Trabalho" style="margin-top: 5px;">
                     <img src="https://www.idailneto.com.br/promais/cadastros/retorno_ao_trabalho.svg" alt="Ícone Retorno ao Trabalho" />
                     <span>Retorno ao Trabalho</span>
+                </div>
+                <div class="exam-card bg_exame_laudo" role="button" tabindex="0" aria-label="Retorno ao Trabalho" style="margin-top: 5px;">
+                    <img src="https://www.idailneto.com.br/promais/cadastros/exame_laudo.svg" alt="Ícone Retorno ao Trabalho" />
+                    <span>Resumo de Laudo</span>
                 </div>
             </div>
         </section>
@@ -334,10 +464,10 @@
                     <div class="col-span-1">
                         <div class="flex items-center gap-3">
                             <div class="input-container grow">
-                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar clínica</label>
-                                <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('clinica')">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar empresa</label>
+                                <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('empresa')">
                                 <ul id="clinicaDropdown"></ul>
-                                <div class="info-text text-sm text-gray-500 mt-1" id="infoClinica"></div>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoempresa"></div>
                             </div>
                             <button class="btn-green">
                                 <i class="fas fa-plus"></i>
@@ -348,11 +478,23 @@
                     <!-- Coluna da Direita: Empresa acima, Colaborador abaixo -->
                     <div class="col-span-1 space-y-6">
                         <div class="flex items-center gap-3">
-                            <div class="input-container grow">
-                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar empresa</label>
-                                <input type="text" id="empresaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('empresa')">
+                            <div class="input-container grow" style="margin-bottom: 20px;">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar clínica</label>
+                                <input type="text" id="empresaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('clinica')">
                                 <ul id="empresaDropdown"></ul>
-                                <div class="info-text text-sm text-gray-500 mt-1" id="infoEmpresa"></div>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoclinicas"></div>
+                            </div>
+                            <button class="btn-green" style="margin-bottom: 27px;">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-3" style="margin-bottom: 35px;">
+                            <div class="input-container grow">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar pessoa/colaborador</label>
+                                <input type="text" id="pessoaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('pessoa')">
+                                <ul id="pessoaDropdown"></ul>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infoPessoa"></div>
                             </div>
                             <button class="btn-green">
                                 <i class="fas fa-plus"></i>
@@ -361,10 +503,10 @@
 
                         <div class="flex items-center gap-3">
                             <div class="input-container grow">
-                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Selecionar pessoa/colaborador</label>
-                                <input type="text" id="pessoaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('pessoa')">
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Buscar/Cargo/CBO</label>
+                                <input type="text" id="pessoaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('cargo_cbo')">
                                 <ul id="pessoaDropdown"></ul>
-                                <div class="info-text text-sm text-gray-500 mt-1" id="infoPessoa"></div>
+                                <div class="info-text text-sm text-gray-500 mt-1" id="infocargo_pessoa"></div>
                             </div>
                             <button class="btn-green">
                                 <i class="fas fa-plus"></i>
@@ -386,7 +528,7 @@
                     <div class="col-span-1">
                         <div class="flex items-center gap-3">
                             <div class="input-container grow">
-                                <label class="block mb-1 text-sm font-medium text-gray-600">Profissional relacionado a empresa PCMSO</label>
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Coordenador Responsável PCMSO da empresa</label>
                                 <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('profissional_relacionado_empresa')">
                                 <ul id="clinicaDropdown"></ul>
                                 <div class="info-text text-sm text-gray-500 mt-1" id="infoprofissionalrelacionadoempresa"></div>
@@ -401,7 +543,7 @@
                     <div class="col-span-1 space-y-6">
                         <div class="flex items-center gap-3">
                             <div class="input-container grow">
-                                <label class="block mb-1 text-sm font-medium text-gray-600">Profissional relacionado a clínica</label>
+                                <label class="block mb-1 text-sm font-medium text-gray-600">Médico Emitente/Examinador da Clínica </label>
                                 <input type="text" id="empresaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('profissional_relacionado_clinica')">
                                 <ul id="empresaDropdown"></ul>
                                 <div class="info-text text-sm text-gray-500 mt-1" id="infoprofissionalrelacionadoclinica"></div>
@@ -420,22 +562,109 @@
                 <h4 class="text-2xl font-bold text-gray-700 mb-6">Selecione Fatores e Riscos</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="margin-top: 50px;">
-                    <!-- Coluna da Esquerda: Clínica -->
                     <div class="col-span-1">
                         <div class="flex items-center gap-3">
                             <div class="input-container grow">
                                 <label class="block mb-1 text-sm font-medium text-gray-600">Digite para buscar ou apenas digite</label>
-                                <input type="text" id="clinicaInput" placeholder="Digite para procurar..." class="input-uniforme" oninput="mostrarDropdown('fator_risco')">
+                                <select id="clinicaSelect" class="input-uniforme">
+                                    <option value="">Selecione uma opção...</option>
+                                    <option value="clinica1">Clínica 1</option>
+                                    <option value="clinica2">Clínica 2</option>
+                                    <option value="clinica3">Clínica 3</option>
+                                </select>
                                 <ul id="clinicaDropdown"></ul>
                                 <div class="info-text text-sm text-gray-500 mt-1" id="infofatoresderisco"></div>
                             </div>
                             <button class="btn-green flex items-center gap-2 px-4 py-2 min-w-max">
                                 <i class="fas fa-save" style="margin-bottom: 5px;"></i> Adicionar
                             </button>
-
                         </div>
                     </div>
                 </div>
+
+                <div class="laudo-resumo">
+                    <div class="container mt-12">
+
+                        <!-- Título e bloco laranja agrupados e acima dos dropdowns -->
+                        <div class="flex flex-col items-center justify-center text-center w-full mb-6">
+                            <h4 class="text-2xl font-bold text-gray-700 mb-4">
+                                Resumo de laudo (Aba opcional de Profissional Técnico)
+                            </h4>
+                            <div class="w-full bg-[#f57c00] text-white font-medium text-sm py-3 px-6 rounded-md shadow-sm uppercase tracking-wide">
+                                Nome da empresa, CAEPF/ CNPJ; Resumo de Laudos/ LTCAT / Laudo de Insalubridade e Periculosidade
+                            </div>
+                        </div>
+
+                        <!-- Linha de dropdowns que agora ocupa a largura completa e quebra se necessário -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 w-full">
+                            <div class="dropdown-wrapper">
+                                <label class="block mb-1 text-sm font-medium text-center">Insalubridade</label>
+                                <div class="custom-dropdown">Selecione
+                                    <div class="options">
+                                        <div class="option">Sim</div>
+                                        <div class="option">Não</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-wrapper flex-1 min-w-[150px]">
+                                <label class="block mb-1 text-sm font-medium text-center">Porcentagem</label>
+                                <div class="custom-dropdown">Selecione
+                                    <div class="options">
+                                        <div class="option">10%</div>
+                                        <div class="option">20%</div>
+                                        <div class="option">40%</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-wrapper flex-1 min-w-[150px]">
+                                <label class="block mb-1 text-sm font-medium text-center">Periculosidade 30%</label>
+                                <div class="custom-dropdown">Selecione
+                                    <div class="options">
+                                        <div class="option">Sim</div>
+                                        <div class="option">Não</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-wrapper flex-1 min-w-[150px]">
+                                <label class="block mb-1 text-sm font-medium text-center">Aposent. Esp.</label>
+                                <div class="custom-dropdown">Selecione
+                                    <div class="options">
+                                        <div class="option">Sim</div>
+                                        <div class="option">Não</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-wrapper flex-1 min-w-[150px]">
+                                <label class="block mb-1 text-sm font-medium text-center">Agente Nocivo</label>
+                                <div class="custom-dropdown">Selecione
+                                    <div class="options">
+                                        <div class="option">Sim</div>
+                                        <div class="option">Não</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-wrapper flex-1 min-w-[150px]">
+                                <label class="block mb-1 text-sm font-medium text-center">Ocorrência GFIP</label>
+                                <div class="custom-dropdown">Selecione
+                                    <div class="options">
+                                        <div class="option">00</div>
+                                        <div class="option">01</div>
+                                        <div class="option">02</div>
+                                        <div class="option">03</div>
+                                        <div class="option">04</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fim do bloco -->
             </div>
         </section>
 
