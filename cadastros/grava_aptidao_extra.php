@@ -8,7 +8,7 @@
         <form class="custom-form">
             <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
 
-            <input type="hidden" name="aptidao_extra_alteracao" id="aptidao_extra_alteracao">
+            <input type="hidden" name="aptidao_extra_id_alteracao" id="aptidao_extra_id_alteracao">
 
             <!-- <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
@@ -257,7 +257,7 @@
             if (recebe_acao_alteracao_aptidao_extra === "editar") {
                 // carrega_cidades();
                 // await popula_lista_cidade_empresa_alteracao();
-                await popula_informacoes_pessoa_alteracao();
+                await popula_informacoes_aptidao_alteracao();
             } else {
                 // carrega_cidades();
 
@@ -288,30 +288,25 @@
         window.location.href = "painel.php?pg=aptidao_extra";
     });
 
-    async function popula_informacoes_pessoa_alteracao() {
+    async function popula_informacoes_aptidao_alteracao() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_aptidao_extra.php",
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_pessoa": "buscar_informacoes_pessoa_alteracao",
-                    valor_codigo_pessoa_alteracao: recebe_codigo_alteracao_aptidao_extra,
+                    "processo_aptidao_extra": "buscar_informacoes_pessoa_alteracao",
+                    valor_codigo_aptidao_alteracao: recebe_codigo_alteracao_aptidao_extra,
                 },
-                success: function(resposta_pessoa) {
+                success: function(resposta_aptidao) {
                     debugger;
-                    console.log(resposta_pessoa);
+                    console.log(resposta_aptidao);
 
-                    if (resposta_pessoa.length > 0) {
-                        for (let indice = 0; indice < resposta_pessoa.length; indice++) {
-                            $("#created_at").val(resposta_pessoa[indice].created_at);
-                            $("#pessoa_id_alteracao").val(resposta_pessoa[indice].id);
-                            $("#nome").val(resposta_pessoa[indice].nome);
-                            $("#cpf").val(resposta_pessoa[indice].cpf);
-                            $("#nascimento").val(resposta_pessoa[indice].nascimento);
-                            $("#sexo-pessoa").val(resposta_pessoa[indice].sexo);
-                            $("#telefone").val(resposta_pessoa[indice].telefone);
-                            $("#whatsapp").val(resposta_pessoa[indice].whatsapp);
+                    if (resposta_aptidao.length > 0) {
+                        for (let indice = 0; indice < resposta_aptidao.length; indice++) {
+                            $("#aptidao_extra_id_alteracao").val(resposta_aptidao[indice].id);
+                            $("#codigo_aptidao").val(resposta_aptidao[indice].codigo_aptidao);
+                            $("#nome_aptidao").val(resposta_aptidao[indice].nome);
                         }
                     }
 
@@ -337,27 +332,22 @@
 
         if (recebe_acao_alteracao_aptidao_extra === "editar") {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_aptidao_extra.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "alterar_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
-                    valor_id_pessoa: $("#pessoa_id_alteracao").val(),
+                    processo_aptidao_extra: "alterar_aptidao_extra",
+                    valor_codigo_aptidao_extra: recebe_codigo_aptidao,
+                    valor_nome_aptidao_extra: recebe_nome_aptidao,
+                    valor_id_aptidao_extra: $("#aptidao_extra_id_alteracao").val(),
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_aptidao) {
                     debugger;
 
-                    console.log(retorno_pessoa);
-                    if (retorno_pessoa) {
-                        console.log("Pessoa alterada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                    console.log(retorno_aptidao);
+                    if (retorno_aptidao) {
+                        console.log("Aptidão alterada com sucesso");
+                        window.location.href = "painel.php?pg=aptidao_extra";
                     }
                 },
                 error: function(xhr, status, error) {

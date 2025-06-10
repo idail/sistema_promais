@@ -26,12 +26,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 {
     $recebe_processo_aptidao_extra = $_POST["processo_aptidao_extra"];
 
+    $recebe_empresa_id = $_SESSION["empresa_id"];
+
     if($recebe_processo_aptidao_extra === "inserir_aptidao_extra")
     {
         $recebe_codigo_aptidao_extra = $_POST["valor_codigo_aptidao_extra"];
         $recebe_nome_aptidao_extra = $_POST["valor_nome_aptidao_extra"];
-
-        $recebe_empresa_id = $_SESSION["empresa_id"];
 
         $instrucao_cadastra_aptidao_extra = 
         "insert into aptidao_extra(codigo_aptidao,nome,empresa_id)values
@@ -43,6 +43,22 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_aptidao_extra->execute();
         $recebe_ultimo_codigo_registrado_aptidao_extra = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_registrado_aptidao_extra);
+    }else if($recebe_processo_aptidao_extra === "alterar_aptidao_extra")
+    {
+        $recebe_codigo_aptidao_extra_alterar = $_POST["valor_codigo_aptidao_extra"];
+        $recebe_nome_aptidao_extra_alterar = $_POST["valor_nome_aptidao_extra"];
+        $recebe_id_aptidao_extra_alterar = $_POST["valor_id_aptidao_extra"];
+
+        $instrucao_altera_aptidao_extra = 
+        "update aptidao_extra set codigo_aptidao = :recebe_codigo_aptidao_extra_alterar,nome = :recebe_nome_aptidao_extra_alterar
+        where id = :recebe_id_aptidao_extra_alterar and empresa_id = :recebe_empresa_id";
+        $comando_altera_aptidao_extra = $pdo->prepare($instrucao_altera_aptidao_extra);
+        $comando_altera_aptidao_extra->bindValue(":recebe_codigo_aptidao_extra_alterar",$recebe_codigo_aptidao_extra_alterar);
+        $comando_altera_aptidao_extra->bindValue(":recebe_nome_aptidao_extra_alterar",$recebe_nome_aptidao_extra_alterar);
+        $comando_altera_aptidao_extra->bindValue(":recebe_id_aptidao_extra_alterar",$recebe_id_aptidao_extra_alterar);
+        $comando_altera_aptidao_extra->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $resultado_alterar_aptidao_extra = $comando_altera_aptidao_extra->execute();
+        echo json_encode($resultado_alterar_aptidao_extra);
     }
 }else{
     $recebe_processo_aptidao_extra = $_GET["processo_aptidao_extra"];
@@ -68,6 +84,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_aptidao_extra_informacoes_rapidas->execute();
         $resultado_busca_aptidao_extra_informacoes_rapidas = $comando_busca_aptidao_extra_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_aptidao_extra_informacoes_rapidas);
+    }else if($recebe_processo_aptidao_extra === "buscar_informacoes_pessoa_alteracao")
+    {
+        $recebe_codigo_aptidao = $_GET["valor_codigo_aptidao_alteracao"];
+
+        $instrucao_busca_informacoes_aptidao_alteracao = 
+        "select * from aptidao_extra where id = :recebe_id_aptidao_alteracao and empresa_id = :recebe_empresa_id_aptidao_alteracao";
+        $comando_busca_informacoes_aptidao_alteracao = $pdo->prepare($instrucao_busca_informacoes_aptidao_alteracao);
+        $comando_busca_informacoes_aptidao_alteracao->bindValue(":recebe_id_aptidao_alteracao",$recebe_codigo_aptidao);
+        $comando_busca_informacoes_aptidao_alteracao->bindValue(":recebe_empresa_id_aptidao_alteracao",$recebe_empresa_id);
+        $comando_busca_informacoes_aptidao_alteracao->execute();
+        $resultado_busca_informacoes_aptidao_alteracao = $comando_busca_informacoes_aptidao_alteracao->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_informacoes_aptidao_alteracao);
     }
 }
 ?>

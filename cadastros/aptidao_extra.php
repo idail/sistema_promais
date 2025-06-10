@@ -217,7 +217,7 @@
                                 <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-aptidao-extra' data-codigo-aptidao='${aptidao_extra.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="?pg=grava_pessoa&acao=editar&id=${aptidao_extra.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=grava_aptidao_extra&acao=editar&id=${aptidao_extra.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="#" id='excluir-pessoa' data-codigo-pessoa="${aptidao_extra.id}" class="delete" title="Apagar">
@@ -326,84 +326,6 @@
         debugger;
         document.getElementById('informacoes-aptidao-extra').classList.add('hidden'); // fechar
     });
-
-    // async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {
-    //     debugger;
-    //     const apiUrl = 'api/list/cidades.php';
-    //     const cidadeSelect = document.getElementById('cidade_id');
-
-    //     try {
-    //         const response = await fetch(apiUrl);
-    //         const data = await response.json();
-
-    //         if (data.status === 'success') {
-    //             cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
-
-    //             data.data.cidades.forEach(cidade => {
-    //                 const option = document.createElement('option');
-    //                 option.value = cidade.id;
-    //                 option.textContent = `${cidade.nome} - ${cidade.estado}`;
-    //                 cidadeSelect.appendChild(option);
-    //             });
-
-    //             if (cidadeSelecionada && estadoSelecionado) {
-    //                 for (let i = 0; i < cidadeSelect.options.length; i++) {
-    //                     const optionText = cidadeSelect.options[i].text;
-    //                     if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
-    //                         cidadeSelect.selectedIndex = i;
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         } else {
-    //             console.error('Erro ao carregar cidades:', data.message);
-    //         }
-    //     } catch (error) {
-    //         console.error('Erro na requisição:', error);
-    //     }
-    // }
-
-    // async function popula_medicos_associados_clinica() {
-    //     return new Promise((resolve, reject) => {
-    //         $.ajax({
-    //             url: "cadastros/processa_medico.php",
-    //             method: "GET",
-    //             dataType: "json",
-    //             data: {
-    //                 "processo_medico": "buscar_medicos_associados_clinica",
-    //                 valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_informacoes_rapida,
-    //             },
-    //             success: function(resposta_medicos) {
-    //                 debugger;
-    //                 console.log(resposta_medicos);
-
-    //                 if (resposta_medicos.length > 0) {
-    //                     let recebe_tabela_associar_medico_clinica = document.querySelector(
-    //                         "#tabela-medico-associado tbody"
-    //                     );
-
-    //                     $("#tabela-medico-associado tbody").html("");
-
-    //                     for (let indice = 0; indice < resposta_medicos.length; indice++) {
-    //                         recebe_tabela_associar_medico_clinica +=
-    //                             "<tr>" +
-    //                             "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
-    //                             // "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
-    //                             // " data-codigo-medico-clinica='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
-    //                             "</tr>";
-    //                     }
-    //                     $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
-    //                 }
-
-    //                 resolve(); // sinaliza que terminou
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.log("Falha ao buscar médicos:" + error);
-    //                 reject(error);
-    //             },
-    //         });
-    //     });
-    // }
 </script>
 
 <!-- Modal -->
