@@ -54,7 +54,7 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-treinamento-capacitacao">Salvar</button>
-            <button type="button" id="retornar-listagem-aptidao-extra" class="botao-cinza">Cancelar</button>
+            <button type="button" id="retornar-listagem-treinamento-capacitacao" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -266,30 +266,30 @@
             if (recebe_acao_alteracao_treeinamento_capacitacao === "editar") {
                 // carrega_cidades();
                 // await popula_lista_cidade_empresa_alteracao();
-                await popula_informacoes_aptidao_alteracao();
+                await popula_informacoes_treinamento_capacitacao_alteracao();
             } else {
                 // carrega_cidades();
 
-                let atual = new Date();
+                // let atual = new Date();
 
-                let ano = atual.getFullYear();
-                let mes = String(atual.getMonth() + 1).padStart(2, '0');
-                let dia = String(atual.getDate()).padStart(2, '0');
-                let horas = String(atual.getHours()).padStart(2, '0');
-                let minutos = String(atual.getMinutes()).padStart(2, '0');
+                // let ano = atual.getFullYear();
+                // let mes = String(atual.getMonth() + 1).padStart(2, '0');
+                // let dia = String(atual.getDate()).padStart(2, '0');
+                // let horas = String(atual.getHours()).padStart(2, '0');
+                // let minutos = String(atual.getMinutes()).padStart(2, '0');
 
-                // Formato aceito por <input type="datetime-local">
-                let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+                // // Formato aceito por <input type="datetime-local">
+                // let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
 
-                console.log("Data formatada para input datetime-local:", data_formatada);
-                document.getElementById('created_at').value = data_formatada;
+                // console.log("Data formatada para input datetime-local:", data_formatada);
+                // document.getElementById('created_at').value = data_formatada;
             }
         }
 
         buscar_informacoes_aptidao_extra();
     });
 
-    $("#retornar-listagem-aptidao-extra").click(function(e) {
+    $("#retornar-listagem-treinamento-capacitacao").click(function(e) {
         e.preventDefault();
 
         debugger;
@@ -297,25 +297,26 @@
         window.location.href = "painel.php?pg=aptidao_extra";
     });
 
-    async function popula_informacoes_aptidao_alteracao() {
+    async function popula_informacoes_treinamento_capacitacao_alteracao() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: "cadastros/processa_aptidao_extra.php",
+                url: "cadastros/processa_treinamento_capacitacao.php",
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_aptidao_extra": "buscar_informacoes_pessoa_alteracao",
-                    valor_codigo_aptidao_alteracao: recebe_codigo_alteracao_treinamento_capacitacao,
+                    "processo_treinamento_capacitacao": "buscar_informacoes_treinamento_capacitacao_alteracao",
+                    valor_codigo_treinamento_capacitacao_alteracao: recebe_codigo_alteracao_treinamento_capacitacao,
                 },
-                success: function(resposta_aptidao) {
+                success: function(resposta_treinamento_capacitacao) {
                     debugger;
-                    console.log(resposta_aptidao);
+                    console.log(resposta_treinamento_capacitacao);
 
-                    if (resposta_aptidao.length > 0) {
-                        for (let indice = 0; indice < resposta_aptidao.length; indice++) {
-                            $("#aptidao_extra_id_alteracao").val(resposta_aptidao[indice].id);
-                            $("#codigo_aptidao").val(resposta_aptidao[indice].codigo_aptidao);
-                            $("#nome_aptidao").val(resposta_aptidao[indice].nome);
+                    if (resposta_treinamento_capacitacao.length > 0) {
+                        for (let indice = 0; indice < resposta_treinamento_capacitacao.length; indice++) {
+                            $("#treinamento_capacitacao_id_alteracao").val(resposta_treinamento_capacitacao[indice].id);
+                            $("#codigo").val(resposta_treinamento_capacitacao[indice].codigo_treinamento_capacitacao);
+                            $("#nome").val(resposta_treinamento_capacitacao[indice].nome);
+                            $("#valor").val(resposta_treinamento_capacitacao[indice].valor);
                         }
                     }
 
@@ -342,22 +343,23 @@
 
         if (recebe_acao_alteracao_treeinamento_capacitacao === "editar") {
             $.ajax({
-                url: "cadastros/processa_aptidao_extra.php",
+                url: "cadastros/processa_treinamento_capacitacao.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_aptidao_extra: "alterar_aptidao_extra",
-                    valor_codigo_aptidao_extra: recebe_codigo_aptidao,
-                    valor_nome_aptidao_extra: recebe_nome_aptidao,
-                    valor_id_aptidao_extra: $("#aptidao_extra_id_alteracao").val(),
+                    processo_treinamento_capacitacao: "alterar_treinamento_capacitacao",
+                    valor_codigo_treinamento_capacitacao: recebe_codigo_treinamento_capacitacao,
+                    valor_nome_treinamento_capacitacao: recebe_nome_treinamento_capacitacao,
+                    valor_treinamento_capacitacao:recebe_valor_treinamento_capacitacao,
+                    valor_id_treinamento_capacitacao: $("#treinamento_capacitacao_id_alteracao").val(),
                 },
-                success: function(retorno_aptidao) {
+                success: function(retorno_treinamento_capacitacao) {
                     debugger;
 
-                    console.log(retorno_aptidao);
-                    if (retorno_aptidao) {
+                    console.log(retorno_treinamento_capacitacao);
+                    if (retorno_treinamento_capacitacao) {
                         console.log("Aptidão alterada com sucesso");
-                        window.location.href = "painel.php?pg=aptidao_extra";
+                        window.location.href = "painel.php?pg=treinamento_capacitacao";
                     }
                 },
                 error: function(xhr, status, error) {

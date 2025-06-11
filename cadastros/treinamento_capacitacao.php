@@ -219,7 +219,7 @@
                                 <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-treinamento-capacitacao' data-codigo-treinamento-capacitacao='${valor_treinamento_capacitacao.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="?pg=grava_aptidao_extra&acao=editar&id=${valor_treinamento_capacitacao.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=grava_treinamento_capacitacao&acao=editar&id=${valor_treinamento_capacitacao.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="#" id='excluir-aptidao' data-codigo-aptidao="${valor_treinamento_capacitacao.id}" class="delete" title="Apagar">

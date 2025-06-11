@@ -45,6 +45,24 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_treinamento_capacitacao->execute();
         $recebe_ultimo_codigo_registrado_treinamento_capacitacao = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_registrado_treinamento_capacitacao);
+    }else if($recebe_processo_treinamento_capacitacao === "alterar_treinamento_capacitacao")
+    {
+        $recebe_codigo_treinamento_capacitacao_alterar = $_POST["valor_codigo_treinamento_capacitacao"];
+        $recebe_nome_treinamento_capacitacao_alterar = $_POST["valor_nome_treinamento_capacitacao"];
+        $recebe_valor_treinamento_capacitacao_alterar = $_POST["valor_treinamento_capacitacao"];
+        $recebe_id_treinamento_capacitacao_alterar = $_POST["valor_id_treinamento_capacitacao"];
+
+        $instrucao_altera_treinamento_capacitacao = 
+        "update treinamento_capacitacao set codigo_treinamento_capacitacao = :recebe_codigo_treinamento_capacitacao,nome = :recebe_nome_treinamento_capacitacao,valor = :recebe_valor_treinamento_capacitacao where
+        id = :recebe_id_treinamento_capacitacao and empresa_id = :recebe_empresa_id";
+        $comando_altera_treinamento_capacitacao = $pdo->prepare($instrucao_altera_treinamento_capacitacao);
+        $comando_altera_treinamento_capacitacao->bindValue(":recebe_codigo_treinamento_capacitacao",$recebe_codigo_treinamento_capacitacao_alterar);
+        $comando_altera_treinamento_capacitacao->bindValue(":recebe_nome_treinamento_capacitacao",$recebe_nome_treinamento_capacitacao_alterar);
+        $comando_altera_treinamento_capacitacao->bindValue(":recebe_valor_treinamento_capacitacao",$recebe_valor_treinamento_capacitacao_alterar);
+        $comando_altera_treinamento_capacitacao->bindValue(":recebe_id_treinamento_capacitacao",$recebe_id_treinamento_capacitacao_alterar);
+        $comando_altera_treinamento_capacitacao->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $resultado_altera_treinamento_capacitacao = $comando_altera_treinamento_capacitacao->execute();
+        echo json_encode($resultado_altera_treinamento_capacitacao);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
@@ -73,5 +91,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_treinamento_capacitacao_informacoes_rapidas->execute();
         $resultado_busca_treinamento_capacitacao_informacoes_rapidas = $comando_busca_treinamento_capacitacao_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_treinamento_capacitacao_informacoes_rapidas);
+    }else if($recebe_processo_treinamento_capacitacao === "buscar_informacoes_treinamento_capacitacao_alteracao")
+    {
+        $recebe_codigo_treinamento_capacitacao = $_GET["valor_codigo_treinamento_capacitacao_alteracao"];
+
+        $instrucao_busca_treinamento_capacitacao_alteracao = 
+        "select * from treinamento_capacitacao where id = :recebe_id_treinamento_capacitacao_aleracao and empresa_id = :recebe_empresa_id_treinamento_capacitacao_alteracao";
+        $comando_busca_treinamento_capacitacao_alteracao = $pdo->prepare($instrucao_busca_treinamento_capacitacao_alteracao);
+        $comando_busca_treinamento_capacitacao_alteracao->bindValue(":recebe_id_treinamento_capacitacao_aleracao",$recebe_codigo_treinamento_capacitacao);
+        $comando_busca_treinamento_capacitacao_alteracao->bindValue(":recebe_empresa_id_treinamento_capacitacao_alteracao",$recebe_empresa_id);
+        $comando_busca_treinamento_capacitacao_alteracao->execute();
+        $resultado_busca_treinamento_capacitacao_alteracao = $comando_busca_treinamento_capacitacao_alteracao->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_treinamento_capacitacao_alteracao);
     }
 }
+?>
