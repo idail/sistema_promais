@@ -60,5 +60,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_treinamento_capacitacao->execute();
         $resultado_busca_treinamento_capacitacao = $comando_busca_treinamento_capacitacao->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_treinamento_capacitacao);
+    }else if($recebe_processo_treinamento_capacitacao === "buscar_informacoes_rapidas_treinamento_capacitacao")
+    {
+        $recebe_codigo_treinamento_capacitacao = $_GET["valor_codigo_treinamento_capacitacao_informacoes_rapidas"];
+
+        $instrucao_busca_treinamento_capacitacao_informacoes_rapidas = 
+        "select * from treinamento_capacitacao where id = :recebe_id_treinamento_capacitacao_informacoes_rapidas 
+        and empresa_id = :recebe_empresa_id_treinamento_capacitacao_informacoes_rapidas";
+        $comando_busca_treinamento_capacitacao_informacoes_rapidas = $pdo->prepare($instrucao_busca_treinamento_capacitacao_informacoes_rapidas);
+        $comando_busca_treinamento_capacitacao_informacoes_rapidas->bindValue(":recebe_id_treinamento_capacitacao_informacoes_rapidas",$recebe_codigo_treinamento_capacitacao);
+        $comando_busca_treinamento_capacitacao_informacoes_rapidas->bindValue(":recebe_empresa_id_treinamento_capacitacao_informacoes_rapidas",$recebe_empresa_id);
+        $comando_busca_treinamento_capacitacao_informacoes_rapidas->execute();
+        $resultado_busca_treinamento_capacitacao_informacoes_rapidas = $comando_busca_treinamento_capacitacao_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_treinamento_capacitacao_informacoes_rapidas);
     }
 }

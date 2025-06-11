@@ -216,7 +216,7 @@
                         <td>${valor_treinamento_capacitacao.valor}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-aptidao-extra' data-codigo-aptidao='${valor_treinamento_capacitacao.id}'>
+                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-treinamento-capacitacao' data-codigo-treinamento-capacitacao='${valor_treinamento_capacitacao.id}'>
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <a href="?pg=grava_aptidao_extra&acao=editar&id=${valor_treinamento_capacitacao.id}" target="_parent" class="edit" title="Editar">
@@ -294,17 +294,17 @@
         }
     });
 
-    $(document).on("click", "#visualizar-informacoes-aptidao-extra", function(e) {
+    $(document).on("click", "#visualizar-informacoes-treinamento-capacitacao", function(e) {
         debugger;
-        recebe_codigo_pessoa_informacoes_rapida = $(this).data("codigo-aptidao");
+        recebe_codigo_treinamento_capacitacao_informacoes_rapida = $(this).data("codigo-treinamento-capacitacao");
 
         $.ajax({
-            url: "cadastros/processa_aptidao_extra.php",
+            url: "cadastros/processa_treinamento_capacitacao.php",
             method: "GET",
             dataType: "json",
             data: {
-                "processo_aptidao_extra": "buscar_informacoes_rapidas_aptidao_extra",
-                "valor_codigo_aptidao_extra_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
+                "processo_treinamento_capacitacao": "buscar_informacoes_rapidas_treinamento_capacitacao",
+                "valor_codigo_treinamento_capacitacao_informacoes_rapidas": recebe_codigo_treinamento_capacitacao_informacoes_rapida,
             },
             success: function(resposta) {
                 debugger;
@@ -312,8 +312,9 @@
                 if (resposta.length > 0) {
                     for (let indice = 0; indice < resposta.length; indice++) {
                         // $("#created_at").val(resposta[indice].created_at);
-                        $("#codigo_aptidao").val(resposta[indice].codigo_aptidao);
-                        $("#nome_aptidao").val(resposta[indice].nome);
+                        $("#codigo").val(resposta[indice].codigo_treinamento_capacitacao);
+                        $("#nome").val(resposta[indice].nome);
+                        $("#valor").val(resposta[indice].valor);
                     }
                 }
             },
@@ -321,24 +322,24 @@
 
             },
         });
-        document.getElementById('informacoes-aptidao-extra').classList.remove('hidden'); // abrir
+        document.getElementById('informacoes-treinamento-capacitacao').classList.remove('hidden'); // abrir
     });
 
-    $(document).on("click", "#fechar-modal-informacoes-aptidao-extra", function(e) {
+    $(document).on("click", "#fechar-modal-informacoes-treinamento-capacitacao", function(e) {
         debugger;
-        document.getElementById('informacoes-aptidao-extra').classList.add('hidden'); // fechar
+        document.getElementById('informacoes-treinamento-capacitacao').classList.add('hidden'); // fechar
     });
 </script>
 
 <!-- Modal -->
-<div id="informacoes-aptidao-extra"
+<div id="informacoes-treinamento-capacitacao"
     class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center h-screen">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl p-6 relative">
 
         <!-- Cabeçalho -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Informações da Aptidão Extra</h2>
-            <button id="fechar-modal-informacoes-aptidao-extra" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
+            <h2 class="text-2xl font-bold">Informações da Treinamento/Capacitação</h2>
+            <button id="fechar-modal-informacoes-treinamento-capacitacao" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
         </div>
 
         <!-- Corpo da modal -->
@@ -355,25 +356,34 @@
             <!-- Grid com 2 colunas maiores -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
-                    <label for="nome">Código:</label>
+                    <label for="codigo">Código:</label>
                     <div class="input-with-icon flex items-center gap-2">
                         <i class="fas fa-user text-gray-500"></i>
-                        <input type="text" id="codigo_aptidao" name="codigo_aptidao" disabled class="form-control w-full">
+                        <input type="text" id="codigo" name="codigo" disabled class="form-control w-full">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="cpf">Nome:</label>
+                    <label for="nome">Nome:</label>
                     <div class="input-with-icon flex items-center gap-2">
                         <i class="fas fa-address-card text-gray-500"></i>
-                        <input type="text" id="nome_aptidao" name="nome_aptidao" disabled class="form-control w-full">
+                        <input type="text" id="nome" name="nome" disabled class="form-control w-full">
+                    </div>
+                </div>
+
+                <div class="form-group" style="flex: 50%;">
+                    <label for="valor">Valor:</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
+                        <input type="text" id="valor" name="valor" class="form-control">
                     </div>
                 </div>
             </div>
 
             <!-- Botões -->
             <div class="flex justify-between mt-6">
-                <button id="fechar-modal-informacoes-aptidao-extra" type="button"
+                <button id="fechar-modal-informacoes-treinamento-capacitacao" type="button"
                     class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800">Fechar</button>
             </div>
         </form>
