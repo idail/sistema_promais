@@ -222,7 +222,7 @@
                                 <a href="?pg=grava_treinamento_capacitacao&acao=editar&id=${valor_treinamento_capacitacao.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="#" id='excluir-aptidao' data-codigo-aptidao="${valor_treinamento_capacitacao.id}" class="delete" title="Apagar">
+                                <a href="#" id='excluir-treinamento-capacitacao' data-codigo-treinamento-capacitacao="${valor_treinamento_capacitacao.id}" class="delete" title="Apagar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -258,35 +258,35 @@
         // buscar_informacoes_rapidas_clinica();
     });
 
-    $(document).on("click", "#excluir-aptidao", function(e) {
+    $(document).on("click", "#excluir-treinamento-capacitacao", function(e) {
         e.preventDefault();
 
         debugger;
 
-        let recebe_id_aptidao = $(this).data("codigo-aptidao");
+        let recebe_id_treinamento_capacitacao = $(this).data("codigo-treinamento-capacitacao");
 
-        let recebe_resposta_excluir_aptidao = window.confirm(
-            "Tem certeza que deseja excluir a aptidão?"
+        let recebe_resposta_excluir_treinamento_capacitacao = window.confirm(
+            "Tem certeza que deseja excluir o treinamento?"
         );
 
-        if (recebe_resposta_excluir_aptidao) {
+        if (recebe_resposta_excluir_treinamento_capacitacao) {
             $.ajax({
-                url: "cadastros/processa_aptidao_extra.php",
+                url: "cadastros/processa_treinamento_capacitacao.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_aptidao_extra: "excluir_aptidao",
-                    valor_id_aptidao: recebe_id_aptidao,
+                    processo_treinamento_capacitacao: "excluir_treinamento_capacitacao",
+                    valor_codigo_treinamento_capacitacao: recebe_id_treinamento_capacitacao,
                 },
-                success: function(retorno_aptidao) {
+                success: function(retorno_treinamento_capacitacao) {
                     debugger;
-                    console.log(retorno_aptidao);
-                    if (retorno_aptidao) {
-                        window.location.href = "painel.php?pg=aptidao_extra";
+                    console.log(retorno_treinamento_capacitacao);
+                    if (retorno_treinamento_capacitacao) {
+                        window.location.href = "painel.php?pg=treinamento_capacitacao";
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao excluir pessoa:" + error);
+                    console.log("Falha ao excluir treinamento:" + error);
                 },
             });
         } else {

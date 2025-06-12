@@ -33,22 +33,22 @@
                         </div>
 
                         <div class="form-group" style="flex: 50%;">
-                            <label for="nome">Nome:</label>
+                            <label for="nome_treinamento">Nome:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-user"></i>
-                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
-                                <input type="text" id="nome" name="nome" class="form-control">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <input type="text" id="nome_treinamento" name="nome_treinamento" class="form-control">
                             </div>
                         </div>
+
 
                         <div class="form-group" style="flex: 50%;">
                             <label for="valor">Valor:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-user"></i>
-                                <!-- <input type="text" id="cpf" name="cpf" class="form-control cnpj-input" oninput="formatCPF(this)"> -->
+                                <i class="fas fa-dollar-sign"></i>
                                 <input type="text" id="valor" name="valor" class="form-control">
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -294,7 +294,7 @@
 
         debugger;
 
-        window.location.href = "painel.php?pg=aptidao_extra";
+        window.location.href = "painel.php?pg=treinamento_capacitacao";
     });
 
     async function popula_informacoes_treinamento_capacitacao_alteracao() {
@@ -350,7 +350,7 @@
                     processo_treinamento_capacitacao: "alterar_treinamento_capacitacao",
                     valor_codigo_treinamento_capacitacao: recebe_codigo_treinamento_capacitacao,
                     valor_nome_treinamento_capacitacao: recebe_nome_treinamento_capacitacao,
-                    valor_treinamento_capacitacao:recebe_valor_treinamento_capacitacao,
+                    valor_treinamento_capacitacao: recebe_valor_treinamento_capacitacao,
                     valor_id_treinamento_capacitacao: $("#treinamento_capacitacao_id_alteracao").val(),
                 },
                 success: function(retorno_treinamento_capacitacao) {
@@ -375,7 +375,7 @@
                     processo_treinamento_capacitacao: "inserir_treinamento_capacitacao",
                     valor_codigo_treinamento_capacitacao: recebe_codigo_treinamento_capacitacao,
                     valor_nome_treinamento_capacitacao: recebe_nome_treinamento_capacitacao,
-                    valor_treinamento_capacitacao:recebe_valor_treinamento_capacitacao,
+                    valor_treinamento_capacitacao: recebe_valor_treinamento_capacitacao,
                 },
                 success: function(retorno_treinamento_capacitacao) {
                     debugger;

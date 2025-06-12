@@ -63,6 +63,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_treinamento_capacitacao->bindValue(":recebe_empresa_id",$recebe_empresa_id);
         $resultado_altera_treinamento_capacitacao = $comando_altera_treinamento_capacitacao->execute();
         echo json_encode($resultado_altera_treinamento_capacitacao);
+    }else if($recebe_processo_treinamento_capacitacao === "excluir_treinamento_capacitacao")
+    {
+        $recebe_codigo_treinamento_capacitacao_excluir = $_POST["valor_codigo_treinamento_capacitacao"];
+
+        $instrucao_exclui_treinamento_capacitacao = 
+        "delete from treinamento_capacitacao where id = :recebe_id_treinamento_capacitacao_excluir and
+        empresa_id = :recebe_empresa_id";
+        $comando_exclui_treinamento_capacitacao = $pdo->prepare($instrucao_exclui_treinamento_capacitacao);
+        $comando_exclui_treinamento_capacitacao->bindValue(":recebe_id_treinamento_capacitacao_excluir",$recebe_codigo_treinamento_capacitacao_excluir);
+        $comando_exclui_treinamento_capacitacao->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $resultado_exclui_treinamento_capacitacao = $comando_exclui_treinamento_capacitacao->execute();
+        echo json_encode($resultado_exclui_treinamento_capacitacao);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
