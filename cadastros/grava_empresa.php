@@ -1527,18 +1527,37 @@
         const cidadeInput = document.getElementById('cidade');
         const listaCidades = document.getElementById('listaCidades');
         const estadoSelect = document.getElementById('estado');
+        const idEstadoInput = document.getElementById('id_estado');
         
         // Atualiza o campo de cidade
         cidadeInput.value = cidade.nome;
         document.getElementById('id_cidade').value = cidade.id;
         listaCidades.style.display = 'none';
         
+        // Obtém o estado selecionado atual
+        const siglaEstado = estadoSelect.value;
+        
+        // Se já tivermos um estado selecionado, usa o ID desse estado
+        if (siglaEstado) {
+            const estadoSelecionado = estados.find(e => e.sigla === siglaEstado);
+            if (estadoSelecionado) {
+                idEstadoInput.value = estadoSelecionado.id;
+            }
+        } 
         // Se a cidade tiver informações de estado, atualiza o estado também
-        if (cidade.microrregiao && cidade.microrregiao.mesorregiao && cidade.microrregiao.mesorregiao.UF) {
+        else if (cidade.microrregiao?.mesorregiao?.UF) {
             const uf = cidade.microrregiao.mesorregiao.UF;
             estadoSelect.value = uf.sigla;
-            document.getElementById('id_estado').value = uf.id;
+            idEstadoInput.value = uf.id;
+        } 
+        // Se não encontrou o estado de outra forma, tenta obter do nome da cidade (último recurso)
+        else if (cidade['municipio-region']?.UF) {
+            const uf = cidade['municipio-region'].UF;
+            estadoSelect.value = uf.sigla;
+            idEstadoInput.value = uf.id;
         }
+        
+        console.log('Cidade selecionada:', cidade.nome, 'ID Cidade:', cidade.id, 'ID Estado:', idEstadoInput.value);
         
         // Armazena a cidade atual para uso posterior
         cidadeAtual = cidade;
@@ -1593,6 +1612,7 @@
         // Se for uma chamada vinda do preenchimento automático do CNPJ
         if (estadoSelecionado) {
             const estadoSelect = document.getElementById('estado');
+            const idEstadoInput = document.getElementById('id_estado');
             
             // Encontra o estado pelo nome ou sigla
             const estado = estados.find(e => 
@@ -1601,8 +1621,13 @@
             );
             
             if (estado) {
-                // Define o estado e carrega as cidades
+                console.log('Estado encontrado:', estado.nome, 'ID:', estado.id);
+                
+                // Define o estado e o ID do estado
                 estadoSelect.value = estado.sigla;
+                idEstadoInput.value = estado.id;
+                
+                // Carrega as cidades
                 carregarCidades().then(() => {
                     // Depois de carregar as cidades, tenta encontrar e selecionar a cidade
                     if (cidadeSelecionada) {
@@ -1611,15 +1636,22 @@
                         );
                         
                         if (cidadeEncontrada) {
+                            console.log('Cidade encontrada:', cidadeEncontrada.nome, 'ID:', cidadeEncontrada.id);
                             selecionarCidade(cidadeEncontrada);
                         } else {
-                            // Se não encontrar a cidade, preenche apenas o nome
+                            console.log('Cidade não encontrada na lista:', cidadeSelecionada);
+                            // Se não encontrar a cidade, preenche apenas o nome e garante o ID do estado
                             const cidadeInput = document.getElementById('cidade');
                             cidadeInput.value = cidadeSelecionada;
+                            document.getElementById('id_estado').value = estado.id; // Garante que o ID do estado está definido
                             document.getElementById('limparCidade').style.display = 'block';
                         }
                     }
                 });
+            } else {
+                console.warn('Estado não encontrado:', estadoSelecionado);
+                // Se não encontrar o estado, apenas carrega os estados
+                carregarEstados();
             }
         } else {
             // Se não tiver estado/cidade, apenas carrega os estados
