@@ -142,6 +142,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_telefone_empresa_alterar = $_POST["valor_telefone_empresa"];
         $recebe_email_empresa_alterar = $_POST["valor_email_empresa"];
         $recebe_id_cidade_empresa_alterar = $_POST["valor_id_cidade"];
+        $recebe_id_estado_empresa_alterar = isset($_POST["valor_id_estado"]) ? $_POST["valor_id_estado"] : '';
         $recebe_razao_social_empresa_alterar = $_POST["valor_razao_social_empresa"];
         $recebe_bairro_empresa_alterar = $_POST["valor_bairro_empresa"];
         $recebe_cep_empresa_alterar = $_POST["valor_cep_empresa"];
@@ -155,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
         $instrucao_altera_empresa = 
         "update empresas_novas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
-        telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
+        id_estado = :recebe_id_estado_alterar,telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
         bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar,
         nome_contabilidade = :recebe_nome_contabilidade_alterar,email_contabilidade = :recebe_email_contabilidade_alterar 
         where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
@@ -164,6 +165,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_empresa->bindValue(":recebe_cnpj_alterar",$recebe_cnpj_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_endereco_alterar",$recebe_endereco_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_id_cidade_alterar",$recebe_id_cidade_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_id_estado_alterar",$recebe_id_estado_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_telefone_alterar",$recebe_telefone_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_email_alterar",$recebe_email_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_chave_id_alterar",$recebe_chave_id_empresa_alterar);
