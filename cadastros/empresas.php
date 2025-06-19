@@ -339,26 +339,31 @@
 
                     if (resposta.length > 0) {
                         for (let indice = 0; indice < resposta.length; indice++) {
-                            let recebe_endereco_cortado = resposta[indice].endereco.split(",");
+                            let recebe_endereco_cortado = resposta[indice].endereco ? resposta[indice].endereco.split(",") : ['', ''];
 
-                            $("#created_at").val(resposta[indice].created_at);
-                            $("#cnpj").val(resposta[indice].cnpj);
-                            $("#nome_fantasia").val(resposta[indice].nome);
-                            $("#razao_social").val(resposta[indice].razao_social);
-                            $("#endereco").val(resposta[indice].endereco);
-                            $("#numero").val(recebe_endereco_cortado[1]);
-                            $("#complemento").val(resposta[indice].complemento);
-                            $("#bairro").val(resposta[indice].bairro);
-                            $("#cidade_id").val(resposta[indice].id_cidade);
-                            $("#cep").val(resposta[indice].cep);
-                            $("#email").val(resposta[indice].email);
-                            $("#telefone").val(resposta[indice].telefone);
-
-                            // let recebe_status_clinica;
-                            // if (resposta[indice].status === "Ativo")
-                            //     $("#status").prop("checked", true);
-                            // else
-                            //     $("#status").prop("checked", false);
+                            $("#created_at").val(resposta[indice].created_at || '');
+                            $("#cnpj").val(resposta[indice].cnpj || '');
+                            $("#nome_fantasia").val(resposta[indice].nome || '');
+                            $("#razao_social").val(resposta[indice].razao_social || '');
+                            $("#endereco").val(recebe_endereco_cortado[0] || '');
+                            $("#numero").val(recebe_endereco_cortado[1] || '');
+                            $("#complemento").val(resposta[indice].complemento || '');
+                            $("#bairro").val(resposta[indice].bairro || '');
+                            
+                            // Preenche o campo de cidade com o nome da cidade e estado
+                            let cidadeNome = resposta[indice].cidade_nome || '';
+                            let estadoNome = resposta[indice].estado_nome || resposta[indice].estado_uf || '';
+                            let cidadeCompleta = cidadeNome;
+                            
+                            if (estadoNome) {
+                                cidadeCompleta += cidadeNome ? `/${estadoNome}` : estadoNome;
+                            }
+                            
+                            $("#cidade_id").html(`<option value="${resposta[indice].id_cidade || ''}" selected>${cidadeCompleta}</option>`);
+                            
+                            $("#cep").val(resposta[indice].cep || '');
+                            $("#email").val(resposta[indice].email || '');
+                            $("#telefone").val(resposta[indice].telefone || '');
 
                             async function exibi_medicos_associados_empresa() {
                                 await popula_medicos_associados_empresa();

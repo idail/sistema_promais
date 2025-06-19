@@ -274,7 +274,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_codigo_empresa_informacoes_rapidas = $_GET["valor_id_empresa_informacoes_rapidas"];
         $recebe_id_empresa = $_SESSION["empresa_id"];
 
-        $instrucao_busca_empresa_informacoes_rapidas = "select * from empresas_novas where id = :recebe_id_empresa_informacoes_rapidas and empresa_id = :recebe_empresa_id";
+        $instrucao_busca_empresa_informacoes_rapidas = 
+            "SELECT en.*, c.nome as cidade_nome, e.nome as estado_nome, e.uf as estado_uf 
+            FROM empresas_novas en
+            LEFT JOIN cidades c ON en.id_cidade = c.id
+            LEFT JOIN estados e ON en.id_estado = e.id
+            WHERE en.id = :recebe_id_empresa_informacoes_rapidas 
+            AND en.empresa_id = :recebe_empresa_id";
+            
         $comando_busca_empresa_informacoes_rapidas = $pdo->prepare($instrucao_busca_empresa_informacoes_rapidas);
         $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_id_empresa_informacoes_rapidas",$recebe_codigo_empresa_informacoes_rapidas);
         $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_empresa_id",$recebe_id_empresa);
