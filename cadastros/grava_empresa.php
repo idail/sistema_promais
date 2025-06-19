@@ -1,3 +1,114 @@
+<style>
+    /* Estilos para indicadores de carregamento e feedback */
+    .loading-indicator,
+    .loading-cidades {
+        display: inline-block;
+        margin-left: 10px;
+        color: #666;
+        font-size: 0.875rem;
+    }
+    
+    .spinner-border {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 0.2em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        vertical-align: middle;
+        margin-right: 5px;
+        animation: spinner-border .75s linear infinite;
+    }
+    
+    @keyframes spinner-border {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Estilo para mensagens toast */
+    .toast-message {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 4px;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        max-width: 300px;
+    }
+    
+    .toast-success {
+        background-color: #4CAF50;
+    }
+    
+    .toast-error {
+        background-color: #F44336;
+    }
+    
+    .toast-warning {
+        background-color: #FF9800;
+    }
+    
+    .toast-info {
+        background-color: #2196F3;
+    }
+    
+    /* Melhorias para o autocomplete de cidades */
+    .autocomplete-box {
+        position: relative;
+    }
+    
+    #listaCidades {
+        position: absolute;
+        z-index: 1000;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 2px;
+        display: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    #listaCidades li {
+        padding: 8px 12px;
+        cursor: pointer;
+        list-style: none;
+        border-bottom: 1px solid #eee;
+    }
+    
+    #listaCidades li:hover {
+        background-color: #f5f5f5;
+    }
+    
+    #listaCidades li:last-child {
+        border-bottom: none;
+    }
+    
+    /* Melhorias para o botão de limpar cidade */
+    #limparCidade {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        display: none;
+    }
+    
+    #limparCidade:hover {
+        color: #666;
+    }
+</style>
+
 <div class="tab-container">
     <div class="tab-buttons">
         <button class="tab-button active" onclick="openTab(event, 'dados')">Dados</button>
@@ -81,13 +192,30 @@
                 </div>
 
                 <div class="form-column">
+                    <input type="hidden" id="id_estado" name="id_estado">
+                    <input type="hidden" id="id_cidade" name="cidade_id">
+                    
                     <div class="form-group">
-                        <label for="cidade_id">Cidade:</label>
+                        <label for="estado">Estado:</label>
                         <div class="input-with-icon">
-                            <i class="fas fa-city"></i>
-                            <select id="cidade_id" name="cidade_id" class="form-control">
-                                <!-- As opções serão adicionadas dinamicamente aqui -->
+                            <i class="fas fa-map-marker-alt"></i>
+                            <select id="estado" class="form-control" onchange="carregarCidades()">
+                                <option value="">Carregando estados...</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cidade">Cidade:</label>
+                        <div class="autocomplete-box">
+                            <div class="autocomplete-container">
+                                <div class="input-with-icon">
+                                    <i class="fas fa-city"></i>
+                                    <input type="text" id="cidade" class="form-control" placeholder="Digite o nome da cidade" oninput="filtrarCidades()" disabled>
+                                    <button type="button" id="limparCidade" class="clear-btn" style="display: none;" onclick="limparCidade()">×</button>
+                                </div>
+                            </div>
+                            <ul id="listaCidades" class="autocomplete-list"></ul>
                         </div>
                     </div>
 
@@ -355,12 +483,77 @@
         background-color: #5a6268;
         /* cinza mais escuro no hover */
     }
+
+    /* Estilos para o autocomplete de cidades */
+    .autocomplete-box {
+        position: relative;
+        width: 100%;
+    }
+
+    .autocomplete-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .clear-btn {
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        color: #999;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0 5px;
+        z-index: 2;
+    }
+
+    .clear-btn:hover {
+        color: #666;
+    }
+
+    .autocomplete-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        z-index: 1000;
+        list-style: none;
+        padding: 0;
+        margin: 2px 0 0 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .autocomplete-list li {
+        padding: 8px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+    .autocomplete-list li:hover {
+        background-color: #f5f5f5;
+    }
+
+    .autocomplete-list li:last-child {
+        border-bottom: none;
+    }
 </style>
 
 <script>
     let recebe_codigo_alteracao_empresa;
     let recebe_acao_alteracao_empresa = "cadastrar";
     let verifica_vinculacao_medico_empresa;
+    
+    // Carrega os estados quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        carregarEstados();
+    });
 
     $(document).ready(function(e) {
         debugger;
@@ -542,28 +735,80 @@
                     "processo_empresa": "buscar_informacoes_empresa_alteracao",
                     valor_codigo_empresa_alteracao: recebe_codigo_alteracao_empresa,
                 },
-                success: function(resposta_empresa) {
+                success: async function(resposta_empresa) {
                     debugger;
                     console.log(resposta_empresa);
 
                     if (resposta_empresa.length > 0) {
-                        for (let indice = 0; indice < resposta_empresa.length; indice++) {
-                            $("#created_at").val(resposta_empresa[indice].created_at);
-                            $("#cnpj").val(resposta_empresa[indice].cnpj);
-                            $("#nome_fantasia").val(resposta_empresa[indice].nome);
-                            $("#razao_social").val(resposta_empresa[indice].razao_social);
-                            $("#cep").val(resposta_empresa[indice].cep);
-                            $("#endereco").val(resposta_empresa[indice].endereco);
-                            $("#bairro").val(resposta_empresa[indice].bairro);
-                            $("#complemento").val(resposta_empresa[indice].complemento);
-                            $("#cidade_id").val(resposta_empresa[indice].id_cidade);
-                            $("#email").val(resposta_empresa[indice].email);
-                            $("#telefone").val(resposta_empresa[indice].telefone);
-                            $("#nome_contabilidade").val(resposta_empresa[indice].nome_contabilidade);
-                            $("#email_contabilidade").val(resposta_empresa[indice].email_contabilidade);
-                            $("#empresa_id_alteracao").val(resposta_empresa[indice].id);
+                        const empresa = resposta_empresa[0];
+                        
+                        // Preenche os campos básicos
+                        $("#created_at").val(empresa.created_at);
+                        $("#cnpj").val(empresa.cnpj);
+                        $("#nome_fantasia").val(empresa.nome);
+                        $("#razao_social").val(empresa.razao_social);
+                        $("#cep").val(empresa.cep);
+                        $("#endereco").val(empresa.endereco);
+                        $("#bairro").val(empresa.bairro);
+                        $("#complemento").val(empresa.complemento);
+                        $("#email").val(empresa.email);
+                        $("#telefone").val(empresa.telefone);
+                        $("#nome_contabilidade").val(empresa.nome_contabilidade);
+                        $("#email_contabilidade").val(empresa.email_contabilidade);
+                        $("#empresa_id_alteracao").val(empresa.id);
+                        
+                        // Se tiver ID de cidade, busca os dados da cidade e estado
+                        if (empresa.id_cidade) {
+                            try {
+                                // Primeiro busca os dados da cidade para obter o estado
+                                const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${empresa.id_cidade}`);
+                                const cidade = await response.json();
+                                
+                                if (cidade) {
+                                    // Define o estado
+                                    const estadoSelect = document.getElementById('estado');
+                                    const uf = cidade.microrregiao.mesorregiao.UF;
+                                    estadoSelect.value = uf.sigla;
+                                    estadoSelect.disabled = false;
+                                    
+                                    // Define o ID do estado no campo oculto
+                                    document.getElementById('id_estado').value = uf.id;
+                                    
+                                    // Armazena o estado atual para uso posterior
+                                    const estadoAtual = {
+                                        id: uf.id,
+                                        sigla: uf.sigla,
+                                        nome: uf.nome
+                                    };
+                                    
+                                    // Dispara o evento de mudança para carregar as cidades
+                                    estadoSelect.dispatchEvent(new Event('change'));
+                                    
+                                    // Aguarda um pouco para garantir que as cidades foram carregadas
+                                    setTimeout(() => {
+                                        // Define a cidade
+                                        const cidadeInput = document.getElementById('cidade');
+                                        cidadeInput.value = cidade.nome;
+                                        document.getElementById('id_cidade').value = cidade.id;
+                                        
+                                        // Armazena a cidade atual
+                                        cidadeAtual = cidade;
+                                        
+                                        // Habilita o botão de limpar
+                                        document.getElementById('limparCidade').style.display = 'block';
+                                        
+                                        resolve(resposta_empresa);
+                                    }, 500);
+                                } else {
+                                    resolve(resposta_empresa);
+                                }
+                            } catch (error) {
+                                console.error('Erro ao carregar dados da cidade:', error);
+                                resolve(resposta_empresa);
+                            }
+                        } else {
+                            resolve(resposta_empresa);
                         }
-                        resolve(resposta_empresa);
                     } else {
                         reject("Nenhum dado encontrado");
                     }
@@ -779,12 +1024,22 @@
 
     function fetchCompanyData(cnpj) {
         const cleanedCNPJ = cnpj.replace(/[.\/-]/g, '');
+        
+        // Limpa os campos de cidade/estado
+        document.getElementById('cidade').value = '';
+        document.getElementById('id_cidade').value = '';
+        document.getElementById('estado').value = '';
+        document.getElementById('id_estado').value = '';
+        document.getElementById('limparCidade').style.display = 'none';
+        cidadeAtual = null;
 
         fetch(`https://open.cnpja.com/office/${cleanedCNPJ}`)
             .then(response => response.json())
             .then(data => {
                 debugger;
                 console.log(data);
+                
+                // Preenche os campos básicos
                 document.getElementById('nome_fantasia').value = data.alias || '';
                 document.getElementById('razao_social').value = data.company.name || '';
                 document.getElementById('endereco').value = data.address.street || '';
@@ -793,64 +1048,587 @@
                 document.getElementById('bairro').value = data.address.district || '';
                 document.getElementById('cep').value = formatCEPValue(data.address.zip || '');
                 document.getElementById('email').value = data.emails[0]?.address || '';
-                document.getElementById('telefone').value = formatPhoneValue(data.phones[0] ? `${data.phones[0].area}${data.phones[0].number}` : '');
-
-                carrega_cidades(data.address.city, data.address.state);
-
-                // const now = new Date();
-                // const formattedDateTime = now.toISOString().slice(0, 16);
-                // document.getElementById('created_at').value = formattedDateTime;
-            })
-            .catch(error => console.error('Erro ao buscar CNPJ:', error));
-    }
-
-    function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
-        $.ajax({
-            url: "api/list/cidades.php",
-            type: "get",
-            dataType: "json",
-            data: {},
-            success: function(retorno_cidades) {
-                //debugger;
-
-                console.log(retorno_cidades.data.cidades);
-
-                let recebe_select_list_cidades = document.getElementById('cidade_id');
-
-                // Limpa opções anteriores
-                recebe_select_list_cidades.innerHTML = '<option value="">Selecione uma cidade</option>';
-
-                let cidades = retorno_cidades.data.cidades;
-
-                if (cidades.length > 0) {
-                    for (let i = 0; i < cidades.length; i++) {
-                        let option = document.createElement('option');
-                        option.value = cidades[i].id;
-                        option.text = cidades[i].nome + ' - ' + cidades[i].estado;
-                        recebe_select_list_cidades.appendChild(option);
-                    }
+                
+                // Formata o telefone se existir
+                if (data.phones && data.phones.length > 0) {
+                    const phone = data.phones[0];
+                    const phoneNumber = phone.area && phone.number ? 
+                        formatPhoneValue(`${phone.area}${phone.number}`) : '';
+                    document.getElementById('telefone').value = phoneNumber;
+                } else {
+                    document.getElementById('telefone').value = '';
                 }
-            },
-            error: function(xhr, status, error) {
-                console.log("Erro ao pegar cidades:" + error);
-            },
-        });
+                
+                // Preenche cidade e estado usando a função carrega_cidades
+                if (data.address.city && data.address.state) {
+                    carrega_cidades(data.address.city, data.address.state);
+                } else {
+                    // Se não tiver cidade/estado, apenas carrega os estados
+                    carregarEstados();
+                }
+                
+                // Atualiza a data/hora atual
+                const now = new Date();
+                const formattedDateTime = now.toISOString().slice(0, 16);
+                document.getElementById('created_at').value = formattedDateTime;
+            })
+            .catch(error => {
+                console.error('Erro ao buscar CNPJ:', error);
+                // Mesmo em caso de erro, carrega os estados para o usuário poder selecionar
+                carregarEstados();
+            });
     }
 
-    let recebe_nome_cidade_empresa;
-    let recebe_id_cidade;
+    // Variáveis globais para armazenar estados e cidades
+    let estados = [];
+    let cidades = [];
+    let cidadeAtual = null;
+    
+    // Função para exibir notificações toast
+    function showToast(message, type = 'info') {
+        // Remove toasts antigos
+        const oldToasts = document.querySelectorAll('.toast-message');
+        oldToasts.forEach(toast => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        });
+        
+        // Cria o elemento do toast
+        const toast = document.createElement('div');
+        toast.className = `toast-message toast-${type}`;
+        toast.textContent = message;
+        
+        // Estilos básicos para o toast
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.right = '20px';
+        toast.style.padding = '12px 20px';
+        toast.style.borderRadius = '4px';
+        toast.style.color = 'white';
+        toast.style.fontFamily = 'Arial, sans-serif';
+        toast.style.fontSize = '14px';
+        toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        toast.style.zIndex = '9999';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease-in-out';
+        
+        // Cores baseadas no tipo de mensagem
+        const colors = {
+            success: '#4CAF50',
+            error: '#F44336',
+            warning: '#FF9800',
+            info: '#2196F3'
+        };
+        
+        toast.style.backgroundColor = colors[type] || colors.info;
+        
+        // Adiciona o toast ao corpo do documento
+        document.body.appendChild(toast);
+        
+        // Anima a entrada
+        setTimeout(() => {
+            toast.style.opacity = '1';
+        }, 10);
+        
+        // Remove o toast após 5 segundos
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 5000);
+    }
 
-    $("#cidade_id").change(function(e) {
-        e.preventDefault();
+    // Função para carregar cidades baseado no nome da cidade e UF
+    async function carrega_cidades(nomeCidade, uf) {
+        const cidadeInput = document.getElementById('cidade');
+        const estadoSelect = document.getElementById('estado');
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-indicator';
+        loadingIndicator.innerHTML = 'Carregando...';
+        loadingIndicator.style.marginTop = '5px';
+        loadingIndicator.style.color = '#666';
+        loadingIndicator.style.fontSize = '12px';
+        
+        // Adiciona o indicador de carregamento
+        estadoSelect.parentNode.insertBefore(loadingIndicator, estadoSelect.nextSibling);
+        
+        try {
+            // Primeiro, garante que os estados foram carregados
+            if (estados.length === 0) {
+                await carregarEstados();
+            }
+            
+            // Define o estado selecionado
+            const estadoEncontrado = estados.find(e => 
+                e.sigla === uf || e.nome.toLowerCase() === uf.toLowerCase()
+            );
+            
+            if (estadoEncontrado) {
+                estadoSelect.value = estadoEncontrado.sigla;
+                document.getElementById('id_estado').value = estadoEncontrado.id;
+                
+                // Carrega as cidades do estado
+                try {
+                    await carregarCidades();
+                    
+                    // Aguarda um pouco para garantir que as cidades foram carregadas
+                    setTimeout(() => {
+                        // Tenta encontrar a cidade pelo nome (busca parcial)
+                        const cidadeEncontrada = cidades.find(c => 
+                            c.nome.toLowerCase().includes(nomeCidade.toLowerCase())
+                        );
+                        
+                        if (cidadeEncontrada) {
+                            // Seleciona a cidade encontrada
+                            selecionarCidade(cidadeEncontrada);
+                            showToast('Cidade encontrada e selecionada com sucesso!', 'success');
+                        } else {
+                            // Se não encontrar a cidade, preenche manualmente o campo
+                            cidadeInput.value = nomeCidade;
+                            cidadeAtual = { nome: nomeCidade };
+                            document.getElementById('limparCidade').style.display = 'block';
+                            showToast('Cidade não encontrada. Por favor, selecione manualmente.', 'warning');
+                        }
+                    }, 800);
+                } catch (error) {
+                    console.error('Erro ao carregar cidades:', error);
+                    cidadeInput.value = nomeCidade;
+                    cidadeAtual = { nome: nomeCidade };
+                    document.getElementById('limparCidade').style.display = 'block';
+                    showToast('Erro ao carregar cidades. Por favor, selecione manualmente.', 'error');
+                }
+            } else {
+                console.error('Estado não encontrado:', uf);
+                cidadeInput.value = nomeCidade;
+                estadoSelect.value = '';
+                cidadeAtual = { nome: nomeCidade };
+                document.getElementById('limparCidade').style.display = 'block';
+                showToast('Estado não encontrado. Por favor, selecione manualmente.', 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar estados:', error);
+            // Em caso de erro, preenche manualmente os campos
+            cidadeInput.value = nomeCidade;
+            estadoSelect.value = uf;
+            cidadeAtual = { nome: nomeCidade };
+            document.getElementById('limparCidade').style.display = 'block';
+            showToast('Erro ao carregar localização. Por favor, preencha manualmente.', 'error');
+        } finally {
+            // Remove o indicador de carregamento
+            if (loadingIndicator.parentNode) {
+                loadingIndicator.parentNode.removeChild(loadingIndicator);
+            }
+        }
+    }
+    
+    // Função para carregar os estados do IBGE com cache e tratamento de erros aprimorado
+    async function carregarEstados() {
+        const estadoSelect = document.getElementById('estado');
+        
+        // Cria e configura o indicador de carregamento
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-estados';
+        loadingIndicator.innerHTML = `
+            <div class="d-flex align-items-center">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <span>Buscando estados...</span>
+            </div>
+        `;
+        loadingIndicator.style.marginTop = '5px';
+        loadingIndicator.style.color = '#666';
+        
+        // Insere o indicador após o campo de estado
+        const estadoContainer = estadoSelect.parentNode;
+        estadoContainer.insertBefore(loadingIndicator, estadoSelect.nextSibling);
+        
+        // Configura o estado inicial do campo
+        estadoSelect.disabled = true;
+        estadoSelect.innerHTML = '<option value="">Carregando estados...</option>';
+        
+        try {
+            // Verifica se já temos os estados em cache
+            const cacheKey = 'estados_ibge';
+            const cachedData = sessionStorage.getItem(cacheKey);
+            
+            if (cachedData) {
+                // Usa os dados em cache
+                estados = JSON.parse(cachedData);
+                updateUIAfterStateLoad(true);
+            } else {
+                // Faz a requisição para a API do IBGE
+                showToast('Buscando lista de estados...', 'info');
+                
+                const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erro ao buscar estados: ${response.status} ${response.statusText} - ${errorText}`);
+                }
+                
+                estados = await response.json();
+                
+                // Armazena em cache na sessionStorage
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(estados));
+                } catch (e) {
+                    console.warn('Não foi possível armazenar estados em cache:', e);
+                }
+                
+                updateUIAfterStateLoad(false);
+            }
+            
+        } catch (error) {
+            console.error('Erro ao carregar estados:', error);
+            
+            // Mensagem de erro mais amigável
+            let errorMessage = 'Não foi possível carregar a lista de estados.';
+            
+            if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+            } else if (error.message.includes('404')) {
+                errorMessage = 'Serviço de estados não disponível no momento.';
+            } else if (error.message.includes('429')) {
+                errorMessage = 'Muitas requisições. Por favor, aguarde um momento e tente novamente.';
+            }
+            
+            showToast(errorMessage, 'error');
+            
+            // Define uma mensagem de erro no select
+            estadoSelect.innerHTML = '<option value="">Erro ao carregar estados</option>';
+            
+        } finally {
+            // Remove o indicador de carregamento
+            if (loadingIndicator.parentNode) {
+                loadingIndicator.parentNode.removeChild(loadingIndicator);
+            }
+        }
+        
+        // Função auxiliar para atualizar a UI após o carregamento dos estados
+        function updateUIAfterStateLoad(fromCache = false) {
+            const estadoSelect = document.getElementById('estado');
+            estadoSelect.innerHTML = '<option value="">Selecione um estado</option>';
+            
+            // Preenche o select com os estados
+            estados.forEach(estado => {
+                const option = document.createElement('option');
+                option.value = estado.sigla;
+                option.textContent = estado.nome;
+                option.setAttribute('data-id', estado.id);
+                estadoSelect.appendChild(option);
+            });
+            
+            // Habilita o campo de estado
+            estadoSelect.disabled = false;
+            
+            // Se estiver em modo de edição, o estado será definido posteriormente
+            if (recebe_acao_alteracao_empresa !== 'editar') {
+                estadoSelect.disabled = false;
+                
+                // Adiciona o evento de mudança para carregar as cidades
+                estadoSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        carregarCidades();
+                    } else {
+                        // Se nenhum estado for selecionado, limpa as cidades
+                        const cidadeInput = document.getElementById('cidade');
+                        cidadeInput.value = '';
+                        document.getElementById('id_cidade').value = '';
+                        document.getElementById('id_estado').value = '';
+                        document.getElementById('limparCidade').style.display = 'none';
+                    }
+                });
+            }
+            
+            // Mostra mensagem de sucesso
+            const cacheMessage = fromCache ? ' (dados em cache)' : '';
+            showToast(`${estados.length} estados carregados${cacheMessage}`, 'success');
+        }
+    }
 
-        debugger;
-        recebe_id_cidade = $(this).val();
-        let recebe_cidade_empresa = $('#cidade_id option:selected').text(); // Nome da cidade
-        let recebe_array_informacoes_cidade_empresa = recebe_cidade_empresa.split("-");
-        let recebe_informacao_cidade_empresa = recebe_array_informacoes_cidade_empresa[0];
-        let recebe_informacao_estado_empresa = recebe_array_informacoes_cidade_empresa[1];
-        recebe_nome_cidade_empresa = recebe_informacao_cidade_empresa + "," + recebe_informacao_estado_empresa;
+    // Função para carregar cidades baseado no estado selecionado com cache e tratamento de erros aprimorado
+    async function carregarCidades() {
+        const estadoSelect = document.getElementById('estado');
+        const cidadeInput = document.getElementById('cidade');
+        const listaCidades = document.getElementById('listaCidades');
+        const siglaEstado = estadoSelect.value;
+        
+        // Verificação inicial de estado vazio
+        if (!siglaEstado) {
+            cidadeInput.disabled = true;
+            cidadeInput.value = '';
+            document.getElementById('id_estado').value = '';
+            return;
+        }
+        
+        // Cria e configura o indicador de carregamento
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-cidades';
+        loadingIndicator.innerHTML = `
+            <div class="d-flex align-items-center">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <span>Buscando cidades...</span>
+            </div>
+        `;
+        loadingIndicator.style.marginTop = '5px';
+        loadingIndicator.style.color = '#666';
+        
+        // Insere o indicador após o campo de cidade
+        const cidadeContainer = cidadeInput.parentNode;
+        cidadeContainer.insertBefore(loadingIndicator, cidadeInput.nextSibling);
+        
+        // Configura o estado inicial do campo de cidade
+        cidadeInput.disabled = true;
+        cidadeInput.placeholder = 'Aguarde, carregando cidades...';
+        
+        try {
+            // Encontra o estado selecionado
+            const estado = estados.find(e => e.sigla === siglaEstado);
+            if (!estado) {
+                throw new Error('Estado não encontrado na lista de estados disponíveis');
+            }
+            
+            // Atualiza o ID do estado no campo oculto
+            document.getElementById('id_estado').value = estado.id;
+            
+            // Verifica se já temos as cidades em cache para este estado
+            const cacheKey = `cidades_${estado.id}`;
+            const cachedData = sessionStorage.getItem(cacheKey);
+            
+            if (cachedData) {
+                // Usa os dados em cache
+                cidades = JSON.parse(cachedData);
+                updateUIAfterCityLoad(estado, true);
+            } else {
+                // Faz a requisição para a API do IBGE
+                showToast(`Buscando cidades de ${estado.nome}...`, 'info');
+                
+                const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${siglaEstado}/municipios`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erro ao buscar cidades: ${response.status} ${response.statusText} - ${errorText}`);
+                }
+                
+                cidades = await response.json();
+                
+                // Ordena as cidades alfabeticamente
+                cidades.sort((a, b) => a.nome.localeCompare(b.nome));
+                
+                // Armazena em cache na sessionStorage (válido apenas durante a sessão)
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(cidades));
+                } catch (e) {
+                    console.warn('Não foi possível armazenar em cache:', e);
+                }
+                
+                updateUIAfterCityLoad(estado, false);
+            }
+            
+        } catch (error) {
+            console.error('Erro ao carregar cidades:', error);
+            
+            // Mensagem de erro mais amigável
+            let errorMessage = 'Não foi possível carregar a lista de cidades.';
+            
+            if (error.message.includes('Failed to fetch')) {
+                errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+            } else if (error.message.includes('404')) {
+                errorMessage = 'Estado não encontrado. Por favor, selecione outro estado.';
+            } else if (error.message.includes('429')) {
+                errorMessage = 'Muitas requisições. Por favor, aguarde um momento e tente novamente.';
+            }
+            
+            showToast(errorMessage, 'error');
+            
+            // Define uma mensagem de erro no placeholder e permite digitação manual
+            cidadeInput.placeholder = 'Digite o nome da cidade';
+            cidadeInput.disabled = false;
+            
+        } finally {
+            // Remove o indicador de carregamento
+            if (loadingIndicator.parentNode) {
+                loadingIndicator.parentNode.removeChild(loadingIndicator);
+            }
+        }
+        
+        // Função auxiliar para atualizar a UI após o carregamento das cidades
+        function updateUIAfterCityLoad(estado, fromCache = false) {
+            // Habilita o campo de cidade
+            cidadeInput.disabled = false;
+            cidadeInput.placeholder = 'Digite o nome da cidade';
+            
+            // Mostra mensagem de sucesso
+            const cacheMessage = fromCache ? ' (dados em cache)' : '';
+            showToast(`${cidades.length} cidades carregadas para ${estado.nome}${cacheMessage}`, 'success');
+            
+            // Se estiver em modo de edição, tenta selecionar a cidade
+            if (recebe_acao_alteracao_empresa === 'editar' && cidadeAtual) {
+                const cidadeEncontrada = cidades.find(c => 
+                    c.nome.toLowerCase() === cidadeAtual.nome.toLowerCase()
+                );
+                
+                if (cidadeEncontrada) {
+                    selecionarCidade(cidadeEncontrada);
+                    showToast(`Cidade ${cidadeEncontrada.nome} selecionada automaticamente`, 'success');
+                } else {
+                    showToast('Cidade não encontrada na lista. Por favor, selecione manualmente.', 'warning');
+                }
+            }
+            
+            // Foca no campo de cidade para facilitar a digitação
+            cidadeInput.focus();
+        }
+    }
+    
+    // Função para filtrar cidades conforme o usuário digita
+    function filtrarCidades() {
+        const input = document.getElementById('cidade');
+        const filtro = input.value.toLowerCase();
+        const listaCidades = document.getElementById('listaCidades');
+        
+        if (!filtro) {
+            listaCidades.style.display = 'none';
+            document.getElementById('limparCidade').style.display = 'none';
+            return;
+        }
+        
+        const cidadesFiltradas = cidades.filter(cidade => 
+            cidade.nome.toLowerCase().includes(filtro)
+        );
+        
+        if (cidadesFiltradas.length === 0) {
+            listaCidades.innerHTML = '<li>Nenhuma cidade encontrada</li>';
+            listaCidades.style.display = 'block';
+            return;
+        }
+        
+        listaCidades.innerHTML = '';
+        
+        cidadesFiltradas.slice(0, 10).forEach(cidade => {
+            const li = document.createElement('li');
+            li.textContent = cidade.nome;
+            li.onclick = () => selecionarCidade(cidade);
+            listaCidades.appendChild(li);
+        });
+        
+        listaCidades.style.display = 'block';
+        document.getElementById('limparCidade').style.display = 'block';
+    }
+    
+    // Função para selecionar uma cidade
+    function selecionarCidade(cidade) {
+        const cidadeInput = document.getElementById('cidade');
+        const listaCidades = document.getElementById('listaCidades');
+        const estadoSelect = document.getElementById('estado');
+        
+        // Atualiza o campo de cidade
+        cidadeInput.value = cidade.nome;
+        document.getElementById('id_cidade').value = cidade.id;
+        listaCidades.style.display = 'none';
+        
+        // Se a cidade tiver informações de estado, atualiza o estado também
+        if (cidade.microrregiao && cidade.microrregiao.mesorregiao && cidade.microrregiao.mesorregiao.UF) {
+            const uf = cidade.microrregiao.mesorregiao.UF;
+            estadoSelect.value = uf.sigla;
+            document.getElementById('id_estado').value = uf.id;
+        }
+        
+        // Armazena a cidade atual para uso posterior
+        cidadeAtual = cidade;
+        
+        // Habilita o botão de limpar
+        document.getElementById('limparCidade').style.display = 'block';
+    }
+    
+    // Função para limpar a seleção de cidade
+    function limparCidade() {
+        const cidadeInput = document.getElementById('cidade');
+        const listaCidades = document.getElementById('listaCidades');
+        const estadoSelect = document.getElementById('estado');
+        
+        // Limpa os campos de cidade
+        cidadeInput.value = '';
+        document.getElementById('id_cidade').value = '';
+        
+        // Limpa o estado e o ID do estado
+        estadoSelect.value = '';
+        document.getElementById('id_estado').value = '';
+        
+        // Esconde a lista de cidades e o botão de limpar
+        listaCidades.style.display = 'none';
+        document.getElementById('limparCidade').style.display = 'none';
+        
+        // Limpa a referência à cidade atual
+        cidadeAtual = null;
+        
+        // Foca no campo de cidade
+        cidadeInput.focus();
+        
+        // Habilita o campo de estado para permitir nova seleção
+        estadoSelect.disabled = false;
+        
+        // Limpa o array de cidades para forçar recarregar quando um novo estado for selecionado
+        cidades = [];
+    }
+    
+    // Fechar a lista de cidades ao clicar fora
+    document.addEventListener('click', function(event) {
+        const listaCidades = document.getElementById('listaCidades');
+        const cidadeInput = document.getElementById('cidade');
+        
+        if (event.target !== cidadeInput && event.target !== listaCidades) {
+            listaCidades.style.display = 'none';
+        }
     });
+
+    // Função mantida para compatibilidade, mas agora usando a API do IBGE
+    function carrega_cidades(cidadeSelecionada = '', estadoSelecionado = '') {
+        // Se for uma chamada vinda do preenchimento automático do CNPJ
+        if (estadoSelecionado) {
+            const estadoSelect = document.getElementById('estado');
+            
+            // Encontra o estado pelo nome ou sigla
+            const estado = estados.find(e => 
+                e.nome.toLowerCase() === estadoSelecionado.toLowerCase() || 
+                e.sigla.toLowerCase() === estadoSelecionado.toLowerCase()
+            );
+            
+            if (estado) {
+                // Define o estado e carrega as cidades
+                estadoSelect.value = estado.sigla;
+                carregarCidades().then(() => {
+                    // Depois de carregar as cidades, tenta encontrar e selecionar a cidade
+                    if (cidadeSelecionada) {
+                        const cidadeEncontrada = cidades.find(c => 
+                            c.nome.toLowerCase() === cidadeSelecionada.toLowerCase()
+                        );
+                        
+                        if (cidadeEncontrada) {
+                            selecionarCidade(cidadeEncontrada);
+                        } else {
+                            // Se não encontrar a cidade, preenche apenas o nome
+                            const cidadeInput = document.getElementById('cidade');
+                            cidadeInput.value = cidadeSelecionada;
+                            document.getElementById('limparCidade').style.display = 'block';
+                        }
+                    }
+                });
+            }
+        } else {
+            // Se não tiver estado/cidade, apenas carrega os estados
+            carregarEstados();
+        }
+    }
+
+    // Removida a variável recebe_nome_cidade_empresa e recebe_id_cidade
+    // pois agora usamos os campos id_cidade e id_estado diretamente
 
     $("#grava-empresa").click(function(e) {
         e.preventDefault();
@@ -860,11 +1638,6 @@
         let recebe_nome_fantasia_empresa = $("#nome_fantasia").val()
         let recebe_razao_social_empresa = $("#razao_social").val();
         let recebe_endereco_empresa = $("#endereco").val();
-
-        if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
-            recebe_id_cidade = $("#cidade_id").val();
-
-        // let recebe_cidade_id_empresa = $("#cidade_id").val();
         let recebe_numero_empresa = $("#numero").val();
         let recebe_complemento_empresa = $("#complemento").val();
         let recebe_bairro_empresa = $("#bairro").val();
@@ -875,8 +1648,13 @@
         let recebe_empresa_id = $("#empresa_id").val();
         let recebe_nome_contabilidade = $("#nome_contabilidade").val();
         let recebe_email_contabilidade = $("#email_contabilidade").val();
-
-        let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa + "," + recebe_nome_cidade_empresa;
+        
+        // Obtém os IDs de cidade e estado dos campos ocultos
+        let recebe_id_cidade = $("#id_cidade").val();
+        let recebe_id_estado = $("#id_estado").val();
+        
+        // Monta o endereço completo sem incluir a cidade/estado, pois agora são campos separados
+        let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa;
 
         console.log(recebe_endereco_completo);
 
@@ -894,6 +1672,7 @@
                     valor_email_empresa: recebe_email_empresa,
                     valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
                     valor_id_cidade: recebe_id_cidade,
+                    valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
                     valor_razao_social_empresa: recebe_razao_social_empresa,
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
@@ -929,6 +1708,7 @@
                     valor_email_empresa: recebe_email_empresa,
                     valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
                     valor_id_cidade: recebe_id_cidade,
+                    valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
                     valor_razao_social_empresa: recebe_razao_social_empresa,
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
