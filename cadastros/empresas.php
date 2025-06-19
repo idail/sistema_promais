@@ -164,18 +164,50 @@
         const cidadeSelect = document.getElementById('cidade_id');
 
         try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
+            // Primeiro, buscar os estados
+            const estadosResponse = await fetch('api/list/estados.php');
+            const estadosData = await estadosResponse.json();
+            
+            // Depois, buscar as cidades
+            const cidadesResponse = await fetch(apiUrl);
+            const cidadesData = await cidadesResponse.json();
 
-            if (data.status === 'success') {
+            if (cidadesData.status === 'success' && estadosData.status === 'success') {
+                // Mapear estados por ID para busca rápida
+                const estadosMap = new Map();
+                if (estadosData.data && estadosData.data.estados) {
+                    estadosData.data.estados.forEach(estado => {
+                        estadosMap.set(estado.id, estado);
+                    });
+                }
+
                 cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
 
-                data.data.cidades.forEach(cidade => {
-                    const option = document.createElement('option');
-                    option.value = cidade.id;
-                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
-                    cidadeSelect.appendChild(option);
-                });
+                if (cidadesData.data && cidadesData.data.cidades) {
+                    cidadesData.data.cidades.forEach(cidade => {
+                        const option = document.createElement('option');
+                        option.value = cidade.id;
+                        
+                        // Verificar se temos o estado da cidade
+                        let estadoInfo = '';
+                        if (cidade.estado) {
+                            estadoInfo = cidade.estado; // Se já tiver o estado no objeto cidade
+                        } else if (cidade.id_estado && estadosMap.has(parseInt(cidade.id_estado))) {
+                            const estado = estadosMap.get(parseInt(cidade.id_estado));
+                            estadoInfo = estado.uf || estado.nome || '';
+                        }
+                        
+                        option.textContent = estadoInfo ? `${cidade.nome} - ${estadoInfo}` : cidade.nome;
+                        option.setAttribute('data-estado-id', cidade.id_estado || '');
+                        
+                        // Selecionar a cidade se for a selecionada
+                        if (cidadeSelecionada && cidadeSelecionada == cidade.id) {
+                            option.selected = true;
+                        }
+                        
+                        cidadeSelect.appendChild(option);
+                    });
+                }
 
                 if (cidadeSelecionada && estadoSelecionado) {
                     for (let i = 0; i < cidadeSelect.options.length; i++) {
@@ -336,40 +368,146 @@
                 },
                 success: function(resposta) {
                     debugger;
+                    console.log('Resposta da API:', JSON.stringify(resposta, null, 2));
 
                     if (resposta.length > 0) {
-                        for (let indice = 0; indice < resposta.length; indice++) {
-                            let recebe_endereco_cortado = resposta[indice].endereco ? resposta[indice].endereco.split(",") : ['', ''];
+                        let empresa = resposta[0]; // Pegando o primeiro registro
+                        console.log('Dados da empresa:', empresa);
+                        
+                        // Preenchendo os campos básicos
+                        $("#created_at").val(empresa.created_at || '');
+                        $("#cnpj").val(empresa.cnpj || '');
+                        $("#nome_fantasia").val(empresa.nome || empresa.nome_fantasia || '');
+                        $("#razao_social").val(empresa.razao_social || '');
+                        
+                        // Tratando o endereço
+                        let enderecoCompleto = empresa.endereco || '';
+                        let partesEndereco = enderecoCompleto.split(',');
+                        $("#endereco").val(partesEndereco[0] || '');
+                        $("#numero").val(partesEndereco[1] ? partesEndereco[1].trim() : '');
+                        
+                        $("#complemento").val(empresa.complemento || '');
+                        $("#bairro").val(empresa.bairro || '');
+                        
+                        // Preenchendo cidade e estado
+                        let cidadeNome = empresa.cidade_nome || '';
+                        let estadoNome = empresa.estado_nome || empresa.estado_uf || '';
+                        
+                        // Se tivermos o ID do estado, buscamos os dados completos
+                        if (empresa.id_estado) {
+                            buscarEstadoPorId(empresa.id_estado, function(estado) {
+                                if (estado) {
+                                    estadoNome = estado.nome || estado.uf || estadoNome;
+                                    atualizarCampoCidadeEstado(empresa.id_cidade, cidadeNome, estadoNome);
+                                } else {
+                                    // Se não encontrar o estado, tenta buscar a cidade
+                                    if (empresa.id_cidade) {
+                                        buscarCidadePorId(empresa.id_cidade);
+                                    } else {
+                                        atualizarCampoCidadeEstado(empresa.id_cidade, cidadeNome, estadoNome);
+                                    }
+                                }
+                            });
+                        } 
+                        // Se tivermos o ID da cidade, buscamos os dados
+                        else if (empresa.id_cidade) {
+                            buscarCidadePorId(empresa.id_cidade);
+                        } 
+                        // Se tivermos algum nome de cidade ou estado, exibimos
+                        else if (cidadeNome || estadoNome) {
+                            atualizarCampoCidadeEstado(empresa.id_cidade, cidadeNome, estadoNome);
+                        }
+                        // Se não tivermos nada, exibe mensagem
+                        else {
+                            $("#cidade_id").html('<option value="">Cidade não informada</option>');
+                        }
+                        
+                        // Função para atualizar o campo de cidade/estado
+                        function atualizarCampoCidadeEstado(idCidade, nomeCidade, nomeEstado) {
+                            let texto = [nomeCidade, nomeEstado].filter(Boolean).join(' / ');
+                            if (!texto) texto = 'Não informado';
+                            $("#cidade_id").html(`<option value="${idCidade || ''}" selected>${texto}</option>`);
+                        }
+                        
+                        // Preenchendo os demais campos
+                        $("#cep").val(empresa.cep || '');
+                        $("#email").val(empresa.email || '');
+                        $("#telefone").val(empresa.telefone || '');
 
-                            $("#created_at").val(resposta[indice].created_at || '');
-                            $("#cnpj").val(resposta[indice].cnpj || '');
-                            $("#nome_fantasia").val(resposta[indice].nome || '');
-                            $("#razao_social").val(resposta[indice].razao_social || '');
-                            $("#endereco").val(recebe_endereco_cortado[0] || '');
-                            $("#numero").val(recebe_endereco_cortado[1] || '');
-                            $("#complemento").val(resposta[indice].complemento || '');
-                            $("#bairro").val(resposta[indice].bairro || '');
-                            
-                            // Preenche o campo de cidade com o nome da cidade e estado
-                            let cidadeNome = resposta[indice].cidade_nome || '';
-                            let estadoNome = resposta[indice].estado_nome || resposta[indice].estado_uf || '';
-                            let cidadeCompleta = cidadeNome;
-                            
-                            if (estadoNome) {
-                                cidadeCompleta += cidadeNome ? `/${estadoNome}` : estadoNome;
+                        // Função para buscar dados do estado por ID
+                        function buscarEstadoPorId(idEstado, callback) {
+                            if (!idEstado) {
+                                callback(null);
+                                return;
                             }
                             
-                            $("#cidade_id").html(`<option value="${resposta[indice].id_cidade || ''}" selected>${cidadeCompleta}</option>`);
+                            $.ajax({
+                                url: 'api/list/estados.php',
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(estadoData) {
+                                    if (estadoData && estadoData.status === 'success' && estadoData.data && estadoData.data.estados) {
+                                        let estadoEncontrado = estadoData.data.estados.find(e => parseInt(e.id) === parseInt(idEstado));
+                                        callback(estadoEncontrado || null);
+                                    } else {
+                                        console.error('Formato de resposta inesperado da API de estados:', estadoData);
+                                        callback(null);
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Erro ao buscar dados do estado:', status, error);
+                                    callback(null);
+                                }
+                            });
+                        }
+                        
+                        // Função para buscar dados da cidade por ID
+                        function buscarCidadePorId(idCidade) {
+                            if (!idCidade) return;
                             
-                            $("#cep").val(resposta[indice].cep || '');
-                            $("#email").val(resposta[indice].email || '');
-                            $("#telefone").val(resposta[indice].telefone || '');
+                            // Primeiro, busca a cidade pelo ID
+                            $.ajax({
+                                url: 'api/list/cidades.php',
+                                method: 'GET',
+                                data: { 
+                                    empresa_id: '<?php echo $_SESSION["empresa_id"] ?? ""; ?>',
+                                    incluir_inativos: true
+                                },
+                                dataType: 'json',
+                                success: function(cidadeData) {
+                                    if (cidadeData && cidadeData.status === 'success' && cidadeData.data && cidadeData.data.cidades) {
+                                        // Encontra a cidade pelo ID
+                                        let cidadeEncontrada = cidadeData.data.cidades.find(c => parseInt(c.id) === parseInt(idCidade));
+                                        
+                                        if (cidadeEncontrada) {
+                                            let textoCidadeEstado = `${cidadeEncontrada.nome} / ${cidadeEncontrada.estado}`;
+                                            $("#cidade_id").html(`<option value="${cidadeEncontrada.id}" selected>${textoCidadeEstado}</option>`);
+                                        } else {
+                                            console.warn('Cidade não encontrada com o ID:', idCidade);
+                                            $("#cidade_id").html('<option value="">Cidade não encontrada</option>');
+                                        }
+                                    } else {
+                                        console.error('Formato de resposta inesperado da API de cidades:', cidadeData);
+                                        $("#cidade_id").html('<option value="">Erro ao carregar cidade</option>');
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Erro ao buscar dados da cidade:', status, error);
+                                    $("#cidade_id").html('<option value="">Erro ao carregar</option>');
+                                }
+                            });
+                        }
 
-                            async function exibi_medicos_associados_empresa() {
+                        // Chama a função para carregar os médicos associados
+                        async function exibirMedicosAssociados() {
+                            try {
                                 await popula_medicos_associados_empresa();
+                            } catch (error) {
+                                console.error('Erro ao carregar médicos associados:', error);
                             }
-
-                            exibi_medicos_associados_empresa();
+                        }
+                        
+                        exibirMedicosAssociados();
                         }
                     }
                 },
