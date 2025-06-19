@@ -82,7 +82,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                             <a href="?pg=medicos">M&#xe9;dicos</a>
                             <a href="?pg=grava_risco">Riscos</a>
                             <a href="?pg=grava_exames_procedimentos">Exames/Procedimentos</a>
-                            <a href="?pg=grava_cidade_estado">Cidades-CEP/ Estados-UF</a>
+                            <!-- <a href="?pg=grava_cidade_estado">Cidades-CEP/ Estados-UF</a> -->
                             <a href="?pg=aptidao_extra">Aptidões Extras</a>
                             <a href="?pg=treinamento_capacitacao">Treinamentos/Capacitações</a>
                             <!-- <a href="?pg=cidades">Cidades</a>

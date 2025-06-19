@@ -114,6 +114,38 @@
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script>
+    // Função para buscar o nome da cidade pelo ID
+    async function buscarCidadePorId(idCidade) {
+        if (!idCidade) return null;
+        
+        try {
+            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${idCidade}`);
+            if (!response.ok) {
+                throw new Error('Cidade não encontrada');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao buscar cidade:', error);
+            return null;
+        }
+    }
+
+    // Função para buscar o nome do estado pelo ID
+    async function buscarEstadoPorId(idEstado) {
+        if (!idEstado) return null;
+        
+        try {
+            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado}`);
+            if (!response.ok) {
+                throw new Error('Estado não encontrado');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao buscar estado:', error);
+            return null;
+        }
+    }
+
     let recebe_codigo_empresa_informacoes_rapida;
     let recebe_tabela_empresas;
     $(document).ready(function(e) {
@@ -125,16 +157,16 @@
                 data: {
                     "processo_empresa": "buscar_empresas"
                 },
-                success: function(resposta_empresa) {
+                success: async function(resposta_empresa) {
                     debugger;
-                    if (resposta_empresa.length > 0) {
+                    try {
                         console.log(resposta_empresa);
-                        preencher_tabela(resposta_empresa);
+                        await preencher_tabela(resposta_empresa);
                         inicializarDataTable();
-                    } else {
-                        preencher_tabela(resposta_empresa);
+                    } catch (error) {
+                        console.error("Erro ao preencher tabela:", error);
+                        $("#empresas_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Erro ao carregar dados</td></tr>");
                         inicializarDataTable();
-                        console.error("Erro ao buscar dados:", resposta_empresa);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -164,50 +196,18 @@
         const cidadeSelect = document.getElementById('cidade_id');
 
         try {
-            // Primeiro, buscar os estados
-            const estadosResponse = await fetch('api/list/estados.php');
-            const estadosData = await estadosResponse.json();
-            
-            // Depois, buscar as cidades
-            const cidadesResponse = await fetch(apiUrl);
-            const cidadesData = await cidadesResponse.json();
+            const response = await fetch(apiUrl);
+            const data = await response.json();
 
-            if (cidadesData.status === 'success' && estadosData.status === 'success') {
-                // Mapear estados por ID para busca rápida
-                const estadosMap = new Map();
-                if (estadosData.data && estadosData.data.estados) {
-                    estadosData.data.estados.forEach(estado => {
-                        estadosMap.set(estado.id, estado);
-                    });
-                }
-
+            if (data.status === 'success') {
                 cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
 
-                if (cidadesData.data && cidadesData.data.cidades) {
-                    cidadesData.data.cidades.forEach(cidade => {
-                        const option = document.createElement('option');
-                        option.value = cidade.id;
-                        
-                        // Verificar se temos o estado da cidade
-                        let estadoInfo = '';
-                        if (cidade.estado) {
-                            estadoInfo = cidade.estado; // Se já tiver o estado no objeto cidade
-                        } else if (cidade.id_estado && estadosMap.has(parseInt(cidade.id_estado))) {
-                            const estado = estadosMap.get(parseInt(cidade.id_estado));
-                            estadoInfo = estado.uf || estado.nome || '';
-                        }
-                        
-                        option.textContent = estadoInfo ? `${cidade.nome} - ${estadoInfo}` : cidade.nome;
-                        option.setAttribute('data-estado-id', cidade.id_estado || '');
-                        
-                        // Selecionar a cidade se for a selecionada
-                        if (cidadeSelecionada && cidadeSelecionada == cidade.id) {
-                            option.selected = true;
-                        }
-                        
-                        cidadeSelect.appendChild(option);
-                    });
-                }
+                data.data.cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.id;
+                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
+                    cidadeSelect.appendChild(option);
+                });
 
                 if (cidadeSelecionada && estadoSelecionado) {
                     for (let i = 0; i < cidadeSelect.options.length; i++) {
@@ -228,19 +228,43 @@
 
 
     // Função para preencher a tabela com os dados das clínicas
-    function preencher_tabela(resposta_empresa) {
+    async function preencher_tabela(resposta_empresa) {
         debugger;
         let tbody = document.querySelector("#empresas_tabela tbody");
         tbody.innerHTML = ""; // Limpa o conteúdo existente
 
         if (resposta_empresa.length > 0) {
-            for (let i = 0; i < resposta_empresa.length; i++) {
-                let empresa = resposta_empresa[i];
-
-                // Separar o endereço
-                let partesEndereco = empresa.endereco.split(',');
-                let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
-                let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+            // Criar um array de promessas para buscar as cidades/estados
+            const promessas = resposta_empresa.map(async (empresa) => {
+                // Formatar endereço
+                let ruaNumero = empresa.endereco || '';
+                
+                // Inicializar com valor padrão
+                let cidadeEstado = 'Não informado';
+                
+                // Se tiver ID de cidade, busca os dados
+                if (empresa.id_cidade) {
+                    try {
+                        const cidade = await buscarCidadePorId(empresa.id_cidade);
+                        if (cidade) {
+                            const estado = await buscarEstadoPorId(empresa.id_estado);
+                            const estadoNome = estado ? (estado.nome || estado.sigla) : '';
+                            cidadeEstado = `${cidade.nome || 'Cidade desconhecida'}${estadoNome ? ' / ' + estadoNome : ''}`;
+                        }
+                    } catch (error) {
+                        console.error('Erro ao buscar cidade/estado:', error);
+                        cidadeEstado = 'Erro ao carregar';
+                    }
+                }
+                
+                return { empresa, ruaNumero, cidadeEstado };
+            });
+            
+            // Aguarda todas as promessas serem resolvidas
+            const resultados = await Promise.all(promessas);
+            
+            // Agora sim, monta as linhas da tabela com os dados já processados
+            resultados.forEach(({ empresa, ruaNumero, cidadeEstado }) => {
 
                 let row = document.createElement("tr");
                 row.innerHTML = `
@@ -265,7 +289,7 @@
             </td>
         `;
                 tbody.appendChild(row);
-            }
+            });
         } else {
             $("#empresas_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
         }
@@ -355,167 +379,91 @@
         }
 
         $(document).on("click", "#visualizar-informacoes-empresa", function(e) {
-            debugger;
-            recebe_codigo_empresa_informacoes_rapida = $(this).data("codigo-empresa");
+            e.preventDefault();
+            const recebe_codigo_empresa_informacoes_rapida = $(this).data("codigo-empresa");
+            $("#modal-informacoes-rapidas-empresa").modal("show");
 
-            $.ajax({
-                url: "cadastros/processa_empresa.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_empresa": "buscar_informacoes_rapidas_empresa",
-                    "valor_id_empresa_informacoes_rapidas": recebe_codigo_empresa_informacoes_rapida,
-                },
-                success: function(resposta) {
-                    debugger;
-                    console.log('Resposta da API:', JSON.stringify(resposta, null, 2));
+            // Limpa os campos antes de preencher
+            $("#cidade_id").html("<option value=''>Carregando...</option>");
+
+            // Função assíncrona para carregar os dados da empresa
+            async function carregarDadosEmpresa() {
+                try {
+                    const resposta = await $.ajax({
+                        url: "cadastros/processa_empresa.php",
+                        method: "GET",
+                        dataType: "json",
+                        data: {
+                            "processo_empresa": "buscar_informacoes_rapidas_empresa",
+                            "valor_id_empresa_informacoes_rapidas": recebe_codigo_empresa_informacoes_rapida,
+                        }
+                    });
+
+                    console.log("Resposta do servidor:", resposta);
 
                     if (resposta.length > 0) {
-                        let empresa = resposta[0]; // Pegando o primeiro registro
-                        console.log('Dados da empresa:', empresa);
-                        
-                        // Preenchendo os campos básicos
+                        const empresa = resposta[0];
+                        const recebe_endereco_cortado = empresa.endereco ? empresa.endereco.split(",") : ['', ''];
+
+                        // Preenche os campos básicos
                         $("#created_at").val(empresa.created_at || '');
                         $("#cnpj").val(empresa.cnpj || '');
-                        $("#nome_fantasia").val(empresa.nome || empresa.nome_fantasia || '');
+                        $("#nome_fantasia").val(empresa.nome || '');
                         $("#razao_social").val(empresa.razao_social || '');
-                        
-                        // Tratando o endereço
-                        let enderecoCompleto = empresa.endereco || '';
-                        let partesEndereco = enderecoCompleto.split(',');
-                        $("#endereco").val(partesEndereco[0] || '');
-                        $("#numero").val(partesEndereco[1] ? partesEndereco[1].trim() : '');
-                        
+                        $("#endereco").val(recebe_endereco_cortado[0] || '');
+                        $("#numero").val(recebe_endereco_cortado[1] ? recebe_endereco_cortado[1].trim() : '');
                         $("#complemento").val(empresa.complemento || '');
                         $("#bairro").val(empresa.bairro || '');
-                        
-                        // Preenchendo cidade e estado
-                        let cidadeNome = empresa.cidade_nome || '';
-                        let estadoNome = empresa.estado_nome || empresa.estado_uf || '';
-                        
-                        // Se tivermos o ID do estado, buscamos os dados completos
-                        if (empresa.id_estado) {
-                            buscarEstadoPorId(empresa.id_estado, function(estado) {
-                                if (estado) {
-                                    estadoNome = estado.nome || estado.uf || estadoNome;
-                                    atualizarCampoCidadeEstado(empresa.id_cidade, cidadeNome, estadoNome);
-                                } else {
-                                    // Se não encontrar o estado, tenta buscar a cidade
-                                    if (empresa.id_cidade) {
-                                        buscarCidadePorId(empresa.id_cidade);
-                                    } else {
-                                        atualizarCampoCidadeEstado(empresa.id_cidade, cidadeNome, estadoNome);
-                                    }
-                                }
-                            });
-                        } 
-                        // Se tivermos o ID da cidade, buscamos os dados
-                        else if (empresa.id_cidade) {
-                            buscarCidadePorId(empresa.id_cidade);
-                        } 
-                        // Se tivermos algum nome de cidade ou estado, exibimos
-                        else if (cidadeNome || estadoNome) {
-                            atualizarCampoCidadeEstado(empresa.id_cidade, cidadeNome, estadoNome);
-                        }
-                        // Se não tivermos nada, exibe mensagem
-                        else {
-                            $("#cidade_id").html('<option value="">Cidade não informada</option>');
-                        }
-                        
-                        // Função para atualizar o campo de cidade/estado
-                        function atualizarCampoCidadeEstado(idCidade, nomeCidade, nomeEstado) {
-                            let texto = [nomeCidade, nomeEstado].filter(Boolean).join(' / ');
-                            if (!texto) texto = 'Não informado';
-                            $("#cidade_id").html(`<option value="${idCidade || ''}" selected>${texto}</option>`);
-                        }
-                        
-                        // Preenchendo os demais campos
                         $("#cep").val(empresa.cep || '');
                         $("#email").val(empresa.email || '');
                         $("#telefone").val(empresa.telefone || '');
 
-                        // Função para buscar dados do estado por ID
-                        function buscarEstadoPorId(idEstado, callback) {
-                            if (!idEstado) {
-                                callback(null);
-                                return;
-                            }
-                            
-                            $.ajax({
-                                url: 'api/list/estados.php',
-                                method: 'GET',
-                                dataType: 'json',
-                                success: function(estadoData) {
-                                    if (estadoData && estadoData.status === 'success' && estadoData.data && estadoData.data.estados) {
-                                        let estadoEncontrado = estadoData.data.estados.find(e => parseInt(e.id) === parseInt(idEstado));
-                                        callback(estadoEncontrado || null);
-                                    } else {
-                                        console.error('Formato de resposta inesperado da API de estados:', estadoData);
-                                        callback(null);
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error('Erro ao buscar dados do estado:', status, error);
-                                    callback(null);
-                                }
-                            });
-                        }
-                        
-                        // Função para buscar dados da cidade por ID
-                        function buscarCidadePorId(idCidade) {
-                            if (!idCidade) return;
-                            
-                            // Primeiro, busca a cidade pelo ID
-                            $.ajax({
-                                url: 'api/list/cidades.php',
-                                method: 'GET',
-                                data: { 
-                                    empresa_id: '<?php echo $_SESSION["empresa_id"] ?? ""; ?>',
-                                    incluir_inativos: true
-                                },
-                                dataType: 'json',
-                                success: function(cidadeData) {
-                                    if (cidadeData && cidadeData.status === 'success' && cidadeData.data && cidadeData.data.cidades) {
-                                        // Encontra a cidade pelo ID
-                                        let cidadeEncontrada = cidadeData.data.cidades.find(c => parseInt(c.id) === parseInt(idCidade));
-                                        
-                                        if (cidadeEncontrada) {
-                                            let textoCidadeEstado = `${cidadeEncontrada.nome} / ${cidadeEncontrada.estado}`;
-                                            $("#cidade_id").html(`<option value="${cidadeEncontrada.id}" selected>${textoCidadeEstado}</option>`);
-                                        } else {
-                                            console.warn('Cidade não encontrada com o ID:', idCidade);
-                                            $("#cidade_id").html('<option value="">Cidade não encontrada</option>');
-                                        }
-                                    } else {
-                                        console.error('Formato de resposta inesperado da API de cidades:', cidadeData);
-                                        $("#cidade_id").html('<option value="">Erro ao carregar cidade</option>');
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error('Erro ao buscar dados da cidade:', status, error);
-                                    $("#cidade_id").html('<option value="">Erro ao carregar</option>');
-                                }
-                            });
-                        }
-
-                        // Chama a função para carregar os médicos associados
-                        async function exibirMedicosAssociados() {
+                        // Busca e exibe a cidade e o estado
+                        if (empresa.id_cidade) {
                             try {
-                                await popula_medicos_associados_empresa();
+                                const cidade = await buscarCidadePorId(empresa.id_cidade);
+                                if (cidade) {
+                                    const estado = await buscarEstadoPorId(empresa.id_estado);
+                                    const estadoNome = estado ? (estado.nome || estado.sigla) : '';
+                                    const textoCidadeEstado = [cidade.nome, estadoNome].filter(Boolean).join(' / ');
+                                    
+                                    if (textoCidadeEstado) {
+                                        $("#cidade_id").html(`<option value="${empresa.id_cidade}" selected>${textoCidadeEstado}</option>`);
+                                    } else {
+                                        $("#cidade_id").html(`<option value="${empresa.id_cidade}" selected>${cidade.nome || 'Cidade desconhecida'}</option>`);
+                                    }
+                                } else {
+                                    $("#cidade_id").html(`<option value="${empresa.id_cidade}" selected>ID: ${empresa.id_cidade} (não encontrada)</option>`);
+                                }
                             } catch (error) {
-                                console.error('Erro ao carregar médicos associados:', error);
+                                console.error('Erro ao carregar cidade/estado:', error);
+                                $("#cidade_id").html(`<option value="${empresa.id_cidade || ''}" selected>Erro ao carregar cidade</option>`);
                             }
+                        } else {
+                            $("#cidade_id").html('<option value="">Não informado</option>');
                         }
-                        
-                        exibirMedicosAssociados();
-                        }
-                    }
-                },
-                error: function(xhr, status, error) {
 
-                },
-            });
-            document.getElementById('informacoes-empresa').classList.remove('hidden'); // abrir
+                        // Preenche os campos de contabilidade
+                        $("#nome_contabilidade").val(empresa.nome_contabilidade || '');
+                        $("#email_contabilidade").val(empresa.email_contabilidade || '');
+
+                        // Chama a função para exibir os médicos associados
+                        async function exibi_medicos_associados_empresa() {
+                            await popula_medicos_associados_empresa();
+                        }
+                        exibi_medicos_associados_empresa();
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar dados da empresa:', error);
+                    $("#cidade_id").html('<option value="">Erro ao carregar dados</option>');
+                }
+            }
+
+            // Chama a função para carregar os dados da empresa
+            carregarDadosEmpresa();
+            
+            // Mostra o modal
+            document.getElementById('informacoes-empresa').classList.remove('hidden');
         });
 
         $(document).on("click", "#fechar-modal-informacoes-empresa", function(e) {
@@ -660,7 +608,8 @@
                     <div>
                         <label for="cep" class="block font-semibold mb-1">CEP:</label>
                         <div class="flex items-center gap-2">
-                            <i class="fas fa-map-marked-alt text-gray-500" id="cep" disabled></i>
+                            <i class="fas fa-map-marked-alt text-gray-500"></i>
+                            <input type="text" id="cep" name="cep" class="form-control cep-input" disabled>
                         </div>
                     </div>
 
@@ -677,6 +626,24 @@
                         <div class="flex items-center gap-2">
                             <i class="fas fa-phone text-gray-500"></i>
                             <input type="text" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Nome da Contabilidade -->
+                    <div>
+                        <label for="nome_contabilidade" class="block font-semibold mb-1">Nome da Contabilidade:</label>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-building text-gray-500"></i>
+                            <input type="text" id="nome_contabilidade" name="nome_contabilidade" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Email da Contabilidade -->
+                    <div>
+                        <label for="email_contabilidade" class="block font-semibold mb-1">Email da Contabilidade:</label>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-gray-500"></i>
+                            <input type="email" id="email_contabilidade" name="email_contabilidade" class="form-control" disabled>
                         </div>
                     </div>
                 </div>

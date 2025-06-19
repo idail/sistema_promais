@@ -274,39 +274,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_codigo_empresa_informacoes_rapidas = $_GET["valor_id_empresa_informacoes_rapidas"];
         $recebe_id_empresa = $_SESSION["empresa_id"];
 
-        $instrucao_busca_empresa_informacoes_rapidas = 
-            "SELECT en.*, c.nome as cidade_nome, e.nome as estado_nome, e.uf as estado_uf 
-            FROM empresas_novas en
-            LEFT JOIN cidades c ON en.id_cidade = c.id
-            LEFT JOIN estados e ON en.id_estado = e.id
-            WHERE en.id = :recebe_id_empresa_informacoes_rapidas 
-            AND en.empresa_id = :recebe_empresa_id";
-            
+        $instrucao_busca_empresa_informacoes_rapidas = "select * from empresas_novas where id = :recebe_id_empresa_informacoes_rapidas and empresa_id = :recebe_empresa_id";
         $comando_busca_empresa_informacoes_rapidas = $pdo->prepare($instrucao_busca_empresa_informacoes_rapidas);
         $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_id_empresa_informacoes_rapidas",$recebe_codigo_empresa_informacoes_rapidas);
         $comando_busca_empresa_informacoes_rapidas->bindValue(":recebe_empresa_id",$recebe_id_empresa);
         $comando_busca_empresa_informacoes_rapidas->execute();
         $resultado_busca_informacoes_rapidas_empresa = $comando_busca_empresa_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Log para depuração
-        error_log('Resultado da busca rápida: ' . print_r($resultado_busca_informacoes_rapidas_empresa, true));
-        
-        // Verifica se encontrou resultados
-        if (empty($resultado_busca_informacoes_rapidas_empresa)) {
-            error_log('Nenhum resultado encontrado para a empresa ID: ' . $recebe_codigo_empresa_informacoes_rapidas);
-        } else {
-            // Verifica se os campos de cidade e estado estão preenchidos
-            $primeiroRegistro = $resultado_busca_informacoes_rapidas_empresa[0];
-            error_log('Dados da empresa encontrada: ' . print_r([
-                'id_cidade' => $primeiroRegistro['id_cidade'] ?? 'não informado',
-                'id_estado' => $primeiroRegistro['id_estado'] ?? 'não informado',
-                'cidade_nome' => $primeiroRegistro['cidade_nome'] ?? 'não informado',
-                'estado_nome' => $primeiroRegistro['estado_nome'] ?? 'não informado',
-                'estado_uf' => $primeiroRegistro['estado_uf'] ?? 'não informado'
-            ], true));
-        }
-        
-        header('Content-Type: application/json');
         echo json_encode($resultado_busca_informacoes_rapidas_empresa);
     }else if($recebe_processo_empresa === "buscar_total_empresas")
     {
