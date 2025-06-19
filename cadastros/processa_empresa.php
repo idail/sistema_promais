@@ -38,6 +38,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_bairro_empresa = $_POST["valor_bairro_empresa"];
         $recebe_cep_empresa = $_POST["valor_cep_empresa"];
         $recebe_complemento_empresa = $_POST["valor_complemento_empresa"];
+        $recebe_nome_contabilidade = $_POST["valor_nome_contabilidade"];
+        $recebe_email_contabilidade = $_POST["valor_email_contabilidade"];
         $recebe_chave_id_empresa = $_SESSION["user_plan"];
         $recebe_empresa_id = $_POST["valor_empresa_id"];
 
@@ -54,10 +56,10 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         // echo json_encode($informacoes);
 
         $instrucao_cadastra_empresa = "insert into empresas_novas(nome,empresa_id,cnpj,endereco,id_cidade,telefone,email,chave_id,razao_social
-        ,bairro,cep,complemento,created_at,updated_at)values(:recebe_nome_empresa,:recebe_empresa_id,:recebe_cnpj_empresa,:recebe_endereco_empresa,
+        ,bairro,cep,complemento,nome_contabilidade,email_contabilidade,created_at,updated_at)values(:recebe_nome_empresa,:recebe_empresa_id,:recebe_cnpj_empresa,:recebe_endereco_empresa,
         :recebe_id_cidade_empresa,:recebe_telefone_empresa,
         :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,
-        :recebe_complemento,:created_at,:updated_at)";
+        :recebe_complemento,:recebe_nome_contabilidade,:recebe_email_contabilidade,:created_at,:updated_at)";
         $comando_cadastra_empresa = $pdo->prepare($instrucao_cadastra_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_nome_empresa",$recebe_nome_fantasia_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_empresa_id",$recebe_empresa_id);
@@ -71,6 +73,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_empresa->bindValue(":recebe_bairro",$recebe_bairro_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_cep",$recebe_cep_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_complemento",$recebe_complemento_empresa);
+        $comando_cadastra_empresa->bindValue(":recebe_nome_contabilidade",$recebe_nome_contabilidade);
+        $comando_cadastra_empresa->bindValue(":recebe_email_contabilidade",$recebe_email_contabilidade);
         $comando_cadastra_empresa->bindValue(":created_at",$recebe_data_cadastro_empresa);
         $comando_cadastra_empresa->bindValue(":updated_at",$recebe_data_cadastro_empresa);
         $comando_cadastra_empresa->execute();
@@ -140,6 +144,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_bairro_empresa_alterar = $_POST["valor_bairro_empresa"];
         $recebe_cep_empresa_alterar = $_POST["valor_cep_empresa"];
         $recebe_complemento_empresa_alterar = $_POST["valor_complemento_empresa"];
+        $recebe_nome_contabilidade_alterar = $_POST["valor_nome_contabilidade"];
+        $recebe_email_contabilidade_alterar = $_POST["valor_email_contabilidade"];
         $recebe_chave_id_empresa_alterar = $_SESSION["user_plan"];
         $recebe_codigo_empresa_alterar = $_POST["valor_id_empresa"];
 
@@ -148,7 +154,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $instrucao_altera_empresa = 
         "update empresas_novas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
         telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
-        bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
+        bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar,
+        nome_contabilidade = :recebe_nome_contabilidade_alterar,email_contabilidade = :recebe_email_contabilidade_alterar 
+        where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
         $comando_altera_empresa = $pdo->prepare($instrucao_altera_empresa);
         $comando_altera_empresa->bindValue(":recebe_nome_alterar",$recebe_nome_fantasia_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_cnpj_alterar",$recebe_cnpj_empresa_alterar);
@@ -161,6 +169,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_altera_empresa->bindValue(":recebe_bairro_alterar",$recebe_bairro_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_cep_alterar",$recebe_cep_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_complemento_alterar",$recebe_complemento_empresa_alterar);
+        $comando_altera_empresa->bindValue(":recebe_nome_contabilidade_alterar",$recebe_nome_contabilidade_alterar);
+        $comando_altera_empresa->bindValue(":recebe_email_contabilidade_alterar",$recebe_email_contabilidade_alterar);
         $comando_altera_empresa->bindValue(":recebe_id_empresa_alterar",$recebe_codigo_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_empresa_id",$recebe_id_empresa_aterar);
         $resultado_altera_empresa = $comando_altera_empresa->execute();

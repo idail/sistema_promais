@@ -115,6 +115,22 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="nome_contabilidade">Nome da Contabilidade:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-building"></i>
+                            <input type="text" id="nome_contabilidade" name="nome_contabilidade" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email_contabilidade">Email da Contabilidade:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email_contabilidade" name="email_contabilidade" class="form-control">
+                        </div>
+                    </div>
+
                     <!-- <div class="form-group">
                         <label for="status">Status: Ativa/Inativa</label>
                         <div class="status-toggle">
@@ -537,23 +553,25 @@
                             $("#nome_fantasia").val(resposta_empresa[indice].nome);
                             $("#razao_social").val(resposta_empresa[indice].razao_social);
                             $("#cep").val(resposta_empresa[indice].cep);
-                            let recebe_endereco_empresa = resposta_empresa[indice].endereco.split(",");
-                            $("#endereco").val(recebe_endereco_empresa[0]);
-                            $("#numero").val(recebe_endereco_empresa[1]);
-                            $("#complemento").val(resposta_empresa[indice].complemento);
+                            $("#endereco").val(resposta_empresa[indice].endereco);
                             $("#bairro").val(resposta_empresa[indice].bairro);
+                            $("#complemento").val(resposta_empresa[indice].complemento);
+                            $("#cidade_id").val(resposta_empresa[indice].id_cidade);
                             $("#email").val(resposta_empresa[indice].email);
                             $("#telefone").val(resposta_empresa[indice].telefone);
+                            $("#nome_contabilidade").val(resposta_empresa[indice].nome_contabilidade);
+                            $("#email_contabilidade").val(resposta_empresa[indice].email_contabilidade);
                             $("#empresa_id_alteracao").val(resposta_empresa[indice].id);
                         }
+                        resolve(resposta_empresa);
+                    } else {
+                        reject("Nenhum dado encontrado");
                     }
-
-                    resolve(); // sinaliza que terminou
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao buscar médicos:" + error);
+                    console.log("Falha ao buscar dados da empresa: " + error);
                     reject(error);
-                },
+                }
             });
         });
     }
@@ -855,6 +873,8 @@
         let recebe_telefone_empresa = $("#telefone").val();
         let recebe_data_cadastro_empresa = $("#created_at").val();
         let recebe_empresa_id = $("#empresa_id").val();
+        let recebe_nome_contabilidade = $("#nome_contabilidade").val();
+        let recebe_email_contabilidade = $("#email_contabilidade").val();
 
         let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa + "," + recebe_nome_cidade_empresa;
 
@@ -878,6 +898,8 @@
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
                     valor_complemento_empresa: recebe_complemento_empresa,
+                    valor_nome_contabilidade: recebe_nome_contabilidade,
+                    valor_email_contabilidade: recebe_email_contabilidade,
                     valor_id_empresa: $("#empresa_id_alteracao").val(),
                 },
                 success: function(retorno_empresa) {
@@ -911,6 +933,8 @@
                     valor_bairro_empresa: recebe_bairro_empresa,
                     valor_cep_empresa: recebe_cep_empresa,
                     valor_complemento_empresa: recebe_complemento_empresa,
+                    valor_nome_contabilidade: recebe_nome_contabilidade,
+                    valor_email_contabilidade: recebe_email_contabilidade,
                     valor_data_cadastro_empresa: recebe_data_cadastro_empresa,
                     valor_empresa_id: recebe_empresa_id,
                 },

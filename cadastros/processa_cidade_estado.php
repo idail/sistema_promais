@@ -32,6 +32,41 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 {
     $recebe_processo_cidade_estado = $_POST["processo_cidade_estado"];
 
+    $recebe_empresa_id = $_SESSION["empresa_id"];
+
+    if($recebe_processo_cidade_estado === "inserir_estado")
+    {
+        $recebe_nome_estado = $_POST["valor_nome_estado"];
+        $recebe_uf_estado = $_POST["valor_uf_estado"];
+
+        $instrucao_cadastra_estado = 
+        "insert into estados(nome,uf,empresa_id)values(:recebe_nome_estado,:recebe_uf_estado,:recebe_empresa_id)";
+        $comando_cadastra_estado = $pdo->prepare($instrucao_cadastra_estado);
+        $comando_cadastra_estado->bindValue(":recebe_nome_estado",$recebe_nome_estado);
+        $comando_cadastra_estado->bindValue(":recebe_uf_estado",$recebe_uf_estado);
+        $comando_cadastra_estado->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_cadastra_estado->execute();
+        $recebe_ultimo_codigo_cadastra_estado = $pdo->lastInsertId();
+        echo json_encode($recebe_ultimo_codigo_cadastra_estado);
+    }else if($recebe_processo_cidade_estado === "inserir_cidade")
+    {
+        $recebe_nome_cidade = $_POST["valor_nome_cidade"];
+        $recebe_cep_cidade = $_POST["valor_cep_cidade"];
+        $recebe_id_estado = $_POST["valor_id_estado"];
+
+        $instrucao_cadastra_cidade = 
+        "insert into cidades(empresa_id,nome,status,cep,estado_id)values(:recebe_empresa_id,:recebe_nome,:recebe_status,:recebe_cep,:recebe_estado_id)";
+        $comando_cadastra_cidade = $pdo->prepare($instrucao_cadastra_cidade);
+        $comando_cadastra_cidade->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_cadastra_cidade->bindValue(":recebe_nome",$recebe_nome_cidade);
+        $comando_cadastra_cidade->bindValue(":recebe_status","Ativo");
+        $comando_cadastra_cidade->bindValue(":recebe_cep",$recebe_cep_cidade);
+        $comando_cadastra_cidade->bindValue(":recebe_estado_id",$recebe_id_estado);
+        $comando_cadastra_cidade->execute();
+        $recebe_ultimo_codigo_cadastra_estado = $pdo->lastInsertId();
+        echo json_encode($recebe_ultimo_codigo_cadastra_estado);
+    }
+
     if($recebe_processo_cidade_estado === "inserir_cidade_estado")
     {
         $recebe_cidade = $_POST["valor_cidade"];
@@ -85,8 +120,35 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
     $recebe_processo_cidade_estado = $_GET["processa_cidade_estado"];
+    $recebe_empresa_id = $_SESSION["empresa_id"];
 
-    if($recebe_processo_cidade_estado === "buscar_cidade_estado_mt")
+    if($recebe_processo_cidade_estado === "buscar_cidades_estados")
+    {
+        $instrucao_busca_cidade_estado = "SELECT 
+        e.id AS estado_id,
+        e.nome AS estado_nome,
+        e.uf,
+        c.id AS cidade_id,
+        c.nome AS cidade_nome,
+        c.cep
+        FROM 
+        estados e 
+        INNER JOIN 
+        cidades c ON c.estado_id = e.id 
+        WHERE 
+        e.empresa_id = :recebe_empresa_id;
+        ";
+        $comando_busca_cidade_estado = $pdo->prepare($instrucao_busca_cidade_estado);
+        $comando_busca_cidade_estado->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_busca_cidade_estado->execute();
+        $resultado_busca_cidade_estado = $comando_busca_cidade_estado->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cidade_estado);
+    }
+
+
+
+
+    else if($recebe_processo_cidade_estado === "buscar_cidade_estado_mt")
     {
         $recebe_empresa_id = $_SESSION["empresa_id"];
         $instrucao_busca_cidade_estado = "select * from cidades where uf = :recebe_uf and empresa_id = :recebe_empresa_id";
