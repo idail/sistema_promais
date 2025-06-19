@@ -34,6 +34,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_telefone_empresa = $_POST["valor_telefone_empresa"];
         $recebe_email_empresa = $_POST["valor_email_empresa"];
         $recebe_id_cidade_empresa = $_POST["valor_id_cidade"];
+        $recebe_id_estado_empresa = isset($_POST["valor_id_estado"]) ? $_POST["valor_id_estado"] : '';
         $recebe_razao_social_empresa = $_POST["valor_razao_social_empresa"];
         $recebe_bairro_empresa = $_POST["valor_bairro_empresa"];
         $recebe_cep_empresa = $_POST["valor_cep_empresa"];
@@ -55,9 +56,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
         // echo json_encode($informacoes);
 
-        $instrucao_cadastra_empresa = "insert into empresas_novas(nome,empresa_id,cnpj,endereco,id_cidade,telefone,email,chave_id,razao_social
+        $instrucao_cadastra_empresa = "insert into empresas_novas(nome,empresa_id,cnpj,endereco,id_cidade,id_estado,telefone,email,chave_id,razao_social
         ,bairro,cep,complemento,nome_contabilidade,email_contabilidade,created_at,updated_at)values(:recebe_nome_empresa,:recebe_empresa_id,:recebe_cnpj_empresa,:recebe_endereco_empresa,
-        :recebe_id_cidade_empresa,:recebe_telefone_empresa,
+        :recebe_id_cidade_empresa,:recebe_id_estado_empresa,:recebe_telefone_empresa,
         :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,
         :recebe_complemento,:recebe_nome_contabilidade,:recebe_email_contabilidade,:created_at,:updated_at)";
         $comando_cadastra_empresa = $pdo->prepare($instrucao_cadastra_empresa);
@@ -66,6 +67,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_empresa->bindValue(":recebe_cnpj_empresa",$recebe_cnpj_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_endereco_empresa",$recebe_endereco_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_id_cidade_empresa",$recebe_id_cidade_empresa);
+        $comando_cadastra_empresa->bindValue(":recebe_id_estado_empresa",$recebe_id_estado_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_telefone_empresa",$recebe_telefone_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_email_empresa",$recebe_email_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_chave_id_empresa",$recebe_chave_id_empresa);
