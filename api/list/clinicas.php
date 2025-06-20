@@ -120,7 +120,7 @@ try {
             c.bairro, 
             c.cidade_id, 
             cid.nome AS cidade_nome, 
-            cid.estado AS cidade_estado,
+            cid.estado_id AS cidade_estado,
             c.cep, 
             c.email, 
             c.telefone, 
