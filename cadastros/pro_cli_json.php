@@ -105,6 +105,8 @@ function cadastrarEmpresa($pdo) {
     $recebe_email_clinica_cadastrar = $_POST['email'];
     $recebe_telefone_clinica_cadastrar = $_POST['telefone'];
 
+    $recebe_estado_id_clinica_cadastrar = $_POST["id_estado"];
+
     if (isset($_POST['status']) && $_POST['status'] === "on") {
         $status = "Ativo";
     } else {
@@ -113,9 +115,9 @@ function cadastrarEmpresa($pdo) {
 
     // Query SQL (incluindo empresa_id)
     $sql = "INSERT INTO clinicas (
-        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id, cep, email, telefone, status, created_at,updated_at
+        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id,id_estado, cep, email, telefone, status, created_at,updated_at
     ) VALUES (
-        :empresa_id, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :cep, :email, :telefone, :status,
+        :empresa_id, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :id_estado, :cep, :email, :telefone, :status,
         :created_at,:updated_at
     )";
 
@@ -130,6 +132,7 @@ function cadastrarEmpresa($pdo) {
     $comando_cadastra_clinica->bindValue(":complemento",$recebe_complemento_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":bairro",$recebe_bairro_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":cidade_id",$recebe_cidade_id_clinica_cadastrar);
+    $comando_cadastra_clinica->bindValue(":id_estado",$recebe_estado_id_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":cep",$recebe_cep_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":email",$recebe_email_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":telefone",$recebe_telefone_clinica_cadastrar);
