@@ -105,6 +105,9 @@ function cadastrarEmpresa($pdo) {
     $recebe_email_clinica_cadastrar = $_POST['email'];
     $recebe_telefone_clinica_cadastrar = $_POST['telefone'];
 
+    $recebe_nome_contabilidade_cadastrar = $_POST['nome_contabilidade'] ?? '';
+    $recebe_email_contabilidade_cadastrar = $_POST['email_contabilidade'] ?? '';
+
     $recebe_estado_id_clinica_cadastrar = $_POST["id_estado"];
 
     if (isset($_POST['status']) && $_POST['status'] === "on") {
@@ -115,10 +118,11 @@ function cadastrarEmpresa($pdo) {
 
     // Query SQL (incluindo empresa_id)
     $sql = "INSERT INTO clinicas (
-        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id,id_estado, cep, email, telefone, status, created_at,updated_at
+        empresa_id, cnpj, nome_fantasia, razao_social, endereco, numero, complemento, bairro, cidade_id, id_estado, cep, email, telefone, status, 
+        nome_contabilidade, email_contabilidade, created_at, updated_at
     ) VALUES (
         :empresa_id, :cnpj, :nome_fantasia, :razao_social, :endereco, :numero, :complemento, :bairro, :cidade_id, :id_estado, :cep, :email, :telefone, :status,
-        :created_at,:updated_at
+        :nome_contabilidade, :email_contabilidade, :created_at, :updated_at
     )";
 
     $comando_cadastra_clinica = $pdo->prepare($sql);
@@ -137,6 +141,8 @@ function cadastrarEmpresa($pdo) {
     $comando_cadastra_clinica->bindValue(":email",$recebe_email_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":telefone",$recebe_telefone_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":status",$status);
+    $comando_cadastra_clinica->bindValue(":nome_contabilidade",$recebe_nome_contabilidade_cadastrar);
+    $comando_cadastra_clinica->bindValue(":email_contabilidade",$recebe_email_contabilidade_cadastrar);
     $comando_cadastra_clinica->bindValue(":created_at",$recebe_clinica_data_criacao_cadastrar);
     $comando_cadastra_clinica->bindValue(":updated_at",$recebe_clinica_data_criacao_cadastrar);
     $comando_cadastra_clinica->execute();
@@ -226,6 +232,8 @@ function atualizarEmpresa($pdo) {
     $recebe_cep_clinica_alterar = $_POST["cep"];
     $recebe_email_clinica_alterar = $_POST["email"];
     $recebe_telefone_clinica_alterar = $_POST["telefone"];
+    $recebe_nome_contabilidade_alterar = $_POST['nome_contabilidade'] ?? '';
+    $recebe_email_contabilidade_alterar = $_POST['email_contabilidade'] ?? '';
 
     if (isset($_POST['status']) && $_POST['status'] === "on") {
         $status = "Ativo";
@@ -252,10 +260,12 @@ function atualizarEmpresa($pdo) {
     // WHERE id = :id";
 
     $sql_altera_clinica = 
-    "update clinicas set empresa_id = :recebe_empresa_id,codigo = :recebe_codigo_clinica,nome_fantasia = :recebe_nome_fantasia_clinica,
-    razao_social = :recebe_razao_social_clinica,cnpj = :recebe_cnpj_clinica,endereco = :recebe_endereco_clinica,numero = :recebe_numero_clinica,
-    complemento = :recebe_complemento_clinica,bairro = :recebe_bairro_clinica,cidade_id = :recebe_cidade_id_clinica,cep = :recebe_cep_clinica,
-    email = :recebe_email_clinica,telefone = :recebe_telefone_clinica,status = :recebe_status_clinica where id = :recebe_id_clinica";
+    "update clinicas set empresa_id = :recebe_empresa_id, codigo = :recebe_codigo_clinica, nome_fantasia = :recebe_nome_fantasia_clinica,
+    razao_social = :recebe_razao_social_clinica, cnpj = :recebe_cnpj_clinica, endereco = :recebe_endereco_clinica, numero = :recebe_numero_clinica,
+    complemento = :recebe_complemento_clinica, bairro = :recebe_bairro_clinica, cidade_id = :recebe_cidade_id_clinica, cep = :recebe_cep_clinica,
+    email = :recebe_email_clinica, telefone = :recebe_telefone_clinica, status = :recebe_status_clinica,
+    nome_contabilidade = :recebe_nome_contabilidade, email_contabilidade = :recebe_email_contabilidade 
+    where id = :recebe_id_clinica";
 
     $comando_altera_clinica = $pdo->prepare($sql_altera_clinica);
     $comando_altera_clinica->bindValue(":recebe_empresa_id",$recebe_id_empresa_alterar);
@@ -273,6 +283,8 @@ function atualizarEmpresa($pdo) {
     $comando_altera_clinica->bindValue(":recebe_email_clinica",$recebe_email_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_telefone_clinica",$recebe_telefone_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_status_clinica",$status);
+    $comando_altera_clinica->bindValue(":recebe_nome_contabilidade",$recebe_nome_contabilidade_alterar);
+    $comando_altera_clinica->bindValue(":recebe_email_contabilidade",$recebe_email_contabilidade_alterar);
     $comando_altera_clinica->bindValue(":recebe_id_clinica",$recebe_codigo_clinica_alterar);
     $resultado_altera_clinica = $comando_altera_clinica->execute();
 

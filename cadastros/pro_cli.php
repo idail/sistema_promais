@@ -182,6 +182,22 @@ $conexao->close();
                             <label for="status" class="toggle-label"></label>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="nome_contabilidade">Nome da Contabilidade:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-building"></i>
+                            <input type="text" value="<?= htmlspecialchars($clinica['nome_contabilidade'] ?? '') ?>" id="nome_contabilidade" name="nome_contabilidade" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email_contabilidade">Email da Contabilidade:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" value="<?= htmlspecialchars($clinica['email_contabilidade'] ?? '') ?>" id="email_contabilidade" name="email_contabilidade" class="form-control">
+                        </div>
+                    </div>
                 </div>
             </div>
 

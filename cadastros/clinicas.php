@@ -175,69 +175,58 @@
 <script>
     let recebe_codigo_clinica_informacoes_rapida;
     let recebe_tabela_clinicas;
+
+    // Função para buscar o nome da cidade pelo ID
+    async function buscarCidadePorId(idCidade) {
+        if (!idCidade) return null;
+
+        try {
+            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${idCidade}`);
+            if (!response.ok) {
+                throw new Error('Cidade não encontrada');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao buscar cidade:', error);
+            return null;
+        }
+    }
+
+    // Função para buscar o nome do estado pelo ID
+    async function buscarEstadoPorId(idEstado) {
+        if (!idEstado) return null;
+
+        try {
+            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado}`);
+            if (!response.ok) {
+                throw new Error('Estado não encontrado');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao buscar estado:', error);
+            return null;
+        }
+    }
+
     $(document).ready(function() {
         // Função para buscar dados da API
-        function buscarDados() {
-            $.ajax({
-                url: "api/list/clinicas.php", // Endpoint da API
-                method: "GET",
-                dataType: "json",
-                success: function(response) {
-                    debugger;
-                    if (response.status === "success") {
-                        preencherTabela(response.data.clinicas);
-                        inicializarDataTable();
-                    } else {
-                        console.error("Erro ao buscar dados:", response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Erro na requisição:", error);
+        async function buscarDados() {
+            try {
+                const response = await fetch("api/list/clinicas.php?per_page=1000");
+                const data = await response.json();
+
+                if (data.status === "success") {
+                    // Inicializa o DataTable com os dados processados
+                    inicializarDataTable(data.data.clinicas);
+                } else {
+                    console.error("Erro ao buscar dados:", data.message);
                 }
-            });
-        }
-
-        // Função para preencher a tabela com os dados das clínicas
-        function preencherTabela(clinicas) {
-            debugger;
-            const tbody = document.querySelector("#clinicasTable tbody");
-            tbody.innerHTML = ""; // Limpa o conteúdo existente
-
-            for (let i = 0; i < clinicas.length; i++) {
-                const clinica = clinicas[i];
-                const row = document.createElement("tr");
-
-                let recebe_cidade_estado;
-
-                if(clinica.cidade_nome === null && clinica.cidade_estado === null)
-                    recebe_cidade_estado = "Não informado";
-                else
-                    recebe_cidade_estado = clinica.cidade_nome + "/" + clinica.cidade_estado;
-                row.innerHTML = `
-            <td>${clinica.id}</td>
-            <td>${clinica.nome_fantasia}</td>
-            <td>${clinica.cnpj}</td>
-            <td>${clinica.endereco}, ${clinica.numero}, ${clinica.complemento}</td>
-            <td>${recebe_cidade_estado}</td>
-            <td>${clinica.telefone}</td>
-            <td>${clinica.status}</td>
-            <td>
-                <div class="action-buttons">
-                    <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-clinica' data-codigo-clinica='${clinica.id}'>
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="?pg=pro_cli&acao=editar&id=${clinica.id}" target="_parent" class="edit" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="#" id="exclui-clinica" data-codigo-clinica="${clinica.id}" class="delete" title="Apagar">
-                        <i class="fas fa-trash"></i>
-                    </a>
-                </div>
-            </td>
-        `;
-                tbody.appendChild(row);
+            } catch (error) {
+                console.error("Erro na requisição:", error);
             }
         }
+
+
 
         $(document).on("click", "#exclui-clinica", function(e) {
             e.preventDefault();
@@ -276,13 +265,89 @@
 
 
         // Função para inicializar o DataTables
-        function inicializarDataTable() {
+        function inicializarDataTable(clinicas) {
+            // Verifica se já existe uma instância do DataTable
+            if ($.fn.DataTable.isDataTable('#clinicasTable')) {
+                $('#clinicasTable').DataTable().destroy();
+            }
+            
             recebe_tabela_clinicas = $('#clinicasTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 },
-                "dom": 'lrtip' // Remove a barra de pesquisa padrão
+                "dom": 'lrtip',
+                "retrieve": true,
+                "pageLength": 10,
+                "data": clinicas,
+                "columns": [
+                    { "data": "id" },
+                    { "data": "nome_fantasia" },
+                    { 
+                        "data": "cnpj",
+                        "render": function(data) {
+                            return formatarCNPJ(data) || '';
+                        }
+                    },
+                    { 
+                        "data": null,
+                        "render": function(data) {
+                            return [data.endereco, data.numero, data.complemento].filter(Boolean).join(', ');
+                        }
+                    },
+                    { 
+                        "data": "cidade_nome",
+                        "render": function(data, type, row) {
+                            return row.cidade_nome ? `${row.cidade_nome} / ${row.cidade_estado || ''}` : 'Não informado';
+                        }
+                    },
+                    { 
+                        "data": "telefone",
+                        "render": function(data) {
+                            return formatarTelefone(data) || '';
+                        }
+                    },
+                    { "data": "status" },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "render": function(data, type, row) {
+                            return `
+                                <div class="action-buttons">
+                                    <a href="#" class="view" title="Visualizar" id="visualizar-informacoes-clinica" data-codigo-clinica="${row.id}">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="?pg=pro_cli&acao=editar&id=${row.id}" target="_parent" class="edit" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" id="exclui-clinica" data-codigo-clinica="${row.id}" class="delete" title="Apagar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>`;
+                        }
+                    }
+                ]
             });
+            
+            return recebe_tabela_clinicas;
+        }
+
+        // Função para formatar CNPJ
+        function formatarCNPJ(cnpj) {
+            if (!cnpj) return '';
+            cnpj = cnpj.replace(/\D/g, '');
+            return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        }
+
+        // Função para formatar telefone
+        function formatarTelefone(telefone) {
+            if (!telefone) return '';
+            telefone = telefone.replace(/\D/g, '');
+            if (telefone.length === 11) {
+                return telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (telefone.length === 10) {
+                return telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            }
+            return telefone;
         }
 
         // Iniciar a busca dos dados ao carregar a página
@@ -297,57 +362,109 @@
         }
 
         buscar_informacoes_rapidas_clinica();
+        
+        // Carrega os dados iniciais da tabela
+        buscarDados();
     });
 
-    $(document).on("click", "#visualizar-informacoes-clinica", function(e) {
+    // Função global para carregar os dados da clínica
+    window.carregarDadosClinica = async function() {
         debugger;
-        recebe_codigo_clinica_informacoes_rapida = $(this).data("codigo-clinica");
-
-        $.ajax({
-            url: "cadastros/processa_clinica.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_clinica": "buscar_informacoes_rapidas_clinicas",
-                "valor_id_clinica_informacoes_rapidas": recebe_codigo_clinica_informacoes_rapida,
-            },
-            success: function(resposta) {
-                debugger;
-
-                if (resposta.length > 0) {
-                    for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#created_at").val(resposta[indice].created_at);
-                        $("#cnpj").val(resposta[indice].cnpj);
-                        $("#nome_fantasia").val(resposta[indice].nome_fantasia);
-                        $("#razao_social").val(resposta[indice].razao_social);
-                        $("#endereco").val(resposta[indice].endereco);
-                        $("#numero").val(resposta[indice].numero);
-                        $("#complemento").val(resposta[indice].complemento);
-                        $("#bairro").val(resposta[indice].bairro);
-                        $("#cidade_id").val(resposta[indice].cidade_id);
-                        $("#cep").val(resposta[indice].cep);
-                        $("#email").val(resposta[indice].email);
-                        $("#telefone").val(resposta[indice].telefone);
-
-                        let recebe_status_clinica;
-                        if (resposta[indice].status === "Ativo")
-                            $("#status").prop("checked", true);
-                        else
-                            $("#status").prop("checked", false);
-
-                        async function exibi_medicos_associados_clinica() {
-                            await popula_medicos_associados_clinica();
-                        }
-
-                        exibi_medicos_associados_clinica();
-                    }
+        try {
+            let resposta = await $.ajax({
+                url: "cadastros/processa_clinica.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_clinica": "buscar_informacoes_rapidas_clinicas",
+                    "valor_id_clinica_informacoes_rapidas": window.recebe_codigo_clinica_informacoes_rapida,
                 }
-            },
-            error: function(xhr, status, error) {
+            });
 
-            },
-        });
-        document.getElementById('informacoes-clinica').classList.remove('hidden'); // abrir
+            console.log("Resposta do servidor:", resposta);
+
+            if (resposta.length > 0) {
+                let clinica = resposta[0];
+                const recebe_endereco_cortado = clinica.endereco ? clinica.endereco.split(",") : ['', ''];
+
+                $("#created_at").val(clinica.created_at);
+                $("#cnpj").val(clinica.cnpj);
+                $("#nome_fantasia").val(clinica.nome_fantasia);
+                $("#razao_social").val(clinica.razao_social);
+                $("#endereco").val(clinica.endereco);
+                $("#numero").val(clinica.numero);
+                $("#complemento").val(clinica.complemento);
+                $("#bairro").val(clinica.bairro);
+                $("#cidade_id").val(clinica.cidade_id);
+                $("#cep").val(clinica.cep);
+                $("#email").val(clinica.email);
+                $("#telefone").val(clinica.telefone);
+
+                if (clinica.status === "Ativo")
+                    $("#status").prop("checked", true);
+                else
+                    $("#status").prop("checked", false);
+
+                if (clinica.cidade_id) {
+                    try {
+                        const cidade = await buscarCidadePorId(clinica.cidade_id);
+                        if (cidade) {
+                            // Busca o estado relacionado à cidade
+                            const estado = await buscarEstadoPorId(cidade.microrregiao.mesorregiao.UF.id);
+                            const estadoNome = estado ? (estado.nome || estado.sigla) : '';
+                            const textoCidadeEstado = [cidade.nome, estado.sigla].filter(Boolean).join(' / ');
+
+                            if (textoCidadeEstado) {
+                                $("#cidade_id").html(`<option value="${clinica.cidade_id}" selected>${textoCidadeEstado}</option>`);
+                            } else {
+                                $("#cidade_id").html(`<option value="${clinica.cidade_id}" selected>${cidade.nome || 'Cidade desconhecida'}</option>`);
+                            }
+                            
+                            // Preenche o estado se existir o campo
+                            if (estado && $("#estado_id").length) {
+                                $("#estado_id").html(`<option value="${estado.id}" selected>${estado.nome} (${estado.sigla})</option>`);
+                            }
+                        } else {
+                            $("#cidade_id").html(`<option value="${clinica.cidade_id}" selected>ID: ${clinica.cidade_id} (não encontrada)</option>`);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao carregar cidade/estado:', error);
+                        $("#cidade_id").html(`<option value="${clinica.cidade_id || ''}" selected>Erro ao carregar cidade</option>`);
+                    }
+                } else {
+                    $("#cidade_id").html('<option value="">Não informado</option>');
+                }
+
+                // Preenche os campos de contabilidade
+                $("#nome_contabilidade").val(clinica.nome_contabilidade || '');
+                $("#email_contabilidade").val(clinica.email_contabilidade || '');
+
+                async function exibi_medicos_associados_clinica() {
+                    await popula_medicos_associados_clinica();
+                }
+
+                exibi_medicos_associados_clinica();
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados da empresa:', error);
+            $("#cidade_id").html('<option value="">Erro ao carregar dados</option>');
+        }
+    };
+
+    $(document).on("click", "#visualizar-informacoes-clinica", function(e) {
+        e.preventDefault(); // Previne o comportamento padrão do link
+        debugger;
+        window.recebe_codigo_clinica_informacoes_rapida = $(this).data("codigo-clinica");
+        
+        // Mostra a modal imediatamente
+        document.getElementById('informacoes-clinica').classList.remove('hidden');
+        
+        // Limpa os campos antes de preencher
+        $("#cidade_id").html("<option value=''>Carregando...</option>");
+        $("#estado_id").html("<option value=''>Carregando...</option>");
+        
+        // Chama a função para carregar os dados da clínica
+        window.carregarDadosClinica();
     });
 
     $(document).on("click", "#fechar-modal-informacoes-clinica", function(e) {
@@ -357,37 +474,42 @@
 
     async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {
         debugger;
-        const apiUrl = 'api/list/cidades.php';
         const cidadeSelect = document.getElementById('cidade_id');
-
+        
         try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-
-            if (data.status === 'success') {
+            // Se tiver um estado selecionado, busca as cidades desse estado
+            if (estadoSelecionado) {
+                const responseCidades = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSelecionado}/municipios?orderBy=nome`);
+                const cidades = await responseCidades.json();
+                
                 cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
-
-                data.data.cidades.forEach(cidade => {
+                
+                cidades.forEach(cidade => {
                     const option = document.createElement('option');
                     option.value = cidade.id;
-                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
+                    option.textContent = cidade.nome;
+                    // Marca como selecionada se for a cidade desejada
+                    if (cidadeSelecionada && cidade.id.toString() === cidadeSelecionada.toString()) {
+                        option.selected = true;
+                    }
                     cidadeSelect.appendChild(option);
                 });
-
-                if (cidadeSelecionada && estadoSelecionado) {
-                    for (let i = 0; i < cidadeSelect.options.length; i++) {
-                        const optionText = cidadeSelect.options[i].text;
-                        if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
-                            cidadeSelect.selectedIndex = i;
-                            break;
-                        }
+            } 
+            // Se tiver uma cidade selecionada mas não tiver estado, busca o estado da cidade
+            else if (cidadeSelecionada) {
+                const cidade = await buscarCidadePorId(cidadeSelecionada);
+                if (cidade) {
+                    const estado = await buscarEstadoPorId(cidade.microrregiao.mesorregiao.UF.id);
+                    if (estado) {
+                        // Busca as cidades do estado da cidade selecionada
+                        await popula_cidades_informacoes_rapidas(cidadeSelecionada, estado.id);
+                        return;
                     }
                 }
-            } else {
-                console.error('Erro ao carregar cidades:', data.message);
             }
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('Erro ao carregar cidades:', error);
+            cidadeSelect.innerHTML = '<option value="">Erro ao carregar cidades</option>';
         }
     }
 
@@ -452,7 +574,7 @@
                 <label for="created_at" class="block font-semibold mb-1">Data de Cadastro:</label>
                 <div class="flex items-center gap-2">
                     <i class="fas fa-calendar-alt text-gray-500"></i>
-                    <input type="datetime-local" value="" id="created_at" name="created_at" class="form-control" readonly>
+                    <input type="datetime-local" value="" id="created_at" disabled name="created_at" class="form-control" readonly>
                 </div>
             </div>
 
@@ -464,7 +586,7 @@
                         <label for="cnpj" class="block font-semibold mb-1">CNPJ:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-address-card text-gray-500"></i>
-                            <input type="text" value="" id="cnpj" name="cnpj" class="form-control cnpj-input">
+                            <input type="text" value="" id="cnpj" name="cnpj" disabled class="form-control cnpj-input">
                         </div>
                     </div>
 
@@ -472,7 +594,7 @@
                         <label for="nome_fantasia" class="block font-semibold mb-1">Nome Fantasia:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-building text-gray-500"></i>
-                            <input type="text" value="teste" id="nome_fantasia" name="nome_fantasia" class="form-control">
+                            <input type="text" value="teste" id="nome_fantasia" disabled name="nome_fantasia" class="form-control">
                         </div>
                     </div>
 
@@ -480,7 +602,7 @@
                         <label for="razao_social" class="block font-semibold mb-1">Razão Social:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-file-signature text-gray-500"></i>
-                            <input type="text" id="razao_social" name="razao_social" class="form-control">
+                            <input type="text" id="razao_social" name="razao_social" disabled class="form-control">
                         </div>
                     </div>
 
@@ -489,14 +611,14 @@
                             <label for="endereco" class="block font-semibold mb-1">Endereço:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-marker-alt text-gray-500"></i>
-                                <input type="text" id="endereco" name="endereco" class="form-control">
+                                <input type="text" id="endereco" name="endereco" disabled class="form-control">
                             </div>
                         </div>
                         <div class="w-1/3">
                             <label for="numero" class="block font-semibold mb-1">Número:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-pin text-gray-500"></i>
-                                <input type="text" id="numero" name="numero" class="form-control">
+                                <input type="text" id="numero" name="numero" disabled class="form-control">
                             </div>
                         </div>
                     </div>
@@ -506,14 +628,14 @@
                             <label for="complemento" class="block font-semibold mb-1">Complemento:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map-signs text-gray-500"></i>
-                                <input type="text" id="complemento" name="complemento" class="form-control">
+                                <input type="text" id="complemento" name="complemento" disabled class="form-control">
                             </div>
                         </div>
                         <div class="w-1/3">
                             <label for="bairro" class="block font-semibold mb-1">Bairro:</label>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-map text-gray-500"></i>
-                                <input type="text" id="bairro" name="bairro" class="form-control">
+                                <input type="text" id="bairro" name="bairro" disabled class="form-control">
                             </div>
                         </div>
                     </div>
@@ -525,7 +647,7 @@
                         <label for="cidade_id" class="block font-semibold mb-1">Cidade:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-city text-gray-500"></i>
-                            <select id="cidade_id" name="cidade_id" class="form-control"></select>
+                            <select id="cidade_id" name="cidade_id" disabled class="form-control"></select>
                         </div>
                     </div>
 
@@ -540,7 +662,7 @@
                         <label for="email" class="block font-semibold mb-1">Email:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-envelope text-gray-500"></i>
-                            <input type="email" id="email" name="email" class="form-control">
+                            <input type="email" id="email" name="email" disabled class="form-control">
                         </div>
                     </div>
 
@@ -548,7 +670,7 @@
                         <label for="telefone" class="block font-semibold mb-1">Telefone:</label>
                         <div class="flex items-center gap-2">
                             <i class="fas fa-phone text-gray-500"></i>
-                            <input type="text" id="telefone" name="telefone" class="form-control" oninput="formatPhone(this)">
+                            <input type="text" id="telefone" name="telefone" disabled class="form-control" oninput="formatPhone(this)">
                         </div>
                     </div>
 
@@ -559,8 +681,26 @@
                                 type="checkbox"
                                 id="status"
                                 name="status"
-                                class="toggle-checkbox">
+                                class="toggle-checkbox" disabled>
                             <label for="status" class="toggle-label"></label>
+                        </div>
+                    </div>
+
+                    <!-- Nome da Contabilidade -->
+                    <div>
+                        <label for="nome_contabilidade" class="block font-semibold mb-1">Nome da Contabilidade:</label>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-building text-gray-500"></i>
+                            <input type="text" id="nome_contabilidade" disabled name="nome_contabilidade" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Email da Contabilidade -->
+                    <div>
+                        <label for="email_contabilidade" class="block font-semibold mb-1">Email da Contabilidade:</label>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-gray-500"></i>
+                            <input type="text" id="email_contabilidade" disabled name="email_contabilidade" class="form-control" disabled>
                         </div>
                     </div>
                 </div>

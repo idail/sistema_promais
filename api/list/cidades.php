@@ -34,7 +34,7 @@ try {
         SELECT 
             id, 
             nome, 
-            estado, 
+            estado_id, 
             empresa_id, 
             status
         FROM cidades
