@@ -718,7 +718,7 @@
                 dataType: "json",
                 data: {
                     "processo_medico": "buscar_medicos_associados_clinica",
-                    valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_informacoes_rapida,
+                    valor_codigo_clinica_medicos_associados: window.recebe_codigo_clinica_informacoes_rapida,
                 },
                 success: function(resposta_medicos) {
                     debugger;
