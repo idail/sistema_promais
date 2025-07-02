@@ -1,20 +1,5 @@
 <?php
-
-function buscarClinica($conexao, $id)
-{
-    $id = intval($id); // Garante que o ID seja um número inteiro para evitar SQL Injection
-
-    $query = "SELECT * FROM clinicas WHERE id = ?";
-    $stmt = $conexao->prepare($query);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    return $resultado->fetch_assoc();
-}
-
 // Conectar ao banco de dados
-// $conexao = new mysqli("localhost", "root", "", "promais")
 $conexao = new mysqli("mysql.idailneto.com.br", "idailneto06", "Sei20020615", "idailneto06");
 
 if ($conexao->connect_error) {
@@ -23,12 +8,40 @@ if ($conexao->connect_error) {
 
 $conexao->set_charset("utf8");
 
-// Obtendo o ID da URL
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
-$clinica = buscarClinica($conexao, $id);
+// Inicializa o array da clínica
+$clinica = [
+    'id' => '',
+    'cnpj' => '',
+    'nome_fantasia' => '',
+    'razao_social' => '',
+    'endereco' => '',
+    'numero' => '',
+    'complemento' => '',
+    'bairro' => '',
+    'cidade_id' => '',
+    'id_estado' => '',
+    'cep' => '',
+    'email' => '',
+    'telefone' => '',
+    'nome_contabilidade' => '',
+    'email_contabilidade' => ''
+];
+
+// Se estiver editando, busca os dados da clínica
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $query = "SELECT * FROM clinicas WHERE id = ?";
+    $stmt = $conexao->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    
+    if ($dados = $resultado->fetch_assoc()) {
+        $clinica = array_merge($clinica, $dados);
+    }
+}
 
 $conexao->close();
-
 ?>
 
 <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
@@ -612,8 +625,11 @@ $conexao->close();
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <script>
-    let recebe_codigo_alteracao_clinica;
-    let recebe_acao_alteracao_clinica;
+    // Dados da clínica carregados diretamente do PHP
+    const dadosClinica = <?php echo json_encode($clinica); ?>;
+    
+    let recebe_codigo_alteracao_clinica = '<?php echo $clinica['id'] ?: ''; ?>';
+    let recebe_acao_alteracao_clinica = '<?php echo !empty($clinica['id']) ? 'editar' : 'novo'; ?>';
 
     // Carrega os estados quando o DOM estiver pronto
     document.addEventListener('DOMContentLoaded', function() {
@@ -640,13 +656,8 @@ $conexao->close();
         async function buscar_informacoes_clinica() {
             debugger;
             if (recebe_acao_alteracao_clinica === "editar") {
-                // let cidadeDados = await popula_lista_cidade_clinica_alteracao(); // Aguarda e recebe dados da cidade
-                // if (cidadeDados) {
-                //     carregarCidades(cidadeDados.nome, cidadeDados.estado); // Agora sim, carrega e seleciona a cidade certa
-                // } else {
-                //     carregarCidades(); // fallback
-                // }
-                carrega_cidades();
+                // Carrega os dados da clínica, incluindo cidade e estado
+                await carregarDadosClinica();
                 await popula_medicos_associar_clinica();
                 await popula_medicos_associados_clinica();
             } else {
@@ -707,34 +718,185 @@ $conexao->close();
     //     });
     // });
 
-    async function popula_lista_cidade_clinica_alteracao() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: "cadastros/processa_clinica.php",
-                method: "GET",
-                dataType: "json",
-                data: {
-                    "processo_clinica": "buscar_cidade_clinica",
-                    "valor_id_clinica": recebe_codigo_alteracao_clinica,
-                },
-                success: function(resposta) {
-                    if (resposta && resposta.length > 0) {
-                        const cidadeInfo = {
-                            id: resposta[0].id,
-                            nome: resposta[0].nome,
-                            estado: resposta[0].estado
-                        };
-                        resolve(cidadeInfo);
-                    } else {
-                        resolve(null);
+    async function carregarDadosClinica() {
+        if (!dadosClinica || !dadosClinica.id) {
+            console.log('Nenhum dado de clínica disponível para carregar');
+            return;
+        }
+        
+        try {
+            console.log('Carregando dados da clínica:', dadosClinica);
+            
+            // Preenche os campos do formulário diretamente dos dados já carregados
+            document.getElementById('cnpj').value = dadosClinica.cnpj || '';
+            document.getElementById('nome_fantasia').value = dadosClinica.nome_fantasia || '';
+            document.getElementById('razao_social').value = dadosClinica.razao_social || '';
+            document.getElementById('endereco').value = dadosClinica.endereco || '';
+            document.getElementById('numero').value = dadosClinica.numero || '';
+            document.getElementById('complemento').value = dadosClinica.complemento || '';
+            document.getElementById('bairro').value = dadosClinica.bairro || '';
+            document.getElementById('cep').value = dadosClinica.cep || '';
+            document.getElementById('email').value = dadosClinica.email || '';
+            document.getElementById('telefone').value = dadosClinica.telefone || '';
+            document.getElementById('nome_contabilidade').value = dadosClinica.nome_contabilidade || '';
+            document.getElementById('email_contabilidade').value = dadosClinica.email_contabilidade || '';
+            
+            // Se tiver o ID do estado, carrega os estados e depois as cidades
+            if (dadosClinica.id_estado) {
+                console.log('Carregando estado:', dadosClinica.id_estado);
+                
+                // Primeiro carrega a lista de estados
+                await carregarEstados();
+                
+                // Depois de carregar os estados, seleciona o estado correto
+                const estadoSelect = document.getElementById('estado');
+                if (estadoSelect) {
+                    // Aguarda um pequeno atraso para garantir que o select foi preenchido
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // Encontra a opção correta baseada no ID do estado
+                    const estadoOption = Array.from(estadoSelect.options).find(
+                        option => option.getAttribute('data-id') == dadosClinica.id_estado
+                    );
+                    
+                    if (estadoOption) {
+                        estadoSelect.value = estadoOption.value;
+                        document.getElementById('id_estado').value = dadosClinica.id_estado;
+                        
+                        // Dispara o evento de mudança para carregar as cidades
+                        const event = new Event('change');
+                        estadoSelect.dispatchEvent(event);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao buscar cidade da clínica:", error);
-                    reject(error);
-                },
-            });
-        });
+                    
+                    // Agora carrega as cidades para o estado selecionado
+                    if (dadosClinica.cidade_id) {
+                        console.log('Carregando cidade:', dadosClinica.cidade_id);
+                        
+                        // Aguarda um pequeno atraso para garantir que o estado foi selecionado
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                        
+                        try {
+                            // Busca o nome da cidade pelo ID usando a API do IBGE
+                            const responseCidade = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${dadosClinica.cidade_id}`);
+                            const cidadeData = await responseCidade.json();
+                            
+                            if (cidadeData) {
+                                const cidadeInput = document.getElementById('cidade');
+                                const cidadeIdInput = document.getElementById('id_cidade');
+                                
+                                // Define os valores dos campos
+                                cidadeInput.value = cidadeData.nome;
+                                cidadeIdInput.value = cidadeData.id;
+                                
+                                console.log('Cidade carregada com sucesso:', cidadeData.nome);
+                                
+                                // Aguarda um pouco mais para garantir que o datalist foi atualizado
+                                await new Promise(resolve => setTimeout(resolve, 500));
+                                
+                                // Atualiza o datalist com a cidade selecionada
+                                const datalist = document.getElementById('listaCidades');
+                                if (datalist) {
+                                    // Limpa o datalist
+                                    datalist.innerHTML = '';
+                                    // Adiciona a cidade ao datalist
+                                    const option = document.createElement('li');
+                                    option.textContent = cidadeData.nome;
+                                    option.dataset.id = cidadeData.id;
+                                    option.addEventListener('click', function() {
+                                        cidadeInput.value = this.textContent;
+                                        cidadeIdInput.value = this.dataset.id;
+                                        datalist.style.display = 'none';
+                                    });
+                                    datalist.appendChild(option);
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Erro ao buscar dados da cidade:', error);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados da clínica:', error);
+        }
+    }
+    
+    // Função para carregar cidades baseado no estado selecionado com cache e tratamento de erros aprimorado
+    
+    // Função para carregar os estados do IBGE com cache e tratamento de erros aprimorado
+    
+    async function carregarCidadesPorEstado(uf) {
+        if (!uf) return;
+        
+        try {
+            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`);
+            const cidades = await response.json();
+            
+            const cidadeInput = document.getElementById('cidade');
+            const cidadeIdInput = document.getElementById('id_cidade');
+            const datalist = document.getElementById('listaCidades');
+            
+            // Limpa o datalist
+            if (datalist) {
+                datalist.innerHTML = '';
+                
+                // Adiciona as cidades ao datalist
+                cidades.forEach(cidade => {
+                    const option = document.createElement('li');
+                    option.textContent = cidade.nome;
+                    option.dataset.id = cidade.id;
+                    option.addEventListener('click', function() {
+                        cidadeInput.value = this.textContent;
+                        cidadeIdInput.value = this.dataset.id;
+                        datalist.style.display = 'none';
+                    });
+                    datalist.appendChild(option);
+                });
+            }
+            
+            // Habilita o campo de cidade
+            cidadeInput.disabled = false;
+            
+            return cidades;
+        } catch (error) {
+            console.error('Erro ao carregar cidades:', error);
+            return [];
+        }
+    }
+    
+    // Função para filtrar cidades conforme o usuário digita
+    function filtrarCidades() {
+        const input = document.getElementById('cidade');
+        const filter = input.value.toUpperCase();
+        const datalist = document.getElementById('listaCidades');
+        
+        if (!datalist) return;
+        
+        const items = datalist.getElementsByTagName('li');
+        let hasVisibleItems = false;
+        
+        for (let i = 0; i < items.length; i++) {
+            const txtValue = items[i].textContent || items[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                items[i].style.display = '';
+                hasVisibleItems = true;
+            } else {
+                items[i].style.display = 'none';
+            }
+        }
+        
+        datalist.style.display = hasVisibleItems ? 'block' : 'none';
+    }
+    
+    // Função para limpar a cidade selecionada
+    function limparCidade() {
+        const cidadeInput = document.getElementById('cidade');
+        const cidadeIdInput = document.getElementById('id_cidade');
+        const limparBtn = document.getElementById('limparCidade');
+        
+        cidadeInput.value = '';
+        cidadeIdInput.value = '';
+        limparBtn.style.display = 'none';
     }
 
 
@@ -790,15 +952,16 @@ $conexao->close();
 
                         $("#tabela-medico-associado tbody").html("");
 
+                        let htmlContent = "";
                         for (let indice = 0; indice < resposta_medicos.length; indice++) {
-                            recebe_tabela_associar_medico_clinica +=
-                                "<tr>" +
-                                "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
-                                "<td><i class='fas fa-trash' id='exclui-medico-ja-associado'" +
-                                " data-codigo-medico-clinica='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>" +
-                                "</tr>";
+                            htmlContent +=
+                                '<tr>' +
+                                '<td>' + resposta_medicos[indice].nome_medico + '</td>' +
+                                '<td><i class="fas fa-trash" id="exclui-medico-ja-associado"' +
+                                ' data-codigo-medico-clinica="' + resposta_medicos[indice].id + '" data-codigo-medico="' + resposta_medicos[indice].medico_id + '"></i></td>' +
+                                '</tr>';
                         }
-                        $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+                        $("#tabela-medico-associado tbody").html(htmlContent);
                     } else {
                         $("#tabela-medico-associado tbody").html("");
                     }
@@ -873,11 +1036,11 @@ $conexao->close();
 
             let indice = recebe_tabela_associar_medico_clinica.querySelectorAll("tr").length;
 
-            recebe_tabela_associar_medico_clinica.innerHTML +=
-                "<tr data-index='" + indice + "'>" +
-                "<td>" + recebe_nome_medico_selecionado_associar_clinica + "</td>" +
-                "<td><i class='fas fa-trash' id='exclui-medico-associado'></i></td>" +
-                "</tr>";
+            recebe_tabela_associar_medico_clinica.insertAdjacentHTML('beforeend', 
+                '<tr data-index="' + indice + '">' +
+                '<td>' + recebe_nome_medico_selecionado_associar_clinica + '</td>' +
+                '<td><i class="fas fa-trash" id="exclui-medico-associado"></i></td>' +
+                '</tr>');
 
             valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
         } else {
@@ -893,11 +1056,11 @@ $conexao->close();
 
             let indice = recebe_tabela_associar_medico_clinica.querySelectorAll("tr").length;
 
-            recebe_tabela_associar_medico_clinica.innerHTML +=
-                "<tr data-index='" + indice + "'>" +
-                "<td>" + recebe_nome_medico_selecionado_associar_clinica + "</td>" +
-                "<td><i class='fas fa-trash' id='exclui-medico-associado'></i></td>" +
-                "</tr>";
+            recebe_tabela_associar_medico_clinica.insertAdjacentHTML('beforeend', 
+                '<tr data-index="' + indice + '">' +
+                '<td>' + recebe_nome_medico_selecionado_associar_clinica + '</td>' +
+                '<td><i class="fas fa-trash" id="exclui-medico-associado"></i></td>' +
+                '</tr>');
 
             valores_codigos_medicos.push(recebe_codigo_medico_selecionado_associar_clinica);
 
@@ -952,6 +1115,30 @@ $conexao->close();
         input.value = value;
     }
 
+    function formatCNPJ(input) {
+        // Remove tudo que não for dígito
+        let value = input.value.replace(/\D/g, '');
+        
+        // Limita a 14 caracteres (tamanho do CNPJ sem formatação)
+        if (value.length > 14) {
+            value = value.slice(0, 14);
+        }
+        
+        // Aplica a formatação do CNPJ (XX.XXX.XXX/XXXX-XX)
+        value = value.replace(/(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1/$2');
+        value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+        
+        // Atualiza o valor do campo
+        input.value = value;
+        
+        // Se o CNPJ estiver completo (com formatação), valida
+        if (value.length === 18) {
+            validateCNPJ(value);
+        }
+    }
+    
     function validateCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]+/g, '');
         if (cnpj.length !== 14) return false;
@@ -1059,139 +1246,102 @@ $conexao->close();
         // Cria o elemento do toast
         const toast = document.createElement('div');
         toast.className = `toast-message toast-${type}`;
-        toast.textContent = message;
+        try {
+            // Remove toasts antigos
+            const oldToasts = document.querySelectorAll('.toast-message');
+            oldToasts.forEach(toast => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            });
 
-        // Estilos básicos para o toast
-        toast.style.position = 'fixed';
-        toast.style.bottom = '20px';
-        toast.style.right = '20px';
-        toast.style.padding = '12px 20px';
-        toast.style.borderRadius = '4px';
-        toast.style.color = 'white';
-        toast.style.fontFamily = 'Arial, sans-serif';
-        toast.style.fontSize = '14px';
-        toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-        toast.style.zIndex = '9999';
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease-in-out';
+            // Cria o elemento do toast
+            const toast = document.createElement('div');
+            toast.className = `toast-message toast-${type}`;
+            
+            // Adiciona o ícone baseado no tipo
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            else if (type === 'error') icon = 'exclamation-circle';
+            else if (type === 'warning') icon = 'exclamation-triangle';
 
-        // Cores baseadas no tipo de mensagem
-        const colors = {
-            success: '#4CAF50',
-            error: '#F44336',
-            warning: '#FF9800',
-            info: '#2196F3'
-        };
+            toast.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+                <button class="toast-close">&times;</button>
+            `;
 
-        toast.style.backgroundColor = colors[type] || colors.info;
+            // Adiciona o toast ao corpo do documento
+            document.body.appendChild(toast);
 
-        // Adiciona o toast ao corpo do documento
-        document.body.appendChild(toast);
-
-        // Anima a entrada
-        setTimeout(() => {
-            toast.style.opacity = '1';
-        }, 10);
-
-        // Remove o toast após 5 segundos
-        setTimeout(() => {
-            toast.style.opacity = '0';
+            // Força o navegador a renderizar o elemento com opacidade 0
             setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 300);
-        }, 5000);
+                toast.style.opacity = '1';
+            }, 10);
+
+            // Fecha o toast após 3 segundos
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300); // Tempo para a animação de fade out
+            }, 3000);
+        } catch (error) {
+            console.error('Erro ao exibir toast:', error);
+        }
     }
 
-    // Função para carregar cidades baseado no nome da cidade e UF
-    async function carrega_cidades(nomeCidade, uf) {
+    // Função auxiliar para atualizar a UI após o carregamento das cidades
+    function updateUIAfterCityLoad(fromCache = false) {
         const cidadeInput = document.getElementById('cidade');
-        const estadoSelect = document.getElementById('estado');
-        const loadingIndicator = document.createElement('div');
-        loadingIndicator.className = 'loading-indicator';
-        loadingIndicator.innerHTML = 'Carregando...';
-        loadingIndicator.style.marginTop = '5px';
-        loadingIndicator.style.color = '#666';
-        loadingIndicator.style.fontSize = '12px';
+        cidadeInput.disabled = false;
+        cidadeInput.placeholder = 'Digite o nome da cidade';
 
-        // Adiciona o indicador de carregamento
-        estadoSelect.parentNode.insertBefore(loadingIndicator, estadoSelect.nextSibling);
-
-        try {
-            // Primeiro, garante que os estados foram carregados
-            if (estados.length === 0) {
-                await carregarEstados();
-            }
-
-            // Define o estado selecionado
-            const estadoEncontrado = estados.find(e =>
-                e.sigla === uf || e.nome.toLowerCase() === uf.toLowerCase()
-            );
-
-            if (estadoEncontrado) {
-                estadoSelect.value = estadoEncontrado.sigla;
-                document.getElementById('id_estado').value = estadoEncontrado.id;
-
-                // Carrega as cidades do estado
-                try {
-                    await carregarCidades();
-
-                    // Aguarda um pouco para garantir que as cidades foram carregadas
-                    setTimeout(() => {
-                        // Tenta encontrar a cidade pelo nome (busca parcial)
-                        const cidadeEncontrada = cidades.find(c =>
-                            c.nome.toLowerCase().includes(nomeCidade.toLowerCase())
-                        );
-
-                        if (cidadeEncontrada) {
-                            // Seleciona a cidade encontrada
-                            selecionarCidade(cidadeEncontrada);
-                            showToast('Cidade encontrada e selecionada com sucesso!', 'success');
-                        } else {
-                            // Se não encontrar a cidade, preenche manualmente o campo
-                            cidadeInput.value = nomeCidade;
-                            cidadeAtual = {
-                                nome: nomeCidade
-                            };
-                            document.getElementById('limparCidade').style.display = 'block';
-                            showToast('Cidade não encontrada. Por favor, selecione manualmente.', 'warning');
-                        }
-                    }, 800);
-                } catch (error) {
-                    console.error('Erro ao carregar cidades:', error);
-                    cidadeInput.value = nomeCidade;
-                    cidadeAtual = {
-                        nome: nomeCidade
-                    };
-                    document.getElementById('limparCidade').style.display = 'block';
-                    showToast('Erro ao carregar cidades. Por favor, selecione manualmente.', 'error');
-                }
-            } else {
-                console.error('Estado não encontrado:', uf);
-                cidadeInput.value = nomeCidade;
-                estadoSelect.value = '';
-                cidadeAtual = {
-                    nome: nomeCidade
-                };
-                document.getElementById('limparCidade').style.display = 'block';
-                showToast('Estado não encontrado. Por favor, selecione manualmente.', 'error');
-            }
-        } catch (error) {
-            console.error('Erro ao carregar estados:', error);
-            // Em caso de erro, preenche manualmente os campos
-            cidadeInput.value = nomeCidade;
-            estadoSelect.value = uf;
-            cidadeAtual = {
-                nome: nomeCidade
+        // Preenche o campo de cidade com as cidades
+        const cidadeOptions = cidades.map(cidade => {
+            return {
+                label: cidade.nome,
+                value: cidade.nome
             };
-            document.getElementById('limparCidade').style.display = 'block';
-            showToast('Erro ao carregar localização. Por favor, preencha manualmente.', 'error');
-        } finally {
-            // Remove o indicador de carregamento
-            if (loadingIndicator.parentNode) {
-                loadingIndicator.parentNode.removeChild(loadingIndicator);
-            }
+        });
+
+        // Adiciona o evento de mudança para carregar as cidades
+        try {
+            cidadeInput.addEventListener('input', function() {
+                try {
+                    const cidadeEncontrada = cidades.find(c =>
+                        c.nome.toLowerCase().includes(this.value.toLowerCase())
+                    );
+
+                    if (cidadeEncontrada) {
+                        // Seleciona a cidade encontrada
+                        selecionarCidade(cidadeEncontrada);
+                        showToast('Cidade encontrada e selecionada com sucesso!', 'success');
+                    } else {
+                        // Se não encontrar a cidade, preenche manualmente o campo
+                        cidadeInput.value = this.value;
+                        cidadeAtual = {
+                            nome: this.value
+                        };
+                        document.getElementById('limparCidade').style.display = 'block';
+                        showToast('Cidade não encontrada. Por favor, selecione manualmente.', 'warning');
+                    }
+                } catch (error) {
+                    console.error('Erro ao processar cidade:', error);
+                    cidadeInput.value = this.value;
+                    cidadeAtual = { nome: this.value };
+                    document.getElementById('limparCidade').style.display = 'block';
+                    showToast('Erro ao processar a cidade. Por favor, tente novamente.', 'error');
+                }
+            });
+        } catch (error) {
+            console.error('Erro ao configurar o evento de input da cidade:', error);
+            showToast('Erro ao configurar a busca de cidades. Por favor, recarregue a página.', 'error');
         }
     }
 

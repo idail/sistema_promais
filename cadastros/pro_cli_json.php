@@ -57,6 +57,23 @@ try {
             apagarEmpresa($pdo, $id);
             break;
 
+        case 'buscar':
+            $id_clinica = $_GET['buscar_clinica'] ?? null;
+            if (!$id_clinica) {
+                throw new Exception('ID da clínica não informado');
+            }
+            
+            $stmt = $pdo->prepare('SELECT * FROM clinicas WHERE id = ?');
+            $stmt->execute([$id_clinica]);
+            $clinica = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$clinica) {
+                throw new Exception('Clínica não encontrada');
+            }
+            
+            echo json_encode($clinica);
+            break;
+
         default:
             throw new Exception('Ação não reconhecida.');
     }
@@ -134,6 +151,12 @@ function cadastrarEmpresa($pdo) {
     $comando_cadastra_clinica->bindValue(":endereco",$recebe_endereco_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":numero",$recebe_numero_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":complemento",$recebe_complemento_clinica_cadastrar);
+    // Validação dos campos obrigatórios
+    if (empty($recebe_cidade_id_clinica_cadastrar) || empty($recebe_estado_id_clinica_cadastrar)) {
+        echo json_encode(['status' => 'error', 'message' => 'Cidade e Estado são obrigatórios']);
+        exit();
+    }
+    
     $comando_cadastra_clinica->bindValue(":bairro",$recebe_bairro_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":cidade_id",$recebe_cidade_id_clinica_cadastrar);
     $comando_cadastra_clinica->bindValue(":id_estado",$recebe_estado_id_clinica_cadastrar);
@@ -229,6 +252,7 @@ function atualizarEmpresa($pdo) {
     $recebe_complemento_clinica_alterar = $_POST["complemento"];
     $recebe_bairro_clinica_alterar = $_POST["bairro"];
     $recebe_cidade_id_clinica_alterar = $_POST["cidade_id"];
+    $recebe_estado_id_clinica_alterar = $_POST["id_estado"]; // Adicionando recebimento do id_estado
     $recebe_cep_clinica_alterar = $_POST["cep"];
     $recebe_email_clinica_alterar = $_POST["email"];
     $recebe_telefone_clinica_alterar = $_POST["telefone"];
@@ -260,11 +284,24 @@ function atualizarEmpresa($pdo) {
     // WHERE id = :id";
 
     $sql_altera_clinica = 
-    "update clinicas set empresa_id = :recebe_empresa_id, codigo = :recebe_codigo_clinica, nome_fantasia = :recebe_nome_fantasia_clinica,
-    razao_social = :recebe_razao_social_clinica, cnpj = :recebe_cnpj_clinica, endereco = :recebe_endereco_clinica, numero = :recebe_numero_clinica,
-    complemento = :recebe_complemento_clinica, bairro = :recebe_bairro_clinica, cidade_id = :recebe_cidade_id_clinica, cep = :recebe_cep_clinica,
-    email = :recebe_email_clinica, telefone = :recebe_telefone_clinica, status = :recebe_status_clinica,
-    nome_contabilidade = :recebe_nome_contabilidade, email_contabilidade = :recebe_email_contabilidade 
+    "update clinicas set 
+        empresa_id = :recebe_empresa_id, 
+        codigo = :recebe_codigo_clinica, 
+        nome_fantasia = :recebe_nome_fantasia_clinica,
+        razao_social = :recebe_razao_social_clinica, 
+        cnpj = :recebe_cnpj_clinica, 
+        endereco = :recebe_endereco_clinica, 
+        numero = :recebe_numero_clinica,
+        complemento = :recebe_complemento_clinica, 
+        bairro = :recebe_bairro_clinica, 
+        cidade_id = :recebe_cidade_id_clinica, 
+        id_estado = :recebe_estado_id_clinica,
+        cep = :recebe_cep_clinica,
+        email = :recebe_email_clinica, 
+        telefone = :recebe_telefone_clinica, 
+        status = :recebe_status_clinica,
+        nome_contabilidade = :recebe_nome_contabilidade, 
+        email_contabilidade = :recebe_email_contabilidade 
     where id = :recebe_id_clinica";
 
     $comando_altera_clinica = $pdo->prepare($sql_altera_clinica);
@@ -279,6 +316,7 @@ function atualizarEmpresa($pdo) {
     $comando_altera_clinica->bindValue(":recebe_complemento_clinica",$recebe_complemento_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_bairro_clinica",$recebe_bairro_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_cidade_id_clinica",$recebe_cidade_id_clinica_alterar);
+    $comando_altera_clinica->bindValue(":recebe_estado_id_clinica",$recebe_estado_id_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_cep_clinica",$recebe_cep_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_email_clinica",$recebe_email_clinica_alterar);
     $comando_altera_clinica->bindValue(":recebe_telefone_clinica",$recebe_telefone_clinica_alterar);
