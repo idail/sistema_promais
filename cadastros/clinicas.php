@@ -7,9 +7,54 @@
     /* Estilos gerais da tabela */
     #clinicasTable {
         font-size: 12px;
-        width: 100%;
+        width: 100% !important;
         border-collapse: collapse;
-        padding-top: 20px;
+        margin-top: 20px;
+    }
+    
+    /* Estilo para o indicador de carregamento */
+    #loading-indicator {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    #loading-indicator .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+    
+    /* Melhorias na tabela */
+    .dataTables_wrapper {
+        margin-top: 1rem;
+    }
+    
+    .dataTables_filter input {
+        margin-left: 0.5rem;
+        border-radius: 0.25rem;
+        border: 1px solid #ced4da;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .dataTables_length select {
+        margin: 0 0.5rem;
+        border-radius: 0.25rem;
+        border: 1px solid #ced4da;
+    }
+    
+    .dataTables_paginate .paginate_button {
+        padding: 0.25rem 0.5rem;
+        margin-left: 0.25rem;
+        border-radius: 0.25rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .dataTables_paginate .paginate_button.current {
+        background: #007bff;
+        color: white !important;
+        border-color: #007bff;
     }
 
     #clinicasTable th,
@@ -149,8 +194,9 @@
 
 
 
+
 <div>
-    <table id="clinicasTable">
+    <table id="clinicasTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
                 <th>ID</th>
@@ -179,29 +225,64 @@
     // Função para buscar o nome da cidade pelo ID
     async function buscarCidadePorId(idCidade) {
         if (!idCidade) return null;
+        console.log(`Buscando cidade com ID: ${idCidade}`);
 
         try {
             const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${idCidade}`);
             if (!response.ok) {
-                throw new Error('Cidade não encontrada');
+                console.warn(`Cidade não encontrada para o ID: ${idCidade}`);
+                return null;
             }
-            return await response.json();
+            const cidade = await response.json();
+            console.log(`Cidade encontrada:`, cidade);
+            
+            // Adiciona informações adicionais para depuração
+            cidade._debug = {
+                id: cidade.id,
+                nome: cidade.nome,
+                microrregiao: cidade.microrregiao ? {
+                    id: cidade.microrregiao.id,
+                    nome: cidade.microrregiao.nome,
+                    mesorregiao: cidade.microrregiao.mesorregiao ? {
+                        id: cidade.microrregiao.mesorregiao.id,
+                        nome: cidade.microrregiao.mesorregiao.nome,
+                        UF: cidade.microrregiao.mesorregiao.UF ? {
+                            id: cidade.microrregiao.mesorregiao.UF.id,
+                            sigla: cidade.microrregiao.mesorregiao.UF.sigla,
+                            nome: cidade.microrregiao.mesorregiao.UF.nome
+                        } : null
+                    } : null
+                } : null
+            };
+            
+            return cidade;
         } catch (error) {
             console.error('Erro ao buscar cidade:', error);
             return null;
         }
     }
 
-    // Função para buscar o nome do estado pelo ID
+    // Função para buscar o nome do estado pelo ID ou sigla
     async function buscarEstadoPorId(idEstado) {
         if (!idEstado) return null;
 
         try {
-            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado}`);
-            if (!response.ok) {
-                throw new Error('Estado não encontrado');
+            // Primeiro tenta buscar pelo ID numérico
+            let response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado}`);
+            
+            // Se não encontrar, tenta buscar pela sigla (ex: SP, RJ)
+            if (!response.ok && idEstado.length === 2) {
+                response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado.toUpperCase()}`);
             }
-            return await response.json();
+            
+            if (!response.ok) {
+                console.warn(`Estado não encontrado para o ID/Sigla: ${idEstado}`);
+                return null;
+            }
+            
+            const estado = await response.json();
+            console.log('Estado encontrado para', idEstado, ':', estado);
+            return estado;
         } catch (error) {
             console.error('Erro ao buscar estado:', error);
             return null;
@@ -209,20 +290,122 @@
     }
 
     $(document).ready(function() {
-        // Função para buscar dados da API
+        console.log('Iniciando carregamento dos dados...');
+        // Função para mostrar/ocultar o indicador de carregamento
+        function toggleLoading(show) {
+            const loadingElement = $('#loading-indicator');
+            if (show) {
+                loadingElement.removeClass('d-none');
+            } else {
+                loadingElement.addClass('d-none');
+            }
+        }
+
+        // Carrega os dados ao iniciar a página
+        console.log('Iniciando carregamento dos dados...');
+        toggleLoading(true);
+        
+        buscarDados()
+            .then(clinicas => {
+                if (clinicas && Array.isArray(clinicas)) {
+                    console.log(`Dados recebidos: ${clinicas.length} clínicas`);
+                    // Inicializa o DataTable com os dados processados
+                    setTimeout(() => {
+                        inicializarDataTable(clinicas);
+                        toggleLoading(false);
+                    }, 500); // Pequeno atraso para melhorar a experiência
+                } else {
+                    console.error('Dados inválidos recebidos:', clinicas);
+                    // Inicializa a tabela vazia em caso de erro
+                    inicializarDataTable([]);
+                    toggleLoading(false);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar dados:', error);
+                // Inicializa a tabela vazia em caso de erro
+                inicializarDataTable([]);
+                toggleLoading(false);
+                
+                // Mostra mensagem de erro para o usuário
+                const errorMessage = `
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                        <strong>Erro ao carregar os dados!</strong> Por favor, tente novamente mais tarde.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `;
+                $('#clinicasTable_wrapper').before(errorMessage);
+            });
+        
+        // Função para buscar dados da API e processar cidades/estados
         async function buscarDados() {
             try {
+                console.log('Buscando dados da API...');
                 const response = await fetch("api/list/clinicas.php?per_page=1000");
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('Dados recebidos:', data);
 
-                if (data.status === "success") {
-                    // Inicializa o DataTable com os dados processados
-                    inicializarDataTable(data.data.clinicas);
+                if (data.status === "success" && data.data && Array.isArray(data.data.clinicas)) {
+                    console.log(`Encontradas ${data.data.clinicas.length} clínicas`);
+                    
+                    // Processa as clínicas para buscar cidade e estado do IBGE
+                    const clinicasProcessadas = await Promise.all(
+                        data.data.clinicas.map(async (clinica, index) => {
+                            console.log(`Processando clínica ${index + 1}/${data.data.clinicas.length} - ID: ${clinica.id}`);
+                            
+                            try {
+                                // Busca os dados da cidade no IBGE
+                                if (clinica.cidade_id) {
+                                    console.log(`Buscando cidade ID ${clinica.cidade_id} no IBGE...`);
+                                    const cidadeResponse = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${clinica.cidade_id}`);
+                                    
+                                    if (!cidadeResponse.ok) {
+                                        console.warn(`Erro ao buscar cidade ${clinica.cidade_id}: ${cidadeResponse.status}`);
+                                        return clinica;
+                                    }
+                                    
+                                    const cidadeData = await cidadeResponse.json();
+                                    console.log(`Dados da cidade ${clinica.cidade_id}:`, cidadeData);
+                                    
+                                    clinica.cidade_nome = cidadeData.nome || 'Cidade desconhecida';
+                                    
+                                    // Busca os dados do estado no IBGE
+                                    if (cidadeData.microrregiao?.mesorregiao?.UF) {
+                                        const uf = cidadeData.microrregiao.mesorregiao.UF;
+                                        clinica.estado_sigla = uf.sigla || '';
+                                        clinica.estado_nome = uf.nome || '';
+                                        console.log(`Encontrado estado: ${uf.sigla} - ${uf.nome}`);
+                                    } else {
+                                        console.warn('Estrutura de UF não encontrada nos dados da cidade');
+                                    }
+                                } else {
+                                    console.warn('Clínica sem cidade_id definido:', clinica.id);
+                                }
+                            } catch (error) {
+                                console.error(`Erro ao processar clínica ${clinica.id}:`, error);
+                            }
+                            
+                            return clinica;
+                        })
+                    );
+                    
+                    console.log('Processamento das clínicas concluído');
+                    return clinicasProcessadas;
                 } else {
-                    console.error("Erro ao buscar dados:", data.message);
+                    const errorMsg = data.message || 'Dados inválidos recebidos da API';
+                    console.error("Erro ao buscar dados:", errorMsg);
+                    return [];
                 }
             } catch (error) {
                 console.error("Erro na requisição:", error);
+                return [];
             }
         }
 
@@ -295,9 +478,23 @@
                         }
                     },
                     { 
-                        "data": "cidade_nome",
+                        "data": null,
                         "render": function(data, type, row) {
-                            return row.cidade_nome ? `${row.cidade_nome} / ${row.cidade_estado || ''}` : 'Não informado';
+                            // Mostra o carregamento enquanto busca os dados
+                            if (row.cidade_id && !row.cidade_nome) {
+                                return '<span class="text-muted">Carregando...</span>';
+                            }
+                            
+                            // Verifica se tem cidade e estado
+                            if (row.cidade_nome && (row.estado_sigla || row.estado_nome)) {
+                                return `${row.cidade_nome} / ${row.estado_sigla || row.estado_nome}`;
+                            }
+                            // Se tiver apenas a cidade
+                            if (row.cidade_nome) {
+                                return row.cidade_nome;
+                            }
+                            // Se não tiver nenhum dos dois
+                            return '<span class="text-muted">Não informado</span>';
                         }
                     },
                     { 
