@@ -188,23 +188,48 @@ function cadastrarEmpresa($pdo) {
             array_push($valores_codigos_empresa_id,$_SESSION["empresa_id"]);
         }
 
+        $associados   = [];
+        $jaAssociados = [];
         $dataHoraAtual = date('Y-m-d H:i:s');
 
-        for ($relacao = 0; $relacao < count($recebe_codigos_medicos_associados); $relacao++) 
-        { 
-            $instrucao_cadastra_relacao_medicos_clinicas = "insert into medicos_clinicas(empresa_id,medico_id,clinica_id,data_associacao,
-            status)values(:recebe_empresa_id,:recebe_medico_id,:recebe_clinica_id,:recebe_data_associacao,:recebe_status)";
-            $comando_cadastra_relacao_medicos_clinicas = $pdo->prepare($instrucao_cadastra_relacao_medicos_clinicas);
-            $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_empresa_id",$valores_codigos_empresa_id[$relacao]);
-            $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_medico_id",$recebe_codigos_medicos_associados[$relacao]);
-            $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_clinica_id",$valores_codigos_registrado_clinica[$relacao]);
-            $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_data_associacao",$dataHoraAtual);
-            $comando_cadastra_relacao_medicos_clinicas->bindValue(":recebe_status","Ativo");
-            $comando_cadastra_relacao_medicos_clinicas->execute();
-            $recebe_ultimo_codigo_registrado_medicos_clinicas = $pdo->lastInsertId();
+        // Preparar statements fora do loop para ganhar performance
+        $checkStmt = $pdo->prepare("SELECT id FROM medicos_clinicas WHERE medico_id = :medico_id AND clinica_id = :clinica_id AND status = 'Ativo'");
+        $insertStmt = $pdo->prepare("INSERT INTO medicos_clinicas (empresa_id, medico_id, clinica_id, data_associacao, status)
+                                     VALUES (:empresa_id, :medico_id, :clinica_id, :data_associacao, 'Ativo')");
+
+        foreach ($recebe_codigos_medicos_associados as $indice => $medicoId) {
+            // Verifica se já existe associação ativa
+            $checkStmt->execute([
+                ':medico_id'  => $medicoId,
+                ':clinica_id' => $recebe_ultimo_codigo_gerado_cadastramento_clinica
+            ]);
+
+            if ($checkStmt->rowCount() > 0) {
+                $jaAssociados[] = $medicoId;
+                continue; // pula para o próximo médico
+            }
+
+            // Executa a inserção
+            $insertStmt->execute([
+                ':empresa_id'      => $_SESSION["empresa_id"],
+                ':medico_id'       => $medicoId,
+                ':clinica_id'      => $recebe_ultimo_codigo_gerado_cadastramento_clinica,
+                ':data_associacao' => $dataHoraAtual
+            ]);
+
+            $associados[] = $medicoId;
         }
 
-        echo json_encode($recebe_ultimo_codigo_registrado_medicos_clinicas);
+        // Mensagem de duplicidade, se houver
+        $mensagemDuplicados = count($jaAssociados) > 0 ? 'Médico ja associado a clinica' : '';
+
+        echo json_encode([
+            'status'                 => 'success',
+            'clinica_id'             => $recebe_ultimo_codigo_gerado_cadastramento_clinica,
+            'medicos_associados'     => $associados,
+            'medicos_ja_associados'  => $jaAssociados,
+            'message'                => $mensagemDuplicados
+        ]);
     }else{
         echo json_encode(['status' => 'success', 'message' => 'Empresa cadastrada com sucesso!']);
     }
@@ -343,22 +368,46 @@ function atualizarEmpresa($pdo) {
                 array_push($valores_codigos_empresa_id_alterar,$_SESSION["empresa_id"]);
             }
 
+            $associados_alterar   = [];
+            $jaAssociados_alterar = [];
             $data_hora_atual_alterar = date('Y-m-d H:i:s');
 
-            for ($relacao = 0; $relacao < count($recebe_codigos_medicos_associados); $relacao++) 
-            { 
-                $instrucao_cadastra_relacao_medicos_clinicas_na_alteracao = "insert into medicos_clinicas(empresa_id,medico_id,clinica_id,data_associacao,
-                status)values(:recebe_empresa_id,:recebe_medico_id,:recebe_clinica_id,:recebe_data_associacao,:recebe_status)";
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao = $pdo->prepare($instrucao_cadastra_relacao_medicos_clinicas_na_alteracao);
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_empresa_id",$valores_codigos_empresa_id_alterar[$relacao]);
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_medico_id",$recebe_codigos_medicos_associados[$relacao]);
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_clinica_id",$valores_codigos_registrado_clinica_alterar[$relacao]);
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_data_associacao",$data_hora_atual_alterar);
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->bindValue(":recebe_status","Ativo");
-                $comando_cadastra_relacao_medicos_clinicas_na_alteracao->execute();
-                $recebe_ultimo_codigo_registrado_medicos_clinicas_na_alteracao = $pdo->lastInsertId();
+            // Preparar queries
+            $checkStmtAlt  = $pdo->prepare("SELECT id FROM medicos_clinicas WHERE medico_id = :medico_id AND clinica_id = :clinica_id AND status = 'Ativo'");
+            $insertStmtAlt = $pdo->prepare("INSERT INTO medicos_clinicas (empresa_id, medico_id, clinica_id, data_associacao, status)
+                                            VALUES (:empresa_id, :medico_id, :clinica_id, :data_associacao, 'Ativo')");
+
+            foreach ($recebe_codigos_medicos_associados as $indice => $medicoId) {
+                // verifica duplicidade
+                $checkStmtAlt->execute([
+                    ':medico_id'  => $medicoId,
+                    ':clinica_id' => $recebe_codigo_clinica_alterar
+                ]);
+
+                if ($checkStmtAlt->rowCount() > 0) {
+                    $jaAssociados_alterar[] = $medicoId;
+                    continue;
+                }
+
+                $insertStmtAlt->execute([
+                    ':empresa_id'      => $_SESSION["empresa_id"],
+                    ':medico_id'       => $medicoId,
+                    ':clinica_id'      => $recebe_codigo_clinica_alterar,
+                    ':data_associacao' => $data_hora_atual_alterar
+                ]);
+
+                $associados_alterar[] = $medicoId;
             }
-            echo json_encode($recebe_ultimo_codigo_registrado_medicos_clinicas_na_alteracao);
+
+            $mensagemDuplicadosAlt = count($jaAssociados_alterar) > 0 ? 'Médico ja associado a clinica' : '';
+
+            echo json_encode([
+                'status'                 => 'success',
+                'clinica_id'             => $recebe_codigo_clinica_alterar,
+                'medicos_associados'     => $associados_alterar,
+                'medicos_ja_associados'  => $jaAssociados_alterar,
+                'message'                => $mensagemDuplicadosAlt
+            ]);
     }else{
         echo json_encode($resultado_altera_clinica);
     }

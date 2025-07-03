@@ -953,6 +953,7 @@ $conexao->close();
                         $("#tabela-medico-associado tbody").html("");
 
                         let htmlContent = "";
+                        ids_medicos_associados_existentes = resposta_medicos.map(m => String(m.medico_id));
                         for (let indice = 0; indice < resposta_medicos.length; indice++) {
                             htmlContent +=
                                 '<tr>' +
@@ -1014,8 +1015,9 @@ $conexao->close();
         });
     });
 
-    let valores_codigos_medicos = Array();
-    let limpou_tabela_alteracao;
+    let valores_codigos_medicos = [];
+    // IDs já associados no banco (carregados na abertura da clínica)
+    let ids_medicos_associados_existentes = [];
 
     $("#associar-medico-clinica").click(function(e) {
         e.preventDefault();
@@ -1023,14 +1025,14 @@ $conexao->close();
         debugger;
 
         if (recebe_acao_alteracao_clinica === "editar") {
-            if (!limpou_tabela_alteracao) {
-                $("#tabela-medico-associado tbody").html("");
-                limpou_tabela_alteracao = true;
-            }
-
             let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
 
             let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
+            // Impede inclusão duplicada
+            if (valores_codigos_medicos.includes(recebe_codigo_medico_selecionado_associar_clinica) || ids_medicos_associados_existentes.includes(String(recebe_codigo_medico_selecionado_associar_clinica))) {
+                alert('Médico já adicionado.');
+                return;
+            }
 
             let recebe_tabela_associar_medico_clinica = document.querySelector("#tabela-medico-associado tbody");
 
@@ -1047,6 +1049,11 @@ $conexao->close();
             let recebe_codigo_medico_selecionado_associar_clinica = $("#medico-associado").val();
 
             let recebe_nome_medico_selecionado_associar_clinica = $('#medico-associado option:selected').text();
+            // Impede inclusão duplicada
+            if (valores_codigos_medicos.includes(recebe_codigo_medico_selecionado_associar_clinica) || ids_medicos_associados_existentes.includes(String(recebe_codigo_medico_selecionado_associar_clinica))) {
+                alert('Médico já adicionado.');
+                return;
+            }
 
             console.log(recebe_codigo_medico_selecionado_associar_clinica + " - " + recebe_nome_medico_selecionado_associar_clinica);
 
@@ -1188,6 +1195,9 @@ $conexao->close();
             .then(data => {
                 debugger;
                 console.log(data);
+                    if (data.message) {
+                        alert(data.message);
+                    }
 
                 // Preenche os campos básicos
                 document.getElementById('nome_fantasia').value = data.alias || '';
@@ -1895,6 +1905,9 @@ $conexao->close();
                 .then(data => {
                     debugger;
                     console.log(data);
+                    if (data.message) {
+                        alert(data.message);
+                    }
                     window.location.href = "painel.php?pg=clinicas";
                 })
                 .catch((error) => {
@@ -1909,6 +1922,9 @@ $conexao->close();
                 .then(data => {
                     debugger;
                     console.log(data);
+                    if (data.message) {
+                        alert(data.message);
+                    }
                     window.location.href = "painel.php?pg=clinicas";
                 })
                 .catch((error) => {
