@@ -191,38 +191,47 @@
 
 
     async function popula_cidades_informacoes_rapidas_empresa(cidadeSelecionada = "", estadoSelecionado = "") {
-        debugger;
-        const apiUrl = 'api/list/cidades.php';
         const cidadeSelect = document.getElementById('cidade_id');
 
+        // Estado inicial do <select>
+        cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
+        cidadeSelect.disabled = true;
+
         try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
+            // Traz todos os municípios ordenados por nome (aprox. 5.500 itens)
+            const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome');
+            if (!response.ok) throw new Error(`Falha ao buscar cidades: ${response.status}`);
 
-            if (data.status === 'success') {
-                cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+            const cidadesIBGE = await response.json();
 
-                data.data.cidades.forEach(cidade => {
-                    const option = document.createElement('option');
-                    option.value = cidade.id;
-                    option.textContent = `${cidade.nome} - ${cidade.estado}`;
-                    cidadeSelect.appendChild(option);
-                });
+            // Limpa o <select> e insere opção padrão
+            cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
 
-                if (cidadeSelecionada && estadoSelecionado) {
-                    for (let i = 0; i < cidadeSelect.options.length; i++) {
-                        const optionText = cidadeSelect.options[i].text;
-                        if (optionText.includes(cidadeSelecionada) && optionText.includes(estadoSelecionado)) {
-                            cidadeSelect.selectedIndex = i;
-                            break;
-                        }
+            cidadesIBGE.forEach(cidade => {
+                const option = document.createElement('option');
+                option.value = cidade.id;
+                const uf = cidade.microrregiao.mesorregiao.UF.sigla;
+                option.textContent = `${cidade.nome} - ${uf}`;
+                cidadeSelect.appendChild(option);
+            });
+
+            // Habilita o campo após preenchimento
+            cidadeSelect.disabled = false;
+
+            // Seleciona automaticamente caso tenha sido informado
+            if (cidadeSelecionada) {
+                const busca = cidadeSelecionada.toLowerCase();
+                for (let i = 0; i < cidadeSelect.options.length; i++) {
+                    const texto = cidadeSelect.options[i].textContent.toLowerCase();
+                    if (texto.includes(busca) && (!estadoSelecionado || texto.includes(estadoSelecionado.toLowerCase()))) {
+                        cidadeSelect.selectedIndex = i;
+                        break;
                     }
                 }
-            } else {
-                console.error('Erro ao carregar cidades:', data.message);
             }
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('Erro ao carregar cidades do IBGE:', error);
+            cidadeSelect.innerHTML = '<option value="">Erro ao carregar cidades</option>';
         }
     }
 
