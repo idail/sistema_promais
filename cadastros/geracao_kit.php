@@ -1525,13 +1525,18 @@
         <p>Exames que requerem análise detalhada</p>
       </div>
     </div>
+
+    <!-- Mensagem de sucesso -->
+    <div class="success-message" id="exame-gravado">
+      Tipo de exame selecionado e salvo com sucesso!
+    </div>
   </div>
 
   <div class="navigation-buttons">
     <button class="btn-nav" id="prevBtn"><i class="fas fa-arrow-left"></i> Anterior</button>
     <button class="btn-nav" id="nextBtn">Próximo <i class="fas fa-arrow-right"></i></button>
   </div>
-
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script>
     // Inicializa o formatter de moeda global
     window.fatFormatter = new Intl.NumberFormat('pt-BR', {
@@ -2037,7 +2042,7 @@
         }
         // Configurar os cards de exame
         setTimeout(() => {
-          setupExamCards();
+          verifica_selecao_exame();
           // Restaurar a seleção do exame se existir
           if (appState.selectedExam) {
             const selectedCard = document.querySelector(`.exam-card[data-exam="${appState.selectedExam}"]`);
@@ -2195,24 +2200,66 @@
       });
     }
 
-    function setupExamCards() {
+    let recebe_exame_selecionado;
+    let ajaxEmExecucao = false; // evita chamadas duplicadas
+
+    function verifica_selecao_exame() {
+      debugger;
       const examCards = document.querySelectorAll('.exam-card');
+
       examCards.forEach(card => {
         card.addEventListener('click', function() {
-          // Remove active class from all cards
+          // Remove active de todos
           examCards.forEach(c => c.classList.remove('active'));
-          // Add active class to clicked card
           this.classList.add('active');
-          // Salva o exame selecionado no estado
-          appState.selectedExam = this.dataset.exam;
+
+          // Define o exame selecionado
+          recebe_exame_selecionado = this.dataset.exam;
+          appState.selectedExam = recebe_exame_selecionado;
           appState.validation.examSelected = true;
+
+          // Remove validação visível
           document.getElementById('examValidation').classList.remove('validation-visible');
-          console.log('Selected exam:', appState.selectedExam);
+
+          console.log('Exame selecionado:', appState.selectedExam);
+
+          // Só chama o AJAX se não estiver em execução
+          if (!ajaxEmExecucao) {
+            debugger;
+            ajaxEmExecucao = true;
+            gravar_selecao_exame(recebe_exame_selecionado);
+          }
         });
       });
     }
 
+    function gravar_selecao_exame(valorExame) {
+      debugger;
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_geracao_kit: "incluir_exame",
+          valor_exame: valorExame,
+        },
+        success: function(retorno_exame_geracao_kit) {
+          debugger;
+          $("#exame-gravado").html("Exame gravado com sucesso");
+          $("#exame-gravado").show();
+          $("#exame-gravado").fadeOut(4000);
+          console.log(retorno_exame_geracao_kit);
+          ajaxEmExecucao = false; // libera para nova requisição
+        },
+        error: function(xhr, status, error) {
+          console.log("Falha ao incluir exame: " + error);
+          ajaxEmExecucao = false; // libera para tentar de novo
+        },
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+      $("#exame-gravado").hide();
       // Configurar os event listeners das abas
       tabs.forEach((tab, index) => {
         tab.addEventListener('click', () => {
@@ -2284,7 +2331,7 @@
       updateTab(appState.currentStep);
       
       // Configurar os cards de exame
-      setupExamCards();
+      verifica_selecao_exame();
       
       // Restaurar a seleção do exame se existir
       if (appState.selectedExam) {
