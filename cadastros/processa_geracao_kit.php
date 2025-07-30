@@ -40,10 +40,19 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         echo json_encode($recebe_codigo_gerado_kit);
     }else if($recebe_processo_geracao_kit === "incluir_valores_kit")
     {
-        if(isset($_POST["valor_exame"]))
+        if(isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "")
             $recebe_exame_selecionado = $_POST["valor_exame"];
 
-        $instrucao_atualizar_exame = "update kits ";
+        $instrucao_atualizar_kit = "update kits set tipo_exame = :recebe_tipo_exame where id = :recebe_kit_id";
+        $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
+        $comando_atualizar_kit->bindValue(":recebe_tipo_exame",$recebe_exame_selecionado);
+        $comando_atualizar_kit->bindValue(":recebe_kit_id",$_SESSION["codigo_kit"]);
+        $resultado_atualizar_kit = $comando_atualizar_kit->execute();
+
+        if($resultado_atualizar_kit)
+            echo json_encode("Dado gravado com sucesso");
+        else
+            echo json_encode("Dado não foi gravado");
     }
 }
 ?>

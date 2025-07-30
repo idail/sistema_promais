@@ -2240,12 +2240,12 @@
         type: "POST",
         dataType: "json",
         data: {
-          processo_geracao_kit: "incluir_exame",
+          processo_geracao_kit: "incluir_valores_kit",
           valor_exame: valorExame,
         },
         success: function(retorno_exame_geracao_kit) {
           debugger;
-          $("#exame-gravado").html("Exame gravado com sucesso");
+          $("#exame-gravado").html(retorno_exame_geracao_kit);
           $("#exame-gravado").show();
           $("#exame-gravado").fadeOut(4000);
           console.log(retorno_exame_geracao_kit);
