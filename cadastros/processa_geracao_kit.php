@@ -28,16 +28,22 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
     $recebe_codigo_gerado_kit;
 
-    if($recebe_processo_geracao_kit === "incluir_exame")
+    if($recebe_processo_geracao_kit === "incluir_exame_geracao_sessao")
     {
-        $recebe_exame_selecionado = $_POST["valor_exame"];
-
-        $instrucao_cadastra_exame = "insert into kits(tipo_exame)values(:recebe_tipo_exame)";
+        $instrucao_cadastra_exame = "insert into kits(status,empresa_id)values(:recebe_status_kit,:recebe_empresa_id_kit)";
         $comando_cadastra_exame = $pdo->prepare($instrucao_cadastra_exame);
-        $comando_cadastra_exame->bindValue(":recebe_tipo_exame",$recebe_exame_selecionado);
+        $comando_cadastra_exame->bindValue(":recebe_status_kit","RASCUNHO");
+        $comando_cadastra_exame->bindValue(":recebe_empresa_id_kit",$_SESSION["empresa_id"]);
         $comando_cadastra_exame->execute();
         $recebe_codigo_gerado_kit = $pdo->lastInsertId();
+        $_SESSION["codigo_kit"] = $recebe_codigo_gerado_kit;
         echo json_encode($recebe_codigo_gerado_kit);
+    }else if($recebe_processo_geracao_kit === "incluir_valores_kit")
+    {
+        if(isset($_POST["valor_exame"]))
+            $recebe_exame_selecionado = $_POST["valor_exame"];
+
+        $instrucao_atualizar_exame = "update kits ";
     }
 }
 ?>

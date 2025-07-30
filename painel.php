@@ -90,17 +90,28 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                         </div>
                     </li>
                     <li>
-                        <a href="?pg=geracao_kit">
+                        <div class="menu-trigger">
+                            <span>
+                                <i class="fas fa-kit-medical"></i>
+                                Kits
+                            </span>
+                            <i class="fas fa-chevron-right arrow"></i>
+                        </div>
+                        <div class="submenu">
+                            <a href="?pg=geracao_kit">Gera&#xe7;&#xe3;o de Kit</a>
+                            <a href="?pg=aso">ASO em Rascunho</a>
+                            <a href="?pg=listagem_kits">Listar Kits</a>
+                        </div>
+                        <!-- <a href="?pg=geracao_kit">
                             <i class="fas fa-file-medical"></i>
-                            Gera&#xe7;&#xe3;o de Kit
-                        </a>
+                        </a> -->
                     </li>
-                    <li>
-                        <a href="?pg=aso">
+                    <!-- <li>
+                        <a href="">
                             <i class="fas fa-clipboard-check"></i>
-                            ASO em Rascunho
+                            
                         </a>
-                    </li>
+                    </li> -->
                     <li>
                         <a href="?pg=config">
                             <i class="fas fa-cogs"></i>

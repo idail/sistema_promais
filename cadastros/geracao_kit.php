@@ -2259,7 +2259,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      $("#exame-gravado").hide();
+      
       // Configurar os event listeners das abas
       tabs.forEach((tab, index) => {
         tab.addEventListener('click', () => {
@@ -2347,6 +2347,25 @@
     let pessoas = [];
 
     $(document).ready(function(e){
+      $("#exame-gravado").hide();
+
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_geracao_kit: "incluir_exame_geracao_sessao",
+        },
+        success: function(retorno_exame_geracao_kit) {
+          debugger;
+          console.log("Kit começou a ser gravado, sessao:" + retorno_exame_geracao_kit);
+        },
+        error: function(xhr, status, error) {
+          console.log("Falha ao incluir exame: " + error);
+        },
+      });
+
+
       $.ajax({
         url: "cadastros/processa_empresa.php", // Endpoint da API
         method: "GET",
