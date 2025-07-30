@@ -3399,14 +3399,14 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
 
     // Dados dos Kits relacionados aos colaboradores
     const kitsColaboradores = {
-      '12345678900': [
+      '02763134106': [
         { id: 'KIT001', data: '15/10/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
         { id: 'KIT002', data: '20/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Pendente' },
         { id: 'KIT003', data: '10/08/2023', empresa: 'Comércio XYZ S/A', cargo: 'Técnico de Segurança', status: 'Concluído' },
         { id: 'KIT010', data: '05/07/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
         { id: 'KIT011', data: '22/06/2023', empresa: 'Serviços Gama', cargo: 'Analista de Segurança', status: 'Cancelado' }
       ],
-      '98765432100': [
+      '99867702115': [
         { id: 'KIT004', data: '05/11/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
         { id: 'KIT005', data: '28/10/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Cancelado' },
         { id: 'KIT012', data: '15/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
