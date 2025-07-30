@@ -106,29 +106,49 @@ try {
     $offset = ($page - 1) * $per_page;
 
     // Query para buscar clínicas com informações da cidade
-    $query = "
-        SELECT 
-            c.id, 
-            c.empresa_id, 
-            c.codigo, 
-            c.nome_fantasia, 
-            c.razao_social, 
-            c.cnpj, 
-            c.endereco, 
-            c.numero, 
-            c.complemento, 
-            c.bairro, 
-            c.cidade_id, 
-            cid.nome AS cidade_nome, 
-            cid.estado_id AS cidade_estado,
-            c.cep, 
-            c.email, 
-            c.telefone, 
-            c.status
-        FROM clinicas c
-        LEFT JOIN cidades cid ON c.cidade_id = cid.id
-        WHERE c.empresa_id = :empresa_id
-    ";
+    // $query = "
+    //     SELECT 
+    //         c.id, 
+    //         c.empresa_id, 
+    //         c.codigo, 
+    //         c.nome_fantasia, 
+    //         c.razao_social, 
+    //         c.cnpj, 
+    //         c.endereco, 
+    //         c.numero, 
+    //         c.complemento, 
+    //         c.bairro, 
+    //         c.cidade_id, 
+    //         cid.nome AS cidade_nome, 
+    //         cid.estado_id AS cidade_estado,
+    //         c.cep, 
+    //         c.email, 
+    //         c.telefone, 
+    //         c.status
+    //     FROM clinicas c
+    //     LEFT JOIN cidades cid ON c.cidade_id = cid.id
+    //     WHERE c.empresa_id = :empresa_id
+    // ";
+
+    $query = 
+    "SELECT 
+        c.id, 
+        c.empresa_id, 
+        c.codigo, 
+        c.nome_fantasia, 
+        c.razao_social, 
+        c.cnpj, 
+        c.endereco, 
+        c.numero, 
+        c.complemento, 
+        c.bairro, 
+        c.cidade_id, 
+        c.cep, 
+        c.email, 
+        c.telefone, 
+        c.status
+         FROM clinicas c
+         WHERE c.empresa_id = :empresa_id";
 
     if (!empty($filtros)) {
         $query .= " AND " . implode(" AND ", $filtros);

@@ -2343,6 +2343,7 @@
     });
 
     let empresas = [];
+    let clinicas = [];
 
     $(document).ready(function(e){
       $.ajax({
@@ -2411,6 +2412,42 @@
           console.error("Erro na requisição empresas:", error);
         }
       });
+
+
+      $.ajax({
+        url: "api/list/clinicas.php?per_page=1000", // Endpoint da API
+        method: "GET",
+        dataType: "json",
+        // data: { processo_empresa: "buscar_empresas" },
+        success: async function(resposta_clinicas) {
+          console.log('Clínicas retornadas:', resposta_clinicas);
+
+          const listaClinicas = resposta_clinicas && resposta_clinicas.data && Array.isArray(resposta_clinicas.data.clinicas)
+            ? resposta_clinicas.data.clinicas
+            : [];
+
+          if (listaClinicas.length > 0) {
+            for (let c = 0; c < listaClinicas.length; c++) {
+              clinicas.push({
+                nome: listaClinicas[c].nome_fantasia,
+                cnpj: listaClinicas[c].cnpj,
+              });
+            }
+
+            if (typeof ecpData !== 'undefined') {
+              ecpData.clinicas = clinicas;
+            }
+
+            console.log('Clínicas carregadas:', clinicas);
+          } else {
+            console.warn('Nenhuma clínica encontrada na resposta.');
+          }
+        },
+        error:function(xhr,status,error)
+        {
+
+        },
+      });
     });
 
     // Funções do ECP
@@ -2445,9 +2482,9 @@
       //     quantidadeClinicas: 8
       //   },
       // ],
-      clinicas: [
-        { nome: "Clínica Vida", cnpj: "45.987.654/0001-01" }
-      ],
+      // clinicas: [
+      //   { nome: "Clínica Vida", cnpj: "45.987.654/0001-01" }
+      // ],
       colaboradores: [
         { nome: "João da Silva", cpf: "123.456.789-00", cargo: "Analista de Segurança" },
         { nome: "Maria Oliveira", cpf: "987.654.321-00", cargo: "Técnico de Segurança" },
