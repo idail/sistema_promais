@@ -2344,6 +2344,7 @@
 
     let empresas = [];
     let clinicas = [];
+    let pessoas = [];
 
     $(document).ready(function(e){
       $.ajax({
@@ -2448,6 +2449,41 @@
 
         },
       });
+
+      $.ajax({
+          url: "cadastros/processa_pessoa.php", // Endpoint da API
+          method: "GET",
+          dataType: "json",
+          data: {
+            "processo_pessoa": "buscar_pessoas"
+          },
+          success: function(resposta_pessoa) 
+          {
+            debugger;
+
+            if(resposta_pessoa.length > 0)
+            {
+              for (let p = 0; p < resposta_pessoa.length; p++) 
+              {
+                pessoas.push({
+                  nome:resposta_pessoa[p].nome,
+                  cpf:resposta_pessoa[p].cpf,
+                  cargo:"Analista de Segurança"
+                });
+              }
+
+              if (typeof ecpData !== 'undefined') {
+              ecpData.colaboradores = pessoas;
+              }
+
+            console.log('Pessoas carregadas:', pessoas);
+            }
+          },
+          error:function(xhr,status,error)
+          {
+
+          },
+      });
     });
 
     // Funções do ECP
@@ -2485,15 +2521,15 @@
       // clinicas: [
       //   { nome: "Clínica Vida", cnpj: "45.987.654/0001-01" }
       // ],
-      colaboradores: [
-        { nome: "João da Silva", cpf: "123.456.789-00", cargo: "Analista de Segurança" },
-        { nome: "Maria Oliveira", cpf: "987.654.321-00", cargo: "Técnico de Segurança" },
-        { nome: "Carlos Eduardo", cpf: "456.123.789-11", cargo: "Engenheiro de Segurança" },
-        { nome: "Ana Paula Santos", cpf: "789.123.456-22", cargo: "Enfermeira do Trabalho" },
-        { nome: "Roberto Almeida", cpf: "321.654.987-33", cargo: "Técnico em Enfermagem" },
-        { nome: "Fernanda Lima", cpf: "654.987.321-44", cargo: "Médica do Trabalho" },
-        { nome: "Ricardo Pereira", cpf: "159.753.486-55", cargo: "Técnico em Segurança" }
-      ],
+      // colaboradores: [
+      //   { nome: "João da Silva", cpf: "123.456.789-00", cargo: "Analista de Segurança" },
+      //   { nome: "Maria Oliveira", cpf: "987.654.321-00", cargo: "Técnico de Segurança" },
+      //   { nome: "Carlos Eduardo", cpf: "456.123.789-11", cargo: "Engenheiro de Segurança" },
+      //   { nome: "Ana Paula Santos", cpf: "789.123.456-22", cargo: "Enfermeira do Trabalho" },
+      //   { nome: "Roberto Almeida", cpf: "321.654.987-33", cargo: "Técnico em Enfermagem" },
+      //   { nome: "Fernanda Lima", cpf: "654.987.321-44", cargo: "Médica do Trabalho" },
+      //   { nome: "Ricardo Pereira", cpf: "159.753.486-55", cargo: "Técnico em Segurança" }
+      // ],
       cargos: [
         { titulo: "Motorista de Caminhão", cbo: "7823-10", descricao: "Conduz caminhão para transporte de cargas, realizando operações de carga e descarga, manutenção preventiva e cumprindo normas de trânsito e segurança." },
         { titulo: "Auxiliar de Enfermagem", cbo: "3222-40", descricao: "Realiza atividades de assistência de enfermagem, como curativos, administração de medicamentos e acompanhamento do estado de saúde dos pacientes." },
