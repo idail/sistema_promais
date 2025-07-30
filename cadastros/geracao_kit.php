@@ -2357,8 +2357,18 @@
           processo_geracao_kit: "incluir_exame_geracao_sessao",
         },
         success: function(retorno_exame_geracao_kit) {
-          debugger;
           console.log("Kit começou a ser gravado, sessao:" + retorno_exame_geracao_kit);
+          // Injeta estilo do banner apenas uma vez
+          if (!$('#kit-toast-style').length) {
+            $('head').append('<style id="kit-toast-style">\n              #kit-toast {\n                position: fixed;\n                top: 10px;\n                right: 10px;\n                background: #28a745; /* verde similar ao totalizador */\n                color: #fff;\n                padding: 8px 16px;\n                border-radius: 4px;\n                font-weight: 600;\n                z-index: 9999;\n                display: none;\n                box-shadow: 0 2px 6px rgba(0,0,0,.2);\n              }\n            </style>');
+          }
+
+          // Cria (ou reusa) o banner
+          let $toast = $('#kit-toast');
+          if (!$toast.length) {
+            $toast = $('<div id="kit-toast"></div>').appendTo('body');
+          }
+          $toast.text('Gravação do kit iniciada').stop(true, true).fadeIn(200).delay(5000).fadeOut(1000);
         },
         error: function(xhr, status, error) {
           console.log("Falha ao incluir exame: " + error);
