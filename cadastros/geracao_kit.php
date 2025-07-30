@@ -1648,6 +1648,8 @@
           <h2>Nova Empresa</h2>
           <input id="novaEmpresaNome" type="text" placeholder="Nome da empresa" class="ecp-modal-input">
           <input id="novaEmpresaEndereco" type="text" placeholder="Endereço" class="ecp-modal-input">
+          <label>Estado:</label>
+          <select id="novaEmpresaEstado" class="ecp-modal-input"></select>
           <input id="novaEmpresaCidade" type="text" placeholder="Cidade" class="ecp-modal-input">
           <input id="novaEmpresaCnpj" type="text" placeholder="CNPJ" class="ecp-modal-input">
           <div class="ecp-modal-buttons">
@@ -3347,6 +3349,35 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       };
       
       ecpData.empresas.push(nova);
+
+
+      $.ajax({
+        url: "cadastros/processa_empresa.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+           processo_empresa: "inserir_empresa",
+           valor_nome_fantasia_empresa: nova.nome,
+           valor_cnpj_empresa: nova.cnpj,
+           valor_endereco_empresa: nova.endereco,
+           
+           valor_id_cidade: recebe_id_cidade,
+           valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
+           valor_empresa_id: recebe_empresa_id,
+        },
+        success: function(retorno_empresa) {
+           debugger;
+           console.log(retorno_empresa);
+            if (retorno_empresa) {
+              console.log("Empresa cadastrada com sucesso");
+              window.location.href = "painel.php?pg=empresas";
+            }
+          },
+          error: function(xhr, status, error) {
+             console.log("Falha ao inserir empresa:" + error);
+          },
+        });
+
       fecharModal('modalEmpresa');
       limparCampos(['novaEmpresaNome', 'novaEmpresaEndereco', 'novaEmpresaCidade', 'novaEmpresaCnpj']);
       
