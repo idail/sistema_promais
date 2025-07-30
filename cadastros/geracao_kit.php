@@ -2341,38 +2341,110 @@
         }
       }
     });
+
+    let empresas = [];
+
+    $(document).ready(function(e){
+      $.ajax({
+        url: "cadastros/processa_empresa.php", // Endpoint da API
+        method: "GET",
+        dataType: "json",
+        data: { processo_empresa: "buscar_empresas" },
+        success: async function(resposta_empresa) {
+          debugger;
+          try {
+            if (resposta_empresa && resposta_empresa.length > 0) {
+              for (let i = 0; i < resposta_empresa.length; i++) {
+                const emp = resposta_empresa[i];
+                let nomeCidade = '';
+                let nomeEstado = '';
+
+                // Consulta cidade
+                await $.ajax({
+                  url: `https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${emp.id_cidade}`,
+                  method: "GET",
+                  dataType: "json",
+                  success: function(cidadeResp){
+                    debugger;
+                    nomeCidade = cidadeResp && cidadeResp.nome ? cidadeResp.nome : '';
+                  },
+                  error: function(){ console.error('Erro ao buscar cidade ID:', emp.id_cidade); }
+                });
+
+                // Consulta estado
+                await $.ajax({
+                  url: `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${emp.id_estado}`,
+                  method: "GET",
+                  dataType: "json",
+                  success: function(estadoResp){
+                    debugger;
+                    nomeEstado = estadoResp && estadoResp.nome ? estadoResp.nome : '';
+                  },
+                  error: function(){ console.error('Erro ao buscar estado ID:', emp.id_estado); }
+                });
+
+                empresas.push({
+                  id: emp.id,
+                  nome: emp.nome,
+                  endereco: emp.endereco,
+                  complemento: emp.complemento,
+                  bairro: emp.bairro,
+                  cidade: nomeCidade,
+                  estado: nomeEstado,
+                  cep: emp.cep,
+                  ativo: true,
+                  quantidadeVidas: 10,
+                  quantidadeClinicas: 5
+                });
+              }
+
+              if (typeof ecpData !== 'undefined') {
+                ecpData.empresas = empresas;
+              }
+              console.log('Empresas carregadas com IBGE via AJAX', empresas);
+            }
+          } catch(err) {
+            console.error('Erro no processamento das empresas:', err);
+          }
+        },
+        error: function(xhr, status, error){
+          console.error("Erro na requisição empresas:", error);
+        }
+      });
+    });
+
     // Funções do ECP
     const ecpData = {
-      empresas: [
-        { 
-          id: 1, 
-          nome: 'Empresa A', 
-          cnpj: '00.000.000/0001-00',
-          endereco: 'Rua das Flores, 123',
-          complemento: 'Sala 42',
-          bairro: 'Centro',
-          cidade: 'São Paulo',
-          estado: 'SP',
-          cep: '01001-000',
-          ativo: true,
-          quantidadeVidas: 150,
-          quantidadeClinicas: 5
-        },
-        { 
-          id: 2, 
-          nome: 'Empresa B', 
-          cnpj: '00.000.000/0001-01',
-          endereco: 'Av. Paulista, 1000',
-          complemento: '10º andar',
-          bairro: 'Bela Vista',
-          cidade: 'São Paulo',
-          estado: 'SP',
-          cep: '01310-100',
-          ativo: true,
-          quantidadeVidas: 320,
-          quantidadeClinicas: 8
-        },
-      ],
+      // empresas: [
+      //   { 
+      //     id: 1, 
+      //     nome: 'Empresa A', 
+      //     cnpj: '00.000.000/0001-00',
+      //     endereco: 'Rua das Flores, 123',
+      //     complemento: 'Sala 42',
+      //     bairro: 'Centro',
+      //     cidade: 'São Paulo',
+      //     estado: 'SP',
+      //     cep: '01001-000',
+      //     ativo: true,
+      //     quantidadeVidas: 150,
+      //     quantidadeClinicas: 5
+      //   },
+      //   { 
+      //     id: 2, 
+      //     nome: 'Empresa B', 
+      //     cnpj: '00.000.000/0001-01',
+      //     endereco: 'Av. Paulista, 1000',
+      //     complemento: '10º andar',
+      //     bairro: 'Bela Vista',
+      //     cidade: 'São Paulo',
+      //     estado: 'SP',
+      //     cep: '01310-100',
+      //     ativo: true,
+      //     quantidadeVidas: 320,
+      //     quantidadeClinicas: 8
+      //   },
+      // ],
       clinicas: [
         { nome: "Clínica Vida", cnpj: "45.987.654/0001-01" }
       ],
