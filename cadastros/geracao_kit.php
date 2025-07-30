@@ -2354,7 +2354,7 @@
         type: "POST",
         dataType: "json",
         data: {
-          processo_geracao_kit: "incluir_exame_geracao_sessao",
+          processo_geracao_kit: "geracao_kit_sessao",
         },
         success: function(retorno_exame_geracao_kit) {
           console.log("Kit começou a ser gravado, sessao:" + retorno_exame_geracao_kit);

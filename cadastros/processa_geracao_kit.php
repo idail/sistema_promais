@@ -28,13 +28,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
     $recebe_codigo_gerado_kit;
 
-    if($recebe_processo_geracao_kit === "incluir_exame_geracao_sessao")
+    if($recebe_processo_geracao_kit === "geracao_kit_sessao")
     {
-        $instrucao_cadastra_exame = "insert into kits(status,empresa_id)values(:recebe_status_kit,:recebe_empresa_id_kit)";
-        $comando_cadastra_exame = $pdo->prepare($instrucao_cadastra_exame);
-        $comando_cadastra_exame->bindValue(":recebe_status_kit","RASCUNHO");
-        $comando_cadastra_exame->bindValue(":recebe_empresa_id_kit",$_SESSION["empresa_id"]);
-        $comando_cadastra_exame->execute();
+        $instrucao_cadastra_kit = "insert into kits(status,empresa_id,usuario_id)values(:recebe_status_kit,:recebe_empresa_id_kit,:recebe_usuario_id)";
+        $comando_cadastra_kit = $pdo->prepare($instrucao_cadastra_kit);
+        $comando_cadastra_kit->bindValue(":recebe_status_kit","RASCUNHO");
+        $comando_cadastra_kit->bindValue(":recebe_empresa_id_kit",$_SESSION["empresa_id"]);
+        $comando_cadastra_kit->bindValue(":recebe_usuario_id",$_SESSION['user_id']);
+        $comando_cadastra_kit->execute();
         $recebe_codigo_gerado_kit = $pdo->lastInsertId();
         $_SESSION["codigo_kit"] = $recebe_codigo_gerado_kit;
         echo json_encode($recebe_codigo_gerado_kit);
