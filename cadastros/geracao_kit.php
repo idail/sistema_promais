@@ -2249,6 +2249,33 @@
         },
         success: function(retorno_exame_geracao_kit) {
           debugger;
+
+          const mensagemSucesso = `
+                <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>Exame cadastrado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#exame-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#exame-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+
           $("#exame-gravado").html(retorno_exame_geracao_kit);
           $("#exame-gravado").show();
           $("#exame-gravado").fadeOut(4000);
@@ -3576,13 +3603,25 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
             debugger;
             console.log('Resposta do servidor:', response);
             if (response > 0) {
-              // Exibe a mensagem de sucesso
+              // Exibe a mensagem de sucesso centralizada acima das abas
+              // const mensagemSucesso = `
+              //   <div id="empresa-gravada" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              //     <div style="display: flex; align-items: center; justify-content: center;">
+              //       <i class="fas fa-check-circle" style="font-size: 24px; margin-right: 12px; color: #28a745;"></i>
+              //       <div>
+              //         <strong style="font-size: 16px;">Sucesso!</strong>
+              //         <div>Empresa cadastrada com sucesso.</div>
+              //       </div>
+              //     </div>
+              //   </div>
+              // `;
+
               const mensagemSucesso = `
-                <div id="empresa-gravada" class="alert alert-success" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; display: block;">
-                  <div style="display: flex; align-items: center; padding: 12px 16px;">
-                    <i class="fas fa-check-circle" style="font-size: 24px; margin-right: 12px;"></i>
+                <div id="empresa-gravada" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
                     <div>
-                      <strong>Sucesso!</strong>
+                    
                       <div>Empresa cadastrada com sucesso.</div>
                     </div>
                   </div>
@@ -3592,8 +3631,8 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
               // Remove mensagem anterior se existir
               $("#empresa-gravada").remove();
               
-              // Adiciona a nova mensagem
-              $("body").append(mensagemSucesso);
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
               
               // Configura o fade out após 5 segundos
               setTimeout(function() {
