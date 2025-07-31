@@ -3722,12 +3722,18 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
     }
 
     function salvarNovoColaborador() {
+      debugger;
       const novo = {
+        id:'temp_' + Date.now(),
         nome: document.getElementById('novoColaboradorNome').value,
         cpf: document.getElementById('novoColaboradorCpf').value
       };
       
       ecpData.colaboradores.push(novo);
+
+      // Chama a função selecionarECP para atualizar a interface
+      selecionarECP('inputColaborador', 'resultadoPessoa', novo, 'nome');
+
       fecharModal('modalColaborador');
       limparCampos(['novoColaboradorNome', 'novoColaboradorCpf']);
       
@@ -3735,6 +3741,59 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       document.getElementById('detalhesColaborador').innerHTML = `
         <strong>Nome:</strong> ${novo.nome}<br>
         <strong>CPF:</strong> ${novo.cpf}`;
+
+      $.ajax({
+        url: "cadastros/processa_pessoa.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_pessoa: "inserir_pessoa",
+          valor_nome_pessoa: novo.nome,
+          valor_cpf_pessoa: novo.cpf,
+        },
+        success: function(retorno_pessoa) {
+          debugger;
+          console.log(retorno_pessoa);
+            if (retorno_pessoa > 0) {
+
+              const mensagemSucesso = `
+                <div id="pessoa-gravada" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                    
+                      <div>Pessoa cadastrada com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              
+              // Remove mensagem anterior se existir
+              $("#pessoa-gravada").remove();
+              
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+              
+              // Configura o fade out após 5 segundos
+              setTimeout(function() {
+                $("#pessoa-gravada").fadeOut(500, function() {
+                  $(this).remove();
+                });
+              }, 5000);
+
+              // Atualiza o ID temporário para o ID real retornado pelo servidor
+              const pessoaIndex = ecpData.colaboradores.findIndex(c => c.id === novo.id);
+              if (pessoaIndex !== -1) {
+                ecpData.colaboradores[pessoaIndex].id = retorno_pessoa;
+              }
+
+              console.log("Pessoa cadastrada com sucesso");
+            }
+          },
+        error: function(xhr, status, error) {
+         console.log("Falha ao inserir empresa:" + error);
+        },
+      });
     }
 
     function salvarNovoCargo() {
