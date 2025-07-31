@@ -3659,14 +3659,61 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       }
     }
     function salvarNovaClinica() {
+      debugger;
       const nova = {
         nome: document.getElementById('novaClinicaNome').value,
         cnpj: document.getElementById('novaClinicaCnpj').value
       };
       
       ecpData.clinicas.push(nova);
+
+      selecionarECP('inputClinica', 'resultadoClinica', nova, 'nome');
       fecharModal('modalClinica');
       limparCampos(['novaClinicaNome', 'novaClinicaCnpj']);
+
+      // Envia os dados para o servidor
+      $.ajax({
+        url: 'cadastros/pro_cli_json.php?pg=pro_cli&acao=cadastrar&tipo=insert',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          nome_fantasia: nova.nome,
+          cnpj: nova.cnpj,
+        },
+        success: function(retorno_grava_rapido_clinica) 
+        {
+          debugger;
+
+          console.log(retorno_grava_rapido_clinica);
+
+          const mensagemSucesso = `
+           <div id="clinica-gravada" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+             <div style="display: flex; align-items: center; justify-content: center;">
+              <div>
+                  <div>Clínica cadastrada com sucesso.</div>
+                  </div>
+              </div>
+             </div>
+              `;
+              
+              // Remove mensagem anterior se existir
+              $("#clinica-gravada").remove();
+              
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+              
+              // Configura o fade out após 5 segundos
+              setTimeout(function() {
+                $("#clinica-gravada").fadeOut(500, function() {
+                  $(this).remove();
+                });
+              }, 5000);
+        },
+        error:function(xhr,status,error)
+        {
+          console.log(error);
+        },
+      });
       
       document.getElementById('inputClinica').value = nova.nome;
       document.getElementById('detalhesClinica').innerHTML = `
