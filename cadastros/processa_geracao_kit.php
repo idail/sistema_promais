@@ -51,9 +51,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $resultado_atualizar_kit = $comando_atualizar_kit->execute();
 
         if($resultado_atualizar_kit)
-            echo json_encode("Dado gravado com sucesso");
+            echo json_encode("Exame gravado com sucesso");
         else
-            echo json_encode("Dado não foi gravado");
+            echo json_encode("Exame não foi gravado");
     }
 }
 ?>

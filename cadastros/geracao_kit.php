@@ -1527,8 +1527,10 @@
     </div>
 
     <!-- Mensagem de sucesso -->
-    <div class="success-message" id="exame-gravado">
-      Tipo de exame selecionado e salvo com sucesso!
+    <div class="success-message" id="exame-gravado" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #4CAF50; color: white; padding: 15px 25px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 1000; text-align: center;">
+    </div>
+
+    <div class="success-message" id="cadastro-rapido-empresa-gravada" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #4CAF50; color: white; padding: 15px 25px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 1000; text-align: center;">
     </div>
   </div>
 
@@ -2419,6 +2421,7 @@
                 empresas.push({
                   id: emp.id,
                   nome: emp.nome,
+                  cnpj:emp.cnpj,
                   endereco: emp.endereco,
                   complemento: emp.complemento,
                   bairro: emp.bairro,
@@ -2700,6 +2703,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
     }
 
     function selecionarECP(inputId, resultadoId, item, chave) {
+      debugger;
       // Se o item for uma string, faz o parse do JSON
       const itemObj = typeof item === 'string' ? JSON.parse(item) : item;
       
@@ -2956,7 +2960,143 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       }
     }
 
+    // Função para carregar os estados do IBGE
+    async function carregarEstados() {
+      debugger;
+      const selectEstado = document.getElementById('novaEmpresaEstado');
+      if (!selectEstado) return;
+      
+      try {
+        selectEstado.innerHTML = '<option value="">Carregando estados...</option>';
+        
+        const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+        const estados = await response.json();
+        
+        selectEstado.innerHTML = '<option value="">Selecione um estado</option>';
+        
+        estados.forEach(estado => {
+          const option = document.createElement('option');
+          option.value = estado.sigla;
+          option.textContent = estado.nome;
+          option.setAttribute('data-id', estado.id);
+          selectEstado.appendChild(option);
+        });
+        
+        // Adiciona o evento de mudança para carregar as cidades
+        selectEstado.addEventListener('change', carregarCidades);
+        
+      } catch (error) {
+        console.error('Erro ao carregar estados:', error);
+        selectEstado.innerHTML = '<option value="">Erro ao carregar estados</option>';
+      }
+    }
+    
+    // Objeto para armazenar os dados das cidades
+    const cidadesData = {};
+    
+    // Função para carregar as cidades do estado selecionado
+    async function carregarCidades() {
+      debugger;
+      const selectEstado = document.getElementById('novaEmpresaEstado');
+      const inputCidade = document.getElementById('novaEmpresaCidade');
+      
+      if (!selectEstado || !inputCidade) return;
+      
+      const estadoSelecionado = selectEstado.options[selectEstado.selectedIndex];
+      const estadoId = estadoSelecionado.getAttribute('data-id');
+      
+      if (!estadoId) {
+        inputCidade.disabled = true;
+        inputCidade.placeholder = 'Selecione um estado primeiro';
+        return;
+      }
+      
+      inputCidade.disabled = true;
+      inputCidade.placeholder = 'Carregando cidades...';
+      inputCidade.value = '';
+      
+      // Remove o datalist existente, se houver
+      const datalistExistente = document.getElementById('cidadesList');
+      if (datalistExistente) {
+        datalistExistente.remove();
+      }
+      
+      try {
+        const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios?orderBy=nome`);
+        const cidades = await response.json();
+        
+        // Armazena os dados das cidades no objeto global
+        cidadesData[estadoId] = cidades;
+        
+        // Cria um datalist para o autocomplete
+        const datalist = document.createElement('datalist');
+        datalist.id = 'cidadesList';
+        
+        // Adiciona as cidades como opções no datalist
+        cidades.forEach(cidade => {
+          const option = document.createElement('option');
+          option.value = cidade.nome;
+          option.setAttribute('data-id', cidade.id);
+          datalist.appendChild(option);
+        });
+        
+        // Adiciona o datalist ao documento
+        document.body.appendChild(datalist);
+        
+        // Configura o input para usar o datalist
+        inputCidade.setAttribute('list', 'cidadesList');
+        inputCidade.disabled = false;
+        inputCidade.placeholder = 'Digite o nome da cidade';
+        
+      } catch (error) {
+        console.error('Erro ao carregar cidades:', error);
+        inputCidade.placeholder = 'Erro ao carregar cidades';
+      }
+    }
+    
+    // Função para abrir a modal de empresa
+    function abrirModalEmpresa() {
+      const modal = document.getElementById('modalEmpresa');
+      if (!modal) return;
+      
+      // Limpa os campos
+      document.getElementById('novaEmpresaNome').value = '';
+      document.getElementById('novaEmpresaEndereco').value = '';
+      document.getElementById('novaEmpresaCidade').value = '';
+      document.getElementById('novaEmpresaCnpj').value = '';
+      
+      // Carrega os estados
+      carregarEstados();
+      
+      // Mostra a modal
+      modal.style.display = 'flex';
+    }
+    
+    // Substitui a função abrirModal original para a modal de empresa
+    document.addEventListener('DOMContentLoaded', function() {
+      // Encontra o botão que abre a modal de empresa e substitui o evento
+      const btnAbrirModalEmpresa = document.querySelector('button[onclick*="abrirModal(\'modalEmpresa\')"]');
+      if (btnAbrirModalEmpresa) {
+        btnAbrirModalEmpresa.setAttribute('onclick', 'abrirModalEmpresa()');
+      }
+      
+      // Fecha a modal ao clicar fora
+      window.addEventListener('click', function(event) {
+        const modal = document.getElementById('modalEmpresa');
+        if (event.target === modal) {
+          fecharModal('modalEmpresa');
+        }
+      });
+    });
+    
     function abrirModal(id) {
+      // Se for a modal de empresa, usa a função específica
+      if (id === 'modalEmpresa') {
+        abrirModalEmpresa();
+        return;
+      }
+      
+      // Para outras modais, mantém o comportamento original
       const modal = document.getElementById(id);
       if (modal) {
         modal.style.display = 'flex';
@@ -3239,19 +3379,22 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
     function fecharModal(modalId) {
       const modal = document.getElementById(modalId);
       if (modal) {
-        // Add fade out animation
+        // Adiciona animação de fade out
         modal.style.opacity = '0';
         modal.style.pointerEvents = 'none';
         
-        // Remove modal after animation
+        // Remove o modal após a animação
         setTimeout(() => {
           if (modal && modal.parentNode) {
-            document.body.removeChild(modal);
+            // Verifica se o modal ainda está no documento antes de remover
+            if (document.body.contains(modal)) {
+              modal.parentNode.removeChild(modal);
+            }
             
-            // Re-enable body scroll
+            // Reativa a rolagem da página
             document.body.style.overflow = '';
             
-            // Focus management - return focus to the element that opened the modal if it exists
+            // Retorna o foco para o elemento que abriu o modal, se existir
             const lastFocusedElement = document.activeElement;
             if (lastFocusedElement && lastFocusedElement !== document.body) {
               lastFocusedElement.focus();
@@ -3260,7 +3403,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
         }, 300);
       }
       
-      // Return focus to the element that opened the modal
+      // Retorna o foco para o elemento que abriu o modal
       if (window.lastFocusedElement) {
         window.lastFocusedElement.focus();
       }
@@ -3341,55 +3484,141 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
     }
 
     function salvarNovaEmpresa() {
-      const nova = {
-        nome: document.getElementById('novaEmpresaNome').value,
-        endereco: document.getElementById('novaEmpresaEndereco').value,
-        cidade: document.getElementById('novaEmpresaCidade').value,
-        cnpj: document.getElementById('novaEmpresaCnpj').value
-      };
-      
-      ecpData.empresas.push(nova);
-
-
-      $.ajax({
-        url: "cadastros/processa_empresa.php",
-        type: "POST",
-        dataType: "json",
-        data: {
-           processo_empresa: "inserir_empresa",
-           valor_nome_fantasia_empresa: nova.nome,
-           valor_cnpj_empresa: nova.cnpj,
-           valor_endereco_empresa: nova.endereco,
-           
-           valor_id_cidade: recebe_id_cidade,
-           valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
-           valor_empresa_id: recebe_empresa_id,
-        },
-        success: function(retorno_empresa) {
-           debugger;
-           console.log(retorno_empresa);
-            if (retorno_empresa) {
-              console.log("Empresa cadastrada com sucesso");
-              window.location.href = "painel.php?pg=empresas";
+      try {
+        debugger;
+        // Obtém os valores dos campos do formulário
+        const nome = document.getElementById('novaEmpresaNome').value.trim();
+        const endereco = document.getElementById('novaEmpresaEndereco').value.trim();
+        const cidadeInput = document.getElementById('novaEmpresaCidade');
+        const cidade = cidadeInput.value.trim();
+        const cnpj = document.getElementById('novaEmpresaCnpj').value.trim();
+        
+        // Validação dos campos obrigatórios
+        if (!nome || !cnpj) {
+          alert('Por favor, preencha todos os campos obrigatórios.');
+          return;
+        }
+        
+        // Obtém o estado selecionado e seu ID
+        const selectEstado = document.getElementById('novaEmpresaEstado');
+        if (!selectEstado || !selectEstado.options || selectEstado.selectedIndex < 0) {
+          alert('Por favor, selecione um estado.');
+          return;
+        }
+        
+        const estadoSelecionado = selectEstado.options[selectEstado.selectedIndex];
+        const estadoId = estadoSelecionado.getAttribute('data-id');
+        const estadoSigla = estadoSelecionado.value;
+        const estadoNome = estadoSelecionado.text;
+        
+        if (!estadoId) {
+          console.error('ID do estado não encontrado');
+          alert('Erro ao obter informações do estado. Por favor, tente novamente.');
+          return;
+        }
+        
+        // Obtém o ID da cidade selecionada
+        let cidadeId = '';
+        
+        // Busca o ID da cidade no objeto cidadesData
+        if (cidadesData[estadoId]) {
+          const cidadeEncontrada = cidadesData[estadoId].find(c => c.nome === cidade);
+          if (cidadeEncontrada) {
+            cidadeId = cidadeEncontrada.id;
+          }
+        }
+        
+        // Cria o objeto com os dados da empresa no formato correto
+        const novaEmpresaObj = {
+          id: 'temp_' + Date.now(), // ID temporário
+          nome: nome,
+          cnpj: cnpj,
+          endereco: endereco,
+          complemento: '', // Pode ser preenchido se necessário
+          bairro: '',     // Pode ser preenchido se necessário
+          cidade: cidade,
+          estado: estadoSigla,
+          cep: '',        // Pode ser preenchido se necessário
+          ativo: true,
+          quantidadeVidas: 10,
+          quantidadeClinicas: 5
+        };
+        
+        // Garante que ecpData.empresas existe
+        if (!ecpData.empresas) {
+          ecpData.empresas = [];
+        }
+        
+        // Adiciona a nova empresa ao array de empresas
+        ecpData.empresas.push(novaEmpresaObj);
+        
+        // Chama a função selecionarECP para atualizar a interface
+        selecionarECP('inputEmpresa', 'resultadoEmpresa', novaEmpresaObj, 'nome');
+        
+        // Fecha a modal e limpa os campos
+        fecharModal('modalEmpresa');
+        limparCampos(['novaEmpresaNome', 'novaEmpresaEndereco', 'novaEmpresaCidade', 'novaEmpresaCnpj']);
+        
+        // Envia os dados para o servidor
+        $.ajax({
+          url: 'cadastros/processa_empresa.php',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            valor_nome_fantasia_empresa: nome,
+            valor_endereco_empresa: endereco,
+            valor_id_cidade: cidadeId,
+            valor_cnpj_empresa: cnpj,
+            valor_id_estado: estadoId,
+            processo_empresa: 'inserir_empresa'
+          },
+          success: function(response) {
+            debugger;
+            console.log('Resposta do servidor:', response);
+            if (response > 0) {
+              // Exibe a mensagem de sucesso
+              const mensagemSucesso = `
+                <div id="empresa-gravada" class="alert alert-success" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; display: block;">
+                  <div style="display: flex; align-items: center; padding: 12px 16px;">
+                    <i class="fas fa-check-circle" style="font-size: 24px; margin-right: 12px;"></i>
+                    <div>
+                      <strong>Sucesso!</strong>
+                      <div>Empresa cadastrada com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              
+              // Remove mensagem anterior se existir
+              $("#empresa-gravada").remove();
+              
+              // Adiciona a nova mensagem
+              $("body").append(mensagemSucesso);
+              
+              // Configura o fade out após 5 segundos
+              setTimeout(function() {
+                $("#empresa-gravada").fadeOut(500, function() {
+                  $(this).remove();
+                });
+              }, 5000);
+              
+              // Atualiza o ID temporário para o ID real retornado pelo servidor
+              const empresaIndex = ecpData.empresas.findIndex(emp => emp.id === novaEmpresaObj.id);
+              if (empresaIndex !== -1) {
+                ecpData.empresas[empresaIndex].id = response;
+              }
             }
           },
           error: function(xhr, status, error) {
-             console.log("Falha ao inserir empresa:" + error);
-          },
+            console.error('Erro na requisição AJAX:', status, error);
+            alert('Erro ao conectar ao servidor. Por favor, verifique sua conexão e tente novamente.');
+          }
         });
-
-      fecharModal('modalEmpresa');
-      limparCampos(['novaEmpresaNome', 'novaEmpresaEndereco', 'novaEmpresaCidade', 'novaEmpresaCnpj']);
-      
-      // Atualiza o input e exibe os detalhes da nova empresa
-      document.getElementById('inputEmpresa').value = nova.nome;
-      document.getElementById('detalhesEmpresa').innerHTML = `
-        <strong>Empresa:</strong> ${nova.nome}<br>
-        <strong>Endereço:</strong> ${nova.endereco}<br>
-        <strong>Cidade:</strong> ${nova.cidade}<br>
-        <strong>CNPJ:</strong> ${nova.cnpj}`;
+      } catch (error) {
+        console.error('Erro ao salvar nova empresa:', error);
+        alert('Ocorreu um erro inesperado. Por favor, tente novamente.');
+      }
     }
-
     function salvarNovaClinica() {
       const nova = {
         nome: document.getElementById('novaClinicaNome').value,
@@ -6879,4 +7108,4 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
   <div style="height: 50px;"></div>
   
 </body>
-</html
+</html>
