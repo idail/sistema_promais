@@ -3661,6 +3661,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
     function salvarNovaClinica() {
       debugger;
       const nova = {
+        id:'temp_' + Date.now(),
         nome: document.getElementById('novaClinicaNome').value,
         cnpj: document.getElementById('novaClinicaCnpj').value
       };
@@ -3708,6 +3709,12 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
                   $(this).remove();
                 });
               }, 5000);
+
+            // Atualiza o ID temporário para o ID real retornado pelo servidor
+            const clinicaIndex = ecpData.clinicas.findIndex(c => c.id === nova.id);
+            if (clinicaIndex !== -1) {
+              ecpData.clinicas[clinicaIndex].id = retorno_grava_rapido_clinica;
+            }
         },
         error:function(xhr,status,error)
         {
