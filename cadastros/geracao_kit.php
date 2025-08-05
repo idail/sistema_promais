@@ -2376,6 +2376,7 @@
     let empresas = [];
     let clinicas = [];
     let pessoas = [];
+    let cargos = [];
 
     $(document).ready(function(e){
       $("#exame-gravado").hide();
@@ -2491,6 +2492,7 @@
           if (listaClinicas.length > 0) {
             for (let c = 0; c < listaClinicas.length; c++) {
               clinicas.push({
+                id:listaClinicas[c].id,
                 nome: listaClinicas[c].nome_fantasia,
                 cnpj: listaClinicas[c].cnpj,
               });
@@ -2527,6 +2529,7 @@
               for (let p = 0; p < resposta_pessoa.length; p++) 
               {
                 pessoas.push({
+                  id:resposta_pessoa[p].id,
                   nome:resposta_pessoa[p].nome,
                   cpf:resposta_pessoa[p].cpf,
                   cargo:"Analista de Segurança"
@@ -2538,6 +2541,42 @@
               }
 
             console.log('Pessoas carregadas:', pessoas);
+            }
+          },
+          error:function(xhr,status,error)
+          {
+
+          },
+      });
+
+      $.ajax({
+          url: "cadastros/processa_cargo.php", // Endpoint da API
+          method: "GET",
+          dataType: "json",
+          data: {
+            "processo_cargo": "buscar_cargos"
+          },
+          success: function(resposta_cargo) 
+          {
+            debugger;
+
+            if(resposta_cargo.length > 0)
+            {
+              for (let c = 0; c < resposta_cargo.length; c++) 
+              {
+                cargos.push({
+                  id:resposta_cargo[c].id,
+                  titulo:resposta_cargo[c].titulo_cargo,
+                  cbo:resposta_cargo[c].codigo_cargo,
+                  descricao:resposta_cargo[c].descricao_cargo
+                });
+              }
+
+              if (typeof ecpData !== 'undefined') {
+              ecpData.cargos = cargos;
+              }
+
+            console.log('Pessoas carregadas:', cargos);
             }
           },
           error:function(xhr,status,error)
@@ -2591,13 +2630,13 @@
       //   { nome: "Fernanda Lima", cpf: "654.987.321-44", cargo: "Médica do Trabalho" },
       //   { nome: "Ricardo Pereira", cpf: "159.753.486-55", cargo: "Técnico em Segurança" }
       // ],
-      cargos: [
-        { titulo: "Motorista de Caminhão", cbo: "7823-10", descricao: "Conduz caminhão para transporte de cargas, realizando operações de carga e descarga, manutenção preventiva e cumprindo normas de trânsito e segurança." },
-        { titulo: "Auxiliar de Enfermagem", cbo: "3222-40", descricao: "Realiza atividades de assistência de enfermagem, como curativos, administração de medicamentos e acompanhamento do estado de saúde dos pacientes." },
-        { titulo: "Técnico em Segurança do Trabalho", cbo: "3516-10", descricao: "Fiscaliza o cumprimento das normas de segurança, realiza inspeções, treinamentos e elabora relatórios de segurança no trabalho." },
-        { titulo: "Eletricista de Manutenção", cbo: "7411-10", descricao: "Executa manutenção corretiva e preventiva em instalações elétricas, seguindo normas técnicas e de segurança." },
-        { titulo: "Auxiliar Administrativo", cbo: "4110-10", descricao: "Auxilia nos serviços de escritório, como atendimento, arquivamento, organização de documentos e apoio às atividades administrativas." }
-      ]
+      // cargos: [
+      //   { titulo: "Motorista de Caminhão", cbo: "7823-10", descricao: "Conduz caminhão para transporte de cargas, realizando operações de carga e descarga, manutenção preventiva e cumprindo normas de trânsito e segurança." },
+      //   { titulo: "Auxiliar de Enfermagem", cbo: "3222-40", descricao: "Realiza atividades de assistência de enfermagem, como curativos, administração de medicamentos e acompanhamento do estado de saúde dos pacientes." },
+      //   { titulo: "Técnico em Segurança do Trabalho", cbo: "3516-10", descricao: "Fiscaliza o cumprimento das normas de segurança, realiza inspeções, treinamentos e elabora relatórios de segurança no trabalho." },
+      //   { titulo: "Eletricista de Manutenção", cbo: "7411-10", descricao: "Executa manutenção corretiva e preventiva em instalações elétricas, seguindo normas técnicas e de segurança." },
+      //   { titulo: "Auxiliar Administrativo", cbo: "4110-10", descricao: "Auxilia nos serviços de escritório, como atendimento, arquivamento, organização de documentos e apoio às atividades administrativas." }
+      // ]
     };
 
     // Função para remover acentos e converter para minúsculas
@@ -2611,7 +2650,8 @@
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
-function buscarECP(tipo, inputId, resultadoId, chave) {
+  function buscarECP(tipo, inputId, resultadoId, chave) {
+    debugger;
       try {
         // Obtém os elementos do DOM
         const inputElement = document.getElementById(inputId);
@@ -2729,10 +2769,27 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       }
     }
 
-    function selecionarECP(inputId, resultadoId, item, chave) {
+    function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
       // Se o item for uma string, faz o parse do JSON
       const itemObj = typeof item === 'string' ? JSON.parse(item) : item;
+    
+      if(situacao !== "gravando")
+      {
+        if(inputId === "inputEmpresa")
+        {
+          grava_ecp_kit("empresa",itemObj.id);
+        }else if(inputId === "inputClinica")
+        {
+          grava_ecp_kit("clinica",itemObj.id);
+        }else if(inputId === "inputColaborador")
+        {
+          grava_ecp_kit("colaborador",itemObj.id);
+        }else if(inputId === "inputCargo")
+        {
+          grava_ecp_kit("cargo",itemObj.id);
+        }
+      }
       
       // Atualiza o valor do input
       const inputElement = document.getElementById(inputId);
@@ -2984,6 +3041,213 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       } else if (inputId === 'inputColaborador') {
         // Não limpa mais o cargo automaticamente
         // O cargo pode ser selecionado independentemente do colaborador
+      }
+    }
+
+    function grava_ecp_kit(tipo,valores)
+    {
+      debugger;
+
+      if(tipo === "empresa")
+      {
+          $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_empresa: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+
+            const mensagemSucesso = `
+                  <div id="empresa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>Empresa gravada com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#empresa-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#empresa-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+      }else if(tipo === "clinica")
+      {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_clinica: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+
+            const mensagemSucesso = `
+                  <div id="clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>Clínica gravada com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#clinica-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#clinica-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+      }else if(tipo === "colaborador")
+      {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_colaborador: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+
+            const mensagemSucesso = `
+                  <div id="colaborador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>Pessoa gravada com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#colaborador-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#colaborador-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+      }else if(tipo === "cargo")
+      {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_cargo: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+
+            const mensagemSucesso = `
+                  <div id="cargo-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>Cargo gravado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#cargo-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#cargo-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
       }
     }
 
@@ -3580,7 +3844,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
         ecpData.empresas.push(novaEmpresaObj);
         
         // Chama a função selecionarECP para atualizar a interface
-        selecionarECP('inputEmpresa', 'resultadoEmpresa', novaEmpresaObj, 'nome');
+        selecionarECP('inputEmpresa', 'resultadoEmpresa', novaEmpresaObj, 'nome',"gravando");
         
         // Fecha a modal e limpa os campos
         fecharModal('modalEmpresa');
@@ -3668,7 +3932,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       
       ecpData.clinicas.push(nova);
 
-      selecionarECP('inputClinica', 'resultadoClinica', nova, 'nome');
+      selecionarECP('inputClinica', 'resultadoClinica', nova, 'nome',"gravando");
       fecharModal('modalClinica');
       limparCampos(['novaClinicaNome', 'novaClinicaCnpj']);
 
@@ -3739,7 +4003,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       ecpData.colaboradores.push(novo);
 
       // Chama a função selecionarECP para atualizar a interface
-      selecionarECP('inputColaborador', 'resultadoPessoa', novo, 'nome');
+      selecionarECP('inputColaborador', 'resultadoPessoa', novo, 'nome',"gravando");
 
       fecharModal('modalColaborador');
       limparCampos(['novoColaboradorNome', 'novoColaboradorCpf']);
@@ -3804,6 +4068,7 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
     }
 
     function salvarNovoCargo() {
+      debugger;
       const titulo = document.getElementById('novoCargoTitulo').value.trim();
       const cbo = document.getElementById('novoCargoCBO').value.trim();
       const descricao = document.getElementById('novoCargoDescricao').value.trim();
@@ -3813,7 +4078,8 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
         return;
       }
       
-      const novo = { 
+      const novo = {
+        id:'temp_' + Date.now(),
         titulo: titulo,
         cbo: cbo,
         descricao: descricao
@@ -3822,20 +4088,77 @@ function buscarECP(tipo, inputId, resultadoId, chave) {
       ecpData.cargos.push(novo);
       fecharModal('modalCargo');
       limparCampos(['novoCargoTitulo', 'novoCargoCBO', 'novoCargoDescricao']);
+
+      // Chama a função selecionarECP para atualizar a interface
+      selecionarECP('inputCargo', 'resultCargo', novo, 'nome',"gravando");
       
-      // Atualiza o input e mostra os detalhes
-      const inputCargo = document.getElementById('inputCargo');
-      if (inputCargo) {
-        inputCargo.value = titulo;
-        const detalhes = document.getElementById('detalhesCargo');
-        if (detalhes) {
-          detalhes.innerHTML = `
-            <div class="font-medium">${titulo}</div>
-            ${cbo ? `<div class="text-sm text-gray-500">CBO: ${cbo}</div>` : ''}
-            ${descricao ? `<div class="mt-2 text-sm">${descricao}</div>` : ''}
-          `;
-        }
-      }
+      // // Atualiza o input e mostra os detalhes
+      // const inputCargo = document.getElementById('inputCargo');
+      // if (inputCargo) {
+      //   inputCargo.value = titulo;
+      //   const detalhes = document.getElementById('detalhesCargo');
+      //   if (detalhes) {
+      //     detalhes.innerHTML = `
+      //       <div class="font-medium">${titulo}</div>
+      //       ${cbo ? `<div class="text-sm text-gray-500">CBO: ${cbo}</div>` : ''}
+      //       ${descricao ? `<div class="mt-2 text-sm">${descricao}</div>` : ''}
+      //     `;
+      //   }
+      // }
+
+      $.ajax({
+        url: "cadastros/processa_cargo.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_cargo: "inserir_cargo",
+          valor_titulo_cargo: novo.titulo,
+          valor_codigo_cargo: novo.cbo,
+          valor_descricao_cargo:novo.descricao,
+        },
+        success: function(retorno_cargo) {
+          debugger;
+          console.log(retorno_cargo);
+            if (retorno_cargo > 0) {
+
+              const mensagemSucesso = `
+                <div id="cargo-gravada" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                    
+                      <div>Cargo cadastrado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              
+              // Remove mensagem anterior se existir
+              $("#cargo-gravada").remove();
+              
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+              
+              // Configura o fade out após 5 segundos
+              setTimeout(function() {
+                $("#cargo-gravada").fadeOut(500, function() {
+                  $(this).remove();
+                });
+              }, 5000);
+
+              // Atualiza o ID temporário para o ID real retornado pelo servidor
+              const cargoIndex = ecpData.cargos.findIndex(c => c.id === novo.id);
+              if (cargoIndex !== -1) {
+                ecpData.cargos[cargoIndex].id = retorno_cargo;
+              }
+
+              console.log("Pessoa cadastrada com sucesso");
+            }
+          },
+        error: function(xhr, status, error) {
+         console.log("Falha ao inserir empresa:" + error);
+        },
+      });
     }
 
     // Dados dos Kits relacionados aos colaboradores
