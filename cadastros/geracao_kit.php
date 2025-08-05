@@ -1584,7 +1584,7 @@
         <div class="ecp-field ecp-field-empresa">
           <label class="ecp-label">Buscar / Selecionar empresa</label>
           <div class="ecp-input-group">
-            <input id="inputEmpresa" type="text" class="ecp-input" placeholder="Digite o nome da empresa..." />
+            <input id="inputEmpresa" type="text" class="ecp-input" placeholder="Buscar por nome, CPF ou CNPJ da empresa..." />
             <button onclick="abrirModal('modalEmpresa')" class="ecp-button-add">+</button>
           </div>
           <div id="resultEmpresa" class="ecp-results"></div>
@@ -2380,6 +2380,16 @@
 
     $(document).ready(function(e){
       $("#exame-gravado").hide();
+      
+      // Adiciona evento de input para busca de empresas
+      $("#inputEmpresa").on('input', function() {
+        console.log('Input alterado, valor:', $(this).val());
+        buscarECP('empresas', 'inputEmpresa', 'resultEmpresa', 'nome');
+      });
+      
+      // Força a busca inicial para testar
+      console.log('Forçando busca inicial...');
+      buscarECP('empresas', 'inputEmpresa', 'resultEmpresa', 'nome');
 
       $.ajax({
         url: "cadastros/processa_geracao_kit.php",
@@ -2408,13 +2418,14 @@
       });
 
 
+      console.log('Iniciando carregamento de empresas...');
       $.ajax({
-        url: "cadastros/processa_empresa.php", // Endpoint da API
+        url: "cadastros/processa_empresa.php",
         method: "GET",
         dataType: "json",
         data: { processo_empresa: "buscar_empresas" },
         success: async function(resposta_empresa) {
-          debugger;
+          console.log('Resposta bruta da API de empresas:', resposta_empresa);
           try {
             if (resposta_empresa && resposta_empresa.length > 0) {
               for (let i = 0; i < resposta_empresa.length; i++) {
@@ -2462,10 +2473,17 @@
                 });
               }
 
-              if (typeof ecpData !== 'undefined') {
-                ecpData.empresas = empresas;
+              // Atualiza o array de empresas no ecpData
+              if (ecpData) {
+                ecpData.empresas = [...empresas]; // Cria uma cópia do array
+                console.log('Empresas carregadas no ecpData:', ecpData.empresas);
+                
+                // Testa a busca após carregar as empresas
+                if (ecpData.empresas.length > 0) {
+                  console.log('Testando busca com primeira empresa:', ecpData.empresas[0].nome);
+                  buscarECP('empresas', 'inputEmpresa', 'resultEmpresa', 'nome');
+                }
               }
-              console.log('Empresas carregadas com IBGE via AJAX', empresas);
             }
           } catch(err) {
             console.error('Erro no processamento das empresas:', err);
@@ -2588,7 +2606,7 @@
 
     // Funções do ECP
     const ecpData = {
-      // empresas: [
+      empresas: [], // Inicializa como array vazio para evitar undefined
       //   { 
       //     id: 1, 
       //     nome: 'Empresa A', 
@@ -2651,7 +2669,9 @@
 }
 
   function buscarECP(tipo, inputId, resultadoId, chave) {
-    debugger;
+    console.log('buscarECP chamada com parâmetros:', {tipo, inputId, resultadoId, chave});
+    console.log('ecpData no início da busca:', ecpData);
+    console.log('Dados disponíveis para busca:', ecpData[tipo]);
       try {
         // Obtém os elementos do DOM
         const inputElement = document.getElementById(inputId);
@@ -2674,8 +2694,13 @@
         const valorNumerico = valor.replace(/[^\d]/g, '');
         
         // Verifica se o tipo de busca é válido
-        if (!ecpData || !ecpData[tipo]) {
-          console.error('Tipo de busca inválido ou dados não carregados:', tipo);
+        if (!ecpData) {
+          console.error('ecpData não está definido');
+          return;
+        }
+        
+        if (!ecpData[tipo]) {
+          console.error(`Tipo de busca '${tipo}' não encontrado em ecpData. Tipos disponíveis:`, Object.keys(ecpData));
           return;
         }
         
@@ -2683,6 +2708,7 @@
         
         // Filtra os itens baseado no tipo de busca
         let resultados = [];
+        console.log(`Buscando em ${tipo} por:`, valorBusca, '(nome) ou', valorNumerico, '(CPF/CNPJ)');
         
         if (tipo === 'colaboradores') {
           // Busca em colaboradores (nome ou CPF)
@@ -2718,6 +2744,39 @@
               return false;
             }
           });
+        } else if (tipo === 'empresas') {
+          console.log(`Buscando em ${ecpData.empresas.length} empresas`);
+          // Busca em empresas (nome, CNPJ ou CPF)
+          resultados = ecpData[tipo].filter(item => {
+            if (!item) return false;
+            
+            try {
+              // Busca por nome (insensível a acentos e case)
+              const nome = removerAcentos(item[chave] || '').toLowerCase();
+              const nomeMatch = nome.includes(valorBusca) || 
+                              nome.split(' ').some(palavra => palavra.startsWith(valorBusca));
+              
+              // Busca por CNPJ/CPF (busca parcial)
+              const cnpjCpf = (item.cnpj || item.cpf || '').replace(/[^\d]/g, '');
+              const cnpjCpfMatch = valorNumerico && cnpjCpf.includes(valorNumerico);
+              
+              if (nomeMatch || cnpjCpfMatch) {
+                console.log('Item encontrado:', {
+                  nome: item[chave],
+                  cnpj: item.cnpj,
+                  cpf: item.cpf,
+                  busca: valorBusca,
+                  nomeMatch,
+                  cnpjCpfMatch
+                });
+                return true;
+              }
+              return false;
+            } catch (error) {
+              console.error('Erro ao processar empresa:', item, error);
+              return false;
+            }
+          });
         } else {
           // Busca em outros tipos (usando a chave fornecida)
           resultados = ecpData[tipo].filter(item => {
@@ -2731,28 +2790,36 @@
         
         // Exibe os resultados
         if (resultados.length > 0) {
-          resultEl.innerHTML = resultados.map(item => {
+          const html = resultados.map(item => {
             // Formata o texto de exibição
             let displayText = '';
             
             if (item.cbo) {
               displayText = `${item[chave]} (CBO: ${item.cbo})`;
             } else if (item.cpf) {
-              displayText = `${item.nome || ''} (${item.cpf || ''})`;
+              displayText = `${item[chave]} (CPF: ${item.cpf})`;
+            } else if (item.nome) {
+              displayText = item.nome;
             } else {
-              displayText = item[chave] || '';
+              displayText = item[chave] || 'Sem nome';
             }
             
-            // Cria o HTML para cada item do resultado
-            const itemData = JSON.stringify(item).replace(/"/g, '&quot;');
-            return `<div onclick="selecionarECP('${inputId}', '${resultadoId}', '${itemData}', '${chave}')" 
-              class="ecp-result-item" title="${item.descricao || ''}">
-              ${displayText}
-            </div>`;
+            // Cria o item de resultado com evento de clique
+            const itemHtml = `
+              <div class="ecp-result-item" 
+                   onclick="selecionarECP('${inputId}', '${resultadoId}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, '${chave}')"
+                   style="cursor: pointer; padding: 8px 12px; border-bottom: 1px solid #eee;">
+                ${displayText}
+                ${item.cnpj ? `<div style="font-size: 0.8em; color: #666;">CNPJ: ${item.cnpj}</div>` : ''}
+                ${item.cpf ? `<div style="font-size: 0.8em; color: #666;">CPF: ${item.cpf}</div>` : ''}
+              </div>
+            `;
+            return itemHtml;
           }).join('');
           
-          // Exibe os resultados
+          resultEl.innerHTML = html;
           resultEl.style.display = 'block';
+          console.log('Resultados exibidos no elemento:', resultEl);
         } else {
           // Se não encontrar resultados, exibe mensagem
           resultEl.innerHTML = '<div class="ecp-result-item">Nenhum resultado encontrado</div>';
