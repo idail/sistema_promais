@@ -5322,6 +5322,10 @@
 
     // Gerenciar o status de motorista
     function updateMotoristaStatus(isMotorista) {
+      debugger;
+
+      console.log("Verificando motorista:",isMotorista);
+
       appState.motorista = isMotorista;
       const motoristaBanner = document.getElementById('motorista-banner');
       if (motoristaBanner) {
