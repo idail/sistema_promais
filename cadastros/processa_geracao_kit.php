@@ -204,6 +204,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $valor_medico_coordenador_bind = isset($_SESSION["medico_coordenador_selecionado"]) ? $_SESSION["medico_coordenador_selecionado"] : null;
 
+        // MEDICO COORDENADOR
+        if (isset($_POST["valor_medico_clinica_id"]) && $_POST["valor_medico_clinica_id"] !== "") {
+            $recebe_medico_clinica_selecionado = $_POST["valor_medico_clinica_id"];
+
+            if (!isset($_SESSION["medico_clinica_selecionado"]) || $_SESSION["medico_clinica_selecionado"] !== $recebe_medico_clinica_selecionado) {
+                $_SESSION["medico_clinica_selecionado"] = $recebe_medico_clinica_selecionado;
+            }
+        }
+        $valor_medico_clinica_bind = isset($_SESSION["medico_clinica_selecionado"]) ? $_SESSION["medico_clinica_selecionado"] : null;
+
         // Atualização
         $instrucao_atualizar_kit = "UPDATE kits SET 
             tipo_exame = :recebe_tipo_exame,
@@ -212,7 +222,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             pessoa_id = :recebe_pessoa_id,
             motorista = :recebe_motorista,
             cargo_id = :recebe_cargo_id,
-            medico_coordenador_id = :recebe_medico_coordenador_id
+            medico_coordenador_id = :recebe_medico_coordenador_id,
+            medico_clinica_id = :recebe_medico_clinica_id
         WHERE id = :recebe_kit_id";
 
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -225,6 +236,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_cargo_id",     $valor_cargo_bind,      $valor_cargo_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_motorista",    $valor_motorista_bind,  $valor_motorista_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id",    $valor_medico_coordenador_bind,  $valor_medico_coordenador_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id",    $valor_medico_clinica_bind,  $valor_medico_clinica_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
         // Kit ID
         $comando_atualizar_kit->bindValue(":recebe_kit_id", $_SESSION["codigo_kit"], PDO::PARAM_INT);
