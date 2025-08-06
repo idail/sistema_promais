@@ -4538,7 +4538,12 @@
         ...(tipo === 'medico' && crm && { crm })
       };
 
-      gravar_medico_coordenador(novo);
+      if(tipo === "coordenador")
+      {
+        gravar_medico_coordenador(novo);
+      }else{
+        gravar_medico(novo);
+      }
       
       profissionaisMedicinaData[tipoMapeado[tipo]].push(novo);
       renderizarPessoa(tipo, novo, document.getElementById(`resultado${capitalize(tipo)}`));
@@ -4625,6 +4630,66 @@
                 // Configura o fade out após 5 segundos
                 setTimeout(function() {
                   $("#medico-coordenador-gravado").fadeOut(500, function() {
+                    $(this).remove();
+                  });
+                }, 5000);
+
+                // Atualiza o ID temporário para o ID real retornado pelo servidor
+                const medicoCoordenadorIndex = profissionaisMedicinaData.coordenadores.findIndex(mc => mc.id === valores.id);
+                if (medicoCoordenadorIndex !== -1) {
+                  profissionaisMedicinaData.coordenadores[medicoCoordenadorIndex].id = response;
+                }
+                  
+                }
+              },
+                    error: function(xhr, status, error) {
+                        console.log("Falha ao inserir empresa:" + error);
+              },
+          });
+    }
+
+    function gravar_medico(valores)
+    {
+      debugger;
+        $.ajax({
+              url: "cadastros/processa_medico.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                  processo_medico: "inserir_medico",
+                  valor_nome_medico: valores.nome,
+                  valor_cpf_medico: valores.cpf,
+                  valor_crm_medico:valores.crm
+                },
+              success: function(retorno_medico) {
+                  debugger;
+
+                  console.log(retorno_medico);
+
+                if (retorno_medico) {
+
+                  const mensagemSucesso = `
+                  <div id="medico-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                      
+                        <div>Médico cadastrado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                  console.log("Médico cadastrada com sucesso");
+
+                // Remove mensagem anterior se existir
+                $("#medico-gravado").remove();
+              
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
+              
+                // Configura o fade out após 5 segundos
+                setTimeout(function() {
+                  $("#medico-gravado").fadeOut(500, function() {
                     $(this).remove();
                   });
                 }, 5000);
