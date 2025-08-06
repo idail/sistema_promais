@@ -38,67 +38,99 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION["codigo_kit"] = $recebe_codigo_gerado_kit;
         echo json_encode($recebe_codigo_gerado_kit);
     } else if ($recebe_processo_geracao_kit === "incluir_valores_kit") {
+        // EXAME
         if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
             $recebe_exame_selecionado = $_POST["valor_exame"];
-        } else {
-            $recebe_exame_selecionado = null;
+
+            if (!isset($_SESSION["exame_selecionado"]) || $_SESSION["exame_selecionado"] !== $recebe_exame_selecionado) {
+                $_SESSION["exame_selecionado"] = $recebe_exame_selecionado;
+            }
         }
 
+        // EMPRESA
         if (isset($_POST["valor_empresa"]) && $_POST["valor_empresa"] !== "") {
             $recebe_empresa_selecionado = $_POST["valor_empresa"];
-        } else {
-            $recebe_empresa_selecionado = null;
+
+            if (!isset($_SESSION["empresa_selecionado"]) || $_SESSION["empresa_selecionado"] !== $recebe_empresa_selecionado) {
+                $_SESSION["empresa_selecionado"] = $recebe_empresa_selecionado;
+            }
         }
 
+        // CLÍNICA
         if (isset($_POST["valor_clinica"]) && $_POST["valor_clinica"] !== "") {
             $recebe_clinica_selecionado = $_POST["valor_clinica"];
-        } else {
-            $recebe_clinica_selecionado = null;
+
+            if (!isset($_SESSION["clinica_selecionado"]) || $_SESSION["clinica_selecionado"] !== $recebe_clinica_selecionado) {
+                $_SESSION["clinica_selecionado"] = $recebe_clinica_selecionado;
+            }
         }
 
+        // COLABORADOR
         if (isset($_POST["valor_colaborador"]) && $_POST["valor_colaborador"] !== "") {
             $recebe_colaborador_selecionado = $_POST["valor_colaborador"];
-        } else {
-            $recebe_colaborador_selecionado = null;
+
+            if (!isset($_SESSION["colaborador_selecionado"]) || $_SESSION["colaborador_selecionado"] !== $recebe_colaborador_selecionado) {
+                $_SESSION["colaborador_selecionado"] = $recebe_colaborador_selecionado;
+            }
         }
 
+        // CARGO
         if (isset($_POST["valor_cargo"]) && $_POST["valor_cargo"] !== "") {
             $recebe_cargo_selecionado = $_POST["valor_cargo"];
-        } else {
-            $recebe_cargo_selecionado = null;
+
+            if (!isset($_SESSION["cargo_selecionado"]) || $_SESSION["cargo_selecionado"] !== $recebe_cargo_selecionado) {
+                $_SESSION["cargo_selecionado"] = $recebe_cargo_selecionado;
+            }
+        }
+
+        // MOTORISTA
+        if (isset($_POST["valor_motorista"]) && $_POST["valor_motorista"] !== "") {
+            $recebe_motorista_selecionado = $_POST["valor_motorista"];
+
+            if (!isset($_SESSION["motorista_selecionado"]) || $_SESSION["motorista_selecionado"] !== $recebe_motorista_selecionado) {
+                $_SESSION["motorista_selecionado"] = $recebe_motorista_selecionado;
+            }
         }
 
 
-        $instrucao_atualizar_kit = "update kits set tipo_exame = :recebe_tipo_exame,empresa_id = :recebe_empresa_id,clinica_id = :recebe_clinica_id,pessoa_id = :recebe_pessoa_id,cargo_id = :recebe_cargo_id where id = :recebe_kit_id";
+
+        $instrucao_atualizar_kit = "update kits set tipo_exame = :recebe_tipo_exame,empresa_id = :recebe_empresa_id,clinica_id = :recebe_clinica_id,
+        pessoa_id = :recebe_pessoa_id,motorista = :recebe_motorista,cargo_id = :recebe_cargo_id where id = :recebe_kit_id";
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
         $comando_atualizar_kit->bindValue(
             ":recebe_tipo_exame",
-            $recebe_exame_selecionado,
-            $recebe_exame_selecionado === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+            $_SESSION["exame_selecionado"],
+            $_SESSION["exame_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
         );
 
         $comando_atualizar_kit->bindValue(
             ":recebe_empresa_id",
-            $recebe_empresa_selecionado,
-            $recebe_empresa_selecionado === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+            $_SESSION["empresa_selecionado"],
+            $_SESSION["empresa_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
         );
 
         $comando_atualizar_kit->bindValue(
             ":recebe_clinica_id",
-            $recebe_clinica_selecionado,
-            $recebe_clinica_selecionado === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+            $_SESSION["clinica_selecionado"],
+            $_SESSION["clinica_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
         );
 
         $comando_atualizar_kit->bindValue(
             ":recebe_pessoa_id",
-            $recebe_colaborador_selecionado,
-            $recebe_colaborador_selecionado === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+            $_SESSION["colaborador_selecionado"],
+            $_SESSION["colaborador_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
         );
 
         $comando_atualizar_kit->bindValue(
             ":recebe_cargo_id",
-            $recebe_cargo_selecionado,
-            $recebe_cargo_selecionado === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+            $_SESSION["cargo_selecionado"],
+            $_SESSION["cargo_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        );
+
+        $comando_atualizar_kit->bindValue(
+            ":recebe_motorista",
+            $_SESSION["motorista_selecionado"],
+            $_SESSION["motorista_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
         );
 
         $comando_atualizar_kit->bindValue(
