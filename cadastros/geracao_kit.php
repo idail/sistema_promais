@@ -2878,6 +2878,8 @@
       }
     }
 
+    let recebe_codigo_empresa_selecionada;
+
     function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
       // Se o item for uma string, faz o parse do JSON
@@ -2888,6 +2890,10 @@
         if(inputId === "inputEmpresa")
         {
           grava_ecp_kit("empresa",itemObj.id);
+
+          recebe_codigo_empresa_selecionada = itemObj.id;
+
+          busca_medicos_relacionados_empresa();
         }else if(inputId === "inputClinica")
         {
           grava_ecp_kit("clinica",itemObj.id);
@@ -4302,11 +4308,79 @@
       ]
     };
 
+    function busca_medicos_relacionados_empresa()
+    {
+      let medicos_relacionados_empresa = [];
+      $.ajax({
+          url: "cadastros/processa_medico.php",
+          method: "GET",
+          dataType: "json",
+          data: {
+              "processo_medico": "buscar_medicos_associados_empresa",
+              valor_codigo_empresa_medicos_associados: recebe_codigo_empresa_selecionada,
+          },
+          success: function(resposta_medicos) {
+            debugger;
+            console.log(resposta_medicos);
+
+            if(resposta_medicos.length > 0)
+            {
+              for (let mempresa = 0; mempresa < resposta_medicos.length; mempresa++) 
+              {
+                medicos_relacionados_empresa.push({
+                  id:resposta_medicos[mempresa].medico_id,
+                  nome:resposta_medicos[mempresa].nome_medico,
+                  cpf:resposta_medicos[mempresa].cpf
+                }); 
+              }
+
+              if(typeof profissionaisMedicinaData !== undefined)
+              {
+                profissionaisMedicinaData.coordenadores = medicos_relacionados_empresa;
+              }
+            }
+
+            // if (resposta_medicos.length > 0) {
+            //     verifica_vinculacao_medico_empresa = true;
+            //     let recebe_tabela_associar_medico_empresa = document.querySelector(
+            //     "#tabela-medico-associado-coordenador tbody"
+            //     );
+
+            //     $("#tabela-medico-associado-coordenador tbody").html("");
+
+            //     for (let indice = 0; indice < resposta_medicos.length; indice++) {
+            //       let recebe_botao_desvincular_medico_empresa;
+            //       if (resposta_medicos[indice].id !== "" && resposta_medicos[indice].medico_id !== "") {
+            //         recebe_botao_desvincular_medico_empresa = "<td style='text-align:center;'><i class='fas fa-trash' title='Desvincular Médico' id='exclui-medico-ja-associado'" +
+            //         " data-codigo-medico-empresa='" + resposta_medicos[indice].id + "' data-codigo-medico='" + resposta_medicos[indice].medico_id + "'></i></td>";
+            //       }
+
+            //       recebe_tabela_associar_medico_empresa +=
+            //       "<tr>" +
+            //         "<td>" + resposta_medicos[indice].nome_medico + "</td>" +
+            //           recebe_botao_desvincular_medico_empresa +
+            //       "</tr>";
+            //     }
+            //     $("#tabela-medico-associado-coordenador tbody").append(recebe_tabela_associar_medico_empresa);
+            // } else {
+            //     verifica_vinculacao_medico_empresa = false;
+            //     $("#tabela-medico-associado-coordenador tbody").html("");
+            // }
+
+               resolve(); // sinaliza que terminou
+            },
+            error: function(xhr, status, error) {
+               console.log("Falha ao buscar médicos:" + error);
+               reject(error);
+            },
+        });
+    }
+
     // Dados dos Profissionais de Medicina
     const profissionaisMedicinaData = {
-      coordenadores: [
-        { nome: "Carlos Almeida Silva", cpf: "665.985.754-98" }
-      ],
+      // coordenadores: [
+      //   { nome: "Carlos Almeida Silva", cpf: "665.985.754-98" }
+      // ],
       medicos: [
         { nome: "Marcia Candida", cpf: "558.587.887-98" },
         { nome: "João Martins", cpf: "789.456.123-77", assinatura: "./assinatura_valida.png" }
