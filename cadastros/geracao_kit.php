@@ -2383,13 +2383,22 @@
       
       // Adiciona evento de input para busca de empresas
       $("#inputEmpresa").on('input', function() {
-        console.log('Input alterado, valor:', $(this).val());
+        console.log('Input empresa alterado, valor:', $(this).val());
         buscarECP('empresas', 'inputEmpresa', 'resultEmpresa', 'nome');
       });
       
+      // Adiciona evento de input para busca de clínicas
+      $("#inputClinica").on('input', function() {
+        console.log('Input clínica alterado, valor:', $(this).val());
+        buscarECP('clinicas', 'inputClinica', 'resultClinica', 'nome');
+      });
+      
       // Força a busca inicial para testar
-      console.log('Forçando busca inicial...');
+      console.log('Forçando busca inicial de empresas...');
       buscarECP('empresas', 'inputEmpresa', 'resultEmpresa', 'nome');
+      
+      console.log('Forçando busca inicial de clínicas...');
+      buscarECP('clinicas', 'inputClinica', 'resultClinica', 'nome');
 
       $.ajax({
         url: "cadastros/processa_geracao_kit.php",
@@ -2774,6 +2783,39 @@
               return false;
             } catch (error) {
               console.error('Erro ao processar empresa:', item, error);
+              return false;
+            }
+          });
+        } else if (tipo === 'clinicas') {
+          console.log(`Buscando em ${ecpData.clinicas.length} clínicas`);
+          // Busca em clínicas (nome, CNPJ ou CPF)
+          resultados = ecpData[tipo].filter(item => {
+            if (!item) return false;
+            
+            try {
+              // Busca por nome (insensível a acentos e case)
+              const nome = removerAcentos(item.nome || '').toLowerCase();
+              const nomeMatch = nome.includes(valorBusca) || 
+                              nome.split(' ').some(palavra => palavra.startsWith(valorBusca));
+              
+              // Busca por CNPJ/CPF (busca parcial)
+              const cnpjCpf = (item.cnpj || item.cpf || '').replace(/[^\d]/g, '');
+              const cnpjCpfMatch = valorNumerico && cnpjCpf.includes(valorNumerico);
+              
+              if (nomeMatch || cnpjCpfMatch) {
+                console.log('Clínica encontrada:', {
+                  nome: item.nome,
+                  cnpj: item.cnpj,
+                  cpf: item.cpf,
+                  busca: valorBusca,
+                  nomeMatch,
+                  cnpjCpfMatch
+                });
+                return true;
+              }
+              return false;
+            } catch (error) {
+              console.error('Erro ao processar clínica:', item, error);
               return false;
             }
           });
