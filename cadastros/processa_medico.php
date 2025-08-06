@@ -119,7 +119,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_data_cadastro_medico = $_POST["valor_data_cadastro_medico"];
         $recebe_nome_medico = $_POST["valor_nome_medico"];
         $recebe_cpf_medico = $_POST["valor_cpf_medico"];
-        $recebe_crm_medico = $_POST["valor_crm_medico"];
+        $recebe_crm_medico = !empty($_POST["valor_crm_medico"]) ? $_POST["valor_crm_medico"] : null;
         $recebe_uf_crm_medico = !empty($_POST["valor_uf_crm_medico"]) ? $_POST["valor_uf_crm_medico"] : null;
         $recebe_especialidade_medico = !empty($_POST["valor_especialidade_medico"]) ? $_POST["valor_especialidade_medico"] : null;
         $recebe_rqe_medico = !empty($_POST["valor_rqe_medico"]) ? $_POST["valor_rqe_medico"] : null;
@@ -127,7 +127,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_nascimento_medico = !empty($_POST["valor_nascimento_medico"]) ? $_POST["valor_nascimento_medico"] : null;
         $recebe_sexo_medico = !empty($_POST["valor_sexo_medico"]) ? $_POST["valor_sexo_medico"] : null;
         $recebe_contato_medico = !empty($_POST["valor_contato_medico"]) ? $_POST["valor_contato_medico"] : null;
-        $recebe_empresa_id_medico = $_POST["valor_empresa_id_medico"];
+        $recebe_empresa_id_medico = $_SESSION["empresa_id"];
         
         // $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
         // $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
