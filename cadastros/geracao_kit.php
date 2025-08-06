@@ -4695,9 +4695,9 @@
                 }, 5000);
 
                 // Atualiza o ID temporário para o ID real retornado pelo servidor
-                const medicoCoordenadorIndex = profissionaisMedicinaData.coordenadores.findIndex(mc => mc.id === valores.id);
-                if (medicoCoordenadorIndex !== -1) {
-                  profissionaisMedicinaData.coordenadores[medicoCoordenadorIndex].id = response;
+                const medicoIndex = profissionaisMedicinaData.medicos.findIndex(m => m.id === valores.id);
+                if (medicoIndex !== -1) {
+                  profissionaisMedicinaData.medicos[medicoIndex].id = response;
                 }
                   
                 }
