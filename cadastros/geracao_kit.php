@@ -4468,6 +4468,7 @@
 
     // Funções para o formulário de Profissionais de Medicina
     function mostrarListaProfissionais(tipo) {
+      debugger;
       const inputElement = document.getElementById(`input${capitalize(tipo)}`);
       const input = inputElement.value.toLowerCase();
       const lista = profissionaisMedicinaData[tipoMapeado[tipo]];
@@ -4516,7 +4517,9 @@
       input.value = value;
     }
 
-    function confirmarAdicaoProfissional(tipo) {
+    let recebe_codigo_medico_coordenador_apos_gravar_rapido;
+
+    async function confirmarAdicaoProfissional(tipo) {
       debugger;
       const nomeInput = document.getElementById(`novo${capitalize(tipo)}`);
       const cpfInput = document.getElementById(`cpf${capitalize(tipo)}`);
@@ -4538,14 +4541,19 @@
         ...(tipo === 'medico' && crm && { crm })
       };
 
+      profissionaisMedicinaData[tipoMapeado[tipo]].push(novo);
+
       if(tipo === "coordenador")
       {
-        gravar_medico_coordenador(novo);
+        // Aguarda o retorno do ID do AJAX
+        let idretornadomedicocoordenador = await gravar_medico_coordenador(novo);
+
+        // Chama a função de gravar kit passando o ID real
+        grava_medico_coordenador_kit(idretornadomedicocoordenador);
       }else{
         gravar_medico(novo);
       }
       
-      profissionaisMedicinaData[tipoMapeado[tipo]].push(novo);
       renderizarPessoa(tipo, novo, document.getElementById(`resultado${capitalize(tipo)}`));
       fecharModal(`modal${capitalize(tipo)}`);
       
@@ -4555,44 +4563,10 @@
       if (crmInput) crmInput.value = '';
     }
 
-    function renderizarPessoa(tipo, pessoa, area) {
-      area.className = 'ecp-details';
-      area.style.display = 'block';
-      area.innerHTML = `
-        <div class="font-medium">${pessoa.nome}</div>
-        <div class="text-sm text-gray-500">CPF: ${pessoa.cpf}${pessoa.crm ? ` | CRM: ${pessoa.crm}` : ''}</div>
-        ${tipo === 'medico' ? renderAssinatura(pessoa) : ''}
-        <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('${area.id}')">✖ Remover</button>
-      `;
-    }
 
-    function renderAssinatura(pessoa) {
-      if (pessoa.assinatura) {
-        return `
-          <div class="mt-2">
-            <img src="${pessoa.assinatura}" alt="Assinatura" style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
-          </div>
-        `;
-      }
-      return `
-        <div class="mt-2">
-          <label class="ecp-label">Enviar Assinatura</label>
-          <input 
-            type="file" 
-            id="assinatura-${pessoa.cpf}" 
-            class="ecp-input" 
-            accept="image/*" 
-            onchange="handleAssinaturaUpload(this, '${pessoa.cpf}')"
-          >
-          <div class="ecp-questionario-note">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</div>
-        </div>
-      `;
-    }
-
-    function gravar_medico_coordenador(valores)
-    {
-        debugger;
-        $.ajax({
+    function gravar_medico_coordenador(valores) {
+      return new Promise((resolve, reject) => {
+          $.ajax({
               url: "cadastros/processa_medico.php",
               type: "POST",
               dataType: "json",
@@ -4600,53 +4574,57 @@
                   processo_medico: "inserir_medico",
                   valor_nome_medico: valores.nome,
                   valor_cpf_medico: valores.cpf,
-                },
-              success: function(retorno_medico) {
+              },
+              success: function (retorno_medico) {
                   debugger;
-
                   console.log(retorno_medico);
 
-                if (retorno_medico) {
+                  if (retorno_medico) {
+                      const mensagemSucesso = `
+                        <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                          <div style="display: flex; align-items: center; justify-content: center;">
+                            <div>
+                              <div>Médico coordenador cadastrado com sucesso.</div>
+                            </div>
+                          </div>
+                        </div>
+                      `;
 
-                  const mensagemSucesso = `
-                  <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                    <div style="display: flex; align-items: center; justify-content: center;">
+                      // Remove mensagem anterior se existir
+                      $("#medico-coordenador-gravado").remove();
+
+                      // Adiciona a nova mensagem acima das abas
+                      $(".tabs-container").before(mensagemSucesso);
+
+                      // Configura o fade out após 5 segundos
+                      setTimeout(function () {
+                          $("#medico-coordenador-gravado").fadeOut(500, function () {
+                              $(this).remove();
+                          });
+                      }, 5000);
+
+                      // Atualiza o ID temporário para o ID real retornado pelo servidor
+                      const medicoCoordenadorIndex = profissionaisMedicinaData.coordenadores.findIndex(
+                          mc => mc.id === valores.id
+                      );
+
+                      if (medicoCoordenadorIndex !== -1) {
+                          profissionaisMedicinaData.coordenadores[medicoCoordenadorIndex].id = retorno_medico; // usa retorno do servidor
+                      }
                       
-                      <div>
-                      
-                        <div>Médico coordenador cadastrado com sucesso.</div>
-                      </div>
-                    </div>
-                  </div>
-                `;
-                  console.log("Médico cadastrada com sucesso");
-
-                // Remove mensagem anterior se existir
-                $("#medico-coordenador-gravado").remove();
-              
-                // Adiciona a nova mensagem acima das abas
-                $(".tabs-container").before(mensagemSucesso);
-              
-                // Configura o fade out após 5 segundos
-                setTimeout(function() {
-                  $("#medico-coordenador-gravado").fadeOut(500, function() {
-                    $(this).remove();
-                  });
-                }, 5000);
-
-                // Atualiza o ID temporário para o ID real retornado pelo servidor
-                const medicoCoordenadorIndex = profissionaisMedicinaData.coordenadores.findIndex(mc => mc.id === valores.id);
-                if (medicoCoordenadorIndex !== -1) {
-                  profissionaisMedicinaData.coordenadores[medicoCoordenadorIndex].id = response;
-                }
-                  
-                }
+                      resolve(retorno_medico); // <-- resolve a Promise com o ID
+                  } else {
+                      reject("Erro: retorno inválido do servidor");
+                  }
               },
-                    error: function(xhr, status, error) {
-                        console.log("Falha ao inserir empresa:" + error);
+              error: function (xhr, status, error) {
+                  console.log("Falha ao inserir empresa:" + error);
+                  reject(error); // <-- rejeita a Promise em caso de erro
               },
           });
+      });
     }
+
 
     function gravar_medico(valores)
     {
@@ -4706,6 +4684,104 @@
                         console.log("Falha ao inserir empresa:" + error);
               },
           });
+      }
+
+
+
+    function renderizarPessoa(tipo, pessoa, area) {
+      if(tipo === "coordenador")
+      {
+        grava_medico_coordenador_kit(pessoa);
+      }else{
+
+      }
+
+      area.className = 'ecp-details';
+      area.style.display = 'block';
+      area.innerHTML = `
+        <div class="font-medium">${pessoa.nome}</div>
+        <div class="text-sm text-gray-500">CPF: ${pessoa.cpf}${pessoa.crm ? ` | CRM: ${pessoa.crm}` : ''}</div>
+        ${tipo === 'medico' ? renderAssinatura(pessoa) : ''}
+        <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('${area.id}')">✖ Remover</button>
+      `;
+    }
+
+    function grava_medico_coordenador_kit(valores)
+    {
+        debugger;
+
+        console.log(valores);
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_medico_coordenador_id: valores.id,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+
+            const mensagemSucesso = `
+                  <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>Médico coordenador gravado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#medico-coordenador-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#medico-coordenador-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+    }
+
+    function renderAssinatura(pessoa) {
+      if (pessoa.assinatura) {
+        return `
+          <div class="mt-2">
+            <img src="${pessoa.assinatura}" alt="Assinatura" style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+        `;
+      }
+      return `
+        <div class="mt-2">
+          <label class="ecp-label">Enviar Assinatura</label>
+          <input 
+            type="file" 
+            id="assinatura-${pessoa.cpf}" 
+            class="ecp-input" 
+            accept="image/*" 
+            onchange="handleAssinaturaUpload(this, '${pessoa.cpf}')"
+          >
+          <div class="ecp-questionario-note">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</div>
+        </div>
+      `;
     }
     
     function handleAssinaturaUpload(input, cpf) {
