@@ -2880,6 +2880,8 @@
 
     let recebe_codigo_empresa_selecionada;
 
+    let recebe_codigo_clinica_selecionada;
+
     function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
       // Se o item for uma string, faz o parse do JSON
@@ -2897,6 +2899,10 @@
         }else if(inputId === "inputClinica")
         {
           grava_ecp_kit("clinica",itemObj.id);
+
+          recebe_codigo_clinica_selecionada = itemObj.id;
+
+          busca_medicos_relacionados_clinica();
         }else if(inputId === "inputColaborador")
         {
           grava_ecp_kit("colaborador",itemObj.id);
@@ -4367,7 +4373,7 @@
             //     $("#tabela-medico-associado-coordenador tbody").html("");
             // }
 
-               resolve(); // sinaliza que terminou
+              //  resolve(); // sinaliza que terminou
             },
             error: function(xhr, status, error) {
                console.log("Falha ao buscar médicos:" + error);
@@ -4376,15 +4382,78 @@
         });
     }
 
+    function busca_medicos_relacionados_clinica()
+    {
+
+      let medicos_relacionados_clinica = [];
+
+      $.ajax({
+           url: "cadastros/processa_medico.php",
+           method: "GET",
+           dataType: "json",
+           data: {
+             "processo_medico": "buscar_medicos_associados_clinica",
+              valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_selecionada,
+           },
+           success: function(resposta_medicos) {
+             debugger;
+             console.log(resposta_medicos);
+             if (resposta_medicos.length > 0) {
+               for (let mclinica = 0; mclinica < resposta_medicos.length; mclinica++) 
+              {
+                medicos_relacionados_clinica.push({
+                 id:resposta_medicos[mclinica].id,
+                 nome:resposta_medicos[mclinica].nome_medico,
+                 cpf:resposta_medicos[mclinica].cpf
+                });
+               }
+
+
+               if(typeof profissionaisMedicinaData !== undefined)
+                {
+                  profissionaisMedicinaData.medicos = medicos_relacionados_clinica;
+                }
+
+
+
+                // let recebe_tabela_associar_medico_clinica = document.querySelector(
+                // "#tabela-medico-associado tbody"
+                //  );
+
+                //  $("#tabela-medico-associado tbody").html("");
+
+                //  let htmlContent = "";
+                //  ids_medicos_associados_existentes = resposta_medicos.map(m => String(m.medico_id));
+                //  for (let indice = 0; indice < resposta_medicos.length; indice++) {
+                //    htmlContent +=
+                //     '<tr>' +
+                //       '<td>' + resposta_medicos[indice].nome_medico + '</td>' +
+                //       '<td><i class="fas fa-trash" id="exclui-medico-ja-associado"' +
+                //       ' data-codigo-medico-clinica="' + resposta_medicos[indice].id + '" data-codigo-medico="' + resposta_medicos[indice].medico_id + '"></i></td>' +
+                //     '</tr>';
+                //   }
+                //   $("#tabela-medico-associado tbody").html(htmlContent);
+               } else {
+                  // $("#tabela-medico-associado tbody").html("");
+               }
+                //  resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar médicos:" + error);
+                    reject(error);
+                },
+            });
+    }
+
     // Dados dos Profissionais de Medicina
     const profissionaisMedicinaData = {
       // coordenadores: [
       //   { nome: "Carlos Almeida Silva", cpf: "665.985.754-98" }
       // ],
-      medicos: [
-        { nome: "Marcia Candida", cpf: "558.587.887-98" },
-        { nome: "João Martins", cpf: "789.456.123-77", assinatura: "./assinatura_valida.png" }
-      ]
+      // medicos: [
+      //   { nome: "Marcia Candida", cpf: "558.587.887-98" },
+      //   { nome: "João Martins", cpf: "789.456.123-77", assinatura: "./assinatura_valida.png" }
+      // ]
     };
 
     const tipoMapeado = {
