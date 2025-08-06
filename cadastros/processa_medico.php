@@ -116,7 +116,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
 
     if($recebe_processo_medico === "inserir_medico")
     {
-        $recebe_data_cadastro_medico = $_POST["valor_data_cadastro_medico"];
+        $recebe_data_cadastro_medico = !empty($_POST["valor_data_cadastro_medico"]) ? $_POST["valor_data_cadastro_medico"] : null;
         $recebe_nome_medico = $_POST["valor_nome_medico"];
         $recebe_cpf_medico = $_POST["valor_cpf_medico"];
         $recebe_crm_medico = !empty($_POST["valor_crm_medico"]) ? $_POST["valor_crm_medico"] : null;

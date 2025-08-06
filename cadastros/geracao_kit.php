@@ -4446,14 +4446,19 @@
     }
 
     // Dados dos Profissionais de Medicina
+    // const profissionaisMedicinaData = {
+    //   // coordenadores: [
+    //   //   { nome: "Carlos Almeida Silva", cpf: "665.985.754-98" }
+    //   // ],
+    //   // medicos: [
+    //   //   { nome: "Marcia Candida", cpf: "558.587.887-98" },
+    //   //   { nome: "João Martins", cpf: "789.456.123-77", assinatura: "./assinatura_valida.png" }
+    //   // ]
+    // };
+
     const profissionaisMedicinaData = {
-      // coordenadores: [
-      //   { nome: "Carlos Almeida Silva", cpf: "665.985.754-98" }
-      // ],
-      // medicos: [
-      //   { nome: "Marcia Candida", cpf: "558.587.887-98" },
-      //   { nome: "João Martins", cpf: "789.456.123-77", assinatura: "./assinatura_valida.png" }
-      // ]
+      coordenadores: [],
+      medicos: []
     };
 
     const tipoMapeado = {
@@ -4599,7 +4604,7 @@
                 if (retorno_medico) {
 
                   const mensagemSucesso = `
-                  <div id="medico-coordenador-gravada" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
                     <div style="display: flex; align-items: center; justify-content: center;">
                       
                       <div>
@@ -4612,14 +4617,14 @@
                   console.log("Médico cadastrada com sucesso");
 
                 // Remove mensagem anterior se existir
-                $("#empresa-gravada").remove();
+                $("#medico-coordenador-gravado").remove();
               
                 // Adiciona a nova mensagem acima das abas
                 $(".tabs-container").before(mensagemSucesso);
               
                 // Configura o fade out após 5 segundos
                 setTimeout(function() {
-                  $("#empresa-gravada").fadeOut(500, function() {
+                  $("#medico-coordenador-gravado").fadeOut(500, function() {
                     $(this).remove();
                   });
                 }, 5000);
