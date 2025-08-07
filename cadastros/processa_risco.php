@@ -143,6 +143,15 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_riscos_outros->execute();
         $resultado_busca_riscos_outros = $comando_busca_riscos_outros->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_riscos_outros);
+    }else if($recebe_processo_risco === "buscar_todos")
+    {
+        $instrucao_busca_riscos_outros = 
+        "select * from grupo_riscos where empresa_id = :recebe_empresa_id";
+        $comando_busca_riscos_outros = $pdo->prepare($instrucao_busca_riscos_outros);
+        $comando_busca_riscos_outros->bindValue(":recebe_empresa_id",$recebe_empresa_id);
+        $comando_busca_riscos_outros->execute();
+        $resultado_busca_riscos_outros = $comando_busca_riscos_outros->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_riscos_outros);
     }
 }
 ?>

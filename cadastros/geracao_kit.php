@@ -5023,8 +5023,10 @@
 
     // Função para verificar se a aba de riscos está visível e inicializar componentes
     function checkAndInitializeRiscosTab() {
+      debugger;
       const riscosTab = document.querySelector('.tab[data-step="3"]');
       if (riscosTab && riscosTab.classList.contains('active')) {
+        buscar_riscos();
         // Pequeno atraso para garantir que o conteúdo foi renderizado
         setTimeout(initializeLaudoDropdowns, 100);
         
@@ -5057,6 +5059,63 @@
           setTimeout(initTreinamentos, 200);
         }
       }
+    }
+
+    function buscar_riscos()
+    {
+      $.ajax({
+          url: "cadastros/processa_risco.php", // Endpoint da API
+          method: "GET",
+          dataType: "json",
+          data: {
+            "processo_risco": "buscar_todos"
+          },
+          success: function(resposta_cargo) 
+          {
+            // debugger;
+            // // Mapeia códigos para nomes amigáveis
+            // const nomesGrupos = {
+            //   "ergonomico": "Riscos Ergonômicos",
+            //   "acidente_mecanico": "Riscos Acidentes - Mecânicos",
+            //   "fisico": "Riscos Físicos",
+            //   "quimico": "Riscos Químicos",
+            //   "biologico": "Riscos Biológicos",
+            //   "outro": "Outros"
+            // };
+
+            // // Objeto para garantir grupos únicos
+            // const gruposUnicos = {};
+
+            // resposta_cargo.forEach(item => {
+            //   const grupo = item.grupo_risco?.trim();
+            //   if (grupo && grupo !== "selecione") {
+            //     gruposUnicos[grupo] = true;
+            //   }
+            // });
+
+            // // Container onde os checkboxes serão inseridos
+            // const container = $("#group-select-container");
+            // container.empty(); // Limpa conteúdo atual
+
+            // // Monta os checkboxes
+            // for (const grupo in gruposUnicos) {
+            //   const nomeGrupo = nomesGrupos[grupo] || grupo; // fallback para nome original
+
+            //   const checkboxHtml = `
+            //     <label class="group-option">
+            //       <input type="checkbox" value="${grupo}">
+            //       ${nomeGrupo}
+            //     </label>
+            //   `;
+
+            //   container.append(checkboxHtml);
+            // }
+          },
+          error:function(xhr,status,error)
+          {
+
+          },
+      });
     }
     
     // Função para inicializar o componente de Aptidões e Exames
@@ -7376,6 +7435,7 @@
       
       // Função para atualizar as seleções
       function updateSelectedGroups() {
+        debugger;
         const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
         selectedGroups = Array.from(checkboxes)
           .filter(checkbox => checkbox.checked)
@@ -7467,6 +7527,7 @@
       }
       
       function performSearch(term) {
+        debugger;
         console.log('performSearch called with term:', term);
         if (!searchResults) {
           console.error('searchResults element not found');
