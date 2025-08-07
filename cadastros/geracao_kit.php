@@ -7533,7 +7533,7 @@ function buscar_riscos() {
       }
       
       function performSearch(term) {
-        debugger;
+        // debugger;
         console.log('performSearch called with term:', term);
         if (!searchResults) {
           console.error('searchResults element not found');
@@ -7619,6 +7619,7 @@ function buscar_riscos() {
       }
       
       function addSelectedRisk(code, name, group) {
+
         if (!selectedRisks[code]) {
           selectedRisks[code] = { name, group };
           updateSelectedRisksDisplay();
@@ -7629,8 +7630,27 @@ function buscar_riscos() {
         }
       }
       
+      let riscos_selecionados = [];
       function updateSelectedRisksDisplay() {
         debugger;
+
+        for (let codigo in selectedRisks) {
+          if (selectedRisks.hasOwnProperty(codigo)) {
+            riscos_selecionados.push({
+              codigo: codigo,
+              descricao: selectedRisks[codigo].name,
+              grupo: selectedRisks[codigo].group
+            });
+          }
+        }
+
+      console.log("Riscos selecionados:",riscos_selecionados);
+
+      let jsonRiscos = JSON.stringify(riscos_selecionados);
+
+      console.log("Riscos em json", jsonRiscos);
+
+
         if (!selectedRisksContainer) return;
         
         selectedRisksContainer.innerHTML = '';
