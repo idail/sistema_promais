@@ -1717,7 +1717,7 @@
           </div>
           <div class="step-title">
             <h2>Profissionais da Medicina</h2>
-            <div class="step-subtitle">Profissionais Relacionados à clínica <strong>Hospital Samaritano – Alto Araguaia/MT</strong></div>
+            <div class="step-subtitle">Profissionais Relacionados à clínica <strong id="exibi-clinica-selecionada"></strong></div>
           </div>
         </div>
 
@@ -2882,6 +2882,8 @@
 
     let recebe_codigo_clinica_selecionada;
 
+    let recebe_nome_clinica_selecionado;
+
     function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
       // Se o item for uma string, faz o parse do JSON
@@ -2903,6 +2905,8 @@
           recebe_codigo_clinica_selecionada = itemObj.id;
 
           busca_medicos_relacionados_clinica();
+
+          recebe_nome_clinica_selecionado = itemObj.nome;
         }else if(inputId === "inputColaborador")
         {
           grava_ecp_kit("colaborador",itemObj.id);
@@ -4469,6 +4473,8 @@
     // Funções para o formulário de Profissionais de Medicina
     function mostrarListaProfissionais(tipo) {
       debugger;
+
+
       const inputElement = document.getElementById(`input${capitalize(tipo)}`);
       const input = inputElement.value.toLowerCase();
       const lista = profissionaisMedicinaData[tipoMapeado[tipo]];
@@ -4929,6 +4935,11 @@
         cargoInput.addEventListener('input', () => buscarECP('cargos', 'inputCargo', 'resultCargo', 'titulo'));
       }
       if (coordenadorInput) {
+        debugger;
+        if(recebe_nome_clinica_selecionado !== "")
+        {
+          $("#exibi-clinica-selecionada").html(recebe_nome_clinica_selecionado);
+        }
         coordenadorInput.addEventListener('input', () => mostrarListaProfissionais('coordenador'));
       }
       if (medicoInput) {
@@ -5677,6 +5688,7 @@
 
       // Atualiza a lista de treinamentos selecionados
       function atualizarSelecionados() {
+        debugger;
         const checkboxes = document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked');
         
         if (checkboxes.length === 0) {
@@ -6466,6 +6478,8 @@
           </div>
         </div>`
       ];
+
+      
       
       // Função para atualizar a lista de selecionados
       function updateSelectedList() {
@@ -6762,6 +6776,7 @@
       
       // Função para atualizar os itens selecionados
       function atualizarSelecionados(checkbox, tipo) {
+        debugger;
         const codigo = checkbox.value;
         const nome = checkbox.nextElementSibling.textContent.trim();
         
@@ -7548,6 +7563,7 @@
       }
       
       function updateSelectedRisksDisplay() {
+        debugger;
         if (!selectedRisksContainer) return;
         
         selectedRisksContainer.innerHTML = '';
