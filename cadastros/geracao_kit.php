@@ -7637,13 +7637,20 @@ function buscar_riscos() {
 
         for (let codigo in selectedRisks) {
           if (selectedRisks.hasOwnProperty(codigo)) {
-            riscos_selecionados.push({
-              codigo: codigo,
-              descricao: selectedRisks[codigo].name,
-              grupo: selectedRisks[codigo].group
-            });
+            
+            // Verifica se já existe no array pelo código
+            const jaExiste = riscos_selecionados.some(risco => risco.codigo === codigo);
+            
+            if (!jaExiste) {
+              riscos_selecionados.push({
+                codigo: codigo,
+                descricao: selectedRisks[codigo].name,
+                grupo: selectedRisks[codigo].group
+              });
+            }
           }
         }
+
 
       console.log("Riscos selecionados:",riscos_selecionados);
 
