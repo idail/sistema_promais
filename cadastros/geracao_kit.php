@@ -5038,69 +5038,85 @@
       }
     }
 
-    function buscar_riscos() {
+    let risksData = {}; // variável global
+
+function buscar_riscos() {
+  debugger;
+
+  const container = $("#group-select-container");
+  container.html('<div class="loading-riscos" style="padding: 10px; text-align: center; color: #666;">Carregando grupos de risco...</div>');
+
+  $.ajax({
+    url: "cadastros/processa_risco.php",
+    method: "GET",
+    dataType: "json",
+    data: {
+      "processo_risco": "buscar_todos"
+    },
+    success: function(resposta) {
       debugger;
-    // Mostra um indicador de carregamento
-    const container = $("#group-select-container");
-    container.html('<div class="loading-riscos" style="padding: 10px; text-align: center; color: #666;">Carregando grupos de risco...</div>');
 
-    $.ajax({
-      url: "cadastros/processa_risco.php",
-      method: "GET",
-      dataType: "json",
-      data: {
-        "processo_risco": "buscar_todos"
-      },
-      success: function(resposta) {
-        debugger;
-        // Mapeia os códigos para nomes amigáveis
-        const nomesGrupos = {
-          "ergonomico": "Riscos Ergonômicos",
-          "acidente_mecanico": "Riscos Acidentes - Mecânicos",
-          "fisico": "Riscos Físicos",
-          "quimico": "Riscos Químicos",
-          "biologico": "Riscos Biológicos",
-          "outro": "Outros"
-        };
+      const nomesGrupos = {
+        "ergonomico": "Riscos Ergonômicos",
+        "acidente_mecanico": "Riscos Acidentes - Mecânicos",
+        "fisico": "Riscos Físicos",
+        "quimico": "Riscos Químicos",
+        "biologico": "Riscos Biológicos",
+        "outro": "Outros Riscos"
+      };
 
-        // Limpa o container
-        container.empty();
+      // Limpa variável antes de popular
+      risksData = {};
 
-        // Usa um objeto para garantir grupos únicos
-        const gruposUnicos = {};
+      resposta.forEach(item => {
+        let grupo = item.grupo_risco?.trim();
+        let codigo = item.codigo?.trim();
+        let nome = item.descricao_grupo_risco?.trim();
 
-        // Processa a resposta para extrair grupos únicos
-        resposta.forEach(item => {
-          const grupo = item.grupo_risco?.trim();
-          if (grupo && grupo !== "selecione") {
-            // Usa o nome amigável se existir, senão usa o código
-            gruposUnicos[grupo] = nomesGrupos[grupo] || grupo;
-          }
-        });
+        // Ignora grupo inválido
+        if (!grupo || grupo === "selecione") return;
 
-        // Adiciona os checkboxes ao container
-        for (const [codigo, nome] of Object.entries(gruposUnicos)) {
-          const checkboxHtml = `
-            <label class="group-option" style="display: block; padding: 5px 0;">
-              <input type="checkbox" value="${codigo}" ${codigo === 'ergonomico' ? 'checked' : ''}>
-              ${nome}
-            </label>
-          `;
-          container.append(checkboxHtml);
+        // Garante que o grupo exista no objeto
+        if (!risksData[grupo]) {
+          risksData[grupo] = {
+            name: nomesGrupos[grupo] || grupo,
+            risks: []
+          };
         }
 
-        // Adiciona o evento de change aos checkboxes
-        container.find('input[type="checkbox"]').on('change', function() {
-          // Aqui você pode adicionar a lógica de filtragem posteriormente
-          console.log('Checkbox alterado:', $(this).val(), $(this).prop('checked'));
+        // Adiciona o risco no array do grupo
+        risksData[grupo].risks.push({
+          code: codigo,
+          name: nome,
+          isOther: nome?.toLowerCase() === "outros"
         });
-      },
-      error: function(xhr, status, error) {
-        console.error('Erro ao carregar riscos:', error);
-        container.html('<div class="error" style="color: red;">Erro ao carregar os grupos de risco. Tente novamente.</div>');
+      });
+
+      console.log("RisksData montado:", risksData);
+
+      // ----- Aqui segue sua lógica atual de montar checkboxes -----
+      container.empty();
+      for (const [codigo, dados] of Object.entries(risksData)) {
+        const checkboxHtml = `
+          <label class="group-option" style="display: block; padding: 5px 0;">
+            <input type="checkbox" value="${codigo}" ${codigo === 'ergonomicos' ? 'checked' : ''}>
+            ${dados.name}
+          </label>
+        `;
+        container.append(checkboxHtml);
       }
-    });
+
+      container.find('input[type="checkbox"]').on('change', function() {
+        console.log('Checkbox alterado:', $(this).val(), $(this).prop('checked'));
+      });
+    },
+    error: function(xhr, status, error) {
+      console.error('Erro ao carregar riscos:', error);
+      container.html('<div class="error" style="color: red;">Erro ao carregar os grupos de risco. Tente novamente.</div>');
+    }
+  });
   }
+
 
   // Chama a função quando a aba de riscos for aberta
   $(document).on('click', '.tab[data-step="3"]', function() {
@@ -7343,65 +7359,65 @@
 
       
       // Dados dos riscos (pode ser movido para um arquivo JSON separado posteriormente)
-      const risksData = {
-        ergonomicos: {
-          name: "Riscos Ergonômicos",
-          risks: [
-            { code: "04.01.001", name: "Trabalho em posturas incômodas ou pouco confortáveis por longos períodos" },
-            { code: "04.01.002", name: "Trabalhos com pacientes individuais" },
-            { code: "04.01.003", name: "Trabalhos com pacientes individuais" },
-            { code: "04.01.004", name: "Trabalhos com pacientes individuais" },
-            { code: "04.01.005", name: "Trabalhos com pacientes individuais" },
-            { code: "04.01.999", name: "Outros", isOther: true }
-          ]
-        },
-        "acidentes-mecanicos": {
-          name: "Riscos Acidentes - Mecânicos",
-          risks: [
-            { code: "01.01.001", name: "Quedas em mesmo nível" },
-            { code: "01.01.002", name: "Quedas de altura" },
-            { code: "01.01.003", name: "Queda de objetos" },
-            { code: "01.01.999", name: "Outros", isOther: true }
-          ]
-        },
-        fisicos: {
-          name: "Riscos Físicos",
-          risks: [
-            { code: "03.01.001", name: "Exposição a ruído excessivo" },
-            { code: "03.01.002", name: "Exposição a vibrações" },
-            { code: "03.01.003", name: "Temperaturas extremas" },
-            { code: "03.01.004", name: "Radiações ionizantes e não ionizantes" },
-            { code: "03.01.999", name: "Outros", isOther: true }
-          ]
-        },
-        quimicos: {
-          name: "Riscos Químicos",
-          risks: [
-            { code: "02.01.001", name: "Exposição a produtos químicos" },
-            { code: "02.01.002", name: "Inalação de vapores tóxicos" },
-            { code: "02.01.003", name: "Contato com substâncias corrosivas" },
-            { code: "02.01.999", name: "Outros", isOther: true }
-          ]
-        },
-        biologicos: {
-          name: "Riscos Biológicos",
-          risks: [
-            { code: "05.01.002", name: "Exposição a agentes biológicos" },
-            { code: "05.01.003", name: "Contato com fluidos corporais" },
-            { code: "05.01.006", name: "Manuseio de materiais contaminados" },
-            { code: "05.01.999", name: "Outros", isOther: true }
-          ]
-        },
-        outros: {
-          name: "Outros Riscos",
-          risks: [
-            { code: "99.01.001", name: "Estresse ocupacional" },
-            { code: "99.01.002", name: "Assédio moral" },
-            { code: "99.01.003", name: "Jornada de trabalho excessiva" },
-            { code: "99.01.999", name: "Outros", isOther: true }
-          ]
-        }
-      };
+      // const risksData = {
+      //   ergonomico: {
+      //     name: "Riscos Ergonômicos",
+      //     risks: [
+      //       { code: "04.01.001", name: "Trabalho em posturas incômodas ou pouco confortáveis por longos períodos" },
+      //       { code: "04.01.002", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.003", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.004", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.005", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   "acidentes_mecanico": {
+      //     name: "Riscos Acidentes - Mecânicos",
+      //     risks: [
+      //       { code: "01.01.001", name: "Quedas em mesmo nível" },
+      //       { code: "01.01.002", name: "Quedas de altura" },
+      //       { code: "01.01.003", name: "Queda de objetos" },
+      //       { code: "01.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   fisico: {
+      //     name: "Riscos Físicos",
+      //     risks: [
+      //       { code: "03.01.001", name: "Exposição a ruído excessivo" },
+      //       { code: "03.01.002", name: "Exposição a vibrações" },
+      //       { code: "03.01.003", name: "Temperaturas extremas" },
+      //       { code: "03.01.004", name: "Radiações ionizantes e não ionizantes" },
+      //       { code: "03.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   quimico: {
+      //     name: "Riscos Químicos",
+      //     risks: [
+      //       { code: "02.01.001", name: "Exposição a produtos químicos" },
+      //       { code: "02.01.002", name: "Inalação de vapores tóxicos" },
+      //       { code: "02.01.003", name: "Contato com substâncias corrosivas" },
+      //       { code: "02.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   biologico: {
+      //     name: "Riscos Biológicos",
+      //     risks: [
+      //       { code: "05.01.002", name: "Exposição a agentes biológicos" },
+      //       { code: "05.01.003", name: "Contato com fluidos corporais" },
+      //       { code: "05.01.006", name: "Manuseio de materiais contaminados" },
+      //       { code: "05.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   outro: {
+      //     name: "Outros Riscos",
+      //     risks: [
+      //       { code: "99.01.001", name: "Estresse ocupacional" },
+      //       { code: "99.01.002", name: "Assédio moral" },
+      //       { code: "99.01.003", name: "Jornada de trabalho excessiva" },
+      //       { code: "99.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   }
+      // };
 
       // Elementos do DOM
       const groupSelect = document.getElementById('group-select');
