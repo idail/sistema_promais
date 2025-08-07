@@ -1799,30 +1799,7 @@
             <div class="ecp-field">
               <label class="ecp-label">Grupos de Riscos</label>
               <div id="group-select-container" style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; padding: 8px;">
-                <label class="group-option">
-                  <input type="checkbox" value="ergonomicos" checked>
-                  Riscos Ergonômicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="acidentes-mecanicos">
-                  Riscos Acidentes - Mecânicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="fisicos">
-                  Riscos Físicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="quimicos">
-                  Riscos Químicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="biologicos">
-                  Riscos Biológicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="outros">
-                  Outros
-                </label>
+                
               </div>
             </div>
           </div>
