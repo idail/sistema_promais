@@ -1799,30 +1799,30 @@
             <div class="ecp-field">
               <label class="ecp-label">Grupos de Riscos</label>
               <div id="group-select-container" style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; padding: 8px;">
-                <label class="group-option">
-                  <input type="checkbox" value="ergonomicos" checked>
-                  Riscos Ergonômicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="acidentes-mecanicos">
-                  Riscos Acidentes - Mecânicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="fisicos">
-                  Riscos Físicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="quimicos">
-                  Riscos Químicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="biologicos">
-                  Riscos Biológicos
-                </label>
-                <label class="group-option">
-                  <input type="checkbox" value="outros">
-                  Outros
-                </label>
+                // <label class="group-option">
+                //   <input type="checkbox" value="ergonomicos" checked>
+                //   Riscos Ergonômicos
+                // </label>
+                // <label class="group-option">
+                //   <input type="checkbox" value="acidentes-mecanicos">
+                //   Riscos Acidentes - Mecânicos
+                // </label>
+                // <label class="group-option">
+                //   <input type="checkbox" value="fisicos">
+                //   Riscos Físicos
+                // </label>
+                // <label class="group-option">
+                //   <input type="checkbox" value="quimicos">
+                //   Riscos Químicos
+                // </label>
+                // <label class="group-option">
+                //   <input type="checkbox" value="biologicos">
+                //   Riscos Biológicos
+                // </label>
+                // <label class="group-option">
+                //   <input type="checkbox" value="outros">
+                //   Outros
+                // </label>
               </div>
             </div>
           </div>
@@ -5072,44 +5072,44 @@
           },
           success: function(resposta_cargo) 
           {
-            // debugger;
-            // // Mapeia códigos para nomes amigáveis
-            // const nomesGrupos = {
-            //   "ergonomico": "Riscos Ergonômicos",
-            //   "acidente_mecanico": "Riscos Acidentes - Mecânicos",
-            //   "fisico": "Riscos Físicos",
-            //   "quimico": "Riscos Químicos",
-            //   "biologico": "Riscos Biológicos",
-            //   "outro": "Outros"
-            // };
+            debugger;
+            // Mapeia códigos para nomes amigáveis
+            const nomesGrupos = {
+              "ergonomico": "Riscos Ergonômicos",
+              "acidente_mecanico": "Riscos Acidentes - Mecânicos",
+              "fisico": "Riscos Físicos",
+              "quimico": "Riscos Químicos",
+              "biologico": "Riscos Biológicos",
+              "outro": "Outros"
+            };
 
-            // // Objeto para garantir grupos únicos
-            // const gruposUnicos = {};
+            // Objeto para garantir grupos únicos
+            const gruposUnicos = {};
 
-            // resposta_cargo.forEach(item => {
-            //   const grupo = item.grupo_risco?.trim();
-            //   if (grupo && grupo !== "selecione") {
-            //     gruposUnicos[grupo] = true;
-            //   }
-            // });
+            resposta_cargo.forEach(item => {
+              const grupo = item.grupo_risco?.trim();
+              if (grupo && grupo !== "selecione") {
+                gruposUnicos[grupo] = true;
+              }
+            });
 
-            // // Container onde os checkboxes serão inseridos
-            // const container = $("#group-select-container");
-            // container.empty(); // Limpa conteúdo atual
+            // Container onde os checkboxes serão inseridos
+            const container = $("#group-select-container");
+            container.empty(); // Limpa conteúdo atual
 
-            // // Monta os checkboxes
-            // for (const grupo in gruposUnicos) {
-            //   const nomeGrupo = nomesGrupos[grupo] || grupo; // fallback para nome original
+            // Monta os checkboxes
+            for (const grupo in gruposUnicos) {
+              const nomeGrupo = nomesGrupos[grupo] || grupo; // fallback para nome original
 
-            //   const checkboxHtml = `
-            //     <label class="group-option">
-            //       <input type="checkbox" value="${grupo}">
-            //       ${nomeGrupo}
-            //     </label>
-            //   `;
+              const checkboxHtml = `
+                <label class="group-option">
+                  <input type="checkbox" value="${grupo}">
+                  ${nomeGrupo}
+                </label>
+              `;
 
-            //   container.append(checkboxHtml);
-            // }
+              container.append(checkboxHtml);
+            }
           },
           error:function(xhr,status,error)
           {
