@@ -5038,67 +5038,80 @@
       }
     }
 
-    function buscar_riscos()
-    {
-      $.ajax({
-          url: "cadastros/processa_risco.php", // Endpoint da API
-          method: "GET",
-          dataType: "json",
-          data: {
-            "processo_risco": "buscar_todos"
-          },
-          success: function(resposta_cargo) 
-          {
-            debugger;
-            // Mapeia códigos para nomes amigáveis
-            const nomesGrupos = {
-              "ergonomico": "Riscos Ergonômicos",
-              "acidente_mecanico": "Riscos Acidentes - Mecânicos",
-              "fisico": "Riscos Físicos",
-              "quimico": "Riscos Químicos",
-              "biologico": "Riscos Biológicos",
-              "outro": "Outros"
-            };
+    function buscar_riscos() {
+      debugger;
+    // Mostra um indicador de carregamento
+    const container = $("#group-select-container");
+    container.html('<div class="loading-riscos" style="padding: 10px; text-align: center; color: #666;">Carregando grupos de risco...</div>');
 
-            // Objeto para garantir grupos únicos
-            const gruposUnicos = {};
+    $.ajax({
+      url: "cadastros/processa_risco.php",
+      method: "GET",
+      dataType: "json",
+      data: {
+        "processo_risco": "buscar_todos"
+      },
+      success: function(resposta) {
+        debugger;
+        // Mapeia os códigos para nomes amigáveis
+        const nomesGrupos = {
+          "ergonomico": "Riscos Ergonômicos",
+          "acidente_mecanico": "Riscos Acidentes - Mecânicos",
+          "fisico": "Riscos Físicos",
+          "quimico": "Riscos Químicos",
+          "biologico": "Riscos Biológicos",
+          "outro": "Outros"
+        };
 
-            resposta_cargo.forEach(item => {
-              const grupo = item.grupo_risco?.trim();
-              if (grupo && grupo !== "selecione") {
-                gruposUnicos[grupo] = true;
-              }
-            });
+        // Limpa o container
+        container.empty();
 
-            // Container onde os checkboxes serão inseridos
-            const container = $("#group-select-container");
-            container.empty(); // Limpa conteúdo atual
+        // Usa um objeto para garantir grupos únicos
+        const gruposUnicos = {};
 
-            // Monta os checkboxes
-            for (const grupo in gruposUnicos) {
-              const nomeGrupo = nomesGrupos[grupo] || grupo; // fallback para nome original
+        // Processa a resposta para extrair grupos únicos
+        resposta.forEach(item => {
+          const grupo = item.grupo_risco?.trim();
+          if (grupo && grupo !== "selecione") {
+            // Usa o nome amigável se existir, senão usa o código
+            gruposUnicos[grupo] = nomesGrupos[grupo] || grupo;
+          }
+        });
 
-              const checkboxHtml = `
-                <label class="group-option">
-                  <input type="checkbox" value="${grupo}">
-                  ${nomeGrupo}
-                </label>
-              `;
+        // Adiciona os checkboxes ao container
+        for (const [codigo, nome] of Object.entries(gruposUnicos)) {
+          const checkboxHtml = `
+            <label class="group-option" style="display: block; padding: 5px 0;">
+              <input type="checkbox" value="${codigo}" ${codigo === 'ergonomico' ? 'checked' : ''}>
+              ${nome}
+            </label>
+          `;
+          container.append(checkboxHtml);
+        }
 
-              container.append(checkboxHtml);
-            }
-          },
-          error:function(xhr,status,error)
-          {
+        // Adiciona o evento de change aos checkboxes
+        container.find('input[type="checkbox"]').on('change', function() {
+          // Aqui você pode adicionar a lógica de filtragem posteriormente
+          console.log('Checkbox alterado:', $(this).val(), $(this).prop('checked'));
+        });
+      },
+      error: function(xhr, status, error) {
+        console.error('Erro ao carregar riscos:', error);
+        container.html('<div class="error" style="color: red;">Erro ao carregar os grupos de risco. Tente novamente.</div>');
+      }
+    });
+  }
 
-          },
-      });
-    }
-    
+  // Chama a função quando a aba de riscos for aberta
+  $(document).on('click', '.tab[data-step="3"]', function() {
+    buscar_riscos();
+  });
+
     // Função para inicializar o componente de Aptidões e Exames
     function initializeAptidoesExames() {
       console.log('Inicializando componente de Aptidões e Exames...');
       
+      // ... (restante do código permanece o mesmo)
       // Dados de exemplo para aptidões
       const aptidoes = [
         { codigo: 'APT001', nome: 'Aptidão Cardíaca' },
