@@ -6991,6 +6991,7 @@ function buscar_riscos() {
             "processo_aptidao_extra": "busca_aptidao_extra"
         },
         success: function(resposta_aptidao) {
+          debugger;
             try {
                 // Verifica se a resposta é um array e tem itens
                 if (Array.isArray(resposta_aptidao) && resposta_aptidao.length > 0) {
