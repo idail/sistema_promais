@@ -36,7 +36,7 @@
                             <label for="nome_treinamento">Nome:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-chalkboard-teacher"></i>
-                                <input type="text" id="nome_treinamento" name="nome_treinamento" class="form-control">
+                                <input type="text" id="nome" name="nome_treinamento" class="form-control">
                             </div>
                         </div>
 
