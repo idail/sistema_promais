@@ -2425,7 +2425,7 @@
                   method: "GET",
                   dataType: "json",
                   success: function(cidadeResp){
-                    debugger;
+                    // debugger;
                     nomeCidade = cidadeResp && cidadeResp.nome ? cidadeResp.nome : '';
                   },
                   error: function(){ console.error('Erro ao buscar cidade ID:', emp.id_cidade); }
@@ -2437,7 +2437,7 @@
                   method: "GET",
                   dataType: "json",
                   success: function(estadoResp){
-                    debugger;
+                    // debugger;
                     nomeEstado = estadoResp && estadoResp.nome ? estadoResp.nome : '';
                   },
                   error: function(){ console.error('Erro ao buscar estado ID:', emp.id_estado); }
@@ -2526,7 +2526,7 @@
           },
           success: function(resposta_pessoa) 
           {
-            debugger;
+            // debugger;
 
             if(resposta_pessoa.length > 0)
             {
@@ -2562,7 +2562,7 @@
           },
           success: function(resposta_cargo) 
           {
-            debugger;
+            // debugger;
 
             if(resposta_cargo.length > 0)
             {
@@ -2862,7 +2862,7 @@
     let recebe_nome_clinica_selecionado;
 
     function selecionarECP(inputId, resultadoId, item, chave,situacao) {
-      debugger;
+      // debugger;
       // Se o item for uma string, faz o parse do JSON
       const itemObj = typeof item === 'string' ? JSON.parse(item) : item;
     
@@ -3148,7 +3148,7 @@
 
     function grava_ecp_kit(tipo,valores)
     {
-      debugger;
+      // debugger;
 
       if(tipo === "empresa")
       {
@@ -3211,7 +3211,7 @@
             valor_clinica: valores,
           },
           success: function(retorno_exame_geracao_kit) {
-            debugger;
+            // debugger;
 
             const mensagemSucesso = `
                   <div id="clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
@@ -3261,7 +3261,7 @@
             valor_colaborador: valores,
           },
           success: function(retorno_exame_geracao_kit) {
-            debugger;
+            // debugger;
 
             const mensagemSucesso = `
                   <div id="colaborador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
@@ -3311,7 +3311,7 @@
             valor_cargo: valores,
           },
           success: function(retorno_exame_geracao_kit) {
-            debugger;
+            // debugger;
 
             const mensagemSucesso = `
                   <div id="cargo-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
@@ -3355,7 +3355,7 @@
 
     // Função para carregar os estados do IBGE
     async function carregarEstados() {
-      debugger;
+      // debugger;
       const selectEstado = document.getElementById('novaEmpresaEstado');
       if (!selectEstado) return;
       
@@ -3389,7 +3389,7 @@
     
     // Função para carregar as cidades do estado selecionado
     async function carregarCidades() {
-      debugger;
+      // debugger;
       const selectEstado = document.getElementById('novaEmpresaEstado');
       const inputCidade = document.getElementById('novaEmpresaCidade');
       
@@ -3878,7 +3878,7 @@
 
     function salvarNovaEmpresa() {
       try {
-        debugger;
+        // debugger;
         // Obtém os valores dos campos do formulário
         const nome = document.getElementById('novaEmpresaNome').value.trim();
         const endereco = document.getElementById('novaEmpresaEndereco').value.trim();
@@ -3966,7 +3966,7 @@
             processo_empresa: 'inserir_empresa'
           },
           success: function(response) {
-            debugger;
+            // debugger;
             console.log('Resposta do servidor:', response);
             if (response > 0) {
               // Exibe a mensagem de sucesso centralizada acima das abas
@@ -4025,7 +4025,7 @@
       }
     }
     function salvarNovaClinica() {
-      debugger;
+      // debugger;
       const nova = {
         id:'temp_' + Date.now(),
         nome: document.getElementById('novaClinicaNome').value,
@@ -4049,7 +4049,7 @@
         },
         success: function(retorno_grava_rapido_clinica) 
         {
-          debugger;
+          // debugger;
 
           console.log(retorno_grava_rapido_clinica);
 
@@ -4095,7 +4095,7 @@
     }
 
     function salvarNovoColaborador() {
-      debugger;
+      // debugger;
       const novo = {
         id:'temp_' + Date.now(),
         nome: document.getElementById('novoColaboradorNome').value,
@@ -4125,7 +4125,7 @@
           valor_cpf_pessoa: novo.cpf,
         },
         success: function(retorno_pessoa) {
-          debugger;
+          // debugger;
           console.log(retorno_pessoa);
             if (retorno_pessoa > 0) {
 
@@ -4170,7 +4170,7 @@
     }
 
     function salvarNovoCargo() {
-      debugger;
+      // debugger;
       const titulo = document.getElementById('novoCargoTitulo').value.trim();
       const cbo = document.getElementById('novoCargoCBO').value.trim();
       const descricao = document.getElementById('novoCargoDescricao').value.trim();
@@ -4219,7 +4219,7 @@
           valor_descricao_cargo:novo.descricao,
         },
         success: function(retorno_cargo) {
-          debugger;
+          // debugger;
           console.log(retorno_cargo);
             if (retorno_cargo > 0) {
 
@@ -4307,7 +4307,7 @@
               valor_codigo_empresa_medicos_associados: recebe_codigo_empresa_selecionada,
           },
           success: function(resposta_medicos) {
-            debugger;
+            // debugger;
             console.log(resposta_medicos);
 
             if(resposta_medicos.length > 0)
@@ -4377,7 +4377,7 @@
               valor_codigo_clinica_medicos_associados: recebe_codigo_clinica_selecionada,
            },
            success: function(resposta_medicos) {
-             debugger;
+            //  debugger;
              console.log(resposta_medicos);
              if (resposta_medicos.length > 0) {
                for (let mclinica = 0; mclinica < resposta_medicos.length; mclinica++) 
@@ -4449,7 +4449,7 @@
 
     // Funções para o formulário de Profissionais de Medicina
     function mostrarListaProfissionais(tipo) {
-      debugger;
+      // debugger;
 
 
       const inputElement = document.getElementById(`input${capitalize(tipo)}`);
@@ -4503,7 +4503,7 @@
     let recebe_codigo_medico_coordenador_apos_gravar_rapido;
 
     async function confirmarAdicaoProfissional(tipo) {
-      debugger;
+      // debugger;
       const nomeInput = document.getElementById(`novo${capitalize(tipo)}`);
       const cpfInput = document.getElementById(`cpf${capitalize(tipo)}`);
       const crmInput = tipo === 'medico' ? document.getElementById('crmMedico') : null;
@@ -4561,7 +4561,7 @@
                   valor_cpf_medico: valores.cpf,
               },
               success: function (retorno_medico) {
-                  debugger;
+                  // debugger;
                   console.log(retorno_medico);
 
                   if (retorno_medico) {
@@ -4626,7 +4626,7 @@
                   valor_crm_medico:valores.crm
                 },
               success: function(retorno_medico) {
-                  debugger;
+                  // debugger;
 
                   console.log(retorno_medico);
 
@@ -4696,7 +4696,7 @@
 
     function grava_medico_coordenador_kit(valores)
     {
-        debugger;
+        // debugger;
 
         console.log(valores);
         $.ajax({
@@ -4708,7 +4708,7 @@
             valor_medico_coordenador_id: valores.id,
           },
           success: function(retorno_exame_geracao_kit) {
-            debugger;
+            // debugger;
 
             const mensagemSucesso = `
                   <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
@@ -4751,7 +4751,7 @@
 
     function grava_medico_clinica_kit(valores)
     {
-        debugger;
+        // debugger;
 
         console.log(valores);
         $.ajax({
@@ -4763,7 +4763,7 @@
             valor_medico_clinica_id: valores.id,
           },
           success: function(retorno_exame_geracao_kit) {
-            debugger;
+            // debugger;
 
             const mensagemSucesso = `
                   <div id="medico-clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
@@ -4926,10 +4926,12 @@
 
     // Função para inicializar os dropdowns do laudo
     function initializeLaudoDropdowns() {
+      debugger;
       // Remove event listeners antigos para evitar duplicação
       const dropdowns = document.querySelectorAll('.laudo-dropdown');
       
       dropdowns.forEach(dropdown => {
+        debugger;
         // Cria um novo dropdown para substituir o antigo (evita duplicação de eventos)
         const newDropdown = dropdown.cloneNode(true);
         dropdown.parentNode.replaceChild(newDropdown, dropdown);
@@ -4948,6 +4950,7 @@
         options.forEach(option => {
           option.addEventListener('click', (e) => {
             e.stopPropagation();
+            debugger;
             const value = option.textContent.trim();
             const selectedText = newDropdown.querySelector('.selected-text');
             
