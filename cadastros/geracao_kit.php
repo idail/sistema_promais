@@ -4924,8 +4924,10 @@
       }
     };
 
+    let recebe_select_laudo_selecionado;
+    let recebe_valor_select_laudo_selecionado;
     // Função para inicializar os dropdowns do laudo
-    function initializeLaudoDropdowns() {
+    async function initializeLaudoDropdowns() {
       // debugger;
       // Remove event listeners antigos para evitar duplicação
       const dropdowns = document.querySelectorAll('.laudo-dropdown');
@@ -4951,22 +4953,24 @@
           option.addEventListener('click', (e) => {
             e.stopPropagation();
             debugger;
-            const value = option.textContent.trim();
+            recebe_valor_select_laudo_selecionado = option.textContent.trim();
             const selectedText = newDropdown.querySelector('.selected-text');
             
             // Obtém o label do dropdown atual
-            const dropdownLabel = newDropdown.previousElementSibling ? 
+            recebe_select_laudo_selecionado = newDropdown.previousElementSibling ? 
                                  newDropdown.previousElementSibling.textContent.trim() : 'Dropdown sem label';
             
             // Loga qual dropdown foi selecionado e seu valor
-            console.log(`Dropdown selecionado: ${dropdownLabel} | Valor selecionado: ${value}`);
+            console.log(`Dropdown selecionado: ${recebe_select_laudo_selecionado} | Valor selecionado: ${recebe_valor_select_laudo_selecionado}`);
+
+            await grava_insalubridade_laudo();
             
             if (selectedText) {
-              selectedText.textContent = value;
+              selectedText.textContent = recebe_valor_select_laudo_selecionado;
             } else {
               const newSelected = document.createElement('span');
               newSelected.className = 'selected-text';
-              newSelected.textContent = value;
+              newSelected.textContent = recebe_valor_select_laudo_selecionado;
               selected.innerHTML = '';
               selected.appendChild(newSelected);
               
@@ -5006,6 +5010,32 @@
       
       // Atualiza o resumo inicial
       atualizarResumoLaudo();
+    }
+
+    function grava_insalubridade_laudo()
+    {
+      return new Promise((resolve, reject) => {
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+              "processo_geracao_kit": "incluir_valores_kit",
+              "valor_laudo_selecionado":recebe_select_laudo_selecionado,
+              "valor_selecionado":recebe_valor_select_laudo_selecionado
+            },
+            success: function(resposta) {
+              debugger;
+
+              console.log(resposta);
+              resolve(retorno_exame_geracao_kit);
+            },
+            error:function(xhr,status,error)
+            {
+              reject(error);
+            },
+          });
+        });
     }
 
     // Função para verificar se a aba de riscos está visível e inicializar componentes
