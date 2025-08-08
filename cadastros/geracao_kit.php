@@ -4926,12 +4926,12 @@
 
     // Função para inicializar os dropdowns do laudo
     function initializeLaudoDropdowns() {
-      debugger;
+      // debugger;
       // Remove event listeners antigos para evitar duplicação
       const dropdowns = document.querySelectorAll('.laudo-dropdown');
       
       dropdowns.forEach(dropdown => {
-        debugger;
+        // debugger;
         // Cria um novo dropdown para substituir o antigo (evita duplicação de eventos)
         const newDropdown = dropdown.cloneNode(true);
         dropdown.parentNode.replaceChild(newDropdown, dropdown);
@@ -4953,6 +4953,13 @@
             debugger;
             const value = option.textContent.trim();
             const selectedText = newDropdown.querySelector('.selected-text');
+            
+            // Obtém o label do dropdown atual
+            const dropdownLabel = newDropdown.previousElementSibling ? 
+                                 newDropdown.previousElementSibling.textContent.trim() : 'Dropdown sem label';
+            
+            // Loga qual dropdown foi selecionado e seu valor
+            console.log(`Dropdown selecionado: ${dropdownLabel} | Valor selecionado: ${value}`);
             
             if (selectedText) {
               selectedText.textContent = value;
