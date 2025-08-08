@@ -5646,42 +5646,86 @@ function buscar_riscos() {
       }
     }
 
-    function buscar_treinamentos()
-    {
-          $.ajax({
-            url: "cadastros/processa_treinamento_capacitacao.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-              "processo_treinamento_capacitacao": "busca_treinamento_capacitacao"
-            },
-            success: function(resposta) {
-              debugger;
-
-              console.log(resposta);
-            },
-            error:function(xhr,status,error)
-            {
-
-            },
-          });
+    function buscar_treinamentos() {
+      let resultado = null;
+      
+      // Realiza a requisição síncrona para buscar os treinamentos
+      $.ajax({
+        url: "cadastros/processa_treinamento_capacitacao.php",
+        method: "GET",
+        dataType: "json",
+        async: false, // Torna a requisição síncrona
+        data: {
+          "processo_treinamento_capacitacao": "busca_treinamento_capacitacao"
+        },
+        success: function(resposta) {
+          if (resposta && resposta.length > 0) {
+            resultado = resposta;
+          } else {
+            console.warn('Nenhum treinamento encontrado na resposta');
+            resultado = [];
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Erro na requisição de treinamentos:', error);
+          resultado = [];
+        }
+      });
+      
+      return resultado;
     }
     
     // Função para gerenciar os treinamentos
     function gerenciarTreinamentos() {
-      // Dados dos treinamentos
-      const treinamentos = [
-        { codigo: 'TR001', nome: 'NR-10 - Segurança em Instalações Elétricas', valor: '150,00' },
-        { codigo: 'TR002', nome: 'NR-35 - Trabalho em Altura', valor: '180,00' },
-        { codigo: 'TR003', nome: 'NR-33 - Espaços Confinados', valor: '220,00' },
-        { codigo: 'TR004', nome: 'NR-11 - Operação de Empilhadeira', valor: '200,00' },
-        { codigo: 'TR005', nome: 'NR-06 - EPI', valor: '120,00' },
-        { codigo: 'TR006', nome: 'NR-23 - Prevenção e Combate a Incêndio', valor: '250,00' },
-        { codigo: 'TR007', nome: 'NR-12 - Segurança em Máquinas e Equipamentos', valor: '190,00' },
-        { codigo: 'TR008', nome: 'NR-18 - Condições e Meio Ambiente de Trabalho na Indústria da Construção', valor: '230,00' },
-        { codigo: 'TR009', nome: 'NR-20 - Segurança e Saúde no Trabalho com Inflamáveis e Combustíveis', valor: '270,00' },
-        { codigo: 'TR010', nome: 'NR-34 - Condições e Meio Ambiente de Trabalho na Indústria da Construção e Reparação Naval', valor: '210,00' }
-      ];
+      // Array que irá armazenar os treinamentos
+      const treinamentos = [];
+      
+      // Busca os treinamentos do banco de dados
+      try {
+        // Chama a função buscar_treinamentos que faz a requisição AJAX
+        const response = buscar_treinamentos();
+        
+        if (response && response.length > 0) {
+          // Formata os dados para o formato esperado pelo sistema
+          response.forEach(function(treinamento) {
+            treinamentos.push({
+              codigo: treinamento.codigo_treinamento_capacitacao,
+              nome: treinamento.nome,
+              valor: parseFloat(treinamento.valor).toFixed(2).replace('.', ',')
+            });
+          });
+        } else {
+          console.error('Nenhum treinamento encontrado no banco de dados');
+          // Se não encontrar treinamentos, usa a lista padrão como fallback
+          treinamentos.push(
+            { codigo: 'TR001', nome: 'NR-10 - Segurança em Instalações Elétricas', valor: '150,00' },
+            { codigo: 'TR002', nome: 'NR-35 - Trabalho em Altura', valor: '180,00' },
+            { codigo: 'TR003', nome: 'NR-33 - Espaços Confinados', valor: '220,00' },
+            { codigo: 'TR004', nome: 'NR-11 - Operação de Empilhadeira', valor: '200,00' },
+            { codigo: 'TR005', nome: 'NR-06 - EPI', valor: '120,00' },
+            { codigo: 'TR006', nome: 'NR-23 - Prevenção e Combate a Incêndio', valor: '250,00' },
+            { codigo: 'TR007', nome: 'NR-12 - Segurança em Máquinas e Equipamentos', valor: '190,00' },
+            { codigo: 'TR008', nome: 'NR-18 - Condições e Meio Ambiente de Trabalho na Indústria da Construção', valor: '230,00' },
+            { codigo: 'TR009', nome: 'NR-20 - Segurança e Saúde no Trabalho com Inflamáveis e Combustíveis', valor: '270,00' },
+            { codigo: 'TR010', nome: 'NR-34 - Condições e Meio Ambiente de Trabalho na Indústria da Construção e Reparação Naval', valor: '210,00' }
+          );
+        }
+      } catch (error) {
+        console.error('Erro ao buscar treinamentos:', error);
+        // Se houver erro, mantém os treinamentos padrão como fallback
+        treinamentos.push(
+          { codigo: 'TR001', nome: 'NR-10 - Segurança em Instalações Elétricas', valor: '150,00' },
+          { codigo: 'TR002', nome: 'NR-35 - Trabalho em Altura', valor: '180,00' },
+          { codigo: 'TR003', nome: 'NR-33 - Espaços Confinados', valor: '220,00' },
+          { codigo: 'TR004', nome: 'NR-11 - Operação de Empilhadeira', valor: '200,00' },
+          { codigo: 'TR005', nome: 'NR-06 - EPI', valor: '120,00' },
+          { codigo: 'TR006', nome: 'NR-23 - Prevenção e Combate a Incêndio', valor: '250,00' },
+          { codigo: 'TR007', nome: 'NR-12 - Segurança em Máquinas e Equipamentos', valor: '190,00' },
+          { codigo: 'TR008', nome: 'NR-18 - Condições e Meio Ambiente de Trabalho na Indústria da Construção', valor: '230,00' },
+          { codigo: 'TR009', nome: 'NR-20 - Segurança e Saúde no Trabalho com Inflamáveis e Combustíveis', valor: '270,00' },
+          { codigo: 'TR010', nome: 'NR-34 - Condições e Meio Ambiente de Trabalho na Indústria da Construção e Reparação Naval', valor: '210,00' }
+        );
+      }
 
       // Elementos do DOM
       const listaTreinamentos = document.getElementById('listaTreinamentos');
