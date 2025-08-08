@@ -135,6 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // EXAME
         // EXAME
+        // ... (seu código anterior, começando nos blocos de POST que você enviou)
         if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
             $recebe_exame_selecionado = $_POST["valor_exame"];
 
@@ -345,11 +346,70 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_kit_id", $_SESSION["codigo_kit"], PDO::PARAM_INT);
 
         // Executa
+        // Executa
         $resultado_atualizar_kit = $comando_atualizar_kit->execute();
 
-        if ($resultado_atualizar_kit)
+        if ($resultado_atualizar_kit) {
+            // Lista das chaves de sessão que queremos limpar
+            $sess_to_clear = [
+                "exame_selecionado",
+                "empresa_selecionado",
+                "clinica_selecionado",
+                "colaborador_selecionado",
+                "cargo_selecionado",
+                "motorista_selecionado",
+                "medico_coordenador_selecionado",
+                "medico_clinica_selecionado",
+                "medico_risco_selecionado",
+                "medico_treinamento_selecionado",
+                "insalubridade_selecionado",
+                "porcentagem_selecionado",
+                "periculosidade_selecionado",
+                "aposentado_selecionado",
+                "agente_nocivo_selecionado",
+                "agente_ocorrencia_selecionado"
+            ];
+
+            // Remove cada sessão somente se existir
+            foreach ($sess_to_clear as $sk) {
+                if (array_key_exists($sk, $_SESSION)) {
+                    unset($_SESSION[$sk]);
+                }
+            }
+
+            // Também zera as variáveis locais (binds) usadas abaixo do unset
+            $binds_to_clear = [
+                "valor_exame_bind",
+                "valor_empresa_bind",
+                "valor_clinica_bind",
+                "valor_colaborador_bind",
+                "valor_cargo_bind",
+                "valor_motorista_bind",
+                "valor_medico_coordenador_bind",
+                "valor_medico_clinica_bind",
+                "valor_risco_selecionado_bind",
+                "valor_treinamento_selecionado_bind",
+                "valor_insalubridade_selecionado_bind",
+                "valor_porcentagem_selecionado_bind",
+                "valor_periculosidade_selecionado_bind",
+                "valor_aposentado_selecionado_bind",
+                "valor_agente_nocivo_selecionado_bind",
+                "valor_ocorrencia_selecionado_bind"
+            ];
+
+            foreach ($binds_to_clear as $bv) {
+                if (isset($$bv)) {
+                    $$bv = null;
+                }
+            }
+
+            // Força gravação e fechamento da sessão (ajuda em casos concorrentes)
+            session_write_close();
+
             echo json_encode("KIT atualizado com sucesso");
-        else
+        } else {
             echo json_encode("KIT não foi atualizado com sucesso");
+        }
     }
 }
+?>
