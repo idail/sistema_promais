@@ -234,6 +234,73 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $valor_treinamento_selecionado_bind = isset($_SESSION["medico_treinamento_selecionado"]) ? $_SESSION["medico_treinamento_selecionado"] : null;
 
+        if (
+            isset($_POST["valor_laudo_selecionado"]) && $_POST["valor_laudo_selecionado"] !== ""
+            && isset($_POST["valor_selecionado"]) && $_POST["valor_selecionado"] !== ""
+        ) {
+            if ($_POST["valor_laudo_selecionado"] === "insalubridade") {
+                if (!empty($_POST["valor_selecionado"]))
+                    $recebe_valor_insalubridade = $_POST["valor_selecionado"];
+            } else if ($_POST["valor_laudo_selecionado"] === "porcentagem") {
+                if (!empty($_POST["valor_selecionado"]))
+                    $recebe_valor_laudo = $_POST["valor_selecionado"];
+            } else if ($_POST["valor_laudo_selecionado"] === "periculosidade 30%") {
+                if (!empty($_POST["valor_laudo_selecionado"]))
+                    $recebe_valor_periculosidade = $_POST["valor_selecionado"];
+            } else if ($_POST["valor_laudo_selecionado"] === "aposent. especial") {
+                if (!empty($_POST["valor_laudo_selecionado"]))
+                    $recebe_valor_aposentado = $_POST["valor_selecionado"];
+            } else if ($_POST["valor_laudo_selecionado"] === "agente nocivo") {
+                if (!empty($_POST["valor_laudo_selecionado"]))
+                    $recebe_valor_agente = $_POST["valor_selecionado"];
+            } else if ($_POST["valor_laudo_selecionado"] === "ocorrência gfip") {
+                if (!empty($_POST["valor_laudo_selecionado"]))
+                    $recebe_valor_ocorrencia = $_POST["valor_selecionado"];
+            }
+
+            if (!empty($recebe_valor_insalubridade)) {
+                if (!isset($_SESSION["insalubridade_selecionado"]) || $_SESSION["insalubridade_selecionado"] !== $recebe_valor_insalubridade) {
+                    $_SESSION["insalubridade_selecionado"] = $recebe_valor_insalubridade;
+                }
+            }
+
+            if (!empty($recebe_valor_laudo)) {
+                if (!isset($_SESSION["porcentagem_selecionado"]) || $_SESSION["porcentagem_selecionado"] !== $recebe_valor_laudo) {
+                    $_SESSION["porcentagem_selecionado"] = $recebe_valor_laudo;
+                }
+            }
+
+            if (!empty($recebe_valor_periculosidade)) {
+                if (!isset($_SESSION["periculosidade_selecionado"]) || $_SESSION["periculosidade_selecionado"] !== $recebe_valor_periculosidade) {
+                    $_SESSION["periculosidade_selecionado"] = $recebe_valor_periculosidade;
+                }
+            }
+
+            if (!empty($recebe_valor_aposentado)) {
+                if (!isset($_SESSION["aposentado_selecionado"]) || $_SESSION["aposentado_selecionado"] !== $recebe_valor_aposentado) {
+                    $_SESSION["aposentado_selecionado"] = $recebe_valor_aposentado;
+                }
+            }
+
+            if (!empty($recebe_valor_agente)) {
+                if (!isset($_SESSION["agente_nocivo_selecionado"]) || $_SESSION["agente_nocivo_selecionado"] !== $recebe_valor_agente) {
+                    $_SESSION["agente_nocivo_selecionado"] = $recebe_valor_agente;
+                }
+            }
+
+            if (!empty($recebe_valor_ocorrencia)) {
+                if (!isset($_SESSION["agente_ocorrencia_selecionado"]) || $_SESSION["agente_ocorrencia_selecionado"] !== $recebe_valor_ocorrencia) {
+                    $_SESSION["agente_ocorrencia_selecionado"] = $recebe_valor_ocorrencia;
+                }
+            }
+        }
+        $valor_insalubridade_selecionado_bind = isset($_SESSION["insalubridade_selecionado"]) ? $_SESSION["insalubridade_selecionado"] : null;
+        $valor_porcentagem_selecionado_bind = isset($_SESSION["porcentagem_selecionado"]) ? $_SESSION["porcentagem_selecionado"] : null;
+        $valor_periculosidade_selecionado_bind = isset($_SESSION["periculosidade_selecionado"]) ? $_SESSION["periculosidade_selecionado"] : null;
+        $valor_aposentado_selecionado_bind = isset($_SESSION["aposentado_selecionado"]) ? $_SESSION["aposentado_selecionado"] : null;
+        $valor_agente_nocivo_selecionado_bind = isset($_SESSION["agente_nocivo_selecionado"]) ? $_SESSION["agente_nocivo_selecionado"] : null;
+        $valor_ocorrencia_selecionado_bind = isset($_SESSION["agente_ocorrencia_selecionado"]) ? $_SESSION["agente_ocorrencia_selecionado"] : null;
+
         // Atualização
         $instrucao_atualizar_kit = "UPDATE kits SET 
             tipo_exame = :recebe_tipo_exame,
@@ -245,7 +312,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             medico_coordenador_id = :recebe_medico_coordenador_id,
             medico_clinica_id = :recebe_medico_clinica_id,
             riscos_selecionados = :recebe_riscos_selecionados,
-            treinamentos_selecionados = :recebe_treinamentos_selecionados
+            treinamentos_selecionados = :recebe_treinamentos_selecionados,
+            insalubridade = :recebe_insalubridade_selecionado,
+            porcentagem = :recebe_porcentagem_selecionado,
+            periculosidade = :recebe_periculosidade_selecionado,
+            aposentado_especial = :recebe_aposentado_especial_selecionado,
+            agente_nocivo = :recebe_agente_nocivo_selecionado,
+            ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado
         WHERE id = :recebe_kit_id";
 
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -261,6 +334,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id",    $valor_medico_clinica_bind,  $valor_medico_clinica_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados",    $valor_risco_selecionado_bind,  $valor_risco_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados",    $valor_treinamento_selecionado_bind,  $valor_treinamento_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado",    $valor_insalubridade_selecionado_bind,  $valor_insalubridade_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado",    $valor_porcentagem_selecionado_bind,  $valor_porcentagem_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado",    $valor_periculosidade_selecionado_bind,  $valor_periculosidade_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado",    $valor_aposentado_selecionado_bind,  $valor_aposentado_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado",    $valor_agente_nocivo_selecionado_bind,  $valor_agente_nocivo_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado",    $valor_ocorrencia_selecionado_bind,  $valor_ocorrencia_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
         // Kit ID
         $comando_atualizar_kit->bindValue(":recebe_kit_id", $_SESSION["codigo_kit"], PDO::PARAM_INT);
@@ -274,4 +353,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo json_encode("KIT não foi atualizado com sucesso");
     }
 }
-?>

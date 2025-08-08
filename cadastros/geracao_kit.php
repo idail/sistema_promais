@@ -4950,7 +4950,7 @@
 
         // Adiciona evento de clique para as opções
         options.forEach(option => {
-          option.addEventListener('click', (e) => {
+          option.addEventListener('click', async (e) => {
             e.stopPropagation();
             debugger;
             recebe_valor_select_laudo_selecionado = option.textContent.trim();
@@ -4963,7 +4963,11 @@
             // Loga qual dropdown foi selecionado e seu valor
             console.log(`Dropdown selecionado: ${recebe_select_laudo_selecionado} | Valor selecionado: ${recebe_valor_select_laudo_selecionado}`);
 
-            await grava_insalubridade_laudo();
+            try {
+              await grava_insalubridade_laudo();
+            } catch (error) {
+              console.error('Erro ao gravar insalubridade:', error);
+            }
             
             if (selectedText) {
               selectedText.textContent = recebe_valor_select_laudo_selecionado;
@@ -5014,21 +5018,45 @@
 
     function grava_insalubridade_laudo()
     {
+      debugger;
       return new Promise((resolve, reject) => {
           $.ajax({
             url: "cadastros/processa_geracao_kit.php",
-            method: "GET",
+            method: "POST",
             dataType: "json",
             data: {
-              "processo_geracao_kit": "incluir_valores_kit",
-              "valor_laudo_selecionado":recebe_select_laudo_selecionado,
-              "valor_selecionado":recebe_valor_select_laudo_selecionado
+              processo_geracao_kit: "incluir_valores_kit",
+              valor_laudo_selecionado:recebe_select_laudo_selecionado.toLowerCase(),
+              valor_selecionado:recebe_valor_select_laudo_selecionado.toLowerCase()
             },
             success: function(resposta) {
               debugger;
 
+              const mensagemSucesso = `
+                        <div id="laudo-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                          <div style="display: flex; align-items: center; justify-content: center;">
+                            <div>
+                              <div>KIT atualizado com sucesso.</div>
+                            </div>
+                          </div>
+                        </div>
+                      `;
+
+                      // Remove mensagem anterior se existir
+                      $("#laudo-gravado").remove();
+
+                      // Adiciona a nova mensagem acima das abas
+                      $(".tabs-container").before(mensagemSucesso);
+
+                      // Configura o fade out após 5 segundos
+                      setTimeout(function () {
+                          $("#laudo-gravado").fadeOut(500, function () {
+                              $(this).remove();
+                          });
+                      }, 5000);
+
               console.log(resposta);
-              resolve(retorno_exame_geracao_kit);
+              resolve(resposta);
             },
             error:function(xhr,status,error)
             {
