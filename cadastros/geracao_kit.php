@@ -6287,9 +6287,7 @@ function buscar_riscos() {
               <div id="apt-listaAptidoesSelecionadas" class="apt-lista-selecionadas" style="min-height: 60px; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; background-color: #f9f9f9;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                   <div style="font-size: 12px; color: #666;">Aptidões selecionadas:</div>
-                  <div id="apt-total-aptidoes" style="font-size: 14px; font-weight: 500; color: #1a73e8;">
-                    Total: R$ 0,00
-                  </div>
+                  
                 </div>
                 <div id="apt-selected-aptidoes" style="display: flex; flex-wrap: wrap; gap: 5px;">
                   <!-- Itens de aptidão selecionados serão mostrados aqui -->
@@ -6967,47 +6965,97 @@ function buscar_riscos() {
       };
     });
 
-    function carregar_aptidoes_extras()
-    {
+    // Define o array global para armazenar as aptidões
+    window.aptDadosAptidoes = [];
+    
+    // Carrega as aptidões extras quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+      // Verifica se estamos na aba de aptidões e exames
+      if (document.getElementById('apt-checkbox-container')) {
+        carregar_aptidoes_extras();
+      }
+    });
+    
+    function carregar_aptidoes_extras() {
+      // Mostra um indicador de carregamento se o container existir
+      const container = document.getElementById('apt-checkbox-container');
+      if (container) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Carregando aptidões...</div>';
+      }
+      
       $.ajax({
-          url: "cadastros/processa_aptidao_extra.php", // Endpoint da API
-          method: "GET",
-          dataType: "json",
-          data: {
+        url: "cadastros/processa_aptidao_extra.php",
+        method: "GET",
+        dataType: "json",
+        data: {
             "processo_aptidao_extra": "busca_aptidao_extra"
-          },
-          success: function(resposta_aptidao) 
-          {
-            debugger;
-          },
-          error:function(xhr,status,error)
-          {
-          },
+        },
+        success: function(resposta_aptidao) {
+            try {
+                // Verifica se a resposta é um array e tem itens
+                if (Array.isArray(resposta_aptidao) && resposta_aptidao.length > 0) {
+                    // Mapeia os dados da resposta para o formato esperado (sem o campo valor)
+                    window.aptDadosAptidoes = resposta_aptidao.map(function(item) {
+                        return {
+                            codigo: item.codigo ? String(item.codigo).trim() : "",
+                            nome: item.nome ? String(item.nome).trim() : ""
+                        };
+                    });
+                    
+                    console.log('Aptidões carregadas com sucesso:', window.aptDadosAptidoes);
+                } else {
+                    console.warn('Nenhuma aptidão encontrada ou formato de resposta inválido');
+                    window.aptDadosAptidoes = []; // Garante que o array esteja vazio em caso de erro
+                }
+            } catch (error) {
+                console.error('Erro ao processar as aptidões:', error);
+                window.aptDadosAptidoes = [];
+            } finally {
+                // Inicializa o componente após carregar as aptidões
+                if (typeof initializeAptidoesExames === 'function') {
+                    initializeAptidoesExames();
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+          console.error('Erro ao carregar aptidões:', status, error);
+          // Em caso de erro, limpa o array
+          window.aptDadosAptidoes = [];
+          
+          // Tenta inicializar mesmo com erro
+          if (typeof initializeAptidoesExames === 'function') {
+            initializeAptidoesExames();
+          }
+        }
       });
     }
     
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
-      carregar_aptidoes_extras();
       console.log('Inicializando componente de Aptidões e Exames...');
       
-      // Dados iniciais
-      const aptDadosAptidoes = [
-        { codigo: "0000", nome: "Trabalho em altura", valor: "58,23" },
-        { codigo: "0001", nome: "Espaço confinado", valor: "86,92" },
-        { codigo: "0002", nome: "NR10 Básico", valor: "12,56" },
-        { codigo: "0003", nome: "NR12 Operação de Máquinas", valor: "15,45" },
-        { codigo: "0004", nome: "Brigada de Incêndio", valor: "18,76" },
-        { codigo: "0005", nome: "Direção defensiva", valor: "20,12" }
+      // Dados de exemplo (mantidos como fallback)
+      const dadosExemploAptidoes = [
+        { codigo: "0000", nome: "Trabalho em altura" },
+        { codigo: "0001", nome: "Espaço confinado" },
+        { codigo: "0002", nome: "NR10 Básico" },
+        { codigo: "0003", nome: "NR12 Operação de Máquinas" },
+        { codigo: "0004", nome: "Brigada de Incêndio" },
+        { codigo: "0005", nome: "Direção defensiva" }
       ];
+      
+      // Usa os dados do banco se disponíveis, senão usa os dados de exemplo
+      const aptDadosAptidoes = window.aptDadosAptidoes && window.aptDadosAptidoes.length > 0 
+        ? window.aptDadosAptidoes 
+        : dadosExemploAptidoes;
 
       const aptDadosExames = [
-        { codigo: "0068", nome: "Acetilcolinesterase eritrocitária", valor: "12,56" },
-        { codigo: "0109", nome: "Ácido hipúrico", valor: "15,45" },
-        { codigo: "0116", nome: "Ácido Metil Hipúrico", valor: "18,76" },
-        { codigo: "0120", nome: "Hemograma completo", valor: "20,12" },
-        { codigo: "0135", nome: "Audiometria", valor: "22,34" },
-        { codigo: "0141", nome: "Espirometria", valor: "25,67" }
+        { codigo: "0068", nome: "Acetilcolinesterase eritrocitária" },
+        { codigo: "0109", nome: "Ácido hipúrico" },
+        { codigo: "0116", nome: "Ácido Metil Hipúrico" },
+        { codigo: "0120", nome: "Hemograma completo" },
+        { codigo: "0135", nome: "Audiometria" },
+        { codigo: "0141", nome: "Espirometria" }
       ];
 
       let aptExamesSelecionados = [];
@@ -7106,186 +7154,12 @@ function buscar_riscos() {
         return container;
       }
       
-      // Função para atualizar os itens selecionados
-      function atualizarSelecionados(checkbox, tipo) {
-        debugger;
-        const codigo = checkbox.value;
-        const nome = checkbox.nextElementSibling.textContent.trim();
-        
-        // Encontra o item completo nos dados originais para obter o valor
-        const dadosOriginais = tipo === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
-        const itemOriginal = dadosOriginais.find(item => item.codigo === codigo);
-        
-        // Cria o item com o valor, se disponível
-        const item = { 
-          codigo, 
-          nome,
-          valor: itemOriginal?.valor || '0,00'
-        };
-        
-        if (tipo === 'aptidao') {
-          if (checkbox.checked) {
-            aptAptidoesSelecionadas.push(item);
-          } else {
-            const index = aptAptidoesSelecionadas.findIndex(a => a.codigo === codigo);
-            if (index !== -1) {
-              aptAptidoesSelecionadas.splice(index, 1);
-            }
-          }
-          atualizarListaSelecionados(aptAptidoesSelecionadas, selectedAptidoesContainer, 'aptidao');
-        } else {
-          if (checkbox.checked) {
-            aptExamesSelecionados.push(item);
-          } else {
-            const index = aptExamesSelecionados.findIndex(e => e.codigo === codigo);
-            if (index !== -1) {
-              aptExamesSelecionados.splice(index, 1);
-            }
-          }
-          atualizarListaSelecionados(aptExamesSelecionados, selectedExamesContainer, 'exame');
-        }
-      }
-      
-      // Função para formatar valor monetário
-      function formatarValor(valor) {
-        // Converte string para número, trocando vírgula por ponto
-        const numero = parseFloat(valor.toString().replace(',', '.')) || 0;
-        // Formata para o padrão brasileiro com 2 casas decimais
-        return numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      }
-      
-      // Função para calcular o total de uma lista de itens
-      function calcularTotal(itens) {
-        return itens.reduce((total, item) => {
-          // Remove pontos de milhar e substitui vírgula por ponto
-          const valor = parseFloat((item.valor || '0')
-            .toString()
-            .replace(/\./g, '')
-            .replace(',', '.')) || 0;
-          return total + valor;
-        }, 0);
-      }
-      
-      // Cria o banner de totais para Aptidões e Exames se não existir
-      function createAptExamesTotalBanner() {
-        if (!document.getElementById('apt-exames-total-banner')) {
-          const banner = document.createElement('div');
-          banner.id = 'apt-exames-total-banner';
-          banner.style.position = 'fixed';
-          banner.style.top = '10px';
-          banner.style.right = '10px';
-          banner.style.backgroundColor = '#6f42c1';
-          banner.style.border = 'none';
-          banner.style.borderRadius = '6px';
-          banner.style.padding = '10px 20px';
-          banner.style.zIndex = '9997';
-          banner.style.display = 'flex';
-          banner.style.alignItems = 'center';
-          banner.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-          banner.style.color = 'white';
-          banner.style.fontFamily = 'Arial, sans-serif';
-          banner.style.fontSize = '14px';
-          banner.style.fontWeight = '600';
-          banner.style.letterSpacing = '0.3px';
-          banner.style.transition = 'all 0.3s ease';
-          banner.innerHTML = `
-            <i class="fas fa-clipboard-check" style="font-size: 16px; color: #ffffff; margin-right: 8px;"></i>
-            <span style="color: #ffffff; text-shadow: 0 1px 1px rgba(0,0,0,0.1);">APTIDÕES/EXAMES: R$ 0,00</span>
-          `;
-          
-          // Ajusta a posição baseada nos outros banners
-          function ajustarPosicaoApt() {
-            const banners = [
-              document.getElementById('motorista-banner'),
-              document.getElementById('total-treinamentos-banner')
-            ];
-            
-            let topPosition = 10;
-            
-            // Percorre os banners e verifica quais estão visíveis
-            banners.forEach(banner => {
-              if (banner && window.getComputedStyle(banner).display !== 'none') {
-                topPosition += banner.offsetHeight + 10;
-              }
-            });
-            
-            banner.style.top = `${topPosition}px`;
-          }
-          
-          // Ajusta a posição inicial
-          ajustarPosicaoApt();
-          
-          // Observa mudanças nos outros banners
-          const banners = [
-            document.getElementById('motorista-banner'),
-            document.getElementById('total-treinamentos-banner')
-          ];
-          
-          const observer = new MutationObserver(ajustarPosicaoApt);
-          banners.forEach(banner => {
-            if (banner) observer.observe(banner, { attributes: true, attributeFilter: ['style'] });
-          });
-          
-          document.body.appendChild(banner);
-        }
-      }
-      
-      // Atualiza o banner de totais de Aptidões/Exames
-      function updateAptExamesBanner(total) {
-        let banner = document.getElementById('apt-exames-total-banner');
-        if (!banner) {
-          createAptExamesTotalBanner();
-          banner = document.getElementById('apt-exames-total-banner');
-        }
-        const totalFormatado = formatarValor(total);
-        banner.querySelector('span').textContent = `APTIDÕES/EXAMES: R$ ${totalFormatado}`;
-      }
-
-      // Função para atualizar os totais
-      function atualizarTotais() {
-        try {
-          // Calcula os totais
-          const totalAptidoes = calcularTotal(aptAptidoesSelecionadas);
-          const totalExames = calcularTotal(aptExamesSelecionados);
-          const totalGeral = totalAptidoes + totalExames;
-          
-          // Atualiza a variável global para o faturamento
-          window.fatTotalExames = totalGeral;
-          
-          // Atualiza os totais na UI
-          const totalAptElement = document.getElementById('apt-total-aptidoes');
-          const totalExamElement = document.getElementById('apt-total-exames');
-          
-          if (totalAptElement) {
-            totalAptElement.textContent = `Total: R$ ${formatarValor(totalAptidoes)}`;
-          }
-          
-          if (totalExamElement) {
-            totalExamElement.textContent = `Total: R$ ${formatarValor(totalExames)}`;
-          }
-          
-          // Atualiza o banner de totais
-          updateAptExamesBanner(totalGeral);
-          
-          // Atualiza o faturamento
-          if (typeof fatAtualizarTotais === 'function') {
-            fatAtualizarTotais();
-          }
-          
-          return true;
-        } catch (error) {
-          console.error('Erro ao atualizar totais:', error);
-          return false;
-        }
-      }
-      
       // Função para atualizar a lista de itens selecionados
       function atualizarListaSelecionados(itens, container, tipo) {
         container.innerHTML = '';
         
         if (itens.length === 0) {
           container.innerHTML = '<div style="color: #6c757d; font-style: italic;">Nenhum item selecionado</div>';
-          atualizarTotais();
           return;
         }
         
@@ -7302,13 +7176,12 @@ function buscar_riscos() {
           badge.style.marginBottom = '4px';
           
           badge.innerHTML = `
-            <div style="display: flex; flex-direction: column;">
-              <div>${item.codigo} - ${item.nome}</div>
-              ${item.valor ? `<div style="font-size: 0.9em; color: #555;">Valor: R$ ${item.valor}</div>` : ''}
+            <div style="display: flex; align-items: center;">
+              <span>${item.codigo} - ${item.nome}</span>
+              <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
-            <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
-              <i class="fas fa-times"></i>
-            </button>
           `;
           
           // Adiciona evento para remover o item
@@ -7342,288 +7215,211 @@ function buscar_riscos() {
           
           container.appendChild(badge);
         });
-        
-        // Atualiza os totais após atualizar a lista
-        atualizarTotais();
       }
       
-      // Função para renderizar as listas de checkboxes
-      function renderizarCheckboxes() {
-        // Salva os itens selecionados atuais
-        const aptSelecionadas = [...aptAptidoesSelecionadas];
-        const examesSelecionados = [...aptExamesSelecionados];
+      // Função para atualizar os itens selecionados
+      function atualizarSelecionados(checkbox, tipo) {
+        const codigo = checkbox.value;
+        const nome = checkbox.nextElementSibling.textContent.trim();
         
-        // Limpa os containers
-        if (checkboxContainerApt) {
-          checkboxContainerApt.innerHTML = '';
-          aptDadosAptidoes.forEach(item => {
-            const checkbox = criarCheckbox(item, 'aptidao');
-            // Marca como selecionado se estava na lista de selecionados
-            if (aptSelecionadas.some(a => a.codigo === item.codigo)) {
-              const input = checkbox.querySelector('input[type="checkbox"]');
-              if (input) input.checked = true;
-            }
-            checkboxContainerApt.appendChild(checkbox);
-          });
-        }
+        // Encontra o item completo nos dados originais
+        const dadosOriginais = tipo === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
+        const itemOriginal = dadosOriginais.find(item => item.codigo === codigo);
         
-        if (checkboxContainerExames) {
-          checkboxContainerExames.innerHTML = '';
-          aptDadosExames.forEach(item => {
-            const checkbox = criarCheckbox(item, 'exame');
-            // Marca como selecionado se estava na lista de selecionados
-            if (examesSelecionados.some(e => e.codigo === item.codigo)) {
-              const input = checkbox.querySelector('input[type="checkbox"]');
-              if (input) input.checked = true;
-            }
-            checkboxContainerExames.appendChild(checkbox);
-          });
-        }
-        
-        // Atualiza as listas de selecionados
-        atualizarListaSelecionados(aptAptidoesSelecionadas, selectedAptidoesContainer, 'aptidao');
-        atualizarListaSelecionados(aptExamesSelecionados, selectedExamesContainer, 'exame');
-      }
-      
-      // Função para abrir o modal de adição
-      function abrirModalAdicionar(tipo) {
-        modalTipoAtual = tipo;
-        if (modal && modalTitle) {
-          modalTitle.textContent = `Adicionar ${tipo === 'aptidao' ? 'Aptidão' : 'Exame'}`;
-          modal.style.display = 'flex';
-          if (inputCodigo) inputCodigo.value = '';
-          if (inputNome) inputNome.value = '';
-          const inputValor = document.getElementById('apt-novoValor');
-          if (inputValor) inputValor.value = '';
-          if (inputCodigo) inputCodigo.focus();
-        }
-      }
-      
-      // Função para fechar o modal
-      function fecharModal() {
-        if (modal) {
-          modal.style.display = 'none';
-        }
-      }
-      
-      // Função para adicionar um novo item (aptidão ou exame)
-      function adicionarNovoItem() {
-        const codigo = inputCodigo ? inputCodigo.value.trim() : '';
-        const nome = inputNome ? inputNome.value.trim() : '';
-        const valor = document.getElementById('apt-novoValor') ? document.getElementById('apt-novoValor').value.trim() : '';
-        
-        if (!codigo || !nome) {
-          alert('Preencha todos os campos obrigatórios');
-          return;
-        }
-        
-        // Valida o formato do valor (opcional, mas deve ser um número válido se preenchido)
-        if (valor) {
-          const valorNumerico = valor.replace(',', '.');
-          if (isNaN(valorNumerico) || valorNumerico < 0) {
-            alert('O valor deve ser um número válido');
-            return;
-          }
-        }
-        
-        // Verifica se o código já existe
-        const codigoExistente = [...aptDadosAptidoes, ...aptDadosExames]
-          .some(item => item.codigo === codigo);
-        
-        if (codigoExistente) {
-          alert('Já existe um item com este código');
-          return;
-        }
-        
-        // Cria o novo item com o valor formatado (se existir)
-        const novoItem = { 
+        // Cria o item sem o valor
+        const item = { 
           codigo, 
-          nome,
-          valor: valor || '0,00' // Valor padrão se não informado
+          nome
         };
         
-        if (modalTipoAtual === 'aptidao') {
-          aptDadosAptidoes.push(novoItem);
+        // Determina qual array e container usar com base no tipo
+        const arraySelecionado = tipo === 'aptidao' ? aptAptidoesSelecionadas : aptExamesSelecionados;
+        const container = tipo === 'aptidao' ? selectedAptidoesContainer : selectedExamesContainer;
+        
+        if (checkbox.checked) {
+          // Adiciona se não existir
+          const existe = arraySelecionado.some(a => a.codigo === codigo);
+          if (!existe) {
+            arraySelecionado.push(item);
+          }
         } else {
-          aptDadosExames.push(novoItem);
+          // Remove se existir
+          const index = arraySelecionado.findIndex(a => a.codigo === codigo);
+          if (index !== -1) {
+            arraySelecionado.splice(index, 1);
+          }
         }
         
-        fecharModal();
-        
-        // Atualiza a lista de checkboxes para garantir consistência
-        renderizarCheckboxes();
+        // Atualiza a exibição
+        atualizarListaSelecionados(arraySelecionado, container, tipo);
       }
-      
-      // Configura os eventos
-      if (btnAddAptidao) {
-        btnAddAptidao.addEventListener('click', () => abrirModalAdicionar('aptidao'));
-      }
-      
-      if (btnAddExame) {
-        btnAddExame.addEventListener('click', () => abrirModalAdicionar('exame'));
-      }
-      
-      if (btnSalvar) {
-        btnSalvar.addEventListener('click', adicionarNovoItem);
-      }
-      
-      if (btnCancelar) {
-        btnCancelar.addEventListener('click', fecharModal);
-      }
-      
-      // Adiciona evento de tecla Enter nos campos do modal
-      function setupEnterKeyHandler(element) {
-        if (element) {
-          element.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-              adicionarNovoItem();
-            }
-          });
+  
+  // Função para renderizar as listas de checkboxes
+  function renderizarCheckboxes() {
+    // Salva os itens selecionados atuais
+    const aptSelecionadas = [...aptAptidoesSelecionadas];
+    const examesSelecionados = [...aptExamesSelecionados];
+    
+    // Limpa os containers
+    if (checkboxContainerApt) {
+      checkboxContainerApt.innerHTML = '';
+      aptDadosAptidoes.forEach(item => {
+        const checkbox = criarCheckbox(item, 'aptidao');
+        // Marca como selecionado se estava na lista de selecionados
+        if (aptSelecionadas.some(a => a.codigo === item.codigo)) {
+          const input = checkbox.querySelector('input[type="checkbox"]');
+          if (input) input.checked = true;
         }
-      }
-      
-      setupEnterKeyHandler(inputNome);
-      setupEnterKeyHandler(inputCodigo);
-      setupEnterKeyHandler(document.getElementById('apt-novoValor'));
-      
-      // Fecha o modal ao clicar fora
-      if (modal) {
-        modal.addEventListener('click', (e) => {
-          if (e.target === modal) {
-            fecharModal();
-          }
-        });
-      }
-      
-      // Inicialização
-      function init() {
-        try {
-          // Comentado para não exibir o banner de totais
-          // createAptExamesTotalBanner();
-          
-          // Renderiza as listas iniciais
-          renderizarCheckboxes();
-          
-          // Função para abrir o modal de item personalizado
-          function abrirModalItemPersonalizado(tipo) {
-            const modal = document.getElementById('apt-modal');
-            const modalTitle = document.getElementById('apt-modal-title');
-            const itemCodigo = document.getElementById('apt-item-codigo');
-            const itemNome = document.getElementById('apt-item-nome');
-            const itemValor = document.getElementById('apt-item-valor');
-            
-            if (modal && modalTitle && itemCodigo && itemNome && itemValor) {
-              // Configura o título do modal
-              modalTitle.textContent = `Adicionar ${tipo === 'aptidao' ? 'Aptidão' : 'Exame'} Personalizado`;
-              
-              // Limpa os campos
-              itemCodigo.value = '';
-              itemNome.value = '';
-              itemValor.value = '';
-              
-              // Configura o botão de salvar
-              const btnSalvar = document.getElementById('apt-btnSalvarItem');
-              if (btnSalvar) {
-                // Remove event listeners antigos
-                const newBtn = btnSalvar.cloneNode(true);
-                btnSalvar.parentNode.replaceChild(newBtn, btnSalvar);
-                
-                // Adiciona novo event listener
-                newBtn.onclick = function() {
-                  const codigo = itemCodigo.value.trim();
-                  const nome = itemNome.value.trim();
-                  const valor = itemValor.value.trim();
-                  
-                  if (!codigo || !nome) {
-                    alert('Por favor, preencha o código e o nome do item.');
-                    return;
-                  }
-                  
-                  // Cria o novo item
-                  const novoItem = {
-                    codigo,
-                    nome,
-                    valor: valor || '0,00'
-                  };
-                  
-                  // Adiciona ao array apropriado
-                  if (tipo === 'aptidao') {
-                    aptDadosAptidoes.push(novoItem);
-                    aptAptidoesSelecionadas.push({...novoItem});
-                  } else {
-                    aptDadosExames.push(novoItem);
-                    aptExamesSelecionados.push({...novoItem});
-                  }
-                  
-                  // Atualiza a interface
-                  renderizarCheckboxes();
-                  atualizarTotais();
-                  
-                  // Fecha o modal
-                  modal.style.display = 'none';
-                };
-              }
-              
-              // Mostra o modal
-              modal.style.display = 'flex';
-              
-              // Configura o botão de fechar
-              const btnFechar = modal.querySelector('.apt-modal-close');
-              if (btnFechar) {
-                btnFechar.onclick = function() {
-                  modal.style.display = 'none';
-                };
-              }
-              
-              // Fecha o modal ao clicar fora dele
-              window.onclick = function(event) {
-                if (event.target === modal) {
-                  modal.style.display = 'none';
-                }
-              };
-            }
-          }
-          
-          // Configura os eventos do modal
-          function configurarModal() {
-            // Botão de adicionar aptidão
-            const btnAddAptidao = document.getElementById('apt-btnAddAptidao');
-            if (btnAddAptidao) {
-              btnAddAptidao.addEventListener('click', () => abrirModalItemPersonalizado('aptidao'));
-            }
-            
-            // Botão de adicionar exame
-            const btnAddExame = document.getElementById('apt-btnAddExame');
-            if (btnAddExame) {
-              btnAddExame.addEventListener('click', () => abrirModalItemPersonalizado('exame'));
-            }
-          }
-          
-          configurarModal();
-          
-          // Atualiza os totais iniciais
-          atualizarTotais();
-          
-          console.log('Componente de Aptidões e Exames inicializado com sucesso');
-          return true;
-        } catch (error) {
-          console.error('Erro ao inicializar o componente de Aptidões e Exames:', error);
-          return false;
-        }
-      }
-      
-      // Inicializa o componente quando o DOM estiver pronto
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
+        checkboxContainerApt.appendChild(checkbox);
+      });
     }
+    
+    if (checkboxContainerExames) {
+      checkboxContainerExames.innerHTML = '';
+      aptDadosExames.forEach(item => {
+        const checkbox = criarCheckbox(item, 'exame');
+        // Marca como selecionado se estava na lista de selecionados
+        if (examesSelecionados.some(e => e.codigo === item.codigo)) {
+          const input = checkbox.querySelector('input[type="checkbox"]');
+          if (input) input.checked = true;
+        }
+        checkboxContainerExames.appendChild(checkbox);
+      });
+    }
+    
+    // Atualiza as listas de selecionados
+    atualizarListaSelecionados(aptAptidoesSelecionadas, selectedAptidoesContainer, 'aptidao');
+    atualizarListaSelecionados(aptExamesSelecionados, selectedExamesContainer, 'exame');
+  }
+  
+  // Função para abrir o modal de adição
+  function abrirModalAdicionar(tipo) {
+    modalTipoAtual = tipo;
+    if (modal && modalTitle) {
+      modalTitle.textContent = `Adicionar ${tipo === 'aptidao' ? 'Aptidão' : 'Exame'}`;
+      modal.style.display = 'flex';
+      if (inputCodigo) inputCodigo.value = '';
+      if (inputNome) inputNome.value = '';
+      const inputValor = document.getElementById('apt-novoValor');
+      if (inputValor) inputValor.value = '';
+      if (inputCodigo) inputCodigo.focus();
+    }
+  }
+  
+  // Função para fechar o modal
+  function fecharModal() {
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+  
+  // Função para adicionar um novo item (aptidão ou exame)
+  function adicionarNovoItem() {
+    const codigo = inputCodigo ? inputCodigo.value.trim() : '';
+    const nome = inputNome ? inputNome.value.trim() : '';
+    
+    if (!codigo || !nome) {
+      alert('Preencha todos os campos obrigatórios');
+      return;
+    }
+    
+
+    
+    // Verifica se o código já existe
+    const codigoExistente = [...aptDadosAptidoes, ...aptDadosExames]
+      .some(item => item.codigo === codigo);
+    
+    if (codigoExistente) {
+      alert('Já existe um item com este código');
+      return;
+    }
+    
+    // Cria o novo item
+    const novoItem = { 
+      codigo, 
+      nome
+    };
+    
+    if (modalTipoAtual === 'aptidao') {
+      aptDadosAptidoes.push(novoItem);
+    } else {
+      aptDadosExames.push(novoItem);
+    }
+    
+    fecharModal();
+    
+    // Atualiza a lista de checkboxes para garantir consistência
+    renderizarCheckboxes();
+  }
+  
+  // Configura os eventos
+  if (btnAddAptidao) {
+    btnAddAptidao.addEventListener('click', () => abrirModalAdicionar('aptidao'));
+  }
+  
+  if (btnAddExame) {
+    btnAddExame.addEventListener('click', () => abrirModalAdicionar('exame'));
+  }
+  
+  if (btnSalvar) {
+    btnSalvar.addEventListener('click', adicionarNovoItem);
+  }
+  
+  if (btnCancelar) {
+    btnCancelar.addEventListener('click', fecharModal);
+  }
+  
+  // Adiciona evento de tecla Enter nos campos do modal
+  function setupEnterKeyHandler(element) {
+    if (element) {
+      element.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          adicionarNovoItem();
+        }
+      });
+    }
+  }
+  
+  setupEnterKeyHandler(inputNome);
+  setupEnterKeyHandler(inputCodigo);
+  setupEnterKeyHandler(document.getElementById('apt-novoValor'));
+  
+  // Fecha o modal ao clicar fora
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        fecharModal();
+      }
+    });
+  }
+  
+  // Inicialização
+  function init() {
+    try {
+      // Renderiza as listas iniciais
+      renderizarCheckboxes();
+      
+      console.log('Componente de Aptidões e Exames inicializado com sucesso');
+      return true;
+    } catch (error) {
+      console.error('Erro ao inicializar o componente de Aptidões e Exames:', error);
+      return false;
+    }
+  }
+  
+  // Inicializa o componente quando o DOM estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+    
     
     function initializeRiscosComponent() {
       console.log('Inicializando componente de riscos...');
       
-
+      // Inicialização do componente de riscos
+      
       
       // Dados dos riscos (pode ser movido para um arquivo JSON separado posteriormente)
       // const risksData = {
@@ -8055,6 +7851,7 @@ function buscar_riscos() {
       // Inicializa os dropdowns do laudo
       initializeLaudoDropdowns();
     }
+  }
   </script>
 
   <!-- Script de Faturamento -->
@@ -8596,6 +8393,8 @@ function buscar_riscos() {
   
   <!-- Adiciona uma margem no final da página -->
   <div style="height: 50px;"></div>
+  
+  <!-- Scripts adicionais podem ser incluídos aqui -->
   
 </body>
 </html>
