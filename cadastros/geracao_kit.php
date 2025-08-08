@@ -5009,6 +5009,7 @@
         
         // Inicializa os treinamentos se ainda não foram inicializados
         if (!window.treinamentosInicializados) {
+          buscar_treinamentos();
           const initTreinamentos = () => {
             // Verifica se o container de treinamentos está no DOM
             const containerTreinamentos = document.getElementById('secao-treinamentos');
@@ -5643,6 +5644,27 @@ function buscar_riscos() {
           allowOutsideClick: false
         });
       }
+    }
+
+    function buscar_treinamentos()
+    {
+          $.ajax({
+            url: "cadastros/processa_treinamento_capacitacao.php",
+            method: "GET",
+            dataType: "json",
+            data: {
+              "processo_treinamento_capacitacao": "busca_treinamento_capacitacao"
+            },
+            success: function(resposta) {
+              debugger;
+
+              console.log(resposta);
+            },
+            error:function(xhr,status,error)
+            {
+
+            },
+          });
     }
     
     // Função para gerenciar os treinamentos
