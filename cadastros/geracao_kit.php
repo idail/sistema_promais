@@ -5682,10 +5682,12 @@ function buscar_riscos() {
       
       // Busca os treinamentos do banco de dados
       try {
+        console.log('Iniciando busca de treinamentos...');
         // Chama a função buscar_treinamentos que faz a requisição AJAX
         const response = buscar_treinamentos();
+        console.log('Resposta recebida:', response);
         
-        if (response && response.length > 0) {
+        if (response && Array.isArray(response) && response.length > 0) {
           // Formata os dados para o formato esperado pelo sistema
           response.forEach(function(treinamento) {
             treinamentos.push({
@@ -5695,36 +5697,56 @@ function buscar_riscos() {
             });
           });
         } else {
-          console.error('Nenhum treinamento encontrado no banco de dados');
-          // Se não encontrar treinamentos, usa a lista padrão como fallback
-          treinamentos.push(
-            { codigo: 'TR001', nome: 'NR-10 - Segurança em Instalações Elétricas', valor: '150,00' },
-            { codigo: 'TR002', nome: 'NR-35 - Trabalho em Altura', valor: '180,00' },
-            { codigo: 'TR003', nome: 'NR-33 - Espaços Confinados', valor: '220,00' },
-            { codigo: 'TR004', nome: 'NR-11 - Operação de Empilhadeira', valor: '200,00' },
-            { codigo: 'TR005', nome: 'NR-06 - EPI', valor: '120,00' },
-            { codigo: 'TR006', nome: 'NR-23 - Prevenção e Combate a Incêndio', valor: '250,00' },
-            { codigo: 'TR007', nome: 'NR-12 - Segurança em Máquinas e Equipamentos', valor: '190,00' },
-            { codigo: 'TR008', nome: 'NR-18 - Condições e Meio Ambiente de Trabalho na Indústria da Construção', valor: '230,00' },
-            { codigo: 'TR009', nome: 'NR-20 - Segurança e Saúde no Trabalho com Inflamáveis e Combustíveis', valor: '270,00' },
-            { codigo: 'TR010', nome: 'NR-34 - Condições e Meio Ambiente de Trabalho na Indústria da Construção e Reparação Naval', valor: '210,00' }
-          );
+          console.warn('Nenhum treinamento encontrado no banco de dados');
+          // Exibe mensagem de nenhum registro encontrado
+          console.log('Tentando exibir mensagem de nenhum registro...');
+          const listaTreinamentos = document.getElementById('listaTreinamentos');
+          console.log('Elemento listaTreinamentos encontrado?', !!listaTreinamentos);
+          if (listaTreinamentos) {
+            console.log('Atualizando HTML da lista de treinamentos...');
+            // Limpa a lista de treinamentos
+            listaTreinamentos.innerHTML = `
+              <div style="text-align: center; padding: 40px 20px; color: #6c757d; font-style: italic; background: #fff; border-radius: 6px;">
+                <i class="fas fa-info-circle" style="margin-right: 5px; font-size: 18px;"></i>
+                <div style="margin-top: 8px;">Nenhum treinamento cadastrado</div>
+              </div>`;
+            
+            // Esconde o botão de aplicar seleção
+            const btnAplicar = document.getElementById('btnAplicarTreinamentos');
+            if (btnAplicar) {
+              btnAplicar.style.display = 'none';
+            }
+            
+            // Limpa a lista de selecionados
+            const containerSelecionados = document.getElementById('treinamentosSelecionados');
+            if (containerSelecionados) {
+              containerSelecionados.innerHTML = `
+                <div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
+                  Nenhum treinamento selecionado
+                </div>`;
+            }
+            
+            // Atualiza o total para zero
+            const totalElement = document.getElementById('totalTreinamentos');
+            if (totalElement) {
+              totalElement.textContent = 'Total: R$ 0,00';
+            }
+            
+            // Atualiza o banner de totais
+            updateTotalBanner(0);
+          }
         }
       } catch (error) {
         console.error('Erro ao buscar treinamentos:', error);
-        // Se houver erro, mantém os treinamentos padrão como fallback
-        treinamentos.push(
-          { codigo: 'TR001', nome: 'NR-10 - Segurança em Instalações Elétricas', valor: '150,00' },
-          { codigo: 'TR002', nome: 'NR-35 - Trabalho em Altura', valor: '180,00' },
-          { codigo: 'TR003', nome: 'NR-33 - Espaços Confinados', valor: '220,00' },
-          { codigo: 'TR004', nome: 'NR-11 - Operação de Empilhadeira', valor: '200,00' },
-          { codigo: 'TR005', nome: 'NR-06 - EPI', valor: '120,00' },
-          { codigo: 'TR006', nome: 'NR-23 - Prevenção e Combate a Incêndio', valor: '250,00' },
-          { codigo: 'TR007', nome: 'NR-12 - Segurança em Máquinas e Equipamentos', valor: '190,00' },
-          { codigo: 'TR008', nome: 'NR-18 - Condições e Meio Ambiente de Trabalho na Indústria da Construção', valor: '230,00' },
-          { codigo: 'TR009', nome: 'NR-20 - Segurança e Saúde no Trabalho com Inflamáveis e Combustíveis', valor: '270,00' },
-          { codigo: 'TR010', nome: 'NR-34 - Condições e Meio Ambiente de Trabalho na Indústria da Construção e Reparação Naval', valor: '210,00' }
-        );
+        // Exibe mensagem de erro na busca
+        const listaTreinamentos = document.getElementById('listaTreinamentos');
+        if (listaTreinamentos) {
+          listaTreinamentos.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #dc3545;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>
+              Erro ao carregar treinamentos. Tente novamente mais tarde.
+            </div>`;
+        }
       }
 
       // Elementos do DOM
@@ -5736,20 +5758,41 @@ function buscar_riscos() {
 
       // Renderiza a lista de treinamentos
       function renderizarTreinamentos() {
-        listaTreinamentos.innerHTML = treinamentos.map(treinamento => `
-          <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
-            <input type="checkbox" value="${treinamento.codigo}" 
-                   data-nome="${treinamento.nome}" 
-                   data-valor="${treinamento.valor}" 
-                   style="margin-right: 10px; cursor: pointer;">
-            <div style="flex: 1; cursor: pointer;">
-              <div style="font-weight: 500;">${treinamento.nome}</div>
-              <div style="font-size: 12px; color: #6c757d;">
-                Código: ${treinamento.codigo} - Valor: R$ ${treinamento.valor}
+        if (treinamentos.length === 0) {
+          listaTreinamentos.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #6c757d; font-style: italic; background: #fff; border-radius: 6px;">
+              <i class="fas fa-info-circle" style="margin-right: 5px; font-size: 18px;"></i>
+              <div style="margin-top: 8px;">Nenhum treinamento cadastrado</div>
+            </div>`;
+          
+          // Esconde o botão de aplicar seleção
+          const btnAplicar = document.getElementById('btnAplicarTreinamentos');
+          if (btnAplicar) {
+            btnAplicar.style.display = 'none';
+          }
+        } else {
+          // Mostra o botão de aplicar seleção
+          const btnAplicar = document.getElementById('btnAplicarTreinamentos');
+          if (btnAplicar) {
+            btnAplicar.style.display = 'inline-flex';
+          }
+          
+          // Renderiza a lista de treinamentos
+          listaTreinamentos.innerHTML = treinamentos.map(treinamento => `
+            <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
+              <input type="checkbox" value="${treinamento.codigo}" 
+                     data-nome="${treinamento.nome}" 
+                     data-valor="${treinamento.valor}" 
+                     style="margin-right: 10px; cursor: pointer;">
+              <div style="flex: 1; cursor: pointer;">
+                <div style="font-weight: 500;">${treinamento.nome}</div>
+                <div style="font-size: 12px; color: #6c757d;">
+                  Código: ${treinamento.codigo} - Valor: R$ ${treinamento.valor}
+                </div>
               </div>
             </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
 
       // Cria o banner de totais se não existir
