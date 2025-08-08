@@ -6966,9 +6966,29 @@ function buscar_riscos() {
         setTimeout(setupECPEvents, 50);
       };
     });
+
+    function carregar_aptidoes_extras()
+    {
+      $.ajax({
+          url: "cadastros/processa_aptidao_extra.php", // Endpoint da API
+          method: "GET",
+          dataType: "json",
+          data: {
+            "processo_aptidao_extra": "busca_aptidao_extra"
+          },
+          success: function(resposta_aptidao) 
+          {
+            debugger;
+          },
+          error:function(xhr,status,error)
+          {
+          },
+      });
+    }
     
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
+      carregar_aptidoes_extras();
       console.log('Inicializando componente de Aptidões e Exames...');
       
       // Dados iniciais
