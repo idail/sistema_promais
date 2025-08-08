@@ -35,105 +35,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_cadastra_kit->bindValue(":recebe_usuario_id", $_SESSION['user_id']);
         $comando_cadastra_kit->execute();
         $recebe_codigo_gerado_kit = $pdo->lastInsertId();
+
+        // --- Limpa as sessões de seleção antigas ao gerar NOVO kit ---
+        // (mantém $_SESSION['empresa_id'], $_SESSION['user_id'] e outras persistentes)
+        $sess_to_clear = [
+            "exame_selecionado",
+            "empresa_selecionado",
+            "clinica_selecionado",
+            "colaborador_selecionado",
+            "cargo_selecionado",
+            "motorista_selecionado",
+            "medico_coordenador_selecionado",
+            "medico_clinica_selecionado",
+            "medico_risco_selecionado",
+            "medico_treinamento_selecionado",
+            "insalubridade_selecionado",
+            "porcentagem_selecionado",
+            "periculosidade_selecionado",
+            "aposentado_selecionado",
+            "agente_nocivo_selecionado",
+            "agente_ocorrencia_selecionado"
+        ];
+
+        foreach ($sess_to_clear as $sk) {
+            if (array_key_exists($sk, $_SESSION)) {
+                unset($_SESSION[$sk]);
+            }
+        }
+        // ------------------------------------------------------------
+
+        // Registra o código do kit recém-criado
         $_SESSION["codigo_kit"] = $recebe_codigo_gerado_kit;
         echo json_encode($recebe_codigo_gerado_kit);
     } else if ($recebe_processo_geracao_kit === "incluir_valores_kit") {
-        // EXAME
-        // if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
-        //     $recebe_exame_selecionado = $_POST["valor_exame"];
-
-        //     if (!isset($_SESSION["exame_selecionado"]) || $_SESSION["exame_selecionado"] !== $recebe_exame_selecionado) {
-        //         $_SESSION["exame_selecionado"] = $recebe_exame_selecionado;
-        //     }
-        // }
-
-        // // EMPRESA
-        // if (isset($_POST["valor_empresa"]) && $_POST["valor_empresa"] !== "") {
-        //     $recebe_empresa_selecionado = $_POST["valor_empresa"];
-
-        //     if (!isset($_SESSION["empresa_selecionado"]) || $_SESSION["empresa_selecionado"] !== $recebe_empresa_selecionado) {
-        //         $_SESSION["empresa_selecionado"] = $recebe_empresa_selecionado;
-        //     }
-        // }
-
-        // // CLÍNICA
-        // if (isset($_POST["valor_clinica"]) && $_POST["valor_clinica"] !== "") {
-        //     $recebe_clinica_selecionado = $_POST["valor_clinica"];
-
-        //     if (!isset($_SESSION["clinica_selecionado"]) || $_SESSION["clinica_selecionado"] !== $recebe_clinica_selecionado) {
-        //         $_SESSION["clinica_selecionado"] = $recebe_clinica_selecionado;
-        //     }
-        // }
-
-        // // COLABORADOR
-        // if (isset($_POST["valor_colaborador"]) && $_POST["valor_colaborador"] !== "") {
-        //     $recebe_colaborador_selecionado = $_POST["valor_colaborador"];
-
-        //     if (!isset($_SESSION["colaborador_selecionado"]) || $_SESSION["colaborador_selecionado"] !== $recebe_colaborador_selecionado) {
-        //         $_SESSION["colaborador_selecionado"] = $recebe_colaborador_selecionado;
-        //     }
-        // }
-
-        // // CARGO
-        // if (isset($_POST["valor_cargo"]) && $_POST["valor_cargo"] !== "") {
-        //     $recebe_cargo_selecionado = $_POST["valor_cargo"];
-
-        //     if (!isset($_SESSION["cargo_selecionado"]) || $_SESSION["cargo_selecionado"] !== $recebe_cargo_selecionado) {
-        //         $_SESSION["cargo_selecionado"] = $recebe_cargo_selecionado;
-        //     }
-        // }
-
-        // // MOTORISTA
-        // if (isset($_POST["valor_motorista"]) && $_POST["valor_motorista"] !== "") {
-        //     $recebe_motorista_selecionado = $_POST["valor_motorista"];
-
-        //     if (!isset($_SESSION["motorista_selecionado"]) || $_SESSION["motorista_selecionado"] !== $recebe_motorista_selecionado) {
-        //         $_SESSION["motorista_selecionado"] = $recebe_motorista_selecionado;
-        //     }
-        // }
-
-
-
-        // $instrucao_atualizar_kit = "update kits set tipo_exame = :recebe_tipo_exame,empresa_id = :recebe_empresa_id,clinica_id = :recebe_clinica_id,
-        // pessoa_id = :recebe_pessoa_id,motorista = :recebe_motorista,cargo_id = :recebe_cargo_id where id = :recebe_kit_id";
-        // $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
-        // $comando_atualizar_kit->bindValue(
-        //     ":recebe_tipo_exame",
-        //     $_SESSION["exame_selecionado"],
-        //     $_SESSION["exame_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        // );
-
-        // $comando_atualizar_kit->bindValue(
-        //     ":recebe_empresa_id",
-        //     $_SESSION["empresa_selecionado"],
-        //     $_SESSION["empresa_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        // );
-
-        // $comando_atualizar_kit->bindValue(
-        //     ":recebe_clinica_id",
-        //     $_SESSION["clinica_selecionado"],
-        //     $_SESSION["clinica_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        // );
-
-        // $comando_atualizar_kit->bindValue(
-        //     ":recebe_pessoa_id",
-        //     $_SESSION["colaborador_selecionado"],
-        //     $_SESSION["colaborador_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        // );
-
-        // $comando_atualizar_kit->bindValue(
-        //     ":recebe_cargo_id",
-        //     $_SESSION["cargo_selecionado"],
-        //     $_SESSION["cargo_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        // );
-
-        // $comando_atualizar_kit->bindValue(
-        //     ":recebe_motorista",
-        //     $_SESSION["motorista_selecionado"],
-        //     $_SESSION["motorista_selecionado"] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        // );
-
-        // EXAME
         // EXAME
         // ... (seu código anterior, começando nos blocos de POST que você enviou)
         if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
@@ -304,23 +238,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Atualização
         $instrucao_atualizar_kit = "UPDATE kits SET 
-            tipo_exame = :recebe_tipo_exame,
-            empresa_id = :recebe_empresa_id,
-            clinica_id = :recebe_clinica_id,
-            pessoa_id = :recebe_pessoa_id,
-            motorista = :recebe_motorista,
-            cargo_id = :recebe_cargo_id,
-            medico_coordenador_id = :recebe_medico_coordenador_id,
-            medico_clinica_id = :recebe_medico_clinica_id,
-            riscos_selecionados = :recebe_riscos_selecionados,
-            treinamentos_selecionados = :recebe_treinamentos_selecionados,
-            insalubridade = :recebe_insalubridade_selecionado,
-            porcentagem = :recebe_porcentagem_selecionado,
-            periculosidade = :recebe_periculosidade_selecionado,
-            aposentado_especial = :recebe_aposentado_especial_selecionado,
-            agente_nocivo = :recebe_agente_nocivo_selecionado,
-            ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado
-        WHERE id = :recebe_kit_id";
+        tipo_exame = :recebe_tipo_exame,
+        empresa_id = :recebe_empresa_id,
+        clinica_id = :recebe_clinica_id,
+        pessoa_id = :recebe_pessoa_id,
+        motorista = :recebe_motorista,
+        cargo_id = :recebe_cargo_id,
+        medico_coordenador_id = :recebe_medico_coordenador_id,
+        medico_clinica_id = :recebe_medico_clinica_id,
+        riscos_selecionados = :recebe_riscos_selecionados,
+        treinamentos_selecionados = :recebe_treinamentos_selecionados,
+        insalubridade = :recebe_insalubridade_selecionado,
+        porcentagem = :recebe_porcentagem_selecionado,
+        periculosidade = :recebe_periculosidade_selecionado,
+        aposentado_especial = :recebe_aposentado_especial_selecionado,
+        agente_nocivo = :recebe_agente_nocivo_selecionado,
+        ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado
+    WHERE id = :recebe_kit_id";
 
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
 
@@ -346,66 +280,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_kit_id", $_SESSION["codigo_kit"], PDO::PARAM_INT);
 
         // Executa
-        // Executa
         $resultado_atualizar_kit = $comando_atualizar_kit->execute();
 
         if ($resultado_atualizar_kit) {
-            // Lista das chaves de sessão que queremos limpar
-            $sess_to_clear = [
-                "exame_selecionado",
-                "empresa_selecionado",
-                "clinica_selecionado",
-                "colaborador_selecionado",
-                "cargo_selecionado",
-                "motorista_selecionado",
-                "medico_coordenador_selecionado",
-                "medico_clinica_selecionado",
-                "medico_risco_selecionado",
-                "medico_treinamento_selecionado",
-                "insalubridade_selecionado",
-                "porcentagem_selecionado",
-                "periculosidade_selecionado",
-                "aposentado_selecionado",
-                "agente_nocivo_selecionado",
-                "agente_ocorrencia_selecionado"
-            ];
-
-            // // Remove cada sessão somente se existir
-            // foreach ($sess_to_clear as $sk) {
-            //     if (array_key_exists($sk, $_SESSION)) {
-            //         unset($_SESSION[$sk]);
-            //     }
-            // }
-
-            // Também zera as variáveis locais (binds) usadas abaixo do unset
-            $binds_to_clear = [
-                "valor_exame_bind",
-                "valor_empresa_bind",
-                "valor_clinica_bind",
-                "valor_colaborador_bind",
-                "valor_cargo_bind",
-                "valor_motorista_bind",
-                "valor_medico_coordenador_bind",
-                "valor_medico_clinica_bind",
-                "valor_risco_selecionado_bind",
-                "valor_treinamento_selecionado_bind",
-                "valor_insalubridade_selecionado_bind",
-                "valor_porcentagem_selecionado_bind",
-                "valor_periculosidade_selecionado_bind",
-                "valor_aposentado_selecionado_bind",
-                "valor_agente_nocivo_selecionado_bind",
-                "valor_ocorrencia_selecionado_bind"
-            ];
-
-            foreach ($binds_to_clear as $bv) {
-                if (isset($$bv)) {
-                    $$bv = null;
-                }
-            }
-
-            // Força gravação e fechamento da sessão (ajuda em casos concorrentes)
-            session_write_close();
-
             echo json_encode("KIT atualizado com sucesso");
         } else {
             echo json_encode("KIT não foi atualizado com sucesso");
