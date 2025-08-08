@@ -370,12 +370,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 "agente_ocorrencia_selecionado"
             ];
 
-            // Remove cada sessão somente se existir
-            foreach ($sess_to_clear as $sk) {
-                if (array_key_exists($sk, $_SESSION)) {
-                    unset($_SESSION[$sk]);
-                }
-            }
+            // // Remove cada sessão somente se existir
+            // foreach ($sess_to_clear as $sk) {
+            //     if (array_key_exists($sk, $_SESSION)) {
+            //         unset($_SESSION[$sk]);
+            //     }
+            // }
 
             // Também zera as variáveis locais (binds) usadas abaixo do unset
             $binds_to_clear = [

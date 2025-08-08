@@ -1855,7 +1855,9 @@
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                   <label style="font-weight: 500; color: #004085;">Treinamentos Selecionados</label>
+                  <!-- Comentado para não exibir o total
                   <div id="totalTreinamentos" style="font-weight: 600; color: #0056b3;">Total: R$ 0,00</div>
+                  -->
                 </div>
                 
                 <div id="treinamentosSelecionados" style="border: 1px solid #b8daff; border-radius: 6px; background: white; min-height: 100px; max-height: 300px; overflow-y: auto; padding: 10px;">
@@ -5794,14 +5796,14 @@ function buscar_riscos() {
                 </div>`;
             }
             
-            // Atualiza o total para zero
-            const totalElement = document.getElementById('totalTreinamentos');
-            if (totalElement) {
-              totalElement.textContent = 'Total: R$ 0,00';
-            }
+            // Código de exibição do total comentado conforme solicitado
+            // const totalElement = document.getElementById('totalTreinamentos');
+            // if (totalElement) {
+            //   totalElement.textContent = 'Total: R$ 0,00';
+            // }
             
-            // Atualiza o banner de totais
-            updateTotalBanner(0);
+            // Atualização do banner de totais comentada conforme solicitado
+            // updateTotalBanner(0);
           }
         }
       } catch (error) {
@@ -5845,7 +5847,7 @@ function buscar_riscos() {
             btnAplicar.style.display = 'inline-flex';
           }
           
-          // Renderiza a lista de treinamentos
+          // Renderiza a lista de treinamentos sem mostrar o valor individual
           listaTreinamentos.innerHTML = treinamentos.map(treinamento => `
             <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
               <input type="checkbox" value="${treinamento.codigo}" 
@@ -5855,7 +5857,7 @@ function buscar_riscos() {
               <div style="flex: 1; cursor: pointer;">
                 <div style="font-weight: 500;">${treinamento.nome}</div>
                 <div style="font-size: 12px; color: #6c757d;">
-                  Código: ${treinamento.codigo} - Valor: R$ ${treinamento.valor}
+                  Código: ${treinamento.codigo}
                 </div>
               </div>
             </div>
@@ -5867,28 +5869,28 @@ function buscar_riscos() {
       function createTotalBanner() {
         if (!document.getElementById('total-treinamentos-banner')) {
           const banner = document.createElement('div');
-          banner.id = 'total-treinamentos-banner';
-          banner.style.position = 'fixed';
-          banner.style.top = '10px';
-          banner.style.right = '10px';
-          banner.style.backgroundColor = '#28a745';
-          banner.style.border = 'none';
-          banner.style.borderRadius = '6px';
-          banner.style.padding = '10px 20px';
-          banner.style.zIndex = '9998';
-          banner.style.display = 'flex';
-          banner.style.alignItems = 'center';
-          banner.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-          banner.style.color = 'white';
-          banner.style.fontFamily = 'Arial, sans-serif';
-          banner.style.fontSize = '14px';
-          banner.style.fontWeight = '600';
-          banner.style.letterSpacing = '0.3px';
-          banner.style.transition = 'all 0.3s ease';
-          banner.innerHTML = `
-            <i class="fas fa-graduation-cap" style="font-size: 16px; color: #ffffff; margin-right: 8px;"></i>
-            <span style="color: #ffffff; text-shadow: 0 1px 1px rgba(0,0,0,0.1);">TREINAMENTOS: R$ 0,00</span>
-          `;
+          // banner.id = 'total-treinamentos-banner';
+          // banner.style.position = 'fixed';
+          // banner.style.top = '10px';
+          // banner.style.right = '10px';
+          // banner.style.backgroundColor = '#28a745';
+          // banner.style.border = 'none';
+          // banner.style.borderRadius = '6px';
+          // banner.style.padding = '10px 20px';
+          // banner.style.zIndex = '9998';
+          // banner.style.display = 'flex';
+          // banner.style.alignItems = 'center';
+          // banner.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+          // banner.style.color = 'white';
+          // banner.style.fontFamily = 'Arial, sans-serif';
+          // banner.style.fontSize = '14px';
+          // banner.style.fontWeight = '600';
+          // banner.style.letterSpacing = '0.3px';
+          // banner.style.transition = 'all 0.3s ease';
+          // banner.innerHTML = `
+          //   <i class="fas fa-graduation-cap" style="font-size: 16px; color: #ffffff; margin-right: 8px;"></i>
+          //   <span style="color: #ffffff; text-shadow: 0 1px 1px rgba(0,0,0,0.1);">TREINAMENTOS: R$ 0,00</span>
+          // `;
           
           // Função para ajustar a posição baseada no banner do motorista
           function ajustarPosicao() {
@@ -5979,28 +5981,23 @@ function buscar_riscos() {
             total += valor;
             
             html += `
-              <div style="display: flex; justify-content: space-between; align-items: center; 
-                         padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                <div>
-                  <div style="font-weight: 500; font-size: 14px;">${nome}</div>
-                  <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
-                </div>
-                <div style="font-weight: 600; color: #28a745;">
-                  R$ ${valor.toFixed(2).replace('.', ',')}
-                </div>
+              <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
+                <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
               </div>`;
           }
         });
         
         containerSelecionados.innerHTML = html;
-        const totalFormatado = total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        totalElement.textContent = `Total: R$ ${totalFormatado}`;
+        // Comentado para não exibir o total
+        // const totalFormatado = total.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        // totalElement.textContent = `Total: R$ ${totalFormatado}`;
         
         // Atualiza a variável global para o faturamento
         window.fatTotalTreinamentos = total;
         
-        // Atualiza o banner de totais
-        updateTotalBanner(total);
+        // Comentado para não exibir o banner de totais
+        // updateTotalBanner(total);
         
         // Atualiza o faturamento
         if (typeof fatAtualizarTotais === 'function') {
@@ -7481,8 +7478,8 @@ function buscar_riscos() {
       // Inicialização
       function init() {
         try {
-          // Cria o banner de totais
-          createAptExamesTotalBanner();
+          // Comentado para não exibir o banner de totais
+          // createAptExamesTotalBanner();
           
           // Renderiza as listas iniciais
           renderizarCheckboxes();
