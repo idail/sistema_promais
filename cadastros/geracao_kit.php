@@ -7192,6 +7192,7 @@ function buscar_riscos() {
       
       // Função para atualizar a lista de itens selecionados
       function atualizarListaSelecionados(itens, container, tipo) {
+        debugger;
         container.innerHTML = '';
         
         if (itens.length === 0) {
@@ -7213,7 +7214,7 @@ function buscar_riscos() {
           
           badge.innerHTML = `
             <div style="display: flex; align-items: center;">
-              <span>${item.codigo} - ${item.nome}</span>
+              <span>${item.codigo} - ${item.recebe_apenas_nome}</span>
               <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
                 <i class="fas fa-times"></i>
               </button>
@@ -7255,8 +7256,11 @@ function buscar_riscos() {
       
       // Função para atualizar os itens selecionados
       function atualizarSelecionados(checkbox, tipo) {
+        debugger;
         const codigo = checkbox.value;
         const nome = checkbox.nextElementSibling.textContent.trim();
+
+        let recebe_apenas_nome = nome.split('-')[1].trim(); // pega a parte depois do '-' e tira espaços extras
         
         // Encontra o item completo nos dados originais
         const dadosOriginais = tipo === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
@@ -7265,7 +7269,7 @@ function buscar_riscos() {
         // Cria o item sem o valor
         const item = { 
           codigo, 
-          nome
+          recebe_apenas_nome
         };
         
         // Determina qual array e container usar com base no tipo
