@@ -2134,6 +2134,12 @@
       const event = new CustomEvent('tabChanged', { detail: { step } });
       document.dispatchEvent(event);
       
+      // Se for a aba de aptidões (etapa 4), carrega as aptidões extras
+      if (step === 4 && typeof carregar_aptidoes_extras === 'function') {
+        console.log('Aba de aptidões selecionada, carregando aptidões extras...');
+        carregar_aptidoes_extras();
+      }
+      
       // Se for a aba de faturamento (etapa 5), atualiza os totais
       if (step === 5) {
         console.log('=== Aba de faturamento aberta ===');
@@ -6977,12 +6983,16 @@ function buscar_riscos() {
     });
     
     function carregar_aptidoes_extras() {
+      console.log('Iniciando carregamento de aptidões extras...');
       // Mostra um indicador de carregamento se o container existir
       const container = document.getElementById('apt-checkbox-container');
       if (container) {
         container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Carregando aptidões...</div>';
+      } else {
+        console.warn('Container de aptidões não encontrado no DOM');
       }
       
+      console.log('Fazendo requisição AJAX para buscar aptidões...');
       $.ajax({
         url: "cadastros/processa_aptidao_extra.php",
         method: "GET",
@@ -6991,17 +7001,26 @@ function buscar_riscos() {
             "processo_aptidao_extra": "busca_aptidao_extra"
         },
         success: function(resposta_aptidao) {
+          console.log('Resposta bruta do servidor:', resposta_aptidao);
           debugger;
             try {
                 // Verifica se a resposta é um array e tem itens
                 if (Array.isArray(resposta_aptidao) && resposta_aptidao.length > 0) {
                     // Mapeia os dados da resposta para o formato esperado (sem o campo valor)
                     window.aptDadosAptidoes = resposta_aptidao.map(function(item) {
+                        // Usa codigo_aptidao se existir, senão usa id como fallback
+                        const codigo = item.codigo_aptidao !== undefined ? 
+                            String(item.codigo_aptidao).trim() : 
+                            (item.id ? String(item.id).trim() : "");
+                            
                         return {
-                            codigo: item.codigo ? String(item.codigo).trim() : "",
+                            codigo: codigo,
                             nome: item.nome ? String(item.nome).trim() : ""
                         };
                     });
+                    
+                    // Filtra itens sem nome (caso existam)
+                    window.aptDadosAptidoes = window.aptDadosAptidoes.filter(item => item.nome);
                     
                     console.log('Aptidões carregadas com sucesso:', window.aptDadosAptidoes);
                 } else {
@@ -7034,6 +7053,7 @@ function buscar_riscos() {
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
       console.log('Inicializando componente de Aptidões e Exames...');
+      console.log('Dados de aptidões disponíveis (window.aptDadosAptidoes):', window.aptDadosAptidoes);
       
       // Dados de exemplo (mantidos como fallback)
       const dadosExemploAptidoes = [
@@ -7049,6 +7069,8 @@ function buscar_riscos() {
       const aptDadosAptidoes = window.aptDadosAptidoes && window.aptDadosAptidoes.length > 0 
         ? window.aptDadosAptidoes 
         : dadosExemploAptidoes;
+        
+      console.log('Aptidões que serão usadas:', aptDadosAptidoes);
 
       const aptDadosExames = [
         { codigo: "0068", nome: "Acetilcolinesterase eritrocitária" },
@@ -7063,12 +7085,25 @@ function buscar_riscos() {
       let aptAptidoesSelecionadas = [];
       
       // Elementos do DOM
+      console.log('Buscando elementos do DOM...');
       const listaAptidoes = document.getElementById('apt-listaAptidoes');
+      console.log('listaAptidoes:', listaAptidoes);
+      
       const listaExames = document.getElementById('apt-listaExames');
+      console.log('listaExames:', listaExames);
+      
       const checkboxContainerApt = document.getElementById('apt-checkbox-container');
+      console.log('checkboxContainerApt:', checkboxContainerApt);
+      
       const checkboxContainerExames = document.getElementById('apt-checkbox-container-exames');
+      console.log('checkboxContainerExames:', checkboxContainerExames);
+      
       const selectedAptidoesContainer = document.getElementById('apt-selected-aptidoes');
+      console.log('selectedAptidoesContainer:', selectedAptidoesContainer);
+      
       const selectedExamesContainer = document.getElementById('apt-selected-exames');
+      console.log('selectedExamesContainer:', selectedExamesContainer);
+      
       const modal = document.getElementById('apt-modal');
       const modalTitle = document.getElementById('apt-modalTitle');
       const btnAddAptidao = document.getElementById('apt-btnAddAptidao');
@@ -7257,6 +7292,22 @@ function buscar_riscos() {
   
   // Função para renderizar as listas de checkboxes
   function renderizarCheckboxes() {
+    console.log('Iniciando renderização dos checkboxes...');
+    console.log('Dados de aptidões para renderizar:', window.aptDadosAptidoes);
+    
+    // Verifica se os containers existem
+    console.log('Container de aptidões:', checkboxContainerApt);
+    console.log('Container de exames:', checkboxContainerExames);
+    
+    // Verifica se há dados para renderizar
+    if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0) {
+      console.warn('Nenhum dado de aptidão disponível para renderizar');
+      if (checkboxContainerApt) {
+        checkboxContainerApt.innerHTML = '<div class="alert alert-info">Nenhuma aptidão disponível</div>';
+      }
+      return;
+    }
+    
     // Salva os itens selecionados atuais
     const aptSelecionadas = [...aptAptidoesSelecionadas];
     const examesSelecionados = [...aptExamesSelecionados];
@@ -7385,6 +7436,9 @@ function buscar_riscos() {
   setupEnterKeyHandler(inputCodigo);
   setupEnterKeyHandler(document.getElementById('apt-novoValor'));
   
+  // Renderiza os checkboxes iniciais
+  renderizarCheckboxes();
+  
   // Fecha o modal ao clicar fora
   if (modal) {
     modal.addEventListener('click', (e) => {
@@ -7397,6 +7451,36 @@ function buscar_riscos() {
   // Inicialização
   function init() {
     try {
+      console.log('Iniciando inicialização do componente de Aptidões e Exames...');
+      console.log('Dados iniciais de aptidões:', window.aptDadosAptidoes);
+      
+      // Verifica se o container de aptidões existe no DOM
+      const containerApt = document.getElementById('apt-checkbox-container');
+      console.log('Container de aptidões encontrado no DOM:', containerApt);
+      
+      if (!containerApt) {
+        console.error('Erro: Container de aptidões não encontrado no DOM');
+        return false;
+      }
+      
+      // Adiciona evento de clique na aba de aptidões para forçar o carregamento
+      const abaAptidoes = document.querySelector('a[href="#tab-aptidoes"]');
+      if (abaAptidoes) {
+        console.log('Adicionando evento de clique na aba de aptidões');
+        abaAptidoes.addEventListener('click', function() {
+          console.log('Aba de aptidões clicada, forçando carregamento...');
+          if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0) {
+            console.log('Nenhum dado de aptidão carregado, buscando do servidor...');
+            carregar_aptidoes_extras();
+          } else {
+            console.log('Dados de aptidão já carregados, renderizando...');
+            renderizarCheckboxes();
+          }
+        });
+      } else {
+        console.warn('Aba de aptidões não encontrada no DOM');
+      }
+      
       // Renderiza as listas iniciais
       renderizarCheckboxes();
       
