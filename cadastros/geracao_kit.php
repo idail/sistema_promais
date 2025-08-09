@@ -6317,9 +6317,7 @@ function buscar_riscos() {
               <div id="apt-listaExamesSelecionados" class="apt-lista-selecionadas" style="min-height: 60px; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; background-color: #f9f9f9;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                   <div style="font-size: 12px; color: #666;">Exames selecionados:</div>
-                  <div id="apt-total-exames" style="font-size: 14px; font-weight: 500; color: #1a73e8;">
-                    Total: R$ 0,00
-                  </div>
+                  
                 </div>
                 <div id="apt-selected-exames" style="display: flex; flex-wrap: wrap; gap: 5px;">
                   <!-- Itens de exame selecionados serão mostrados aqui -->
