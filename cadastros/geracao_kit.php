@@ -5322,6 +5322,7 @@ function buscar_riscos() {
     
     // Função auxiliar para adicionar item na lista
     function adicionarItemNaLista(listaId, texto, valor) {
+      debugger;
       const lista = document.getElementById(listaId);
       if (!lista) return;
       
@@ -7458,6 +7459,7 @@ function buscar_riscos() {
   
   // Função para adicionar um novo item (aptidão ou exame)
   function adicionarNovoItem() {
+    debugger;
     const codigo = inputCodigo ? inputCodigo.value.trim() : '';
     const nome = inputNome ? inputNome.value.trim() : '';
     
