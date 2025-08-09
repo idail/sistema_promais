@@ -7047,9 +7047,29 @@ function buscar_riscos() {
         }
       });
     }
+
+    function carregar_exames()
+    {
+      $.ajax({
+        url: "cadastros/processa_exames_procedimentos.php",
+        method: "GET",
+        dataType: "json",
+        data: {
+          "processo_exame_procedimento": "buscar_exames_procedimentos",
+        },
+        success: function(resposta_exame_procedimento) 
+        {
+          debugger;
+        },
+        error:function(xhr,status,error)
+        {
+        },
+      });
+    }
     
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
+      carregar_exames();
       console.log('Inicializando componente de Aptidões e Exames...');
       console.log('Dados de aptidões disponíveis (window.aptDadosAptidoes):', window.aptDadosAptidoes);
       
