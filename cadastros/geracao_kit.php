@@ -2138,6 +2138,7 @@
       if (step === 4 && typeof carregar_aptidoes_extras === 'function') {
         console.log('Aba de aptidões selecionada, carregando aptidões extras...');
         carregar_aptidoes_extras();
+        carregar_exames();
       }
       
       // Se for a aba de faturamento (etapa 5), atualiza os totais
@@ -6972,11 +6973,12 @@ function buscar_riscos() {
     // Define o array global para armazenar as aptidões
     window.aptDadosAptidoes = [];
     
-    // Carrega as aptidões extras quando o DOM estiver pronto
+    // Carrega as aptidões e exames quando o DOM estiver pronto
     document.addEventListener('DOMContentLoaded', function() {
       // Verifica se estamos na aba de aptidões e exames
       if (document.getElementById('apt-checkbox-container')) {
         carregar_aptidoes_extras();
+        carregar_exames();
       }
     });
     
@@ -7048,28 +7050,95 @@ function buscar_riscos() {
       });
     }
 
-    function carregar_exames()
-    {
+    function carregar_exames() {
+      console.log('Iniciando carregamento de exames...');
+      
+      // Mostra um indicador de carregamento se o container existir
+      const container = document.getElementById('apt-checkbox-container-exames');
+      if (container) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Carregando exames...</div>';
+      } else {
+        console.warn('Container de exames não encontrado no DOM');
+      }
+      
+      console.log('Fazendo requisição AJAX para buscar exames...');
+      
+      // // Dados de exemplo para fallback
+      // const examesFallback = [
+      //   { codigo: "0068", nome: "Acetilcolinesterase eritrocitária", recebe_apenas_nome: "Acetilcolinesterase eritrocitária" },
+      //   { codigo: "0109", nome: "Ácido hipúrico", recebe_apenas_nome: "Ácido hipúrico" },
+      //   { codigo: "0116", nome: "Ácido Metil Hipúrico", recebe_apenas_nome: "Ácido Metil Hipúrico" },
+      //   { codigo: "0130", nome: "Ácido Trans-Transmucônico", recebe_apenas_nome: "Ácido Trans-Transmucônico" },
+      //   { codigo: "9999", nome: "Outros procedimentos diagnósticos não descritos anteriormente", recebe_apenas_nome: "Outros procedimentos diagnósticos não descritos anteriormente" }
+      // ];
+      
+      // Tenta carregar os exames do servidor
       $.ajax({
-        url: "cadastros/processa_exames_procedimentos.php",
-        method: "GET",
-        dataType: "json",
+        url: 'cadastros/processa_exames_procedimentos.php',
+        type: 'GET',
+        dataType: 'json',
         data: {
-          "processo_exame_procedimento": "buscar_exames_procedimentos",
+          processo_exame_procedimento: 'buscar_exames_procedimentos'
         },
-        success: function(resposta_exame_procedimento) 
-        {
+        success: function(response) {
           debugger;
+          console.log('Resposta bruta do servidor (exames):', response);
+          
+          try {
+            // Verifica se a resposta é um array e tem itens
+            if (Array.isArray(response) && response.length > 0) {
+              // Mapeia os dados da resposta para o formato esperado
+              window.aptDadosExames = response.map(function(item) {
+                return {
+                  codigo: item.codigo ? String(item.codigo).trim() : '',
+                  nome: item.procedimento ? String(item.procedimento).trim() : '',
+                  // recebe_apenas_nome: item.nome ? String(item.nome).trim() : ''
+                };
+              });
+              
+              // Filtra itens sem nome (caso existam)
+              window.aptDadosExames = window.aptDadosExames.filter(item => item.nome);
+              
+              console.log('Exames carregados com sucesso:', window.aptDadosExames);
+              
+              // Se não encontrou exames válidos, usa o fallback
+              if (window.aptDadosExames.length === 0) {
+                console.warn('Nenhum exame válido encontrado, usando dados de exemplo');
+                window.aptDadosExames = examesFallback.map(item => ({ ...item }));
+              }
+            } else {
+              console.warn('Nenhum exame encontrado ou formato de resposta inválido');
+              window.aptDadosExames = examesFallback.map(item => ({ ...item }));
+            }
+          } catch (error) {
+            console.error('Erro ao processar os exames:', error);
+            window.aptDadosExames = examesFallback.map(item => ({ ...item }));
+          } finally {
+            // Inicializa o componente após carregar os exames
+            if (typeof initializeAptidoesExames === 'function') {
+              console.log('Chamando initializeAptidoesExames após carregar exames');
+              initializeAptidoesExames();
+            } else {
+              console.warn('Função initializeAptidoesExames não encontrada');
+            }
+          }
         },
-        error:function(xhr,status,error)
-        {
-        },
+        error: function(xhr, status, error) {
+          console.error('Erro ao carregar exames:', status, error);
+          // Em caso de erro, usa os dados de fallback
+          window.aptDadosExames = examesFallback.map(item => ({ ...item }));
+          
+          // Tenta inicializar mesmo com erro
+          if (typeof initializeAptidoesExames === 'function') {
+            initializeAptidoesExames();
+          }
+        }
       });
     }
     
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
-      carregar_exames();
+      // carregar_exames();
       console.log('Inicializando componente de Aptidões e Exames...');
       console.log('Dados de aptidões disponíveis (window.aptDadosAptidoes):', window.aptDadosAptidoes);
       
@@ -7090,14 +7159,14 @@ function buscar_riscos() {
         
       console.log('Aptidões que serão usadas:', aptDadosAptidoes);
 
-      const aptDadosExames = [
-        { codigo: "0068", nome: "Acetilcolinesterase eritrocitária" },
-        { codigo: "0109", nome: "Ácido hipúrico" },
-        { codigo: "0116", nome: "Ácido Metil Hipúrico" },
-        { codigo: "0120", nome: "Hemograma completo" },
-        { codigo: "0135", nome: "Audiometria" },
-        { codigo: "0141", nome: "Espirometria" }
-      ];
+      // const aptDadosExames = [
+      //   { codigo: "0068", nome: "Acetilcolinesterase eritrocitária" },
+      //   { codigo: "0109", nome: "Ácido hipúrico" },
+      //   { codigo: "0116", nome: "Ácido Metil Hipúrico" },
+      //   { codigo: "0120", nome: "Hemograma completo" },
+      //   { codigo: "0135", nome: "Audiometria" },
+      //   { codigo: "0141", nome: "Espirometria" }
+      // ];
 
       let aptExamesSelecionados = [];
       let aptAptidoesSelecionadas = [];
@@ -7491,9 +7560,10 @@ function buscar_riscos() {
         console.log('Adicionando evento de clique na aba de aptidões');
         abaAptidoes.addEventListener('click', function() {
           console.log('Aba de aptidões clicada, forçando carregamento...');
-          if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0) {
+          if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0 || !window.aptDadosExames || window.aptDadosExames.length === 0) {
             console.log('Nenhum dado de aptidão carregado, buscando do servidor...');
             carregar_aptidoes_extras();
+            carregar_exames();
           } else {
             console.log('Dados de aptidão já carregados, renderizando...');
             renderizarCheckboxes();
