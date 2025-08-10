@@ -7280,7 +7280,7 @@ function buscar_riscos() {
       
       // Função para atualizar a lista de itens selecionados
       function atualizarListaSelecionados(itens, container, tipo) {
-        debugger;
+        // debugger;
         container.innerHTML = '';
         
         if (itens.length === 0) {
@@ -7452,49 +7452,101 @@ function buscar_riscos() {
   
   // Função para fechar o modal
   function fecharModal() {
-    if (modal) {
-      modal.style.display = 'none';
-    }
+    if (!modal) return;
+    
+    // Esconde o modal primeiro
+    modal.style.display = 'none';
+    
+    // Limpa os campos após um pequeno atraso para evitar problemas de foco
+    setTimeout(() => {
+      if (inputCodigo) inputCodigo.value = '';
+      if (inputNome) inputNome.value = '';
+      const inputValor = document.getElementById('apt-novoValor');
+      if (inputValor) inputValor.value = '';
+      
+      // Remove o foco dos campos para evitar que o evento de tecla Enter dispare novamente
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
+    }, 100);
   }
   
   // Função para adicionar um novo item (aptidão ou exame)
   function adicionarNovoItem() {
     debugger;
+    // Se já estiver processando, não faz nada
+    if (window.adicionandoItem) return;
+    
+    // Verifica se o modal está visível
+    if (!modal || modal.style.display !== 'flex') {
+      return;
+    }
+    
+    // Obtém os valores dos campos
     const codigo = inputCodigo ? inputCodigo.value.trim() : '';
     const nome = inputNome ? inputNome.value.trim() : '';
     
-    if (!codigo || !nome) {
-      alert('Preencha todos os campos obrigatórios');
+    // Verifica campos obrigatórios
+    if (codigo === '' || nome === '') {
+      if (!window.camposObrigatoriosMostrado) {
+        alert('Preencha todos os campos obrigatórios');
+        window.camposObrigatoriosMostrado = true;
+        // Reseta a flag após um curto período para permitir nova mensagem
+        setTimeout(() => { window.camposObrigatoriosMostrado = false; }, 1000);
+      }
       return;
     }
     
-
+    // Marca que está processando
+    window.adicionandoItem = true;
     
-    // Verifica se o código já existe
-    const codigoExistente = [...aptDadosAptidoes, ...aptDadosExames]
-      .some(item => item.codigo === codigo);
-    
-    if (codigoExistente) {
-      alert('Já existe um item com este código');
-      return;
+    try {
+      
+      // Verifica se o código já existe no array apropriado
+      const arrayAlvo = modalTipoAtual === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
+      const codigoExistente = arrayAlvo.some(item => item.codigo === codigo);
+      
+      if (codigoExistente) {
+        if (!window.ultimoAlerta || (Date.now() - window.ultimoAlerta > 1000)) {
+          window.ultimoAlerta = Date.now();
+          alert('Já existe um item com este código');
+        }
+        return;
+      }
+      
+      // Cria o novo item
+      const novoItem = { 
+        codigo, 
+        nome,
+        recebe_apenas_nome: nome
+      };
+      
+      // Adiciona ao array apropriado
+      arrayAlvo.push(novoItem);
+      
+      // Fecha o modal antes de limpar os campos
+      fecharModal();
+      
+      // Atualiza a interface diretamente sem chamar renderizarCheckboxes()
+      const container = modalTipoAtual === 'aptidao' ? 
+        document.getElementById('apt-checkbox-container') : 
+        document.getElementById('apt-checkbox-container-exames');
+        
+      if (container) {
+        const checkbox = criarCheckbox(novoItem, modalTipoAtual);
+        container.appendChild(checkbox);
+      }
+      
+      // Limpa os campos após fechar o modal
+      if (inputCodigo) inputCodigo.value = '';
+      if (inputNome) inputNome.value = '';
+      
+    } catch (error) {
+      console.error('Erro ao adicionar item:', error);
+    } finally {
+      // Libera para a próxima execução
+      window.adicionandoItem = false;
     }
-    
-    // Cria o novo item
-    const novoItem = { 
-      codigo, 
-      nome
-    };
-    
-    if (modalTipoAtual === 'aptidao') {
-      aptDadosAptidoes.push(novoItem);
-    } else {
-      aptDadosExames.push(novoItem);
-    }
-    
-    fecharModal();
-    
-    // Atualiza a lista de checkboxes para garantir consistência
-    renderizarCheckboxes();
   }
   
   // Configura os eventos
@@ -7683,7 +7735,7 @@ function buscar_riscos() {
       
       // Função para atualizar as seleções
       function updateSelectedGroups() {
-        debugger;
+        // debugger;
         const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
         selectedGroups = Array.from(checkboxes)
           .filter(checkbox => checkbox.checked)
