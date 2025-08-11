@@ -2194,7 +2194,7 @@
     let ajaxEmExecucao = false; // evita chamadas duplicadas
 
     function verifica_selecao_exame() {
-      debugger;
+      // debugger;
       const examCards = document.querySelectorAll('.exam-card');
 
       examCards.forEach(card => {
@@ -5077,7 +5077,7 @@
 
     // Função para verificar se a aba de riscos está visível e inicializar componentes
     function checkAndInitializeRiscosTab() {
-      debugger;
+      // debugger;
       const riscosTab = document.querySelector('.tab[data-step="3"]');
       if (riscosTab && riscosTab.classList.contains('active')) {
         buscar_riscos();
@@ -7277,68 +7277,210 @@ function buscar_riscos() {
         
         return container;
       }
+
+      let aptidoes_selecionadas = [];
+      let json_aptidoes;
+      let exames_selecionados = [];
+      let json_exames;
       
       // Função para atualizar a lista de itens selecionados
-      function atualizarListaSelecionados(itens, container, tipo) {
-        // debugger;
+      async function atualizarListaSelecionados(itens, container, tipo) {
+        debugger;
         container.innerHTML = '';
-        
+            
         if (itens.length === 0) {
           container.innerHTML = '<div style="color: #6c757d; font-style: italic;">Nenhum item selecionado</div>';
+          // Se não há itens, limpa o array de aptidões selecionadas
+          if (tipo === "aptidao") {
+              aptidoes_selecionadas = [];
+              json_aptidoes = JSON.stringify(aptidoes_selecionadas);
+              // await gravar_aptidoes_selecionadas();
+          }
           return;
         }
         
-        itens.forEach(item => {
-          const badge = document.createElement('div');
-          badge.style.display = 'inline-flex';
-          badge.style.alignItems = 'center';
-          badge.style.backgroundColor = tipo === 'aptidao' ? '#e3f2fd' : '#e8f5e9';
-          badge.style.color = tipo === 'aptidao' ? '#0d47a1' : '#1b5e20';
-          badge.style.padding = '4px 10px';
-          badge.style.borderRadius = '12px';
-          badge.style.fontSize = '13px';
-          badge.style.marginRight = '6px';
-          badge.style.marginBottom = '4px';
-          
-          badge.innerHTML = `
-            <div style="display: flex; align-items: center;">
-              <span>${item.codigo} - ${item.recebe_apenas_nome}</span>
-              <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          `;
-          
-          // Adiciona evento para remover o item
-          badge.querySelector('.btn-remover').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const index = tipo === 'aptidao' 
-              ? aptAptidoesSelecionadas.findIndex(a => a.codigo === item.codigo)
-              : aptExamesSelecionados.findIndex(e => e.codigo === item.codigo);
+        // Atualiza o array de aptidões selecionadas se for do tipo aptidão
+        if (tipo === "aptidao") {
+            // Cria um novo array apenas com os itens atuais, sem duplicatas
+            aptidoes_selecionadas = itens.map(item => ({
+                codigo: item.codigo,
+                nome: item.recebe_apenas_nome
+            }));
             
-            if (index !== -1) {
-              if (tipo === 'aptidao') {
-                aptAptidoesSelecionadas.splice(index, 1);
-              } else {
-                aptExamesSelecionados.splice(index, 1);
-              }
-              
-              // Atualiza o checkbox correspondente
-              const checkbox = document.querySelector(`#${tipo}-${item.codigo}`);
-              if (checkbox) {
-                checkbox.checked = false;
-              }
-              
-              // Atualiza a lista de selecionados
-              atualizarListaSelecionados(
-                tipo === 'aptidao' ? aptAptidoesSelecionadas : aptExamesSelecionados,
-                container,
-                tipo
-              );
-            }
+            // Remove duplicatas baseado no código
+            aptidoes_selecionadas = [...new Map(aptidoes_selecionadas.map(item => 
+                [item.codigo, item])
+            ).values()];
+            
+            json_aptidoes = JSON.stringify(aptidoes_selecionadas);
+            console.log("Aptidões selecionadas:", aptidoes_selecionadas);
+            await gravar_aptidoes_selecionadas();
+        }else if(tipo === "exame"){
+            // Cria um novo array apenas com os itens atuais, sem duplicatas
+            exames_selecionados = itens.map(item => ({
+                codigo: item.codigo,
+                nome: item.recebe_apenas_nome
+            }));
+            
+            // Remove duplicatas baseado no código
+            exames_selecionados = [...new Map(exames_selecionados.map(item => 
+                [item.codigo, item])
+            ).values()];
+            
+            json_exames = JSON.stringify(exames_selecionados);
+            console.log("Exames selecionadas:", exames_selecionados);
+            await gravar_exames_selecionadas();
+        }
+
+        // Renderiza os itens na interface
+        itens.forEach(item => {
+            const badge = document.createElement('div');
+            badge.style.display = 'inline-flex';
+            badge.style.alignItems = 'center';
+            badge.style.backgroundColor = tipo === 'aptidao' ? '#e3f2fd' : '#e8f5e9';
+            badge.style.color = tipo === 'aptidao' ? '#0d47a1' : '#1b5e20';
+            badge.style.padding = '4px 10px';
+            badge.style.borderRadius = '12px';
+            badge.style.fontSize = '13px';
+            badge.style.marginRight = '6px';
+            badge.style.marginBottom = '4px';
+            
+            badge.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <span>${item.codigo} - ${item.recebe_apenas_nome}</span>
+                    <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Adiciona evento para remover o item
+            badge.querySelector('.btn-remover').addEventListener('click', async (e) => {
+                e.stopPropagation();
+                let index;
+                let arrayAlvo;
+                
+                if (tipo === 'aptidao') {
+                    index = aptAptidoesSelecionadas.findIndex(a => a.codigo === item.codigo);
+                    arrayAlvo = aptAptidoesSelecionadas;
+                } else {
+                    index = aptExamesSelecionados.findIndex(e => e.codigo === item.codigo);
+                    arrayAlvo = aptExamesSelecionados;
+                }
+                
+                if (index !== -1) {
+                    arrayAlvo.splice(index, 1);
+                    
+                    // Atualiza o checkbox correspondente
+                    const checkbox = document.querySelector(`#${tipo}-${item.codigo}`);
+                    if (checkbox) {
+                        checkbox.checked = false;
+                    }
+                    
+                    // Atualiza a lista de selecionados
+                    await atualizarListaSelecionados(arrayAlvo, container, tipo);
+                }
+            });
+            
+            container.appendChild(badge);
+        });
+      }
+
+      function gravar_aptidoes_selecionadas()
+      {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "incluir_valores_kit",
+              valor_aptidoes: json_aptidoes,
+            },
+            success: function (retorno_exame_geracao_kit) {
+              debugger;
+
+              const mensagemSucesso = `
+                <div id="aptidao-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <div>
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // Remove mensagem anterior se existir
+              $("#aptidao-gravado").remove();
+
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+
+              // Configura o fade out após 5 segundos
+              setTimeout(function () {
+                $("#aptidao-gravado").fadeOut(500, function () {
+                  $(this).remove();
+                });
+              }, 5000);
+
+              console.log(retorno_exame_geracao_kit);
+
+              resolve(retorno_exame_geracao_kit);
+            },
+            error: function (xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              reject(error);
+            },
           });
-          
-          container.appendChild(badge);
+        });
+      }
+
+      function gravar_exames_selecionadas()
+      {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "incluir_valores_kit",
+              valor_exames_selecionados: json_exames,
+            },
+            success: function (retorno_exame_geracao_kit) {
+              debugger;
+
+              const mensagemSucesso = `
+                <div id="exame-quarta-etapa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <div>
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // Remove mensagem anterior se existir
+              $("#exame-quarta-etapa-gravado").remove();
+
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+
+              // Configura o fade out após 5 segundos
+              setTimeout(function () {
+                $("#exame-quarta-etapa-gravado").fadeOut(500, function () {
+                  $(this).remove();
+                });
+              }, 5000);
+
+              console.log(retorno_exame_geracao_kit);
+
+              resolve(retorno_exame_geracao_kit);
+            },
+            error: function (xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              reject(error);
+            },
+          });
         });
       }
       
@@ -8041,7 +8183,7 @@ function buscar_riscos() {
                 <div id="riscos-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
                   <div style="display: flex; align-items: center; justify-content: center;">
                     <div>
-                      <div>Riscos gravados com sucesso.</div>
+                      <div>KIT atualizado com sucesso.</div>
                     </div>
                   </div>
                 </div>

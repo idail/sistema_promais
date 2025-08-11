@@ -54,7 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "periculosidade_selecionado",
             "aposentado_selecionado",
             "agente_nocivo_selecionado",
-            "agente_ocorrencia_selecionado"
+            "agente_ocorrencia_selecionado",
+            "aptidao_selecionado",
+            "exames_selecionado"
         ];
 
         foreach ($sess_to_clear as $sk) {
@@ -236,6 +238,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $valor_agente_nocivo_selecionado_bind = isset($_SESSION["agente_nocivo_selecionado"]) ? $_SESSION["agente_nocivo_selecionado"] : null;
         $valor_ocorrencia_selecionado_bind = isset($_SESSION["agente_ocorrencia_selecionado"]) ? $_SESSION["agente_ocorrencia_selecionado"] : null;
 
+        // APTIDOES
+        if (isset($_POST["valor_aptidoes"]) && $_POST["valor_aptidoes"] !== "") {
+            $recebe_aptidao_selecionado = $_POST["valor_aptidoes"];
+
+            if (!isset($_SESSION["aptidao_selecionado"]) || $_SESSION["aptidao_selecionado"] !== $recebe_aptidao_selecionado) {
+                $_SESSION["aptidao_selecionado"] = $recebe_aptidao_selecionado;
+            }
+        }
+        $valor_aptidao_selecionado_bind = isset($_SESSION["aptidao_selecionado"]) ? $_SESSION["aptidao_selecionado"] : null;
+
+        // EXAMES SELECIONADOS
+        if (isset($_POST["valor_exames_selecionados"]) && $_POST["valor_exames_selecionados"] !== "") {
+            $recebe_exames_selecionado = $_POST["valor_exames_selecionados"];
+
+            if (!isset($_SESSION["exames_selecionado"]) || $_SESSION["exames_selecionado"] !== $recebe_exames_selecionado) {
+                $_SESSION["exames_selecionado"] = $recebe_exames_selecionado;
+            }
+        }
+        $valor_exames_selecionado_bind = isset($_SESSION["exames_selecionado"]) ? $_SESSION["exames_selecionado"] : null;
+
         // Atualização
         $instrucao_atualizar_kit = "UPDATE kits SET 
         tipo_exame = :recebe_tipo_exame,
@@ -253,7 +275,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         periculosidade = :recebe_periculosidade_selecionado,
         aposentado_especial = :recebe_aposentado_especial_selecionado,
         agente_nocivo = :recebe_agente_nocivo_selecionado,
-        ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado
+        ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado,
+        aptidoes_selecionadas = :recebe_aptidao_selecionado,
+        exames_selecionados = :recebe_exames_selecionado
     WHERE id = :recebe_kit_id";
 
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -275,6 +299,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado",    $valor_aposentado_selecionado_bind,  $valor_aposentado_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado",    $valor_agente_nocivo_selecionado_bind,  $valor_agente_nocivo_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado",    $valor_ocorrencia_selecionado_bind,  $valor_ocorrencia_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado",    $valor_aptidao_selecionado_bind,  $valor_aptidao_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_exames_selecionado",    $valor_exames_selecionado_bind,  $valor_exames_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
         // Kit ID
         $comando_atualizar_kit->bindValue(":recebe_kit_id", $_SESSION["codigo_kit"], PDO::PARAM_INT);
