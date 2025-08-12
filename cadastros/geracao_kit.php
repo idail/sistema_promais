@@ -7136,22 +7136,26 @@ function buscar_riscos() {
         }
       });
     }
+
+    let aptExamesSelecionados = [];
+    let aptAptidoesSelecionadas = [];
     
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
+    debugger;
       // carregar_exames();
       console.log('Inicializando componente de Aptidões e Exames...');
       console.log('Dados de aptidões disponíveis (window.aptDadosAptidoes):', window.aptDadosAptidoes);
       
       // Dados de exemplo (mantidos como fallback)
-      const dadosExemploAptidoes = [
-        { codigo: "0000", nome: "Trabalho em altura" },
-        { codigo: "0001", nome: "Espaço confinado" },
-        { codigo: "0002", nome: "NR10 Básico" },
-        { codigo: "0003", nome: "NR12 Operação de Máquinas" },
-        { codigo: "0004", nome: "Brigada de Incêndio" },
-        { codigo: "0005", nome: "Direção defensiva" }
-      ];
+      // const dadosExemploAptidoes = [
+      //   { codigo: "0000", nome: "Trabalho em altura" },
+      //   { codigo: "0001", nome: "Espaço confinado" },
+      //   { codigo: "0002", nome: "NR10 Básico" },
+      //   { codigo: "0003", nome: "NR12 Operação de Máquinas" },
+      //   { codigo: "0004", nome: "Brigada de Incêndio" },
+      //   { codigo: "0005", nome: "Direção defensiva" }
+      // ];
       
       // Usa os dados do banco se disponíveis, senão usa os dados de exemplo
       const aptDadosAptidoes = window.aptDadosAptidoes && window.aptDadosAptidoes.length > 0 
@@ -7169,8 +7173,7 @@ function buscar_riscos() {
       //   { codigo: "0141", nome: "Espirometria" }
       // ];
 
-      let aptExamesSelecionados = [];
-      let aptAptidoesSelecionadas = [];
+      
       
       // Elementos do DOM
       console.log('Buscando elementos do DOM...');
@@ -7205,6 +7208,7 @@ function buscar_riscos() {
       
       // Função para criar um elemento de checkbox
       function criarCheckbox(item, tipo) {
+        // debugger;
         // Verifica se o checkbox já existe para evitar duplicação
         const existingCheckbox = document.getElementById(`${tipo}-${item.codigo}`);
         if (existingCheckbox) {
@@ -7286,6 +7290,13 @@ function buscar_riscos() {
       // Função para atualizar a lista de itens selecionados
       async function atualizarListaSelecionados(itens, container, tipo) {
         debugger;
+        
+        // Verifica se o container existe antes de tentar acessá-lo
+        if (!container) {
+          console.error('Erro: Container não encontrado para o tipo:', tipo);
+          return;
+        }
+        
         container.innerHTML = '';
             
         if (itens.length === 0) {
@@ -7615,43 +7626,52 @@ function buscar_riscos() {
 
   let recebe_nome_aptidao;
   let recebe_codigo_aptidao;
+  let emProcessamentoAptidao = false;
+  let novoItem;
+  let arrayAlvo;
   
   // Função para adicionar um novo item (aptidão ou exame)
   async function adicionarNovoItem() {
     debugger;
     // Se já estiver processando, não faz nada
-    if (window.adicionandoItem) return;
+    if (window.adicionandoItem || emProcessamentoAptidao) {
+      console.log('Já existe uma operação em andamento');
+      return;
+    }
     
     // Verifica se o modal está visível
+    const modal = document.getElementById('apt-modal');
     if (!modal || modal.style.display !== 'flex') {
+      console.log('Modal não está visível');
       return;
     }
-    
-    // Obtém os valores dos campos
-    const codigo = inputCodigo ? inputCodigo.value.trim() : '';
-    const nome = inputNome ? inputNome.value.trim() : '';
-    
-    // Verifica campos obrigatórios
-    if (codigo === '' || nome === '') {
-      if (!window.camposObrigatoriosMostrado) {
-        alert('Preencha todos os campos obrigatórios');
-        window.camposObrigatoriosMostrado = true;
-        // Reseta a flag após um curto período para permitir nova mensagem
-        setTimeout(() => { window.camposObrigatoriosMostrado = false; }, 1000);
-      }
-      return;
-    }
-    
-    // Marca que está processando
-    window.adicionandoItem = true;
-
-    recebe_nome_aptidao = nome;
-    recebe_codigo_aptidao = codigo;
     
     try {
+      // Obtém os valores dos campos
+      const inputCodigo = document.getElementById('apt-novoCodigo');
+      const inputNome = document.getElementById('apt-novoNome');
+      const codigo = inputCodigo ? inputCodigo.value.trim() : '';
+      const nome = inputNome ? inputNome.value.trim() : '';
+      
+      // Verifica campos obrigatórios
+      if (codigo === '' || nome === '') {
+        if (!window.camposObrigatoriosMostrado) {
+          alert('Preencha todos os campos obrigatórios');
+          window.camposObrigatoriosMostrado = true;
+          setTimeout(() => { window.camposObrigatoriosMostrado = false; }, 1000);
+        }
+        return;
+      }
+      
+      // Marca que está processando
+      window.adicionandoItem = true;
+      
+      // Define as variáveis globais
+      recebe_nome_aptidao = nome;
+      recebe_codigo_aptidao = codigo;
       
       // Verifica se o código já existe no array apropriado
-      const arrayAlvo = modalTipoAtual === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
+      arrayAlvo = modalTipoAtual === 'aptidao' ? window.aptDadosAptidoes : window.aptDadosExames;
       const codigoExistente = arrayAlvo.some(item => item.codigo === codigo);
       
       if (codigoExistente) {
@@ -7662,84 +7682,130 @@ function buscar_riscos() {
         return;
       }
 
-      await gravar_aptidao_extra();
-      
       // Cria o novo item
-      const novoItem = { 
+      novoItem = {
+        // id:'temp_' + Date.now(),
         codigo, 
         nome,
-        recebe_apenas_nome: nome
+        // recebe_apenas_nome: nome
       };
       
       // Adiciona ao array apropriado
       arrayAlvo.push(novoItem);
-      
-      // Fecha o modal antes de limpar os campos
-      fecharModal();
-      
-      // Atualiza a interface diretamente sem chamar renderizarCheckboxes()
-      const container = modalTipoAtual === 'aptidao' ? 
-        document.getElementById('apt-checkbox-container') : 
-        document.getElementById('apt-checkbox-container-exames');
-        
-      if (container) {
-        const checkbox = criarCheckbox(novoItem, modalTipoAtual);
-        container.appendChild(checkbox);
+
+      // Se for aptidão, chama a função de gravar
+      if (modalTipoAtual === 'aptidao') {
+        console.log('Chamando gravar_aptidao_extra para aptidão');
+        await gravar_aptidao_extra();
       }
       
-      // Limpa os campos após fechar o modal
+      // Fecha o modal
+      fecharModal();
+      
+      // Limpa os campos
       if (inputCodigo) inputCodigo.value = '';
       if (inputNome) inputNome.value = '';
       
     } catch (error) {
       console.error('Erro ao adicionar item:', error);
+      alert('Ocorreu um erro ao adicionar o item: ' + error.message);
     } finally {
       // Libera para a próxima execução
       window.adicionandoItem = false;
+      emProcessamentoAptidao = false;
     }
   }
 
-  function gravar_aptidao_extra()
-  {
-    return new Promise((resolve,reject)=> {
+  function gravar_aptidao_extra() {
+    return new Promise((resolve, reject) => {
+      // Verifica se já está processando
+      if (emProcessamentoAptidao) {
+        console.log('Já existe uma gravação de aptidão em andamento');
+        return;
+      }
+
+      emProcessamentoAptidao = true;
+      
+      console.log('Iniciando gravação de aptidão extra:', {
+        codigo: recebe_codigo_aptidao,
+        nome: recebe_nome_aptidao
+      });
+
       $.ajax({
-          url: "cadastros/processa_aptidao_extra.php",
-          type: "POST",
-          dataType: "json",
-          data: {
-             processo_aptidao_extra: "inserir_aptidao_extra",
-             valor_codigo_aptidao_extra: recebe_codigo_aptidao,
-             valor_nome_aptidao_extra: recebe_nome_aptidao,
-          },
-          success: function(retorno_aptidao_extra) {
-            debugger;
-             console.log(retorno_aptidao_extra);
-             const mensagemSucesso = `
-                        <div id="aptidao-extra-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                          <div style="display: flex; align-items: center; justify-content: center;">
-                            <div>
-                              <div>Aptidão extra cadastrada com sucesso.</div>
-                            </div>
-                          </div>
-                        </div>
-                      `;
+        url: "cadastros/processa_aptidao_extra.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_aptidao_extra: "inserir_aptidao_extra",
+          valor_codigo_aptidao_extra: recebe_codigo_aptidao,
+          valor_nome_aptidao_extra: recebe_nome_aptidao,
+        },
+        success: function(retorno_aptidao_extra) {
+          debugger;
+          console.log('Resposta do servidor:', retorno_aptidao_extra);
 
-                      // Remove mensagem anterior se existir
-                      $("#aptidao-extra-gravado").remove();
+          const mensagemSucesso = `
+            <div id="aptidao-extra-gravado" class="alert alert-success" 
+                 style="text-align: center; margin: 0 auto 20px; max-width: 600px; 
+                        display: block; background-color: #d4edda; color: #155724; 
+                        padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <div>
+                  <div>Aptidão extra cadastrada com sucesso.</div>
+                </div>
+              </div>
+            </div>`;
 
-                      // Adiciona a nova mensagem acima das abas
-                      $(".tabs-container").before(mensagemSucesso);
+          // Remove mensagem anterior se existir
+          $("#aptidao-extra-gravado").remove();
 
-                      // Configura o fade out após 5 segundos
-                      setTimeout(function () {
-                          $("#aptidao-extra-gravado").fadeOut(500, function () {
-                              $(this).remove();
-                          });
-                      }, 5000);
-          },
-          error: function(xhr, status, error) {
-             console.log("Falha ao inserir empresa:" + error);
-          },
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#aptidao-extra-gravado").fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+
+
+          // // Atualiza o ID temporário para o ID real retornado pelo servidor
+          // const aptidaoIndex = window.aptDadosAptidoes.findIndex(
+          //     ap => ap.id === novoItem.id
+          // );
+
+          // if (aptidaoIndex !== -1) {
+          //     window.aptDadosAptidoes[aptidaoIndex].id = retorno_aptidao_extra; // usa retorno do servidor
+          // }
+
+          // Atualiza a interface
+          const container = modalTipoAtual === 'aptidao' ? 
+          document.getElementById('apt-checkbox-container') : 
+          document.getElementById('apt-checkbox-container-exames');
+
+          
+          if (container && typeof criarCheckbox === 'function') {
+            const checkbox = criarCheckbox(novoItem, modalTipoAtual);
+            if (checkbox) {
+              container.appendChild(checkbox);
+            }
+          }
+          
+          resolve(retorno_aptidao_extra);
+        },
+        error: function(xhr, status, error) {
+          console.error("Erro ao inserir aptidão extra:", {
+            status: status,
+            error: error,
+            responseText: xhr.responseText
+          });
+          alert('Erro ao salvar a aptidão. Verifique o console para mais detalhes.');
+          reject(error);
+        },
+        complete: function() {
+          emProcessamentoAptidao = false;
+        }
       });
     });
   }
