@@ -5941,6 +5941,8 @@ function buscar_riscos() {
       // Supondo que você já tenha todos os inputs selecionados
       let cursosSelecionados = [];
       let json_cursos_selecionados;
+
+      let recebe_valores_treinamentos_selecionados = [];
       // Atualiza a lista de treinamentos selecionados
       async function atualizarSelecionados() {
         debugger;
@@ -5950,6 +5952,7 @@ function buscar_riscos() {
   
         // Evita duplicados
         const jaExiste = cursosSelecionados.some(curso => curso.codigo === input.value);
+        let jaExisteSomaTreinamento = recebe_valores_treinamentos_selecionados.some(treinamento => treinamento.codigo === input.value);
         
         if (!jaExiste) {
             cursosSelecionados.push({
@@ -5958,7 +5961,16 @@ function buscar_riscos() {
               valor: input.dataset.valor
             });
           }
+
+        if (!jaExisteSomaTreinamento) {
+            recebe_valores_treinamentos_selecionados.push({
+              codigo: input.value,
+              valor: input.dataset.valor
+            });
+          }
         });
+
+        console.log("Treinamentos com valor para somar:",recebe_valores_treinamentos_selecionados);
 
         // Converte para JSON para enviar via AJAX
         json_cursos_selecionados = JSON.stringify(cursosSelecionados);
@@ -5978,22 +5990,29 @@ function buscar_riscos() {
         }
         
         let html = '';
-        let total = 0;
+        let total = recebe_valores_treinamentos_selecionados
+        .reduce((soma, item) => soma + parseFloat(item.valor || 0), 0);;
         
         checkboxes.forEach(checkbox => {
           const codigo = checkbox.value;
           const nome = checkbox.getAttribute('data-nome');
-          const valor = parseFloat(checkbox.getAttribute('data-valor').replace('.', '').replace(',', '.'));
-          
-          if (!isNaN(valor)) {
-            total += valor;
-            
-            html += `
+          // const valor = parseFloat(checkbox.getAttribute('data-valor').replace('.', '').replace(',', '.'));
+
+          html += `
               <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
                 <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
                 <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
               </div>`;
-          }
+          
+          // if (!isNaN(valor)) {
+          //   // total += valor;
+            
+          //   html += `
+          //     <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+          //       <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
+          //       <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
+          //     </div>`;
+          // }
         });
         
         containerSelecionados.innerHTML = html;
