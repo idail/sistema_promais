@@ -7626,7 +7626,10 @@ function buscar_riscos() {
 
   let recebe_nome_aptidao;
   let recebe_codigo_aptidao;
+  let recebe_nome_exame;
+  let recebe_codigo_exame;
   let emProcessamentoAptidao = false;
+  let emProcessamentoExame = false;
   let novoItem;
   let arrayAlvo;
   
@@ -7634,7 +7637,7 @@ function buscar_riscos() {
   async function adicionarNovoItem() {
     debugger;
     // Se já estiver processando, não faz nada
-    if (window.adicionandoItem || emProcessamentoAptidao) {
+    if (window.adicionandoItem || emProcessamentoAptidao || emProcessamentoExame) {
       console.log('Já existe uma operação em andamento');
       return;
     }
@@ -7669,6 +7672,9 @@ function buscar_riscos() {
       // Define as variáveis globais
       recebe_nome_aptidao = nome;
       recebe_codigo_aptidao = codigo;
+
+      recebe_nome_exame = nome;
+      recebe_codigo_exame = codigo;
       
       // Verifica se o código já existe no array apropriado
       arrayAlvo = modalTipoAtual === 'aptidao' ? window.aptDadosAptidoes : window.aptDadosExames;
@@ -7697,6 +7703,10 @@ function buscar_riscos() {
       if (modalTipoAtual === 'aptidao') {
         console.log('Chamando gravar_aptidao_extra para aptidão');
         await gravar_aptidao_extra();
+      }else if(modalTipoAtual === "exame")
+      {
+        console.log('Chamando gravar_aptidao_extra para aptidão');
+        await gravar_exame();
       }
       
       // Fecha o modal
@@ -7713,6 +7723,7 @@ function buscar_riscos() {
       // Libera para a próxima execução
       window.adicionandoItem = false;
       emProcessamentoAptidao = false;
+      emProcessamentoExame = false;
     }
   }
 
@@ -7805,6 +7816,101 @@ function buscar_riscos() {
         },
         complete: function() {
           emProcessamentoAptidao = false;
+        }
+      });
+    });
+  }
+
+  function gravar_exame() {
+    return new Promise((resolve, reject) => {
+      // Verifica se já está processando
+      if (emProcessamentoExame) {
+        console.log('Já existe uma gravação de exame em andamento');
+        return;
+      }
+
+      emProcessamentoExame = true;
+      
+      console.log('Iniciando gravação de aptidão extra:', {
+        codigo: recebe_codigo_aptidao,
+        nome: recebe_nome_aptidao
+      });
+
+      $.ajax({
+        url: "cadastros/processa_exames_procedimentos.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_exame_procedimento: "inserir_exame_procedimento",
+          valor_codigo_exame_procedimento: recebe_codigo_exame,
+          valor_procedimento: recebe_nome_exame,
+          // valor_exame_procedimento: recebe_valor_procedimento
+        },
+        success: function(retorno_exame) {
+          debugger;
+          console.log('Resposta do servidor:', retorno_exame);
+
+          const mensagemSucesso = `
+            <div id="exame-procedimento-gravado" class="alert alert-success" 
+                 style="text-align: center; margin: 0 auto 20px; max-width: 600px; 
+                        display: block; background-color: #d4edda; color: #155724; 
+                        padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <div>
+                  <div>Exame cadastrado com sucesso.</div>
+                </div>
+              </div>
+            </div>`;
+
+          // Remove mensagem anterior se existir
+          $("#exame-procedimento-gravado").remove();
+
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#exame-procedimento-gravado").fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+
+
+          // // Atualiza o ID temporário para o ID real retornado pelo servidor
+          // const aptidaoIndex = window.aptDadosAptidoes.findIndex(
+          //     ap => ap.id === novoItem.id
+          // );
+
+          // if (aptidaoIndex !== -1) {
+          //     window.aptDadosAptidoes[aptidaoIndex].id = retorno_aptidao_extra; // usa retorno do servidor
+          // }
+
+          // Atualiza a interface
+          const container = modalTipoAtual === 'aptidao' ? 
+          document.getElementById('apt-checkbox-container') : 
+          document.getElementById('apt-checkbox-container-exames');
+
+          
+          if (container && typeof criarCheckbox === 'function') {
+            const checkbox = criarCheckbox(novoItem, modalTipoAtual);
+            if (checkbox) {
+              container.appendChild(checkbox);
+            }
+          }
+          
+          resolve(retorno_exame);
+        },
+        error: function(xhr, status, error) {
+          console.error("Erro ao inserir aptidão extra:", {
+            status: status,
+            error: error,
+            responseText: xhr.responseText
+          });
+          alert('Erro ao salvar a aptidão. Verifique o console para mais detalhes.');
+          reject(error);
+        },
+        complete: function() {
+          emProcessamentoExame = false;
         }
       });
     });

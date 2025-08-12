@@ -29,8 +29,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     if($recebe_processo_exame_procedimento === "inserir_exame_procedimento")
     {
         $recebe_codigo_exame_procedimento = $_POST["valor_codigo_exame_procedimento"];
-        $recebe_procedimento = $_POST["valor_procedimento"];
-        $recebe_valor_exame_procedimento = $_POST["valor_exame_procedimento"];
+        $recebe_procedimento = !empty($_POST["valor_procedimento"]) ? $_POST["valor_procedimento"] : null;
+        $recebe_valor_exame_procedimento = !empty($_POST["valor_exame_procedimento"]) ? $_POST["valor_exame_procedimento"] : null;
         $recebe_empresa_id = $_SESSION["empresa_id"];
 
         $instrucao_cadastra_exame_procedimento = 
