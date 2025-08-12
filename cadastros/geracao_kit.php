@@ -7612,9 +7612,12 @@ function buscar_riscos() {
       }
     }, 100);
   }
+
+  let recebe_nome_aptidao;
+  let recebe_codigo_aptidao;
   
   // Função para adicionar um novo item (aptidão ou exame)
-  function adicionarNovoItem() {
+  async function adicionarNovoItem() {
     debugger;
     // Se já estiver processando, não faz nada
     if (window.adicionandoItem) return;
@@ -7641,6 +7644,9 @@ function buscar_riscos() {
     
     // Marca que está processando
     window.adicionandoItem = true;
+
+    recebe_nome_aptidao = nome;
+    recebe_codigo_aptidao = codigo;
     
     try {
       
@@ -7655,6 +7661,8 @@ function buscar_riscos() {
         }
         return;
       }
+
+      await gravar_aptidao_extra();
       
       // Cria o novo item
       const novoItem = { 
@@ -7689,6 +7697,51 @@ function buscar_riscos() {
       // Libera para a próxima execução
       window.adicionandoItem = false;
     }
+  }
+
+  function gravar_aptidao_extra()
+  {
+    return new Promise((resolve,reject)=> {
+      $.ajax({
+          url: "cadastros/processa_aptidao_extra.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+             processo_aptidao_extra: "inserir_aptidao_extra",
+             valor_codigo_aptidao_extra: recebe_codigo_aptidao,
+             valor_nome_aptidao_extra: recebe_nome_aptidao,
+          },
+          success: function(retorno_aptidao_extra) {
+            debugger;
+             console.log(retorno_aptidao_extra);
+             const mensagemSucesso = `
+                        <div id="aptidao-extra-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                          <div style="display: flex; align-items: center; justify-content: center;">
+                            <div>
+                              <div>Aptidão extra cadastrada com sucesso.</div>
+                            </div>
+                          </div>
+                        </div>
+                      `;
+
+                      // Remove mensagem anterior se existir
+                      $("#aptidao-extra-gravado").remove();
+
+                      // Adiciona a nova mensagem acima das abas
+                      $(".tabs-container").before(mensagemSucesso);
+
+                      // Configura o fade out após 5 segundos
+                      setTimeout(function () {
+                          $("#aptidao-extra-gravado").fadeOut(500, function () {
+                              $(this).remove();
+                          });
+                      }, 5000);
+          },
+          error: function(xhr, status, error) {
+             console.log("Falha ao inserir empresa:" + error);
+          },
+      });
+    });
   }
   
   // Configura os eventos
