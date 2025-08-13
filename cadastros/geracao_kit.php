@@ -7324,10 +7324,13 @@ console.log(total); // Exemplo: "180.10"
       let emAtualizacaoProgramatica = false;
       // Flag para impedir reentrância durante processamento de seleção
       let emProcessamentoSelecao = false;
+      // Flags de sujidade: indicam que houve mudança real do usuário e precisamos persistir
+      let precisaSalvarAptidoes = false;
+      let precisaSalvarExames = false;
 
       
       // Função para atualizar a lista de itens selecionados
-      async function atualizarListaSelecionados(itens, container, tipo) {
+      async function atualizarListaSelecionados(itens, container, tipo, devePersistir = false) {
         debugger;
         
         // Verifica se o container existe antes de tentar acessá-lo
@@ -7344,7 +7347,18 @@ console.log(total); // Exemplo: "180.10"
           if (tipo === "aptidao") {
               aptidoes_selecionadas = [];
               json_aptidoes = JSON.stringify(aptidoes_selecionadas);
-              // await gravar_aptidoes_selecionadas();
+              // Persistência somente quando for mudança do usuário
+              if (devePersistir && precisaSalvarAptidoes) {
+                await gravar_aptidoes_selecionadas();
+                precisaSalvarAptidoes = false;
+              }
+          } else if (tipo === "exame") {
+              exames_selecionados = [];
+              json_exames = JSON.stringify(exames_selecionados);
+              if (devePersistir && precisaSalvarExames) {
+                await gravar_exames_selecionadas();
+                precisaSalvarExames = false;
+              }
           }
           return;
         }
@@ -7364,7 +7378,10 @@ console.log(total); // Exemplo: "180.10"
             
             json_aptidoes = JSON.stringify(aptidoes_selecionadas);
             console.log("Aptidões selecionadas:", aptidoes_selecionadas);
-            await gravar_aptidoes_selecionadas();
+            if (devePersistir && precisaSalvarAptidoes) {
+              await gravar_aptidoes_selecionadas();
+              precisaSalvarAptidoes = false;
+            }
         }else if(tipo === "exame"){
             // Cria um novo array apenas com os itens atuais, sem duplicatas
             exames_selecionados = itens.map(item => ({
@@ -7379,7 +7396,10 @@ console.log(total); // Exemplo: "180.10"
             
             json_exames = JSON.stringify(exames_selecionados);
             console.log("Exames selecionadas:", exames_selecionados);
-            await gravar_exames_selecionadas();
+            if (devePersistir && precisaSalvarExames) {
+              await gravar_exames_selecionadas();
+              precisaSalvarExames = false;
+            }
         }
 
         // Renderiza os itens na interface
@@ -7429,8 +7449,13 @@ console.log(total); // Exemplo: "180.10"
                         emAtualizacaoProgramatica = false;
                     }
                     
-                    // Atualiza a lista de selecionados
-                    await atualizarListaSelecionados(arrayAlvo, container, tipo);
+                    // Atualiza a lista de selecionados (mudança do usuário) e persiste
+                    if (tipo === 'aptidao') {
+                      precisaSalvarAptidoes = true;
+                    } else {
+                      precisaSalvarExames = true;
+                    }
+                    await atualizarListaSelecionados(arrayAlvo, container, tipo, true);
                 }
             });
             
@@ -7614,8 +7639,14 @@ console.log(total); // Exemplo: "180.10"
           window.fatTotalExames = total;
         
         try {
-          // Atualiza a exibição
-          await atualizarListaSelecionados(arraySelecionado, container, tipo);
+          // Marca como sujo para persistir (esta é uma ação do usuário)
+          if (tipo === 'aptidao') {
+            precisaSalvarAptidoes = true;
+          } else {
+            precisaSalvarExames = true;
+          }
+          // Atualiza a exibição e persiste por ser interação do usuário
+          await atualizarListaSelecionados(arraySelecionado, container, tipo, true);
         } finally {
           // Garante que o checkbox mantenha o estado que o usuário escolheu no início desta interação
           if (checkbox.checked !== estadoInicialMarcado) {
