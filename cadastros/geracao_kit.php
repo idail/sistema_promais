@@ -7276,13 +7276,14 @@ console.log(total); // Exemplo: "180.10"
         
         // Adiciona evento de clique no container inteiro
         const handleContainerClick = (e) => {
-          if (e.target.tagName !== 'INPUT') {
-            const checkbox = container.querySelector('input[type="checkbox"]');
-            if (checkbox) {
-              checkbox.checked = !checkbox.checked;
-              const event = new Event('change');
-              checkbox.dispatchEvent(event);
-            }
+          // Evita duplo toggle quando o clique é no LABEL (o LABEL já alterna o checkbox por padrão)
+          if (e.target.tagName === 'INPUT') return;
+          if (e.target.tagName === 'LABEL' || (e.target.closest && e.target.closest('label'))) return;
+          const checkbox = container.querySelector('input[type="checkbox"]');
+          if (checkbox) {
+            checkbox.checked = !checkbox.checked;
+            const event = new Event('change');
+            checkbox.dispatchEvent(event);
           }
         };
         
@@ -7291,7 +7292,11 @@ console.log(total); // Exemplo: "180.10"
         // Adiciona evento de mudança no checkbox
         const checkbox = container.querySelector('input[type="checkbox"]');
         if (checkbox) {
+          // Evita propagação do clique do input para o container (previne toggle duplo)
+          checkbox.addEventListener('click', (e) => { e.stopPropagation(); });
           const handleCheckboxChange = () => {
+            // Ignora eventos disparados por atualizações programáticas
+            if (emAtualizacaoProgramatica) return;
             atualizarSelecionados(checkbox, tipo);
           };
           
@@ -7315,6 +7320,11 @@ console.log(total); // Exemplo: "180.10"
       let json_aptidoes;
       let exames_selecionados = [];
       let json_exames;
+      // Flag global para distinguir mudanças do usuário x programáticas
+      let emAtualizacaoProgramatica = false;
+      // Flag para impedir reentrância durante processamento de seleção
+      let emProcessamentoSelecao = false;
+
       
       // Função para atualizar a lista de itens selecionados
       async function atualizarListaSelecionados(itens, container, tipo) {
@@ -7411,10 +7421,12 @@ console.log(total); // Exemplo: "180.10"
                 if (index !== -1) {
                     arrayAlvo.splice(index, 1);
                     
-                    // Atualiza o checkbox correspondente
+                    // Atualiza o checkbox correspondente (sem disparar o evento do usuário)
                     const checkbox = document.querySelector(`#${tipo}-${item.codigo}`);
                     if (checkbox) {
+                        emAtualizacaoProgramatica = true;
                         checkbox.checked = false;
+                        emAtualizacaoProgramatica = false;
                     }
                     
                     // Atualiza a lista de selecionados
@@ -7526,10 +7538,14 @@ console.log(total); // Exemplo: "180.10"
       
       let recebe_valores_exames_selecionados = [];
 
-      let bloqueioRenderizacaoSelecao;
+      let bloqueioRenderizacaoSelecao = false;
       // Função para atualizar os itens selecionados
-      function atualizarSelecionados(checkbox, tipo) {
+      async function atualizarSelecionados(checkbox, tipo) {
         debugger;
+        // Se mudança foi gerada programaticamente ou já estamos processando, ignorar
+        if (emAtualizacaoProgramatica || emProcessamentoSelecao) return;
+        // Congela o estado inicial do checkbox no momento do clique do usuário
+        const estadoInicialMarcado = !!checkbox.checked;
         const codigo = checkbox.value;
         const nome = checkbox.nextElementSibling.textContent.trim();
         const valor = checkbox.getAttribute('data-valor') || checkbox.value; // captura o valor do checkbox (data-valor, se existir, senão value)
@@ -7551,21 +7567,22 @@ console.log(total); // Exemplo: "180.10"
         const arraySelecionado = tipo === 'aptidao' ? aptAptidoesSelecionadas : aptExamesSelecionados;
         const container = tipo === 'aptidao' ? selectedAptidoesContainer : selectedExamesContainer;
         
-        // Evita que renderizações externas limpem os arrays enquanto estamos processando a seleção
+        // Evita re-renderizações externas e reentrância
         bloqueioRenderizacaoSelecao = true;
+        emProcessamentoSelecao = true;
 
-        if (checkbox.checked) {
+        if (estadoInicialMarcado) {
           // Adiciona se não existir
           const existe = arraySelecionado.some(a => a.codigo === codigo);
-          let existeSomaExame = recebe_valores_exames_selecionados.some(exame => exame.codigo === codigo);
+          const existeSomaExame = recebe_valores_exames_selecionados.some(exame => exame.codigo === codigo);
           if (!existe) {
             arraySelecionado.push(item);
           }
 
-          if(!existeSomaExame){
+          if (!existeSomaExame) {
             recebe_valores_exames_selecionados.push({
-              codigo:codigo,
-              valor:valor
+              codigo: codigo,
+              valor: valor
             });
           }
         } else {
@@ -7575,30 +7592,41 @@ console.log(total); // Exemplo: "180.10"
             arraySelecionado.splice(index, 1);
           }
 
-          let indice = recebe_valores_exames_selecionados.findIndex(a => a.codigo === codigo);
-          if (index !== -1) {
-            recebe_valores_exames_selecionados.splice(index, 1);
+          const indiceValor = recebe_valores_exames_selecionados.findIndex(a => a.codigo === codigo);
+          if (indiceValor !== -1) {
+            recebe_valores_exames_selecionados.splice(indiceValor, 1);
           }
         }
 
         console.log("Exames com valor para somar:",recebe_valores_exames_selecionados);
 
-        if(recebe_valores_exames_selecionados.length > 0)
-        {
-          let total = recebe_valores_exames_selecionados
+        // if(recebe_valores_exames_selecionados.length > 0)
+        // {
+          
+        // }
+
+        let total = recebe_valores_exames_selecionados
           .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0);
 
           console.log(total); // Exemplo: 18.25
 
        
           window.fatTotalExames = total;
-        }
         
-        // Atualiza a exibição
-        atualizarListaSelecionados(arraySelecionado, container, tipo);
-
-        // Libera a re-renderização após concluir a atualização visual atual
-        setTimeout(() => { bloqueioRenderizacaoSelecao = false; }, 0);
+        try {
+          // Atualiza a exibição
+          await atualizarListaSelecionados(arraySelecionado, container, tipo);
+        } finally {
+          // Garante que o checkbox mantenha o estado que o usuário escolheu no início desta interação
+          if (checkbox.checked !== estadoInicialMarcado) {
+            emAtualizacaoProgramatica = true;
+            checkbox.checked = estadoInicialMarcado;
+            emAtualizacaoProgramatica = false;
+          }
+          // Libera os bloqueios após concluir a atualização visual atual
+          bloqueioRenderizacaoSelecao = false;
+          emProcessamentoSelecao = false;
+        }
       }
   
   // Função para renderizar as listas de checkboxes
@@ -7639,7 +7667,12 @@ console.log(total); // Exemplo: "180.10"
         // Marca como selecionado se estava na lista de selecionados
         if (aptSelecionadas.some(a => a.codigo === item.codigo)) {
           const input = checkbox.querySelector('input[type="checkbox"]');
-          if (input) input.checked = true;
+          if (input) {
+            // Marcação programática não deve disparar o handler
+            emAtualizacaoProgramatica = true;
+            input.checked = true;
+            emAtualizacaoProgramatica = false;
+          }
         }
         checkboxContainerApt.appendChild(checkbox);
       });
@@ -7652,7 +7685,11 @@ console.log(total); // Exemplo: "180.10"
         // Marca como selecionado se estava na lista de selecionados
         if (examesSelecionados.some(e => e.codigo === item.codigo)) {
           const input = checkbox.querySelector('input[type="checkbox"]');
-          if (input) input.checked = true;
+          if (input) {
+            emAtualizacaoProgramatica = true;
+            input.checked = true;
+            emAtualizacaoProgramatica = false;
+          }
         }
         checkboxContainerExames.appendChild(checkbox);
       });
