@@ -5737,6 +5737,7 @@ function buscar_riscos() {
           "processo_treinamento_capacitacao": "busca_treinamento_capacitacao"
         },
         success: function(resposta) {
+          // debugger;
           if (resposta && resposta.length > 0) {
             resultado = resposta;
           } else {
@@ -5755,6 +5756,7 @@ function buscar_riscos() {
     
     // Função para gerenciar os treinamentos
     function gerenciarTreinamentos() {
+      debugger;
       // Array que irá armazenar os treinamentos
       const treinamentos = [];
       
@@ -5768,10 +5770,11 @@ function buscar_riscos() {
         if (response && Array.isArray(response) && response.length > 0) {
           // Formata os dados para o formato esperado pelo sistema
           response.forEach(function(treinamento) {
+            debugger;
             treinamentos.push({
               codigo: treinamento.codigo_treinamento_capacitacao,
               nome: treinamento.nome,
-              valor: parseFloat(treinamento.valor).toFixed(2).replace('.', ',')
+              valor: treinamento.valor
             });
           });
         } else {
@@ -5963,6 +5966,7 @@ function buscar_riscos() {
           }
 
         if (!jaExisteSomaTreinamento) {
+            debugger;
             recebe_valores_treinamentos_selecionados.push({
               codigo: input.value,
               valor: input.dataset.valor
@@ -5991,7 +5995,11 @@ function buscar_riscos() {
         
         let html = '';
         let total = recebe_valores_treinamentos_selecionados
-        .reduce((soma, item) => soma + parseFloat(item.valor || 0), 0);;
+    .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0)
+    .toFixed(2);
+
+console.log(total); // Exemplo: "180.10"
+
         
         checkboxes.forEach(checkbox => {
           const codigo = checkbox.value;
@@ -7109,9 +7117,11 @@ function buscar_riscos() {
             if (Array.isArray(response) && response.length > 0) {
               // Mapeia os dados da resposta para o formato esperado
               window.aptDadosExames = response.map(function(item) {
+                debugger;
                 return {
                   codigo: item.codigo ? String(item.codigo).trim() : '',
                   nome: item.procedimento ? String(item.procedimento).trim() : '',
+                  valor:item.valor,
                   // recebe_apenas_nome: item.nome ? String(item.nome).trim() : ''
                 };
               });
@@ -7245,7 +7255,7 @@ function buscar_riscos() {
         container.style.gap = '10px';
         
         container.innerHTML = `
-          <input type="checkbox" id="${tipo}-${item.codigo}" value="${item.codigo}" 
+          <input type="checkbox" id="${tipo}-${item.codigo}" value="${item.codigo}" data-valor="${(item && item.valor) !== undefined ? item.valor : ''}" 
                  style="width: 18px; height: 18px; cursor: pointer;">
           <label for="${tipo}-${item.codigo}" style="cursor: pointer; flex: 1;">
             <div style="font-weight: 500;">${item.codigo} - ${item.nome}</div>
@@ -7514,11 +7524,13 @@ function buscar_riscos() {
         });
       }
       
+      let recebe_valores_exames_selecionados = [];
       // Função para atualizar os itens selecionados
       function atualizarSelecionados(checkbox, tipo) {
         debugger;
         const codigo = checkbox.value;
         const nome = checkbox.nextElementSibling.textContent.trim();
+        const valor = checkbox.getAttribute('data-valor') || checkbox.value; // captura o valor do checkbox (data-valor, se existir, senão value)
 
         let recebe_apenas_nome = nome.split('-')[1].trim(); // pega a parte depois do '-' e tira espaços extras
         
@@ -7529,7 +7541,8 @@ function buscar_riscos() {
         // Cria o item sem o valor
         const item = { 
           codigo, 
-          recebe_apenas_nome
+          recebe_apenas_nome,
+          // valor
         };
         
         // Determina qual array e container usar com base no tipo
@@ -7539,8 +7552,16 @@ function buscar_riscos() {
         if (checkbox.checked) {
           // Adiciona se não existir
           const existe = arraySelecionado.some(a => a.codigo === codigo);
+          let existeSomaExame = recebe_valores_exames_selecionados.some(exame => exame.codigo === codigo);
           if (!existe) {
             arraySelecionado.push(item);
+          }
+
+          if(!existeSomaExame){
+            recebe_valores_exames_selecionados.push({
+              codigo:codigo,
+              valor:valor
+            });
           }
         } else {
           // Remove se existir
@@ -7549,6 +7570,16 @@ function buscar_riscos() {
             arraySelecionado.splice(index, 1);
           }
         }
+
+        console.log("Exames com valor para somar:",recebe_valores_exames_selecionados);
+
+        let total = recebe_valores_exames_selecionados
+        .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0);
+
+        console.log(total); // Exemplo: 18.25
+
+
+        window.fatTotalExames = total;
         
         // Atualiza a exibição
         atualizarListaSelecionados(arraySelecionado, container, tipo);
@@ -8855,6 +8886,7 @@ function buscar_riscos() {
   
     // Função para atualizar totais
     function fatAtualizarTotais() {
+      debugger;
       try {
         console.log('=== Iniciando fatAtualizarTotais ===');
         
