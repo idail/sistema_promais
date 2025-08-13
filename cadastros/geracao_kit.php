@@ -7525,6 +7525,8 @@ console.log(total); // Exemplo: "180.10"
       }
       
       let recebe_valores_exames_selecionados = [];
+
+      let bloqueioRenderizacaoSelecao;
       // Função para atualizar os itens selecionados
       function atualizarSelecionados(checkbox, tipo) {
         debugger;
@@ -7549,6 +7551,9 @@ console.log(total); // Exemplo: "180.10"
         const arraySelecionado = tipo === 'aptidao' ? aptAptidoesSelecionadas : aptExamesSelecionados;
         const container = tipo === 'aptidao' ? selectedAptidoesContainer : selectedExamesContainer;
         
+        // Evita que renderizações externas limpem os arrays enquanto estamos processando a seleção
+        bloqueioRenderizacaoSelecao = true;
+
         if (checkbox.checked) {
           // Adiciona se não existir
           const existe = arraySelecionado.some(a => a.codigo === codigo);
@@ -7565,24 +7570,35 @@ console.log(total); // Exemplo: "180.10"
           }
         } else {
           // Remove se existir
-          // const index = arraySelecionado.findIndex(a => a.codigo === codigo);
-          // if (index !== -1) {
-          //   arraySelecionado.splice(index, 1);
-          // }
+          const index = arraySelecionado.findIndex(a => a.codigo === codigo);
+          if (index !== -1) {
+            arraySelecionado.splice(index, 1);
+          }
+
+          let indice = recebe_valores_exames_selecionados.findIndex(a => a.codigo === codigo);
+          if (index !== -1) {
+            recebe_valores_exames_selecionados.splice(index, 1);
+          }
         }
 
         console.log("Exames com valor para somar:",recebe_valores_exames_selecionados);
 
-        let total = recebe_valores_exames_selecionados
-        .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0);
+        if(recebe_valores_exames_selecionados.length > 0)
+        {
+          let total = recebe_valores_exames_selecionados
+          .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0);
 
-        console.log(total); // Exemplo: 18.25
+          console.log(total); // Exemplo: 18.25
 
-
-        window.fatTotalExames = total;
+       
+          window.fatTotalExames = total;
+        }
         
         // Atualiza a exibição
         atualizarListaSelecionados(arraySelecionado, container, tipo);
+
+        // Libera a re-renderização após concluir a atualização visual atual
+        setTimeout(() => { bloqueioRenderizacaoSelecao = false; }, 0);
       }
   
   // Função para renderizar as listas de checkboxes
@@ -7594,6 +7610,14 @@ console.log(total); // Exemplo: "180.10"
     console.log('Container de aptidões:', checkboxContainerApt);
     console.log('Container de exames:', checkboxContainerExames);
     
+    // Se estivermos no meio de uma seleção (primeira seleção, por exemplo),
+    // não re-renderizar os checkboxes para não limpar os arrays/estado visual.
+    if (bloqueioRenderizacaoSelecao) {
+      atualizarListaSelecionados(aptAptidoesSelecionadas, selectedAptidoesContainer, 'aptidao');
+      atualizarListaSelecionados(aptExamesSelecionados, selectedExamesContainer, 'exame');
+      return;
+    }
+
     // Verifica se há dados para renderizar
     if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0) {
       console.warn('Nenhum dado de aptidão disponível para renderizar');
