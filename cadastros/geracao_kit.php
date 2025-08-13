@@ -5075,44 +5075,57 @@
         });
     }
 
+    // Inicialização idempotente de Treinamentos (reutilizável)
+    // Parâmetro force: quando true, recarrega sempre ao ativar a aba de Riscos
+    function initTreinamentosIdempotente(force = false) {
+      if (typeof window.inicializandoTreinamentos === 'undefined') window.inicializandoTreinamentos = false;
+      const containerTreinamentos = document.getElementById('secao-treinamentos');
+      const precisaReinicializarTreinamentos = (
+        force ||
+        !window.treinamentosInicializados ||
+        !containerTreinamentos ||
+        (containerTreinamentos && containerTreinamentos.children.length === 0)
+      );
+
+      if (precisaReinicializarTreinamentos && !window.inicializandoTreinamentos) {
+        window.inicializandoTreinamentos = true;
+        // quando forçado, zera flag para garantir reinit
+        if (force) {
+          window.treinamentosInicializados = false;
+        }
+        buscar_treinamentos();
+        const initTreinamentos = () => {
+          const container = document.getElementById('secao-treinamentos');
+          if (!container) {
+            setTimeout(initTreinamentos, 100);
+            return;
+          }
+          try {
+            const treinamentos = gerenciarTreinamentos();
+            if (treinamentos && typeof treinamentos.init === 'function') {
+              treinamentos.init();
+              window.treinamentosInicializados = true;
+            }
+            window.inicializandoTreinamentos = false;
+          } catch (error) {
+            setTimeout(initTreinamentos, 200);
+          }
+        };
+        setTimeout(initTreinamentos, 200);
+      }
+    }
+
     // Função para verificar se a aba de riscos está visível e inicializar componentes
     function checkAndInitializeRiscosTab() {
       // debugger;
       const riscosTab = document.querySelector('.tab[data-step="3"]');
       if (riscosTab && riscosTab.classList.contains('active')) {
+        // Sempre buscar riscos quando a aba fica ativa (idempotente)
         buscar_riscos();
         // Pequeno atraso para garantir que o conteúdo foi renderizado
         setTimeout(initializeLaudoDropdowns, 100);
-        
-        // Inicializa os treinamentos se ainda não foram inicializados
-        if (!window.treinamentosInicializados) {
-          buscar_treinamentos();
-          const initTreinamentos = () => {
-            // Verifica se o container de treinamentos está no DOM
-            const containerTreinamentos = document.getElementById('secao-treinamentos');
-            if (!containerTreinamentos) {
-              console.log('Aguardando container de treinamentos ser carregado...');
-              setTimeout(initTreinamentos, 100);
-              return;
-            }
-            
-            try {
-              const treinamentos = gerenciarTreinamentos();
-              if (treinamentos && typeof treinamentos.init === 'function') {
-                treinamentos.init();
-                window.treinamentosInicializados = true;
-                console.log('Treinamentos inicializados com sucesso');
-              }
-            } catch (error) {
-              console.error('Erro ao inicializar treinamentos:', error);
-              // Tenta novamente após um atraso em caso de erro
-              setTimeout(initTreinamentos, 200);
-            }
-          };
-          
-          // Inicia o processo de inicialização
-          setTimeout(initTreinamentos, 200);
-        }
+        // Inicializa Treinamentos forçando recarregar ao retornar para a aba
+        initTreinamentosIdempotente(true);
       }
     }
 
@@ -5193,13 +5206,40 @@ function buscar_riscos() {
       container.html('<div class="error" style="color: red;">Erro ao carregar os grupos de risco. Tente novamente.</div>');
     }
   });
-  }
+}
 
-
-  // Chama a função quando a aba de riscos for aberta
+  // Ao clicar na aba de Riscos, carrega Riscos e Treinamentos
   $(document).on('click', '.tab[data-step="3"]', function() {
-    buscar_riscos();
+    // Aguarda o sistema de abas aplicar/alternar a classe active
+    setTimeout(function() {
+      buscar_riscos();
+      setTimeout(initializeLaudoDropdowns, 100);
+      // Ao clicar/voltar para a aba, força recarregar treinamentos
+      initTreinamentosIdempotente(true);
+    }, 50);
   });
+
+  // No primeiro carregamento, se a aba de Riscos já estiver ativa, carrega ambos
+  document.addEventListener('DOMContentLoaded', function() {
+    const riscosTab = document.querySelector('.tab[data-step="3"]');
+    if (riscosTab && riscosTab.classList.contains('active')) {
+      setTimeout(function() {
+        buscar_riscos();
+        setTimeout(initializeLaudoDropdowns, 100);
+        initTreinamentosIdempotente();
+      }, 100);
+    }
+  });
+
+  // Observa mudanças nas abas para capturar ativações sem clique
+  (function observeTabsForRiscosInit(){
+    const tabs = document.querySelectorAll('.tab');
+    if (!tabs || tabs.length === 0 || typeof MutationObserver === 'undefined') return;
+    const observer = new MutationObserver(() => {
+      checkAndInitializeRiscosTab();
+    });
+    tabs.forEach(tab => observer.observe(tab, { attributes: true, attributeFilter: ['class'] }));
+  })();
 
     // Função para inicializar o componente de Aptidões e Exames
     function initializeAptidoesExames() {
