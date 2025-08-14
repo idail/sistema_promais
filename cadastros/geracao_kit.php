@@ -2050,6 +2050,7 @@
     let etapas = [];
 
     function updateTab(step) {
+      debugger;
       console.log('Atualizando para a aba:', step, 'Conteúdo:', etapas[step] ? 'disponível' : 'indisponível');
       
       // Atualiza a aba ativa
@@ -2075,6 +2076,28 @@
             }
           }
         }, 0);
+      } else if (step === 3) {
+        debugger;
+        // Renderiza o conteúdo da etapa 3 (Riscos) antes de inicializar
+        if (etapas[3] && content.innerHTML.trim() !== (etapas[3] || '').trim()) {
+          content.innerHTML = etapas[3];
+        } else if (!etapas[3]) {
+          console.warn('Conteúdo da etapa 3 indisponível');
+          content.innerHTML = '';
+        }
+        // Inicializa o componente de riscos após o DOM da aba estar presente
+        setTimeout(() => {
+          debugger;
+          // if (typeof tryInitRiscos === 'function') {
+          //   debugger;
+          //   tryInitRiscos();
+          // } else if (typeof initializeRiscosComponent === 'function') {
+            
+          // } else {
+          //   console.error('Inicializador de riscos indisponível');
+          // }
+          initializeRiscosComponent();
+        }, 100);
       } else {
         // Para outras etapas, apenas atualizamos o conteúdo
         content.innerHTML = ''; // Limpa o conteúdo primeiro
@@ -2228,6 +2251,446 @@
           }
         });
       });
+    }
+
+
+    function initializeRiscosComponent() {
+      debugger;
+      console.log('Inicializando componente de riscos...');
+      
+      // Inicialização do componente de riscos
+      
+      
+      // Dados dos riscos (pode ser movido para um arquivo JSON separado posteriormente)
+      // const risksData = {
+      //   ergonomico: {
+      //     name: "Riscos Ergonômicos",
+      //     risks: [
+      //       { code: "04.01.001", name: "Trabalho em posturas incômodas ou pouco confortáveis por longos períodos" },
+      //       { code: "04.01.002", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.003", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.004", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.005", name: "Trabalhos com pacientes individuais" },
+      //       { code: "04.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   "acidentes_mecanico": {
+      //     name: "Riscos Acidentes - Mecânicos",
+      //     risks: [
+      //       { code: "01.01.001", name: "Quedas em mesmo nível" },
+      //       { code: "01.01.002", name: "Quedas de altura" },
+      //       { code: "01.01.003", name: "Queda de objetos" },
+      //       { code: "01.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   fisico: {
+      //     name: "Riscos Físicos",
+      //     risks: [
+      //       { code: "03.01.001", name: "Exposição a ruído excessivo" },
+      //       { code: "03.01.002", name: "Exposição a vibrações" },
+      //       { code: "03.01.003", name: "Temperaturas extremas" },
+      //       { code: "03.01.004", name: "Radiações ionizantes e não ionizantes" },
+      //       { code: "03.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   quimico: {
+      //     name: "Riscos Químicos",
+      //     risks: [
+      //       { code: "02.01.001", name: "Exposição a produtos químicos" },
+      //       { code: "02.01.002", name: "Inalação de vapores tóxicos" },
+      //       { code: "02.01.003", name: "Contato com substâncias corrosivas" },
+      //       { code: "02.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   biologico: {
+      //     name: "Riscos Biológicos",
+      //     risks: [
+      //       { code: "05.01.002", name: "Exposição a agentes biológicos" },
+      //       { code: "05.01.003", name: "Contato com fluidos corporais" },
+      //       { code: "05.01.006", name: "Manuseio de materiais contaminados" },
+      //       { code: "05.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   },
+      //   outro: {
+      //     name: "Outros Riscos",
+      //     risks: [
+      //       { code: "99.01.001", name: "Estresse ocupacional" },
+      //       { code: "99.01.002", name: "Assédio moral" },
+      //       { code: "99.01.003", name: "Jornada de trabalho excessiva" },
+      //       { code: "99.01.999", name: "Outros", isOther: true }
+      //     ]
+      //   }
+      // };
+
+      // Elementos do DOM
+      const groupSelect = document.getElementById('group-select');
+      const searchBox = document.getElementById('riscos-search-box');
+      const searchResults = document.getElementById('riscos-search-results');
+      const selectedRisksContainer = document.getElementById('selected-risks-container');
+      const customRiskModal = document.getElementById('custom-risk-modal');
+      const customRiskName = document.getElementById('custom-risk-name');
+      const confirmCustomRiskBtn = document.getElementById('confirm-custom-risk');
+      const cancelCustomRiskBtn = document.getElementById('cancel-custom-risk');
+      
+      console.log('Elementos do DOM:', { groupSelect, searchBox, searchResults, selectedRisksContainer, customRiskModal });
+      
+      // Variáveis de estado
+      let selectedGroups = ['ergonomicos'];
+      let selectedRisks = {};
+      let currentOtherRisk = null;
+      
+      // Inicialização
+      updateSearchPlaceholder();
+      
+      // Função para atualizar as seleções
+      function updateSelectedGroups() {
+        debugger;
+        const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
+        selectedGroups = Array.from(checkboxes)
+          .filter(checkbox => checkbox.checked)
+          .map(checkbox => checkbox.value);
+        
+        // Se nenhum estiver selecionado, mantém o primeiro selecionado
+        if (selectedGroups.length === 0 && checkboxes.length > 0) {
+          checkboxes[0].checked = true;
+          selectedGroups = [checkboxes[0].value];
+        }
+        
+        updateSearchPlaceholder();
+        
+        if (searchBox && searchBox.value) {
+          performSearch(searchBox.value);
+        }
+      }
+      
+      // Event Listeners para os checkboxes
+      const groupSelectContainer = document.getElementById('group-select-container');
+      if (groupSelectContainer) {
+        groupSelectContainer.addEventListener('change', function(e) {
+          if (e.target.type === 'checkbox') {
+            updateSelectedGroups();
+          }
+        });
+        
+        // Inicializa as seleções
+        updateSelectedGroups();
+      }
+      if (searchBox) {
+        searchBox.addEventListener('input', function(e) {
+          console.log('Input event:', e.target.value);
+          performSearch(e.target.value);
+        });
+        
+        searchBox.addEventListener('focus', function() {
+          console.log('Search box focused');
+          if (this.value && this.value.trim() !== '') {
+            performSearch(this.value);
+          }
+        });
+      }
+      
+      if (confirmCustomRiskBtn) {
+        confirmCustomRiskBtn.addEventListener('click', function() {
+          const riskName = customRiskName.value.trim();
+          if (riskName && currentOtherRisk) {
+            addSelectedRisk(currentOtherRisk.code, riskName, currentOtherRisk.group);
+            customRiskName.value = '';
+            customRiskModal.style.display = 'none';
+            currentOtherRisk = null;
+          }
+        });
+      }
+      
+      if (cancelCustomRiskBtn) {
+        cancelCustomRiskBtn.addEventListener('click', function() {
+          customRiskName.value = '';
+          customRiskModal.style.display = 'none';
+          currentOtherRisk = null;
+        });
+      }
+      
+      // Fechar modal ao clicar fora
+      window.addEventListener('click', function(event) {
+        if (event.target === customRiskModal) {
+          customRiskName.value = '';
+          customRiskModal.style.display = 'none';
+          currentOtherRisk = null;
+        }
+      });
+      
+      // Funções
+      function updateSearchPlaceholder() {
+        debugger;
+        if (!searchBox) return;
+        
+        if (selectedGroups.length === 0) {
+          searchBox.placeholder = "Selecione pelo menos um grupo para buscar";
+          searchBox.disabled = true;
+        } else {
+          const groupNames = selectedGroups.map(group => {
+            return risksData[group] ? risksData[group].name : group;
+          });
+          
+          searchBox.placeholder = `Busca em: ${groupNames.join(', ')}`;
+          searchBox.disabled = false;
+        }
+      }
+      
+      function performSearch(term) {
+        debugger;
+        console.log('performSearch called with term:', term);
+        if (!searchResults) {
+          console.error('searchResults element not found');
+          return;
+        }
+        
+        term = term ? term.toLowerCase().trim() : '';
+        searchResults.innerHTML = '';
+        
+        if (selectedGroups.length === 0) {
+          console.log('Nenhum grupo selecionado');
+          searchResults.style.display = 'none';
+          return;
+        }
+        
+        if (term === '') {
+          console.log('Termo de busca vazio');
+          searchResults.style.display = 'none';
+          return;
+        }
+        
+        // Coletar todos os riscos dos grupos selecionados
+        let allRisks = [];
+        selectedGroups.forEach(group => {
+          if (risksData[group]) {
+            risksData[group].risks.forEach(risk => {
+              allRisks.push({
+                ...risk,
+                group: group,
+                groupName: risksData[group].name
+              });
+            });
+          }
+        });
+        
+        // Filtrar riscos pelo termo de busca e remover já selecionados
+        const filteredRisks = allRisks.filter(risk => {
+          return (risk.name.toLowerCase().includes(term) || 
+                 risk.code.toLowerCase().includes(term)) &&
+                 !selectedRisks[risk.code]; // Não mostrar riscos já selecionados
+        });
+        
+        // Exibir resultados
+        if (filteredRisks.length > 0) {
+          filteredRisks.forEach(risk => {
+            const riskElement = document.createElement('div');
+            riskElement.className = 'risk-item';
+            riskElement.innerHTML = `
+              <div style="display: flex; flex-direction: column; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2px;">
+                  <span style="font-weight: 500; font-size: 0.85em;">${risk.code}</span>
+                  <span style="font-size: 0.8em; color: #666;">${risk.groupName}</span>
+                </div>
+                <span class="risk-name" style="font-size: 0.9em;">${risk.name}</span>
+              </div>
+            `;
+            
+            riskElement.addEventListener('click', function() {
+              console.log('Risco clicado:', risk);
+              if (risk.isOther) {
+                currentOtherRisk = risk;
+                customRiskName.value = '';
+                if (customRiskModal) customRiskModal.style.display = 'flex';
+                if (customRiskName) customRiskName.focus();
+              } else {
+                addSelectedRisk(risk.code, risk.name, risk.group);
+                if (searchResults) searchResults.style.display = 'none';
+                if (searchBox) searchBox.value = '';
+              }
+            });
+            
+            searchResults.appendChild(riskElement);
+          });
+          
+          searchResults.style.display = 'block';
+        } else {
+          const noResults = document.createElement('div');
+          noResults.className = 'no-results';
+          noResults.textContent = 'Nenhum risco encontrado';
+          searchResults.appendChild(noResults);
+          searchResults.style.display = 'block';
+        }
+      }
+      
+      function addSelectedRisk(code, name, group) {
+
+        if (!selectedRisks[code]) {
+          selectedRisks[code] = { name, group };
+          updateSelectedRisksDisplay();
+          // Atualiza a busca para remover o item adicionado
+          if (searchBox && searchBox.value.trim() !== '') {
+            performSearch(searchBox.value);
+          }
+        }
+      }
+      
+      let riscos_selecionados = [];
+      let json_riscos;
+      async function updateSelectedRisksDisplay() {
+        debugger;
+
+        for (let codigo in selectedRisks) {
+          if (selectedRisks.hasOwnProperty(codigo)) {
+            
+            // Verifica se já existe no array pelo código
+            const jaExiste = riscos_selecionados.some(risco => risco.codigo === codigo);
+            
+            if (!jaExiste) {
+              riscos_selecionados.push({
+                codigo: codigo,
+                descricao: selectedRisks[codigo].name,
+                grupo: selectedRisks[codigo].group
+              });
+            }
+          }
+        }
+
+
+      console.log("Riscos selecionados:",riscos_selecionados);
+
+      json_riscos = JSON.stringify(riscos_selecionados);
+
+      await gravar_riscos_selecionados();
+
+      console.log("Riscos em json", json_riscos);
+
+
+        if (!selectedRisksContainer) return;
+        
+        selectedRisksContainer.innerHTML = '';
+        
+        // Se não houver riscos selecionados, exibe uma mensagem
+        if (Object.keys(selectedRisks).length === 0) {
+          const emptyMessage = document.createElement('div');
+          emptyMessage.className = 'no-risks';
+          emptyMessage.textContent = 'Nenhum risco selecionado';
+          selectedRisksContainer.appendChild(emptyMessage);
+          return;
+        }
+        
+        // Agrupar riscos por categoria
+        const risksByGroup = {};
+        
+        for (const [code, risk] of Object.entries(selectedRisks)) {
+          const group = risk.group;
+          if (!risksByGroup[group]) {
+            risksByGroup[group] = [];
+          }
+          risksByGroup[group].push({ code, name: risk.name });
+        }
+        
+        // Criar elementos agrupados
+        for (const [group, risks] of Object.entries(risksByGroup)) {
+          const groupName = risksData[group] ? risksData[group].name : group;
+          
+          const groupElement = document.createElement('div');
+          groupElement.className = 'risk-group';
+          
+          const groupHeader = document.createElement('div');
+          groupHeader.className = 'risk-group-header';
+          groupHeader.textContent = groupName;
+          
+          const groupContent = document.createElement('div');
+          groupContent.className = 'risk-group-content';
+          
+          risks.forEach(risk => {
+            const riskElement = document.createElement('div');
+            riskElement.className = 'selected-risk';
+            riskElement.innerHTML = `
+              <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
+              <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
+            `;
+            groupContent.appendChild(riskElement);
+          });
+          
+          groupElement.appendChild(groupHeader);
+          groupElement.appendChild(groupContent);
+          selectedRisksContainer.appendChild(groupElement);
+        }
+        
+        // Adicionar eventos de remoção
+        document.querySelectorAll('.remove-risk').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const codeToRemove = this.getAttribute('data-code');
+            delete selectedRisks[codeToRemove];
+            updateSelectedRisksDisplay();
+            // Atualiza a busca para mostrar o item removido, se aplicável
+            if (searchBox && searchBox.value.trim() !== '') {
+              performSearch(searchBox.value);
+            }
+          });
+        });
+      }
+
+      function gravar_riscos_selecionados()
+      {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "incluir_valores_kit",
+              valor_riscos: json_riscos,
+            },
+            success: function (retorno_exame_geracao_kit) {
+              debugger;
+
+              const mensagemSucesso = `
+                <div id="riscos-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <div>
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // Remove mensagem anterior se existir
+              $("#riscos-gravado").remove();
+
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+
+              // Configura o fade out após 5 segundos
+              setTimeout(function () {
+                $("#riscos-gravado").fadeOut(500, function () {
+                  $(this).remove();
+                });
+              }, 5000);
+
+              console.log(retorno_exame_geracao_kit);
+
+              resolve(retorno_exame_geracao_kit);
+            },
+            error: function (xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              reject(error);
+            },
+          });
+        });
+      }
+      
+      // Fechar resultados ao clicar fora
+      document.addEventListener('click', function(e) {
+        if (searchBox && searchResults && !searchBox.contains(e.target) && !searchResults.contains(e.target)) {
+          searchResults.style.display = 'none';
+        }
+      });
+      
+      // Inicializa os dropdowns do laudo
+      initializeLaudoDropdowns();
     }
 
     let recebe_exame_selecionado;
@@ -7156,13 +7619,29 @@ console.log(total); // Exemplo: "180.10"
         updateSelectedList();
       }
       
+      // Inicializador robusto para o componente de riscos
+      // function tryInitRiscos() {
+      //   const container = document.getElementById('selected-risks-container');
+      //   if (!container) {
+      //     // Aguarda até o container existir
+      //     return setTimeout(tryInitRiscos, 100);
+      //   }
+      //   if (typeof window !== 'undefined' && typeof window.initializeRiscosComponent === 'function') {
+      //     window.initializeRiscosComponent();
+      //     console.log('initializeRiscosComponent chamado via tryInitRiscos');
+      //   } else {
+      //     console.error('initializeRiscosComponent não está disponível no window');
+      //   }
+      // }
+      
       // Inicializa quando o DOM estiver pronto
       function initializeComponents() {
         initDocumentSelection();
         
+        debugger;
         // Inicializa componentes específicos da aba atual
         if (appState.currentStep === 3) {
-          setTimeout(initializeRiscosComponent, 100);
+          setTimeout(tryInitRiscos, 100);
         } else if (appState.currentStep === 4) { // Índice 4 = Passo 5 (Aptidões e Exames)
           setTimeout(initializeAptidoesExames, 100);
         }
@@ -7178,7 +7657,7 @@ console.log(total); // Exemplo: "180.10"
       document.addEventListener('tabChanged', function(e) {
         if (e.detail.step === 3) { // Índice 3 = Passo 4 (Riscos)
           // Pequeno atraso para garantir que o conteúdo foi carregado
-          setTimeout(initializeRiscosComponent, 100);
+          setTimeout(tryInitRiscos, 100);
         } else if (e.detail.step === 4) { // Índice 4 = Passo 5 (Aptidões e Exames)
           setTimeout(initializeAptidoesExames, 100);
         } else if (e.detail.step === 5) { // Índice 5 = Passo 6 (Documentos)
@@ -8353,443 +8832,11 @@ console.log(total); // Exemplo: "180.10"
   }
     
     
-    function initializeRiscosComponent() {
-      console.log('Inicializando componente de riscos...');
-      
-      // Inicialização do componente de riscos
-      
-      
-      // Dados dos riscos (pode ser movido para um arquivo JSON separado posteriormente)
-      // const risksData = {
-      //   ergonomico: {
-      //     name: "Riscos Ergonômicos",
-      //     risks: [
-      //       { code: "04.01.001", name: "Trabalho em posturas incômodas ou pouco confortáveis por longos períodos" },
-      //       { code: "04.01.002", name: "Trabalhos com pacientes individuais" },
-      //       { code: "04.01.003", name: "Trabalhos com pacientes individuais" },
-      //       { code: "04.01.004", name: "Trabalhos com pacientes individuais" },
-      //       { code: "04.01.005", name: "Trabalhos com pacientes individuais" },
-      //       { code: "04.01.999", name: "Outros", isOther: true }
-      //     ]
-      //   },
-      //   "acidentes_mecanico": {
-      //     name: "Riscos Acidentes - Mecânicos",
-      //     risks: [
-      //       { code: "01.01.001", name: "Quedas em mesmo nível" },
-      //       { code: "01.01.002", name: "Quedas de altura" },
-      //       { code: "01.01.003", name: "Queda de objetos" },
-      //       { code: "01.01.999", name: "Outros", isOther: true }
-      //     ]
-      //   },
-      //   fisico: {
-      //     name: "Riscos Físicos",
-      //     risks: [
-      //       { code: "03.01.001", name: "Exposição a ruído excessivo" },
-      //       { code: "03.01.002", name: "Exposição a vibrações" },
-      //       { code: "03.01.003", name: "Temperaturas extremas" },
-      //       { code: "03.01.004", name: "Radiações ionizantes e não ionizantes" },
-      //       { code: "03.01.999", name: "Outros", isOther: true }
-      //     ]
-      //   },
-      //   quimico: {
-      //     name: "Riscos Químicos",
-      //     risks: [
-      //       { code: "02.01.001", name: "Exposição a produtos químicos" },
-      //       { code: "02.01.002", name: "Inalação de vapores tóxicos" },
-      //       { code: "02.01.003", name: "Contato com substâncias corrosivas" },
-      //       { code: "02.01.999", name: "Outros", isOther: true }
-      //     ]
-      //   },
-      //   biologico: {
-      //     name: "Riscos Biológicos",
-      //     risks: [
-      //       { code: "05.01.002", name: "Exposição a agentes biológicos" },
-      //       { code: "05.01.003", name: "Contato com fluidos corporais" },
-      //       { code: "05.01.006", name: "Manuseio de materiais contaminados" },
-      //       { code: "05.01.999", name: "Outros", isOther: true }
-      //     ]
-      //   },
-      //   outro: {
-      //     name: "Outros Riscos",
-      //     risks: [
-      //       { code: "99.01.001", name: "Estresse ocupacional" },
-      //       { code: "99.01.002", name: "Assédio moral" },
-      //       { code: "99.01.003", name: "Jornada de trabalho excessiva" },
-      //       { code: "99.01.999", name: "Outros", isOther: true }
-      //     ]
-      //   }
-      // };
-
-      // Elementos do DOM
-      const groupSelect = document.getElementById('group-select');
-      const searchBox = document.getElementById('riscos-search-box');
-      const searchResults = document.getElementById('riscos-search-results');
-      const selectedRisksContainer = document.getElementById('selected-risks-container');
-      const customRiskModal = document.getElementById('custom-risk-modal');
-      const customRiskName = document.getElementById('custom-risk-name');
-      const confirmCustomRiskBtn = document.getElementById('confirm-custom-risk');
-      const cancelCustomRiskBtn = document.getElementById('cancel-custom-risk');
-      
-      console.log('Elementos do DOM:', { groupSelect, searchBox, searchResults, selectedRisksContainer, customRiskModal });
-      
-      // Variáveis de estado
-      let selectedGroups = ['ergonomicos'];
-      let selectedRisks = {};
-      let currentOtherRisk = null;
-      
-      // Inicialização
-      updateSearchPlaceholder();
-      
-      // Função para atualizar as seleções
-      function updateSelectedGroups() {
-        debugger;
-        const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
-        selectedGroups = Array.from(checkboxes)
-          .filter(checkbox => checkbox.checked)
-          .map(checkbox => checkbox.value);
-        
-        // Se nenhum estiver selecionado, mantém o primeiro selecionado
-        if (selectedGroups.length === 0 && checkboxes.length > 0) {
-          checkboxes[0].checked = true;
-          selectedGroups = [checkboxes[0].value];
-        }
-        
-        updateSearchPlaceholder();
-        
-        if (searchBox && searchBox.value) {
-          performSearch(searchBox.value);
-        }
-      }
-      
-      // Event Listeners para os checkboxes
-      const groupSelectContainer = document.getElementById('group-select-container');
-      if (groupSelectContainer) {
-        groupSelectContainer.addEventListener('change', function(e) {
-          if (e.target.type === 'checkbox') {
-            updateSelectedGroups();
-          }
-        });
-        
-        // Inicializa as seleções
-        updateSelectedGroups();
-      }
-      if (searchBox) {
-        searchBox.addEventListener('input', function(e) {
-          console.log('Input event:', e.target.value);
-          performSearch(e.target.value);
-        });
-        
-        searchBox.addEventListener('focus', function() {
-          console.log('Search box focused');
-          if (this.value && this.value.trim() !== '') {
-            performSearch(this.value);
-          }
-        });
-      }
-      
-      if (confirmCustomRiskBtn) {
-        confirmCustomRiskBtn.addEventListener('click', function() {
-          const riskName = customRiskName.value.trim();
-          if (riskName && currentOtherRisk) {
-            addSelectedRisk(currentOtherRisk.code, riskName, currentOtherRisk.group);
-            customRiskName.value = '';
-            customRiskModal.style.display = 'none';
-            currentOtherRisk = null;
-          }
-        });
-      }
-      
-      if (cancelCustomRiskBtn) {
-        cancelCustomRiskBtn.addEventListener('click', function() {
-          customRiskName.value = '';
-          customRiskModal.style.display = 'none';
-          currentOtherRisk = null;
-        });
-      }
-      
-      // Fechar modal ao clicar fora
-      window.addEventListener('click', function(event) {
-        if (event.target === customRiskModal) {
-          customRiskName.value = '';
-          customRiskModal.style.display = 'none';
-          currentOtherRisk = null;
-        }
-      });
-      
-      // Funções
-      function updateSearchPlaceholder() {
-        debugger;
-        if (!searchBox) return;
-        
-        if (selectedGroups.length === 0) {
-          searchBox.placeholder = "Selecione pelo menos um grupo para buscar";
-          searchBox.disabled = true;
-        } else {
-          const groupNames = selectedGroups.map(group => {
-            return risksData[group] ? risksData[group].name : group;
-          });
-          
-          searchBox.placeholder = `Busca em: ${groupNames.join(', ')}`;
-          searchBox.disabled = false;
-        }
-      }
-      
-      function performSearch(term) {
-        debugger;
-        console.log('performSearch called with term:', term);
-        if (!searchResults) {
-          console.error('searchResults element not found');
-          return;
-        }
-        
-        term = term ? term.toLowerCase().trim() : '';
-        searchResults.innerHTML = '';
-        
-        if (selectedGroups.length === 0) {
-          console.log('Nenhum grupo selecionado');
-          searchResults.style.display = 'none';
-          return;
-        }
-        
-        if (term === '') {
-          console.log('Termo de busca vazio');
-          searchResults.style.display = 'none';
-          return;
-        }
-        
-        // Coletar todos os riscos dos grupos selecionados
-        let allRisks = [];
-        selectedGroups.forEach(group => {
-          if (risksData[group]) {
-            risksData[group].risks.forEach(risk => {
-              allRisks.push({
-                ...risk,
-                group: group,
-                groupName: risksData[group].name
-              });
-            });
-          }
-        });
-        
-        // Filtrar riscos pelo termo de busca e remover já selecionados
-        const filteredRisks = allRisks.filter(risk => {
-          return (risk.name.toLowerCase().includes(term) || 
-                 risk.code.toLowerCase().includes(term)) &&
-                 !selectedRisks[risk.code]; // Não mostrar riscos já selecionados
-        });
-        
-        // Exibir resultados
-        if (filteredRisks.length > 0) {
-          filteredRisks.forEach(risk => {
-            const riskElement = document.createElement('div');
-            riskElement.className = 'risk-item';
-            riskElement.innerHTML = `
-              <div style="display: flex; flex-direction: column; width: 100%;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2px;">
-                  <span style="font-weight: 500; font-size: 0.85em;">${risk.code}</span>
-                  <span style="font-size: 0.8em; color: #666;">${risk.groupName}</span>
-                </div>
-                <span class="risk-name" style="font-size: 0.9em;">${risk.name}</span>
-              </div>
-            `;
-            
-            riskElement.addEventListener('click', function() {
-              console.log('Risco clicado:', risk);
-              if (risk.isOther) {
-                currentOtherRisk = risk;
-                customRiskName.value = '';
-                if (customRiskModal) customRiskModal.style.display = 'flex';
-                if (customRiskName) customRiskName.focus();
-              } else {
-                addSelectedRisk(risk.code, risk.name, risk.group);
-                if (searchResults) searchResults.style.display = 'none';
-                if (searchBox) searchBox.value = '';
-              }
-            });
-            
-            searchResults.appendChild(riskElement);
-          });
-          
-          searchResults.style.display = 'block';
-        } else {
-          const noResults = document.createElement('div');
-          noResults.className = 'no-results';
-          noResults.textContent = 'Nenhum risco encontrado';
-          searchResults.appendChild(noResults);
-          searchResults.style.display = 'block';
-        }
-      }
-      
-      function addSelectedRisk(code, name, group) {
-
-        if (!selectedRisks[code]) {
-          selectedRisks[code] = { name, group };
-          updateSelectedRisksDisplay();
-          // Atualiza a busca para remover o item adicionado
-          if (searchBox && searchBox.value.trim() !== '') {
-            performSearch(searchBox.value);
-          }
-        }
-      }
-      
-      let riscos_selecionados = [];
-      let json_riscos;
-      async function updateSelectedRisksDisplay() {
-        debugger;
-
-        for (let codigo in selectedRisks) {
-          if (selectedRisks.hasOwnProperty(codigo)) {
-            
-            // Verifica se já existe no array pelo código
-            const jaExiste = riscos_selecionados.some(risco => risco.codigo === codigo);
-            
-            if (!jaExiste) {
-              riscos_selecionados.push({
-                codigo: codigo,
-                descricao: selectedRisks[codigo].name,
-                grupo: selectedRisks[codigo].group
-              });
-            }
-          }
-        }
-
-
-      console.log("Riscos selecionados:",riscos_selecionados);
-
-      json_riscos = JSON.stringify(riscos_selecionados);
-
-      await gravar_riscos_selecionados();
-
-      console.log("Riscos em json", json_riscos);
-
-
-        if (!selectedRisksContainer) return;
-        
-        selectedRisksContainer.innerHTML = '';
-        
-        // Se não houver riscos selecionados, exibe uma mensagem
-        if (Object.keys(selectedRisks).length === 0) {
-          const emptyMessage = document.createElement('div');
-          emptyMessage.className = 'no-risks';
-          emptyMessage.textContent = 'Nenhum risco selecionado';
-          selectedRisksContainer.appendChild(emptyMessage);
-          return;
-        }
-        
-        // Agrupar riscos por categoria
-        const risksByGroup = {};
-        
-        for (const [code, risk] of Object.entries(selectedRisks)) {
-          const group = risk.group;
-          if (!risksByGroup[group]) {
-            risksByGroup[group] = [];
-          }
-          risksByGroup[group].push({ code, name: risk.name });
-        }
-        
-        // Criar elementos agrupados
-        for (const [group, risks] of Object.entries(risksByGroup)) {
-          const groupName = risksData[group] ? risksData[group].name : group;
-          
-          const groupElement = document.createElement('div');
-          groupElement.className = 'risk-group';
-          
-          const groupHeader = document.createElement('div');
-          groupHeader.className = 'risk-group-header';
-          groupHeader.textContent = groupName;
-          
-          const groupContent = document.createElement('div');
-          groupContent.className = 'risk-group-content';
-          
-          risks.forEach(risk => {
-            const riskElement = document.createElement('div');
-            riskElement.className = 'selected-risk';
-            riskElement.innerHTML = `
-              <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
-              <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
-            `;
-            groupContent.appendChild(riskElement);
-          });
-          
-          groupElement.appendChild(groupHeader);
-          groupElement.appendChild(groupContent);
-          selectedRisksContainer.appendChild(groupElement);
-        }
-        
-        // Adicionar eventos de remoção
-        document.querySelectorAll('.remove-risk').forEach(btn => {
-          btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const codeToRemove = this.getAttribute('data-code');
-            delete selectedRisks[codeToRemove];
-            updateSelectedRisksDisplay();
-            // Atualiza a busca para mostrar o item removido, se aplicável
-            if (searchBox && searchBox.value.trim() !== '') {
-              performSearch(searchBox.value);
-            }
-          });
-        });
-      }
-
-      function gravar_riscos_selecionados()
-      {
-        return new Promise((resolve, reject) => {
-          $.ajax({
-            url: "cadastros/processa_geracao_kit.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-              processo_geracao_kit: "incluir_valores_kit",
-              valor_riscos: json_riscos,
-            },
-            success: function (retorno_exame_geracao_kit) {
-              debugger;
-
-              const mensagemSucesso = `
-                <div id="riscos-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <div>
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-              `;
-
-              // Remove mensagem anterior se existir
-              $("#riscos-gravado").remove();
-
-              // Adiciona a nova mensagem acima das abas
-              $(".tabs-container").before(mensagemSucesso);
-
-              // Configura o fade out após 5 segundos
-              setTimeout(function () {
-                $("#riscos-gravado").fadeOut(500, function () {
-                  $(this).remove();
-                });
-              }, 5000);
-
-              console.log(retorno_exame_geracao_kit);
-
-              resolve(retorno_exame_geracao_kit);
-            },
-            error: function (xhr, status, error) {
-              console.log("Falha ao incluir exame: " + error);
-              reject(error);
-            },
-          });
-        });
-      }
-      
-      // Fechar resultados ao clicar fora
-      document.addEventListener('click', function(e) {
-        if (searchBox && searchResults && !searchBox.contains(e.target) && !searchResults.contains(e.target)) {
-          searchResults.style.display = 'none';
-        }
-      });
-      
-      // Inicializa os dropdowns do laudo
-      initializeLaudoDropdowns();
-    }
+    
+    // Expõe a função no escopo global para chamadas externas (ex.: setTimeout/handlers fora deste bloco)
+    // if (typeof window !== 'undefined') {
+    //   window.initializeRiscosComponent = initializeRiscosComponent;
+    // }
   }
   </script>
 
