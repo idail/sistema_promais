@@ -3079,7 +3079,8 @@
       
       // Adiciona evento de input para busca de empresas
       // Adiciona o evento de mudança para os checkboxes
-      container.off('change', 'input[type="checkbox"]') // Remove eventos anteriores para evitar duplicação
+      const $groupContainer = $('#group-select-container');
+      $groupContainer.off('change', 'input[type="checkbox"]') // Remove eventos anteriores para evitar duplicação
              .on('change', 'input[type="checkbox"]', function() {
                 console.log('Checkbox alterado:', $(this).val(), $(this).prop('checked'));
                 if (typeof window.updateSelectedGroups === 'function') {
@@ -3119,8 +3120,14 @@
         data: {
           processo_geracao_kit: "geracao_kit_sessao",
         },
-        success: function(retorno_exame_geracao_kit) {
-          console.log("Kit começou a ser gravado, sessao:" + retorno_exame_geracao_kit);
+        beforeSend: function(xhr) {
+          console.log('[KIT] Enviando requisição de sessão...');
+        },
+        success: function(retorno_exame_geracao_kit, textStatus, xhr) {
+          debugger; // sucesso JSON parseado
+          console.log('[KIT][SUCCESS] status:', textStatus);
+          console.log('[KIT][SUCCESS] objeto:', retorno_exame_geracao_kit);
+          try { console.log('[KIT][SUCCESS] bruto:', xhr && xhr.responseText); } catch(_) {}
           // Injeta estilo do banner apenas uma vez
           if (!$('#kit-toast-style').length) {
             $('head').append('<style id="kit-toast-style">\n              #kit-toast {\n                position: fixed;\n                top: 10px;\n                right: 10px;\n                background: #28a745; /* verde similar ao totalizador */\n                color: #fff;\n                padding: 8px 16px;\n                border-radius: 4px;\n                font-weight: 600;\n                z-index: 9999;\n                display: none;\n                box-shadow: 0 2px 6px rgba(0,0,0,.2);\n              }\n            </style>');
@@ -3134,8 +3141,16 @@
           $toast.text('Gravação do kit iniciada').stop(true, true).fadeIn(200).delay(5000).fadeOut(1000);
         },
         error: function(xhr, status, error) {
-          console.log("Falha ao incluir exame: " + error);
+          debugger; // erro retornado pelo PHP ou falha de parse JSON
+          console.error('[KIT][ERROR] status:', status, 'error:', error);
+          try { console.error('[KIT][ERROR] bruto:', xhr && xhr.responseText); } catch(_) {}
         },
+        complete: function(xhr, status) {
+          // Sempre mostra o retorno bruto para depuração
+          console.log('[KIT][COMPLETE] status:', status);
+          try { console.log('[KIT][COMPLETE] bruto:', xhr && xhr.responseText); } catch(_) {}
+          try { console.log('[KIT][COMPLETE] headers:', xhr && xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()); } catch(_) {}
+        }
       });
 
 
