@@ -5825,35 +5825,45 @@
         // Pequeno atraso para garantir que o conteúdo foi renderizado
         setTimeout(initializeLaudoDropdowns, 100);
         
-        // Inicializa os treinamentos se ainda não foram inicializados
-        if (!window.treinamentosInicializados) {
-          buscar_treinamentos();
-          const initTreinamentos = () => {
-            // Verifica se o container de treinamentos está no DOM
-            const containerTreinamentos = document.getElementById('secao-treinamentos');
-            if (!containerTreinamentos) {
-              console.log('Aguardando container de treinamentos ser carregado...');
-              setTimeout(initTreinamentos, 100);
-              return;
-            }
-            
-            try {
-              const treinamentos = gerenciarTreinamentos();
-              if (treinamentos && typeof treinamentos.init === 'function') {
-                treinamentos.init();
-                window.treinamentosInicializados = true;
-                console.log('Treinamentos inicializados com sucesso');
-              }
-            } catch (error) {
-              console.error('Erro ao inicializar treinamentos:', error);
-              // Tenta novamente após um atraso em caso de erro
-              setTimeout(initTreinamentos, 200);
-            }
-          };
-          
-          // Inicia o processo de inicialização
-          setTimeout(initTreinamentos, 200);
+        // Sempre recarrega a lista de treinamentos ao entrar na aba de Riscos
+        try {
+          if (typeof buscar_treinamentos === 'function') {
+            buscar_treinamentos();
+          }
+        } catch (e) {
+          console.warn('buscar_treinamentos não disponível:', e);
         }
+
+        // Inicializa/atualiza os treinamentos sempre que a aba estiver ativa
+        const initTreinamentos = () => {
+          // Verifica se o container de treinamentos está no DOM
+          const containerTreinamentos = document.getElementById('secao-treinamentos');
+          if (!containerTreinamentos) {
+            console.log('Aguardando container de treinamentos ser carregado...');
+            setTimeout(initTreinamentos, 100);
+            return;
+          }
+          
+          try {
+            const treinamentos = (typeof gerenciarTreinamentos === 'function') ? gerenciarTreinamentos() : null;
+            // Se existir um método de refresh, use-o sempre
+            if (treinamentos && typeof treinamentos.refresh === 'function') {
+              treinamentos.refresh();
+              console.log('Treinamentos atualizados via refresh');
+            } else if (treinamentos && typeof treinamentos.init === 'function') {
+              // Caso contrário, inicializa sem controle booleano
+              treinamentos.init();
+              console.log('Treinamentos inicializados');
+            }
+          } catch (error) {
+            console.error('Erro ao inicializar/atualizar treinamentos:', error);
+            // Tenta novamente após um atraso em caso de erro
+            setTimeout(initTreinamentos, 200);
+          }
+        };
+        
+        // Inicia o processo de inicialização/atualização
+        setTimeout(initTreinamentos, 200);
       }
     }
 
@@ -5940,6 +5950,29 @@ function buscar_riscos() {
           console.error('Falha ao inicializar RiscosComponent após carregar grupos:', e);
         }
       }, 0);
+
+      // Após montar os riscos, também atualiza a seção de Treinamentos
+      try {
+        if (typeof buscar_treinamentos === 'function') {
+          buscar_treinamentos();
+        }
+      } catch (e) {
+        console.warn('buscar_treinamentos não disponível após buscar_riscos:', e);
+      }
+
+      // Aguarda o DOM e tenta refresh/init do módulo de treinamentos
+      setTimeout(function(){
+        try {
+          const treinamentos = (typeof gerenciarTreinamentos === 'function') ? gerenciarTreinamentos() : null;
+          if (treinamentos && typeof treinamentos.refresh === 'function') {
+            treinamentos.refresh();
+          } else if (treinamentos && typeof treinamentos.init === 'function') {
+            treinamentos.init();
+          }
+        } catch(e) {
+          console.error('Falha ao atualizar/inicializar treinamentos após buscar_riscos:', e);
+        }
+      }, 200);
     },
     error: function(xhr, status, error) {
       console.error('Erro ao buscar riscos:', error);
@@ -5952,6 +5985,33 @@ function buscar_riscos() {
   // Chama a função quando a aba de riscos for aberta
   $(document).on('click', '.tab[data-step="3"]', function() {
     buscar_riscos();
+    // Garante dropdowns do laudo
+    setTimeout(function(){
+      try { if (typeof initializeLaudoDropdowns === 'function') initializeLaudoDropdowns(); } catch(e) {}
+    }, 100);
+
+    // Sempre recarrega treinamentos ao entrar/retornar à aba
+    try {
+      if (typeof buscar_treinamentos === 'function') {
+        buscar_treinamentos();
+      }
+    } catch (e) {
+      console.warn('buscar_treinamentos não disponível no click da aba:', e);
+    }
+
+    // Tenta atualizar/inicializar o módulo de treinamentos
+    setTimeout(function(){
+      try {
+        const treinamentos = (typeof gerenciarTreinamentos === 'function') ? gerenciarTreinamentos() : null;
+        if (treinamentos && typeof treinamentos.refresh === 'function') {
+          treinamentos.refresh();
+        } else if (treinamentos && typeof treinamentos.init === 'function') {
+          treinamentos.init();
+        }
+      } catch(e) {
+        console.error('Falha ao atualizar/inicializar treinamentos no click da aba:', e);
+      }
+    }, 200);
   });
 
   // Função para atualizar os grupos de risco selecionados
