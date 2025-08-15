@@ -231,6 +231,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
             }
         }
+
         $valor_insalubridade_selecionado_bind = isset($_SESSION["insalubridade_selecionado"]) ? $_SESSION["insalubridade_selecionado"] : null;
         $valor_porcentagem_selecionado_bind = isset($_SESSION["porcentagem_selecionado"]) ? $_SESSION["porcentagem_selecionado"] : null;
         $valor_periculosidade_selecionado_bind = isset($_SESSION["periculosidade_selecionado"]) ? $_SESSION["periculosidade_selecionado"] : null;
