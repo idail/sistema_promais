@@ -5927,6 +5927,8 @@
             
             // Atualiza o resumo
             atualizarResumoLaudo();
+            // Salva estado após atualização
+            try { saveLaudoState(); } catch(_) {}
           });
         });
       });
@@ -5947,7 +5949,35 @@
         });
       }
       
-      // Atualiza o resumo inicial
+      // Salva o estado dos dropdowns no window.laudoState
+      const saveLaudoState = () => {
+        const dropdowns = document.querySelectorAll('.laudo-dropdown');
+        const laudoState = {};
+        dropdowns.forEach(dropdown => {
+          const selectedText = dropdown.querySelector('.selected-text');
+          if (selectedText) {
+            laudoState[dropdown.previousElementSibling.textContent.trim()] = selectedText.textContent.trim();
+          }
+        });
+        window.laudoState = laudoState;
+      };
+
+      // Aplica o estado dos dropdowns do window.laudoState
+      const applyLaudoState = () => {
+        const dropdowns = document.querySelectorAll('.laudo-dropdown');
+        if (window.laudoState) {
+          dropdowns.forEach(dropdown => {
+            const label = dropdown.previousElementSibling.textContent.trim();
+            const selectedText = dropdown.querySelector('.selected-text');
+            if (window.laudoState[label]) {
+              selectedText.textContent = window.laudoState[label];
+            }
+          });
+        }
+      };
+
+      // Aplica o estado salvo antes de atualizar o resumo
+      applyLaudoState();
       atualizarResumoLaudo();
     }
 
