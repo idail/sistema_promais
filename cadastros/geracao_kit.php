@@ -2052,12 +2052,25 @@
     function updateTab(step) {
       debugger;
       console.log('Atualizando para a aba:', step, 'Conteúdo:', etapas[step] ? 'disponível' : 'indisponível');
-      
+      // Controle ao trocar de abas envolvendo Riscos (etapa 3)
+      try {
+        const fromStep = appState.currentStep;
+        // Ao sair da aba Riscos: grava apenas se houver mudanças pendentes
+        if (fromStep === 3 && step !== 3) {
+          if (window && window._riscosDirty) {
+            console.log('Saindo da aba Riscos com alterações pendentes. Gravando...');
+            if (typeof window.gravar_riscos_selecionados === 'function') {
+              try { window.gravar_riscos_selecionados(); } catch (e) { console.warn('Falha ao gravar na saída da aba Riscos:', e); }
+            }
+          }
+        }
+      } catch (e) { /* ignore */ }
+
       // Atualiza a aba ativa
       tabs.forEach((tab, index) => {
         tab.classList.toggle('active', index === step);
       });
-      
+
       // Atualiza o conteúdo da aba
       if (step === 0) {
         // Se for a primeira etapa, usamos o conteúdo original com a grade de exames
@@ -2092,16 +2105,26 @@
           //   debugger;
           //   tryInitRiscos();
           // } else if (typeof initializeRiscosComponent === 'function') {
-            
+
           // } else {
           //   console.error('Inicializador de riscos indisponível');
           // }
           initializeRiscosComponent();
+          // Reaplica UI dos riscos sem disparar gravação ao entrar na aba
+          setTimeout(() => {
+            if (typeof window.reaplicarRiscosSelecionadosUI === 'function') {
+              try { window.reaplicarRiscosSelecionadosUI(); } catch (e) { console.warn('Falha ao reaplicar UI de riscos:', e); }
+            }
+            if (typeof window.reaplicarGruposSelecionadosUI === 'function') {
+              try { window.reaplicarGruposSelecionadosUI(); } catch (e) { console.warn('Falha ao reaplicar grupos de riscos:', e); }
+            }
+          }, 150);
         }, 100);
+
       } else {
         // Para outras etapas, apenas atualizamos o conteúdo
         content.innerHTML = ''; // Limpa o conteúdo primeiro
-        
+
         // Se for a etapa de faturamento, adiciona um observador de mutação
         if (step === 5) {
           console.log('Iniciando observação da aba de faturamento...');
@@ -2367,11 +2390,32 @@
       }
       
       // Variáveis de estado
-      let selectedGroups = ['ergonomicos'];
+      // Não impor default aqui; será definido via snapshot salvo ou escolha do usuário
+      let selectedGroups = [];
       let selectedRisks = {};
+      // Se existir snapshot global previamente salvo, restaura o estado visual sem gravar
+      if (window && window.riscosEstadoSalvoDetalhes && typeof window.riscosEstadoSalvoDetalhes === 'object') {
+        try {
+          selectedRisks = { ...window.riscosEstadoSalvoDetalhes };
+          window._riscosDirty = false;
+          // Deriva grupos a partir dos riscos restaurados e salva snapshot
+          try {
+            const gruposDerivados = Array.from(new Set(Object.values(selectedRisks || {}).map(r => r.group).filter(Boolean)));
+            if (gruposDerivados.length) {
+              window.riscosGruposEstadoSalvo = gruposDerivados;
+            }
+          } catch (e) { /* ignore */ }
+        } catch (e) { /* ignore */ }
+      }
+      // Controle de execução e persistência
+      window._riscosRenderRunning = window._riscosRenderRunning || false; // evita reentrância de render
+      window._riscosDirty = window._riscosDirty || false; // marca que houve alteração desde a última persistência
+      window.riscosEstadoSalvoCodes = Array.isArray(window.riscosEstadoSalvoCodes) ? window.riscosEstadoSalvoCodes : []; // snapshot último persistido
       let currentOtherRisk = null;
       let isSelectingRisk = false; // evita reabertura da lista durante seleção
       let lastSearchKey = ''; // garante uma única renderização por filtro (termo+grupos)
+
+      
       
       // Inicialização
       updateSearchPlaceholder();
@@ -2383,16 +2427,20 @@
         selectedGroups = Array.from(checkboxes)
           .filter(checkbox => checkbox.checked)
           .map(checkbox => checkbox.value);
-        
-        // Se nenhum estiver selecionado, mantém o primeiro selecionado
-        if (selectedGroups.length === 0 && checkboxes.length > 0) {
-          checkboxes[0].checked = true;
-          selectedGroups = [checkboxes[0].value];
-        }
-        
+        // Não selecionar automaticamente o primeiro grupo; manter vazio se usuário não marcou
+
+        try { window.riscosGruposEstadoSalvo = selectedGroups.slice(); } catch (e) { /* ignore */ }
+
         updateSearchPlaceholder();
-        
-        if (searchBox && searchBox.value) {
+        // Se o usuário não digitou nada, exibe os grupos selecionados no input
+        try {
+          if (searchBox && !searchBox.value) {
+            const groupNames = selectedGroups.map(group => risksData[group] ? risksData[group].name : group);
+            searchBox.value = groupNames.length ? `Busca em: ${groupNames.join(', ')}` : '';
+          }
+        } catch (e) { /* ignore */ }
+
+        if (searchBox && searchBox.value && !/^\s*Busca em:/i.test(searchBox.value)) {
           performSearch(searchBox.value);
         }
       }
@@ -2406,8 +2454,50 @@
           }
         });
         groupSelectContainer._changeBound = true;
-        // Inicializa as seleções
-        updateSelectedGroups();
+        // Inicializa as seleções: se há snapshot salvo, reaplica; senão, usa o estado atual
+        if (Array.isArray(window.riscosGruposEstadoSalvo) && window.riscosGruposEstadoSalvo.length) {
+          reaplicarGruposSelecionadosUI();
+        } else {
+          updateSelectedGroups();
+        }
+      }
+      
+      // Reaplica os grupos marcados (checkboxes) sem disparar gravações
+      function reaplicarGruposSelecionadosUI() {
+        // Debug na reaplicação dos grupos marcados ao retornar à aba
+        try {
+          const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
+          console.log('DEBUG reaplicarGruposSelecionadosUI:', {
+            snapshot: Array.isArray(window.riscosGruposEstadoSalvo) ? window.riscosGruposEstadoSalvo : [],
+            qtdCheckboxes: checkboxes.length
+          });
+        } catch(e) {}
+        debugger;
+        try {
+          let gruposSalvos = Array.isArray(window.riscosGruposEstadoSalvo) ? window.riscosGruposEstadoSalvo : null;
+          const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
+          // Se não há snapshot, reconstrói a partir dos checkboxes marcados
+          if ((!gruposSalvos || !gruposSalvos.length) && checkboxes.length) {
+            gruposSalvos = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            if (gruposSalvos.length) {
+              window.riscosGruposEstadoSalvo = gruposSalvos.slice();
+            }
+          }
+          if (gruposSalvos && gruposSalvos.length && checkboxes.length) {
+            checkboxes.forEach(cb => {
+              cb.checked = gruposSalvos.includes(cb.value);
+            });
+            // Atualiza estado interno e placeholder sem buscar automaticamente
+            selectedGroups = gruposSalvos.slice();
+            updateSearchPlaceholder();
+            // Preenche o input de busca com os grupos restaurados
+            if (typeof risksData === 'object' && searchBox) {
+              const groupNames = selectedGroups.map(group => risksData[group] ? risksData[group].name : group);
+              searchBox.value = groupNames.length ? `Busca em: ${groupNames.join(', ')}` : '';
+              searchBox.disabled = false; // garante habilitado
+            }
+          }
+        } catch (e) { /* ignore */ }
       }
       // Event Listeners do campo de busca (bind uma única vez)
       if (searchBox) {
@@ -2424,8 +2514,9 @@
         if (!searchBox._focusBound) {
           searchBox.addEventListener('focus', function() {
             console.log('Search box focused');
-            if (this.value && this.value.trim() !== '') {
-              performSearch(this.value);
+            const val = (this.value || '').trim();
+            if (val && !/^\s*Busca em:/i.test(val)) {
+              performSearch(val);
             }
           });
           searchBox._focusBound = true;
@@ -2732,112 +2823,176 @@
         console.log('addSelectedRisk chamado:', { code, name, group });
         if (!selectedRisks[code]) {
           selectedRisks[code] = { name, group };
+          // marca como alterado para possíveis gravações condicionais ao sair/voltar da aba
+          window._riscosDirty = true;
           updateSelectedRisksDisplay();
           // Não reexecuta performSearch; mantém a listagem atual (renderizada uma única vez)
         }
       }
+      
       // Expõe globalmente para qualquer handler legado acessar
-      try { window.addSelectedRisk = addSelectedRisk; } catch (e) { /* ignore */ }
+      try {
+        window.addSelectedRisk = addSelectedRisk;
+        window.reaplicarRiscosSelecionadosUI = reaplicarRiscosSelecionadosUI;
+        window.updateSelectedGroups = updateSelectedGroups;
+        window.getSelectedRiskCodes = function() { return Object.keys(selectedRisks || {}); };
+        window.reaplicarGruposSelecionadosUI = reaplicarGruposSelecionadosUI;
+      } catch (e) { /* ignore */ }
       
       let riscos_selecionados = [];
       let json_riscos;
       async function updateSelectedRisksDisplay() {
         debugger;
+        if (window._riscosRenderRunning) return;
+        window._riscosRenderRunning = true;
 
-        for (let codigo in selectedRisks) {
-          if (selectedRisks.hasOwnProperty(codigo)) {
-            // Verifica se já existe no array pelo código
-            const jaExiste = riscos_selecionados.some(risco => risco.codigo === codigo);
-            if (!jaExiste) {
-              riscos_selecionados.push({
-                codigo: codigo,
-                descricao: selectedRisks[codigo].name,
-                grupo: selectedRisks[codigo].group
-              });
-            }
-          }
-        }
-
-        console.log("Riscos selecionados:", riscos_selecionados);
-
-        json_riscos = JSON.stringify(riscos_selecionados);
-
-        // Persistência assíncrona (não bloqueia renderização da UI)
         try {
-          gravar_riscos_selecionados();
-        } catch (err) {
-          console.warn('Falha ao gravar riscos selecionados (não bloqueante):', err);
-        }
+          // Reconstrói o array consolidado a partir do objeto selectedRisks (sem duplicar, reflete remoções)
+          riscos_selecionados = Object.entries(selectedRisks).map(([codigo, info]) => ({
+            codigo,
+            descricao: info.name,
+            grupo: info.group,
+          }));
 
-        console.log("Riscos em json", json_riscos);
+          console.log('Riscos selecionados (array):', riscos_selecionados);
+          json_riscos = JSON.stringify(riscos_selecionados);
 
-        const selectedRisksContainer = document.getElementById('selected-risks-container');
-        if (!selectedRisksContainer) return;
-        
-        selectedRisksContainer.innerHTML = '';
-        
-        // Se não houver riscos selecionados, exibe uma mensagem
-        if (Object.keys(selectedRisks).length === 0) {
-          const emptyMessage = document.createElement('div');
-          emptyMessage.className = 'no-risks';
-          emptyMessage.textContent = 'Nenhum risco selecionado';
-          selectedRisksContainer.appendChild(emptyMessage);
-          return;
-        }
-        
-        // Agrupar riscos por categoria
-        const risksByGroup = {};
-        
-        for (const [code, risk] of Object.entries(selectedRisks)) {
-          const group = risk.group;
-          if (!risksByGroup[group]) {
-            risksByGroup[group] = [];
+          // Atualiza snapshot de grupos com base nos riscos atuais
+          try {
+            const gruposAtuais = Array.from(new Set(Object.values(selectedRisks || {}).map(r => r.group).filter(Boolean)));
+            window.riscosGruposEstadoSalvo = gruposAtuais;
+          } catch (e) { /* ignore */ }
+
+          // Persistência assíncrona imediata (mantém comportamento atual ao selecionar/remover)
+          try {
+            const ret = await gravar_riscos_selecionados();
+            // Atualiza snapshot de persistência e limpa dirty
+            window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+            // Salva também detalhes para reidratar na reentrada da aba
+            window.riscosEstadoSalvoDetalhes = { ...selectedRisks };
+            window._riscosDirty = false;
+            // Garante que checkboxes e input dos grupos reflitam o snapshot
+            try { if (typeof window.reaplicarGruposSelecionadosUI === 'function') window.reaplicarGruposSelecionadosUI(); } catch(e) {}
+          } catch (err) {
+            console.warn('Falha ao gravar riscos selecionados (não bloqueante):', err);
           }
-          risksByGroup[group].push({ code, name: risk.name });
-        }
-        
-        // Criar elementos agrupados
-        for (const [group, risks] of Object.entries(risksByGroup)) {
-          const groupName = risksData[group] ? risksData[group].name : group;
-          
-          const groupElement = document.createElement('div');
-          groupElement.className = 'risk-group';
-          
-          const groupHeader = document.createElement('div');
-          groupHeader.className = 'risk-group-header';
-          groupHeader.textContent = groupName;
-          
-          const groupContent = document.createElement('div');
-          groupContent.className = 'risk-group-content';
-          
-          risks.forEach(risk => {
-            const riskElement = document.createElement('div');
-            riskElement.className = 'selected-risk';
-            riskElement.innerHTML = `
-              <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
-              <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
-            `;
-            groupContent.appendChild(riskElement);
+
+          // Renderização de UI
+          const selectedRisksContainer = document.getElementById('selected-risks-container');
+          if (!selectedRisksContainer) return;
+
+          selectedRisksContainer.innerHTML = '';
+
+          if (riscos_selecionados.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'no-risks';
+            emptyMessage.textContent = 'Nenhum risco selecionado';
+            selectedRisksContainer.appendChild(emptyMessage);
+            return;
+          }
+
+          // Agrupar riscos por categoria
+          const risksByGroup = {};
+          for (const { codigo, descricao, grupo } of riscos_selecionados) {
+            if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
+            risksByGroup[grupo].push({ code: codigo, name: descricao });
+          }
+
+          for (const [group, risks] of Object.entries(risksByGroup)) {
+            const groupName = risksData[group] ? risksData[group].name : group;
+            const groupElement = document.createElement('div');
+            groupElement.className = 'risk-group';
+            const groupHeader = document.createElement('div');
+            groupHeader.className = 'risk-group-header';
+            groupHeader.textContent = groupName;
+            const groupContent = document.createElement('div');
+            groupContent.className = 'risk-group-content';
+            risks.forEach(risk => {
+              const riskElement = document.createElement('div');
+              riskElement.className = 'selected-risk';
+              riskElement.innerHTML = `
+                <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
+                <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
+              `;
+              groupContent.appendChild(riskElement);
+            });
+            groupElement.appendChild(groupHeader);
+            groupElement.appendChild(groupContent);
+            selectedRisksContainer.appendChild(groupElement);
+          }
+
+          // Adiciona eventos de remoção (mantém persistência imediata via updateSelectedRisksDisplay)
+          document.querySelectorAll('.remove-risk').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              const codeToRemove = this.getAttribute('data-code');
+              if (selectedRisks[codeToRemove]) {
+                delete selectedRisks[codeToRemove];
+                window._riscosDirty = true;
+                updateSelectedRisksDisplay();
+                if (searchBox && searchBox.value.trim() !== '') {
+                  performSearch(searchBox.value);
+                }
+              }
+            });
           });
-          
-          groupElement.appendChild(groupHeader);
-          groupElement.appendChild(groupContent);
-          selectedRisksContainer.appendChild(groupElement);
+        } finally {
+          window._riscosRenderRunning = false;
         }
-        
-        // Adicionar eventos de remoção
-        document.querySelectorAll('.remove-risk').forEach(btn => {
-          btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const codeToRemove = this.getAttribute('data-code');
-            delete selectedRisks[codeToRemove];
-            updateSelectedRisksDisplay();
-            // Atualiza a busca para mostrar o item removido, se aplicável
-            if (searchBox && searchBox.value.trim() !== '') {
-              performSearch(searchBox.value);
-            }
-          });
-        });
+      }
+
+      // Reaplica a UI dos riscos sem persistir (usado ao reentrar na aba Riscos)
+      function reaplicarRiscosSelecionadosUI() {
+        if (window._riscosRenderRunning) return;
+        window._riscosRenderRunning = true;
+        try {
+          // Garante que o array esteja consistente com o objeto
+          riscos_selecionados = Object.entries(selectedRisks).map(([codigo, info]) => ({
+            codigo,
+            descricao: info.name,
+            grupo: info.group,
+          }));
+
+          const selectedRisksContainer = document.getElementById('selected-risks-container');
+          if (!selectedRisksContainer) return;
+          selectedRisksContainer.innerHTML = '';
+          if (riscos_selecionados.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'no-risks';
+            emptyMessage.textContent = 'Nenhum risco selecionado';
+            selectedRisksContainer.appendChild(emptyMessage);
+            return;
+          }
+          const risksByGroup = {};
+          for (const { codigo, descricao, grupo } of riscos_selecionados) {
+            if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
+            risksByGroup[grupo].push({ code: codigo, name: descricao });
+          }
+          for (const [group, risks] of Object.entries(risksByGroup)) {
+            const groupName = risksData[group] ? risksData[group].name : group;
+            const groupElement = document.createElement('div');
+            groupElement.className = 'risk-group';
+            const groupHeader = document.createElement('div');
+            groupHeader.className = 'risk-group-header';
+            groupHeader.textContent = groupName;
+            const groupContent = document.createElement('div');
+            groupContent.className = 'risk-group-content';
+            risks.forEach(risk => {
+              const riskElement = document.createElement('div');
+              riskElement.className = 'selected-risk';
+              riskElement.innerHTML = `
+                <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
+                <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
+              `;
+              groupContent.appendChild(riskElement);
+            });
+            groupElement.appendChild(groupHeader);
+            groupElement.appendChild(groupContent);
+            selectedRisksContainer.appendChild(groupElement);
+          }
+        } finally {
+          window._riscosRenderRunning = false;
+        }
       }
 
       function gravar_riscos_selecionados()
@@ -2878,7 +3033,16 @@
               }, 5000);
 
               console.log(retorno_exame_geracao_kit);
-
+              // Snapshot global após sucesso (caso chamado externamente)
+              try {
+                if (Array.isArray(riscos_selecionados)) {
+                  window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+                }
+                if (typeof selectedRisks === 'object') {
+                  window.riscosEstadoSalvoDetalhes = { ...selectedRisks };
+                }
+                window._riscosDirty = false;
+              } catch (e) { /* ignore */ }
               resolve(retorno_exame_geracao_kit);
             },
             error: function (xhr, status, error) {
@@ -5925,16 +6089,37 @@ function buscar_riscos() {
 
       // ----- Aqui segue sua lógica atual de montar checkboxes -----
       container.empty();
+      // Debug antes de montar/checar os grupos
+      try {
+        console.log('DEBUG grupos antes de montar:', {
+          snapshot: Array.isArray(window.riscosGruposEstadoSalvo) ? window.riscosGruposEstadoSalvo : [],
+          gruposDisponiveis: Object.keys(risksData || {})
+        });
+      } catch(e) {}
+      debugger;
       for (const [codigo, dados] of Object.entries(risksData)) {
+        const deveMarcar = Array.isArray(window.riscosGruposEstadoSalvo) && window.riscosGruposEstadoSalvo.includes(codigo);
         const checkboxHtml = `
           <label class="group-option" style="display: block; padding: 5px 0;">
-            <input type="checkbox" value="${codigo}" ${codigo === 'ergonomicos' ? 'checked' : ''}>
+            <input type="checkbox" value="${codigo}" ${deveMarcar ? 'checked' : ''}>
             ${dados.name}
           </label>
         `;
         container.append(checkboxHtml);
       }
-      
+
+      // Após reconstruir os grupos, reaplica sempre o estado salvo (grupos e input)
+      setTimeout(function(){
+        try {
+          if (typeof window.reaplicarGruposSelecionadosUI === 'function') {
+            window.reaplicarGruposSelecionadosUI();
+          }
+          if (typeof window.reaplicarRiscosSelecionadosUI === 'function') {
+            window.reaplicarRiscosSelecionadosUI();
+          }
+        } catch (e) { console.warn('Falha ao reaplicar estado de riscos após buscar_riscos:', e); }
+      }, 0);
+
       // Observação: Listeners de busca e de checkboxes são inicializados em initializeRiscosComponent().
       // Evitamos duplicar handlers aqui para não gerar duas listagens/fluxos diferentes.
 
@@ -7202,7 +7387,14 @@ console.log(total); // Exemplo: "180.10"
               }, 5000);
 
               console.log(retorno_exame_geracao_kit);
-
+              // Atualiza snapshot persistido após sucesso
+              try {
+                if (Array.isArray(riscos_selecionados)) {
+                  window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+                }
+                window._riscosDirty = false;
+              } catch (e) { /* ignore */ }
+              
               resolve(retorno_exame_geracao_kit);
             },
             error: function (xhr, status, error) {
