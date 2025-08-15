@@ -1674,6 +1674,8 @@
           if (inp) inp.value = st.cargo.display || '';
           if (det && st.cargo.detalhesHtml) { det.innerHTML = st.cargo.detalhesHtml; det.style.display = 'block'; }
         }
+        // Profissionais resumidos dentro dos detalhes de Empresa/Clínica
+        applyProfissionaisToEcpDetails();
         // Motorista
         if (st.motorista) {
           const radios = document.querySelectorAll('input[name="motorista"]');
@@ -1684,6 +1686,174 @@
           }
         }
       } catch (e) { /* noop */ }
+    }
+
+    // Salva profissional selecionado em estado global
+    function saveProfissional(tipo, data) {
+      if (!window.ecpState) window.ecpState = {};
+      if (!window.ecpState.profissionais) window.ecpState.profissionais = { coordenador: null, medico: null };
+      const payload = { id: data && data.id ? data.id : null, nome: data && data.nome ? data.nome : (typeof data === 'string' ? data : '') };
+      if (tipo === 'coordenador') window.ecpState.profissionais.coordenador = payload;
+      if (tipo === 'medico') window.ecpState.profissionais.medico = payload;
+      // Reflete no ECP
+      try { applyProfissionaisToEcpDetails(); } catch (e) { /* noop */ }
+      // Atualiza UI da própria aba Médicos (chips)
+      try { renderResultadoProfissional(tipo); } catch (e) { /* noop */ }
+      // Dispara evento para possíveis persistências externas
+      try { document.dispatchEvent(new CustomEvent('profissionalChanged', { detail: { tipo, profissional: payload } })); } catch (e) { /* noop */ }
+    }
+
+    // Remove profissional selecionado (limpa estado e UI) e notifica
+    function removeProfissional(tipo) {
+      if (!window.ecpState) return;
+      if (!window.ecpState.profissionais) return;
+      if (tipo === 'coordenador') window.ecpState.profissionais.coordenador = null;
+      if (tipo === 'medico') window.ecpState.profissionais.medico = null;
+      // Limpa input
+      const inputId = tipo === 'coordenador' ? 'inputCoordenador' : 'inputMedico';
+      const resId = tipo === 'coordenador' ? 'resultadoCoordenador' : 'resultadoMedico';
+      const inp = document.getElementById(inputId);
+      if (inp) inp.value = '';
+      const res = document.getElementById(resId);
+      if (res) res.innerHTML = '';
+      // Reflete nas seções de ECP
+      try { applyProfissionaisToEcpDetails(); } catch (e) { /* noop */ }
+      // Notifica alteração para possíveis gravações no kit
+      try { document.dispatchEvent(new CustomEvent('profissionalRemoved', { detail: { tipo } })); } catch (e) { /* noop */ }
+    }
+
+    // Renderiza chip do profissional no container de resultado
+    function renderResultadoProfissional(tipo) {
+      const resId = tipo === 'coordenador' ? 'resultadoCoordenador' : 'resultadoMedico';
+      const st = window.ecpState || {};
+      const prof = (st.profissionais || {})[tipo];
+      const container = document.getElementById(resId);
+      if (!container) return;
+      container.innerHTML = '';
+      if (!prof || !prof.nome) return;
+      const chip = document.createElement('div');
+      chip.style.display = 'inline-flex';
+      chip.style.alignItems = 'center';
+      chip.style.gap = '8px';
+      chip.style.background = '#e2e8f0';
+      chip.style.color = '#0f172a';
+      chip.style.borderRadius = '999px';
+      chip.style.padding = '6px 10px';
+      chip.style.marginTop = '6px';
+      chip.style.fontSize = '14px';
+      chip.innerHTML = `<i class="fas fa-user-md" style="color:#2563eb"></i> <span>${prof.nome}</span>`;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Remover');
+      btn.style.border = 'none';
+      btn.style.background = 'transparent';
+      btn.style.cursor = 'pointer';
+      btn.style.color = '#334155';
+      btn.innerHTML = '<i class="fas fa-times"></i>';
+      btn.addEventListener('click', () => removeProfissional(tipo));
+      chip.appendChild(btn);
+      container.appendChild(chip);
+    }
+
+    // Exibe o resumo dos profissionais selecionados dentro dos detalhes de Empresa e Clínica
+    function applyProfissionaisToEcpDetails() {
+      try {
+        const st = window.ecpState || {};
+        const prof = (st.profissionais) || {};
+        const resumoHtml = (prof.coordenador || prof.medico) ? `
+          <div id="ecp-profissionais-resumo" style="margin-top: 8px; padding: 8px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px;">
+            <div style="font-weight:600; color:#334155; margin-bottom:4px; display:flex; align-items:center; gap:6px;"><i class="fas fa-user-md" style="color:#4a90e2"></i> Profissionais Selecionados</div>
+            ${prof.medico && prof.medico.nome ? `<div style="color:#0f172a"><strong>Médico:</strong> ${prof.medico.nome}</div>` : ''}
+            ${prof.coordenador && prof.coordenador.nome ? `<div style="color:#0f172a"><strong>Coordenador:</strong> ${prof.coordenador.nome}</div>` : ''}
+          </div>
+        ` : '';
+
+        const detEmp = document.getElementById('detalhesEmpresa');
+        const detCli = document.getElementById('detalhesClinica');
+        // Atualiza/insere bloco dentro de Empresa
+        if (detEmp && detEmp.innerHTML) {
+          const wrapper = detEmp;
+          const existing = wrapper.querySelector('#ecp-profissionais-resumo');
+          if (existing) {
+            if (resumoHtml) existing.outerHTML = resumoHtml; else existing.remove();
+          } else if (resumoHtml) {
+            wrapper.insertAdjacentHTML('beforeend', resumoHtml);
+          }
+          // Atualiza snapshot salvo
+          if (window.ecpState && window.ecpState.empresa) {
+            window.ecpState.empresa.detalhesHtml = wrapper.innerHTML;
+          }
+        }
+        // Atualiza/insere bloco dentro de Clínica
+        if (detCli && detCli.innerHTML) {
+          const wrapper = detCli;
+          const existing = wrapper.querySelector('#ecp-profissionais-resumo');
+          if (existing) {
+            if (resumoHtml) existing.outerHTML = resumoHtml; else existing.remove();
+          } else if (resumoHtml) {
+            wrapper.insertAdjacentHTML('beforeend', resumoHtml);
+          }
+          if (window.ecpState && window.ecpState.clinica) {
+            window.ecpState.clinica.detalhesHtml = wrapper.innerHTML;
+          }
+        }
+      } catch (e) { /* noop */ }
+    }
+
+    // Restaura os campos da aba Médicos a partir do estado salvo
+    function applyMedicosStateToUI() {
+      try {
+        const st = window.ecpState || {};
+        const prof = st.profissionais || {};
+        const inpCoord = document.getElementById('inputCoordenador');
+        const inpMed = document.getElementById('inputMedico');
+        if (inpCoord && prof.coordenador && prof.coordenador.nome) inpCoord.value = prof.coordenador.nome;
+        if (inpMed && prof.medico && prof.medico.nome) inpMed.value = prof.medico.nome;
+        // Atualiza cabeçalho com clínica
+        applyMedicosHeaderFromEcp();
+        // Renderiza chips
+        try { renderResultadoProfissional('coordenador'); } catch (e) { /* noop */ }
+        try { renderResultadoProfissional('medico'); } catch (e) { /* noop */ }
+      } catch (e) { /* noop */ }
+    }
+
+    // Faz o bind dos inputs da aba Médicos para persistir seleções
+    function bindMedicosInputsOnce() {
+      const bind = (id, tipo) => {
+        const el = document.getElementById(id);
+        if (!el || el._mdBound) return;
+        const handler = () => {
+          const nome = (el.value || '').trim();
+          if (nome) saveProfissional(tipo, { nome });
+        };
+        el.addEventListener('change', handler);
+        el.addEventListener('blur', handler);
+        el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') handler(); });
+        el._mdBound = true;
+      };
+      bind('inputCoordenador', 'coordenador');
+      bind('inputMedico', 'medico');
+
+      // Delegação de clique nas listas de autocomplete (se existirem)
+      const bindAuto = (listaId, inputId, tipo) => {
+        const lista = document.getElementById(listaId);
+        const input = document.getElementById(inputId);
+        if (!lista || lista._mdAutoBound) return;
+        lista.addEventListener('click', (ev) => {
+          const item = ev.target.closest('[data-id], [data-nome]') || ev.target.closest('div,li');
+          if (!item) return;
+          let id = item.dataset && item.dataset.id ? item.dataset.id : null;
+          let nome = item.dataset && item.dataset.nome ? item.dataset.nome : (item.textContent || '').trim();
+          if (!nome) return;
+          if (input) input.value = nome;
+          saveProfissional(tipo, { id, nome });
+          // limpa lista se for dropdown
+          try { lista.innerHTML = ''; } catch (e) {}
+        });
+        lista._mdAutoBound = true;
+      };
+      bindAuto('listaCoordenador', 'inputCoordenador', 'coordenador');
+      bindAuto('listaMedico', 'inputMedico', 'medico');
     }
 
     function applyMedicosHeaderFromEcp() {
@@ -1707,7 +1877,33 @@
       // Passo 3 (index 2): Profissionais da Medicina
       if (step === 2) {
         try { applyMedicosHeaderFromEcp(); } catch (err) { /* noop */ }
+        // Garante binds e restaura seleção dos profissionais (ligeiro atraso para DOM assentar)
+        setTimeout(() => {
+          try { bindMedicosInputsOnce(); } catch (e) { /* noop */ }
+          try { applyMedicosStateToUI(); } catch (e) { /* noop */ }
+        }, 50);
       }
+    });
+
+    // Atualização do KIT quando há mudança de profissionais (se houver hook disponível)
+    document.addEventListener('profissionalChanged', function(ev) {
+      try {
+        if (window && typeof window.atualizarKitProfissionais === 'function') {
+          window.atualizarKitProfissionais(ev.detail || {});
+        } else {
+          // Marca sujo para eventual gravação posterior
+          window._kitDirtyProfessionals = true;
+        }
+      } catch (e) { /* noop */ }
+    });
+    document.addEventListener('profissionalRemoved', function(ev) {
+      try {
+        if (window && typeof window.atualizarKitProfissionais === 'function') {
+          window.atualizarKitProfissionais({ removed: true, ...(ev.detail || {}) });
+        } else {
+          window._kitDirtyProfessionals = true;
+        }
+      } catch (e) { /* noop */ }
     });
 
     // Conteúdo do passo 2 (ECP)
