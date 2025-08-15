@@ -2876,6 +2876,26 @@
           const selectedRisksContainer = document.getElementById('selected-risks-container');
           if (!selectedRisksContainer) return;
 
+          // Delegação de eventos para remover risco (bind uma vez)
+          if (!selectedRisksContainer._removeDelegationBound) {
+            selectedRisksContainer.addEventListener('click', function(e) {
+              const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
+              if (!btn || !selectedRisksContainer.contains(btn)) return;
+              if (typeof e.stopPropagation === 'function') e.stopPropagation();
+              if (typeof e.preventDefault === 'function') e.preventDefault();
+              const codeToRemove = btn.getAttribute('data-code');
+              if (codeToRemove && selectedRisks[codeToRemove]) {
+                delete selectedRisks[codeToRemove];
+                window._riscosDirty = true;
+                updateSelectedRisksDisplay();
+                if (searchBox && searchBox.value && searchBox.value.trim() !== '') {
+                  try { performSearch(searchBox.value); } catch (e) { /* ignore */ }
+                }
+              }
+            });
+            selectedRisksContainer._removeDelegationBound = true;
+          }
+
           selectedRisksContainer.innerHTML = '';
 
           if (riscos_selecionados.length === 0) {
@@ -2916,21 +2936,8 @@
             selectedRisksContainer.appendChild(groupElement);
           }
 
-          // Adiciona eventos de remoção (mantém persistência imediata via updateSelectedRisksDisplay)
-          document.querySelectorAll('.remove-risk').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-              e.stopPropagation();
-              const codeToRemove = this.getAttribute('data-code');
-              if (selectedRisks[codeToRemove]) {
-                delete selectedRisks[codeToRemove];
-                window._riscosDirty = true;
-                updateSelectedRisksDisplay();
-                if (searchBox && searchBox.value.trim() !== '') {
-                  performSearch(searchBox.value);
-                }
-              }
-            });
-          });
+          // Removido binding direto por querySelectorAll('.remove-risk');
+          // Agora a remoção é tratada via delegação no container 'selected-risks-container'.
         } finally {
           window._riscosRenderRunning = false;
         }
@@ -2950,6 +2957,25 @@
 
           const selectedRisksContainer = document.getElementById('selected-risks-container');
           if (!selectedRisksContainer) return;
+          // Garante que o listener de remoção esteja ativo mesmo após reentrada na aba
+          if (!selectedRisksContainer._removeDelegationBound) {
+            selectedRisksContainer.addEventListener('click', function(e) {
+              const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
+              if (!btn || !selectedRisksContainer.contains(btn)) return;
+              if (typeof e.stopPropagation === 'function') e.stopPropagation();
+              if (typeof e.preventDefault === 'function') e.preventDefault();
+              const codeToRemove = btn.getAttribute('data-code');
+              if (codeToRemove && selectedRisks[codeToRemove]) {
+                delete selectedRisks[codeToRemove];
+                window._riscosDirty = true;
+                updateSelectedRisksDisplay();
+                if (searchBox && searchBox.value && searchBox.value.trim() !== '') {
+                  try { performSearch(searchBox.value); } catch (e) { /* ignore */ }
+                }
+              }
+            });
+            selectedRisksContainer._removeDelegationBound = true;
+          }
           selectedRisksContainer.innerHTML = '';
           if (riscos_selecionados.length === 0) {
             const emptyMessage = document.createElement('div');
