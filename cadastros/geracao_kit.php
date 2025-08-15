@@ -2398,10 +2398,10 @@
         try {
           selectedRisks = { ...window.riscosEstadoSalvoDetalhes };
           window._riscosDirty = false;
-          // Deriva grupos a partir dos riscos restaurados e salva snapshot
+          // Deriva grupos a partir dos riscos restaurados SOMENTE se não houver snapshot prévio
           try {
             const gruposDerivados = Array.from(new Set(Object.values(selectedRisks || {}).map(r => r.group).filter(Boolean)));
-            if (gruposDerivados.length) {
+            if ((!Array.isArray(window.riscosGruposEstadoSalvo) || window.riscosGruposEstadoSalvo.length === 0) && gruposDerivados.length) {
               window.riscosGruposEstadoSalvo = gruposDerivados;
             }
           } catch (e) { /* ignore */ }
@@ -2857,11 +2857,7 @@
           console.log('Riscos selecionados (array):', riscos_selecionados);
           json_riscos = JSON.stringify(riscos_selecionados);
 
-          // Atualiza snapshot de grupos com base nos riscos atuais
-          try {
-            const gruposAtuais = Array.from(new Set(Object.values(selectedRisks || {}).map(r => r.group).filter(Boolean)));
-            window.riscosGruposEstadoSalvo = gruposAtuais;
-          } catch (e) { /* ignore */ }
+          // Não alterar seleção de grupos aqui; grupos são controlados apenas pelos checkboxes
 
           // Persistência assíncrona imediata (mantém comportamento atual ao selecionar/remover)
           try {
@@ -2871,8 +2867,7 @@
             // Salva também detalhes para reidratar na reentrada da aba
             window.riscosEstadoSalvoDetalhes = { ...selectedRisks };
             window._riscosDirty = false;
-            // Garante que checkboxes e input dos grupos reflitam o snapshot
-            try { if (typeof window.reaplicarGruposSelecionadosUI === 'function') window.reaplicarGruposSelecionadosUI(); } catch(e) {}
+            // Não reaplicar grupos aqui para não desmarcar a escolha do usuário
           } catch (err) {
             console.warn('Falha ao gravar riscos selecionados (não bloqueante):', err);
           }
