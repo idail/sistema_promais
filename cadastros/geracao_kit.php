@@ -1865,8 +1865,14 @@ function renderResultadoProfissional(tipo) {
         if (inpMed && prof.medico && prof.medico.nome) inpMed.value = prof.medico.nome;
         // Atualiza cabeçalho com clínica
         applyMedicosHeaderFromEcp();
-        // Renderiza chips e cards
-        try { renderResultadoProfissional('coordenador'); } catch (e) { /* noop */ }
+        // Renderiza card detalhado do coordenador (no lugar do chip)
+        try {
+          const areaC = document.getElementById('resultadoCoordenador');
+          if (areaC && prof.coordenador && prof.coordenador.nome) {
+            const coordData = { id: prof.coordenador.id, nome: prof.coordenador.nome, cpf: prof.coordenador.cpf || '' };
+            renderizarPessoa('coordenador', coordData, areaC);
+          }
+        } catch (e) { /* noop */ }
         // Render detalhado do médico, se houver no estado
         try {
           const area = document.getElementById('resultadoMedico');
@@ -1923,14 +1929,18 @@ function renderResultadoProfissional(tipo) {
           if (input) input.value = nome;
           // Monte o objeto preservando ids específicos
           const data = (medicoId || relId) 
-            ? { medico_id: medicoId || null, medico_clinica_id: relId || null, id: medicoId || relId || null, nome, nome_medico: nome }
-            : { nome };
+            ? { medico_id: medicoId || null, medico_clinica_id: relId || null, id: medicoId || relId || null, nome, nome_medico: nome, cpf }
+            : { nome, cpf };
           saveProfissional(tipo, data);
-          // Renderiza o card detalhado do médico com CPF, se for o caso
+          // Renderiza o card detalhado do médico/coordenador com CPF
           try {
             if (tipo === 'medico') {
               const area = document.getElementById('resultadoMedico');
               if (area) renderizarPessoa('medico', { id: relId || medicoId || null, nome, cpf }, area);
+            } else if (tipo === 'coordenador') {
+              const areaC = document.getElementById('resultadoCoordenador');
+              const cid = medicoId || null;
+              if (areaC) renderizarPessoa('coordenador', { id: cid, nome, cpf }, areaC);
             }
           } catch (e) { /* noop */ }
           // Salva no KIT imediatamente se houver id da relação disponível e a função existir
@@ -5851,6 +5861,7 @@ function renderResultadoProfissional(tipo) {
         // Atribui datasets para o handler delegado em bindMedicosInputsOnce -> bindAuto
         div.dataset.medicoClinicaId = p.id; // relação médico_clínica
         div.dataset.nomeMedico = p.nome;
+        div.dataset.nome = p.nome; // nome genérico para coordenador/medico
         if (p.cpf) div.dataset.cpf = p.cpf;
         div.innerHTML = `
           <div class="font-medium">${p.nome}</div>
