@@ -1607,6 +1607,109 @@
       motorista: false
     };
 
+    // Estado global e funções auxiliares para persistir/restaurar ECP
+    window.ecpState = window.ecpState || {
+      empresa: null,    // { id, display, detalhesHtml }
+      clinica: null,    // { id, display, detalhesHtml, nome }
+      colaborador: null,// { id, display, detalhesHtml }
+      cargo: null,      // { id, display, detalhesHtml }
+      motorista: null,  // 'sim' | 'nao'
+      profissionais: { coordenador: null, medico: null }
+    };
+
+    function bindEcpInputsOnce() {
+      // Evita rebinds em cada troca de aba
+      const tryBind = (id, tipo, resultadoId, chave) => {
+        const el = document.getElementById(id);
+        if (!el || el._ecpBound) return;
+        el.addEventListener('keyup', () => buscarECP(tipo, id, resultadoId, chave));
+        el.addEventListener('focus', () => buscarECP(tipo, id, resultadoId, chave));
+        el._ecpBound = true;
+      };
+      tryBind('inputEmpresa', 'empresas', 'resultEmpresa', 'nome');
+      tryBind('inputClinica', 'clinicas', 'resultClinica', 'nome');
+      tryBind('inputColaborador', 'colaboradores', 'resultColaborador', 'nome');
+      tryBind('inputCargo', 'cargos', 'resultCargo', 'titulo');
+
+      // Rádios de motorista
+      const truckIcon = document.querySelector('.blink-truck');
+      const radios = document.querySelectorAll('input[name="motorista"]');
+      radios.forEach(r => {
+        if (r._ecpBound) return;
+        r.addEventListener('change', () => {
+          window.ecpState.motorista = r.value;
+          if (truckIcon) {
+            truckIcon.style.display = (r.value === 'sim' && r.checked) ? 'inline-block' : 'none';
+          }
+        });
+        r._ecpBound = true;
+      });
+    }
+
+    function applyEcpStateToUI() {
+      try {
+        const st = window.ecpState || {};
+        // Inputs e detalhes
+        if (st.empresa) {
+          const inp = document.getElementById('inputEmpresa');
+          const det = document.getElementById('detalhesEmpresa');
+          if (inp) inp.value = st.empresa.display || '';
+          if (det && st.empresa.detalhesHtml) { det.innerHTML = st.empresa.detalhesHtml; det.style.display = 'block'; }
+        }
+        if (st.clinica) {
+          const inp = document.getElementById('inputClinica');
+          const det = document.getElementById('detalhesClinica');
+          if (inp) inp.value = st.clinica.display || '';
+          if (det && st.clinica.detalhesHtml) { det.innerHTML = st.clinica.detalhesHtml; det.style.display = 'block'; }
+        }
+        if (st.colaborador) {
+          const inp = document.getElementById('inputColaborador');
+          const det = document.getElementById('detalhesColaborador');
+          if (inp) inp.value = st.colaborador.display || '';
+          if (det && st.colaborador.detalhesHtml) { det.innerHTML = st.colaborador.detalhesHtml; det.style.display = 'block'; }
+        }
+        if (st.cargo) {
+          const inp = document.getElementById('inputCargo');
+          const det = document.getElementById('detalhesCargo');
+          if (inp) inp.value = st.cargo.display || '';
+          if (det && st.cargo.detalhesHtml) { det.innerHTML = st.cargo.detalhesHtml; det.style.display = 'block'; }
+        }
+        // Motorista
+        if (st.motorista) {
+          const radios = document.querySelectorAll('input[name="motorista"]');
+          const truckIcon = document.querySelector('.blink-truck');
+          radios.forEach(r => { r.checked = (r.value === st.motorista); });
+          if (truckIcon) {
+            truckIcon.style.display = (st.motorista === 'sim') ? 'inline-block' : 'none';
+          }
+        }
+      } catch (e) { /* noop */ }
+    }
+
+    function applyMedicosHeaderFromEcp() {
+      try {
+        const st = window.ecpState || {};
+        const el = document.getElementById('exibi-clinica-selecionada');
+        if (el && st.clinica && (st.clinica.nome || st.clinica.display)) {
+          el.textContent = st.clinica.nome || st.clinica.display || '';
+        }
+      } catch (e) { /* noop */ }
+    }
+
+    // Restaura UI ao trocar de aba e mantém cabeçalho dos Médicos sincronizado
+    document.addEventListener('tabChanged', function(e) {
+      const step = e && e.detail ? e.detail.step : undefined;
+      // Passo 2 (index 1): ECP
+      if (step === 1) {
+        try { bindEcpInputsOnce(); } catch (err) { /* noop */ }
+        try { applyEcpStateToUI(); } catch (err) { /* noop */ }
+      }
+      // Passo 3 (index 2): Profissionais da Medicina
+      if (step === 2) {
+        try { applyMedicosHeaderFromEcp(); } catch (err) { /* noop */ }
+      }
+    });
+
     // Conteúdo do passo 2 (ECP)
     const ecpContent = `
       <div class="ecp-container">
@@ -4059,6 +4162,43 @@
           }
         }
       }
+      
+      // Salva a seleção no estado global (window.ecpState)
+      try {
+        const display = itemObj.nome || itemObj.titulo || (inputElement ? inputElement.value : '');
+        if (inputId === 'inputEmpresa') {
+          const det = document.getElementById('detalhesEmpresa');
+          window.ecpState.empresa = {
+            id: itemObj.id,
+            display: display || '',
+            detalhesHtml: det ? det.innerHTML : ''
+          };
+        } else if (inputId === 'inputClinica') {
+          const det = document.getElementById('detalhesClinica');
+          window.ecpState.clinica = {
+            id: itemObj.id,
+            display: display || '',
+            nome: itemObj.nome || display || '',
+            detalhesHtml: det ? det.innerHTML : ''
+          };
+          // Atualiza imediatamente o cabeçalho da aba Médicos, se presente
+          try { applyMedicosHeaderFromEcp(); } catch (e) { /* noop */ }
+        } else if (inputId === 'inputColaborador') {
+          const det = document.getElementById('detalhesColaborador');
+          window.ecpState.colaborador = {
+            id: itemObj.id,
+            display: display || '',
+            detalhesHtml: det ? det.innerHTML : ''
+          };
+        } else if (inputId === 'inputCargo') {
+          const det = document.getElementById('detalhesCargo');
+          window.ecpState.cargo = {
+            id: itemObj.id,
+            display: display || '',
+            detalhesHtml: det ? det.innerHTML : ''
+          };
+        }
+      } catch (e) { /* noop */ }
       
       // Limpa os campos dependentes quando necessário
       if (inputId === 'inputEmpresa') {
