@@ -5870,7 +5870,7 @@
     let risksData = {}; // variável global
 
 function buscar_riscos() {
-  debugger;
+  // debugger removed
 
   const container = $("#group-select-container");
   container.html('<div class="loading-riscos" style="padding: 10px; text-align: center; color: #666;">Carregando grupos de risco...</div>');
@@ -5883,7 +5883,7 @@ function buscar_riscos() {
       "processo_risco": "buscar_todos"
     },
     success: function(resposta) {
-      debugger;
+      // debugger removed
 
       const nomesGrupos = {
         "ergonomico": "Riscos Ergonômicos",
@@ -6055,10 +6055,124 @@ function buscar_riscos() {
     return;
   }
 
-    // Função para inicializar o componente de Aptidões e Exames
-    function initializeAptidoesExames() {
-      console.log('Inicializando componente de Aptidões e Exames...');
-      
+  // Reaplica checkbox marcados a partir do estado global
+  function reaplicarSelecoes() {
+    const codesMarcados = new Set((window.treinamentosSelecionados || []).map(x => x.codigo));
+    document.querySelectorAll('#listaTreinamentos input[type="checkbox"]').forEach(inp => {
+      inp.checked = codesMarcados.has(inp.value);
+    });
+  }
+  
+  // Mantém um estado temporário dos selecionados a partir do DOM (não persiste no backend)
+  function syncTempSelecionadosFromDOM() {
+    debugger;
+    const checkboxes = document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked');
+    const selecionadosTemporarios = Array.from(checkboxes).map(cb => ({
+      codigo: cb.value,
+      descricao: cb.getAttribute('data-nome') || cb.dataset?.nome || '',
+      valor: cb.getAttribute('data-valor') || cb.dataset?.valor || '0'
+    }));
+    window.treinamentosSelecionados = selecionadosTemporarios;
+  }
+  
+  // Reconstrói UI dos selecionados (lado direito) com base nos checados do DOM (não salva)
+  function rebuildSelecionadosUIFromChecked() {
+    debugger;
+    if (!containerSelecionados) return;
+    const checkboxes = document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked');
+
+    if (!checkboxes.length) {
+      containerSelecionados.innerHTML = `
+        <div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">Nenhum treinamento selecionado</div>`;
+      if (totalElement) totalElement.textContent = 'Total: R$ 0,00';
+      return;
+    }
+    let html = '';
+    let soma = 0.0;
+    checkboxes.forEach(cb => {
+      const codigo = cb.value;
+      const nome = cb.getAttribute('data-nome') || '';
+      const valorStr = (cb.getAttribute('data-valor') || '0').replace('.', '').replace(',', '.');
+      const valor = parseFloat(valorStr) || 0;
+      soma += valor;
+      html += `
+        <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+          <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
+          <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
+        </div>`;
+    });
+    containerSelecionados.innerHTML = html;
+    // Mantido oculto o total no UI, mas atualiza variável global de faturamento
+    window.fatTotalTreinamentos = soma.toFixed(2);
+    if (typeof fatAtualizarTotais === 'function') {
+      fatAtualizarTotais();
+    }
+  }
+
+  // Salva (via AJAX) somente se houve alteração em relação ao último estado salvo
+  async function atualizarSelecionados() {
+    debugger;
+    const checkboxes = Array.from(document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked'));
+
+    // Monta objetos selecionados atuais (estado do DOM agora)
+    const selecionadosAtuais = checkboxes.map(input => ({
+      codigo: input.value,
+      descricao: input.dataset.nome,
+      valor: input.dataset.valor
+    }));
+
+    // Mantém estado temporário global atualizado para persistir entre trocas de abas
+    window.treinamentosSelecionados = selecionadosAtuais.slice();
+
+    const codesAtuais = selecionadosAtuais.map(x => x.codigo).sort();
+    const codesSalvos = (window.treinamentosEstadoSalvoCodes || []).slice().sort();
+
+    // Atualiza painel da direita e totais (independente de salvar ou não)
+    rebuildSelecionadosUIFromChecked();
+
+    // Descobre apenas ADIÇÕES para salvar no kit (não reenvia os já salvos)
+    const setSalvos = new Set(window.treinamentosEstadoSalvoCodes || []);
+    const apenasNovos = selecionadosAtuais.filter(x => !setSalvos.has(x.codigo));
+
+    if (apenasNovos.length === 0) {
+      console.log('Nenhum treinamento novo para salvar.');
+      return;
+    }
+
+    // Persiste apenas os novos no backend
+    const json_cursos_selecionados = JSON.stringify(apenasNovos);
+    try {
+      await new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_treinamentos: json_cursos_selecionados,
+          },
+          success: function(resp) { resolve(resp); },
+          error: function(xhr, status, error) { reject(error); }
+        });
+      });
+
+      // Atualiza estado global após salvar
+      const novosCodigos = apenasNovos.map(x => x.codigo);
+      const uniao = Array.from(new Set([...(window.treinamentosEstadoSalvoCodes || []), ...novosCodigos]));
+      window.treinamentosEstadoSalvoCodes = uniao;
+      window.treinamentosSelecionados = selecionadosAtuais;
+      window.treinamentosJaMarcados = window.treinamentosSelecionados.length > 0;
+
+      if (typeof fatAtualizarTotais === 'function') {
+        fatAtualizarTotais();
+      }
+    } catch (e) {
+      console.error('Falha ao salvar treinamentos selecionados:', e);
+    }
+  }
+
+  function initializeAptidoesExames() {
+    console.log('Inicializando componente de Aptidões e Exames...');
       // ... (restante do código permanece o mesmo)
       // Dados de exemplo para aptidões
       const aptidoes = [
@@ -6176,7 +6290,6 @@ function buscar_riscos() {
     
     // Função auxiliar para adicionar item na lista
     function adicionarItemNaLista(listaId, texto, valor) {
-      debugger;
       const lista = document.getElementById(listaId);
       if (!lista) return;
       
@@ -6610,7 +6723,7 @@ function buscar_riscos() {
     
     // Função para gerenciar os treinamentos
     function gerenciarTreinamentos() {
-      debugger;
+      // debugger;
       // Array que irá armazenar os treinamentos
       const treinamentos = [];
       
@@ -6624,7 +6737,7 @@ function buscar_riscos() {
         if (response && Array.isArray(response) && response.length > 0) {
           // Formata os dados para o formato esperado pelo sistema
           response.forEach(function(treinamento) {
-            debugger;
+            // debugger;
             treinamentos.push({
               codigo: treinamento.codigo_treinamento_capacitacao,
               nome: treinamento.nome,
@@ -6795,6 +6908,169 @@ function buscar_riscos() {
         banner.querySelector('span').textContent = `TREINAMENTOS: R$ ${totalFormatado}`;
       }
 
+      // ===================== Treinamentos: Estado e Funções =====================
+      // Estados globais mantidos entre trocas de aba
+      window.treinamentosSelecionados = window.treinamentosSelecionados || [];
+      window.treinamentosEstadoSalvoCodes = window.treinamentosEstadoSalvoCodes || [];
+      window.recebe_valores_treinamentos_selecionados = window.recebe_valores_treinamentos_selecionados || [];
+
+      // Normaliza qualquer formato inesperado para sempre trabalhar com Array
+      function normalizeTreinamentosSelecionados(val) {
+        try {
+          if (Array.isArray(val)) return val;
+          if (val == null) return [];
+          if (typeof val === 'string') {
+            const parsed = JSON.parse(val);
+            return Array.isArray(parsed) ? parsed : [];
+          }
+          if (typeof val === 'object') {
+            // Pode vir como objeto/dicionário -> usa os valores
+            const arr = Object.values(val);
+            return Array.isArray(arr) ? arr : [];
+          }
+          return [];
+        } catch (e) {
+          console.warn('normalizeTreinamentosSelecionados falhou, retornando array vazio:', e);
+          return [];
+        }
+      }
+
+      // Lê os checkboxes marcados e sincroniza os arrays globais temporários (execução única)
+      function syncTempSelecionadosFromDOM() {
+        debugger;
+        if (window._syncTreinamentosRunning) return;
+        window._syncTreinamentosRunning = true;
+        try {
+          const marcados = document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked');
+          const lista = [];
+          const listaValores = [];
+          marcados.forEach(input => {
+            const codigo = String(input.value);
+            const nome = input.getAttribute('data-nome') || input.dataset?.nome || '';
+            const valor = input.getAttribute('data-valor') || input.dataset?.valor || '0';
+            lista.push({
+              codigo: codigo,
+              descricao: nome,
+              valor: valor
+            });
+            listaValores.push({
+              codigo: codigo,
+              valor: valor
+            });
+          });
+          window.treinamentosSelecionados = lista;
+          window.recebe_valores_treinamentos_selecionados = listaValores;
+        } finally {
+          // Libera no próximo tick para agrupar múltiplos eventos no mesmo ciclo
+          setTimeout(() => { window._syncTreinamentosRunning = false; }, 0);
+        }
+      }
+
+      // Marca checkboxes conforme o estado temporário global
+      function reaplicarSelecoes() {
+        window.treinamentosSelecionados = normalizeTreinamentosSelecionados(window.treinamentosSelecionados);
+        const marcados = new Set(window.treinamentosSelecionados.map(t => String(t.codigo)));
+        document.querySelectorAll('#listaTreinamentos input[type="checkbox"]').forEach(cb => {
+          cb.checked = marcados.has(String(cb.value));
+        });
+      }
+
+      // Reconstrói o painel da direita e atualiza o total global de faturamento (apenas itens salvos)
+      function rebuildSelecionadosUIFromChecked() {
+        // Evita reentrância (fatAtualizarTotais pode disparar eventos que voltam aqui)
+        if (window._rebuildTreinamentosRunning) return;
+        window._rebuildTreinamentosRunning = true;
+
+        try {
+          const container = document.getElementById('treinamentosSelecionados');
+          const totalElement = document.getElementById('totalTreinamentos');
+          if (!container) return;
+
+          // Usa SOMENTE os códigos já salvos para exibir no painel
+          const salvosCodes = Array.isArray(window.treinamentosEstadoSalvoCodes) ? window.treinamentosEstadoSalvoCodes : [];
+
+          if (salvosCodes.length === 0) {
+            container.innerHTML = `
+              <div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
+                Nenhum treinamento selecionado
+              </div>`;
+            if (totalElement) totalElement.textContent = 'Total: R$ 0,00';
+            window.fatTotalTreinamentos = 0;
+            if (typeof fatAtualizarTotais === 'function') fatAtualizarTotais();
+            return;
+          }
+
+          // Mapa auxiliar DOM: codigo -> {nome, valor}
+          const domMap = new Map();
+          document.querySelectorAll('#listaTreinamentos input[type="checkbox"]').forEach(cb => {
+            const codigo = String(cb.value);
+            const nome = cb.getAttribute('data-nome') || cb.dataset?.nome || '';
+            const valorStr = cb.getAttribute('data-valor') || cb.dataset?.valor || '0';
+            domMap.set(codigo, { nome, valorStr });
+          });
+
+          let html = '';
+          let total = 0;
+          salvosCodes.forEach(code => {
+            const codigo = String(code);
+            const info = domMap.get(codigo);
+            const nome = info ? info.nome : `Treinamento ${codigo}`;
+            const valorStr = info ? info.valorStr : '0';
+            const valor = parseFloat((valorStr || '0').replace('.', '').replace(',', '.')) || 0;
+            total += valor;
+            html += `
+              <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
+                <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
+              </div>`;
+          });
+
+          container.innerHTML = html;
+          window.fatTotalTreinamentos = Number(total.toFixed(2));
+          if (typeof fatAtualizarTotais === 'function') fatAtualizarTotais();
+        } finally {
+          window._rebuildTreinamentosRunning = false;
+        }
+      }
+
+      // Salva apenas os novos itens ao clicar em Aplicar (execução única)
+      async function atualizarSelecionadosTreinamentos() {
+        debugger;
+        if (window._aplicarTreinamentosRunning) return;
+        window._aplicarTreinamentosRunning = true;
+        try {
+          
+          syncTempSelecionadosFromDOM();
+
+          // Normaliza estados antes de usar
+          window.treinamentosSelecionados = normalizeTreinamentosSelecionados(window.treinamentosSelecionados);
+          window.treinamentosEstadoSalvoCodes = Array.isArray(window.treinamentosEstadoSalvoCodes) ? window.treinamentosEstadoSalvoCodes : [];
+          const salvos = new Set(window.treinamentosEstadoSalvoCodes.map(c => String(c)));
+          const novosDetalhes = window.treinamentosSelecionados.filter(t => t && !salvos.has(String(t.codigo)));
+
+          if (novosDetalhes.length === 0) {
+            console.log('Nenhum novo treinamento para salvar.');
+            return;
+          }
+
+          // Envia apenas os novos
+          json_cursos_selecionados = JSON.stringify(novosDetalhes);
+          await gravar_treinamentos_selecionados();
+
+          // Atualiza o estado salvo e reconstroi UI UMA vez
+          window.treinamentosEstadoSalvoCodes = Array.from(new Set([
+            ...Array.from(salvos),
+            ...novosDetalhes.map(t => String(t.codigo))
+          ]));
+
+          rebuildSelecionadosUIFromChecked();
+        } catch (err) {
+          console.error('Falha ao salvar treinamentos selecionados:', err);
+        } finally {
+          window._aplicarTreinamentosRunning = false;
+        }
+      }
+
       // Supondo que você já tenha todos os inputs selecionados
       let cursosSelecionados = [];
       let json_cursos_selecionados;
@@ -6943,43 +7219,63 @@ console.log(total); // Exemplo: "180.10"
         });
       }
 
-      // Event Listeners
+      // Liga eventos do botão Aplicar e da lista de treinamentos
       function setupEventListeners() {
-        // Verifica se os elementos existem antes de adicionar event listeners
-        if (btnAplicar) {
-          btnAplicar.addEventListener('click', atualizarSelecionados);
-        } else {
-          console.warn('Botão de aplicar treinamentos não encontrado');
+        debugger;
+        // Sempre resolve elementos mais recentes do DOM (após render)
+        const btnAplicar = document.getElementById('btnAplicarTreinamentos');
+        const listaTreinamentos = document.getElementById('listaTreinamentos');
+
+        // Handler preferencial: salvar apenas ao aplicar; fallback mantém compatibilidade
+        const handlerAplicar = (typeof atualizarSelecionadosTreinamentos === 'function')
+          ? atualizarSelecionadosTreinamentos
+          : (typeof atualizarSelecionados === 'function' ? atualizarSelecionados : null);
+
+        if (btnAplicar && handlerAplicar) {
+          // Evita duplicação simples
+          btnAplicar.replaceWith(btnAplicar.cloneNode(true));
+          const novoBtn = document.getElementById('btnAplicarTreinamentos');
+          if (novoBtn) novoBtn.addEventListener('click', (e) => { debugger; handlerAplicar(e); });
         }
-        
-        // Adicionar novo treinamento (exemplo)
-        if (btnAddTreinamento) {
-          btnAddTreinamento.addEventListener('click', () => {
-            alert('Funcionalidade para adicionar novo treinamento será implementada aqui.');
-          });
-        } else {
-          console.warn('Botão de adicionar treinamento não encontrado');
-        }
-        
-        // Marcar/desmarcar ao clicar em qualquer lugar do item
+
         if (listaTreinamentos) {
+          // Clique na linha alterna o checkbox
           listaTreinamentos.addEventListener('click', (e) => {
+            // Se o clique foi diretamente no checkbox, não faça nada aqui
+            if (e.target && e.target.matches('input[type="checkbox"]')) return;
             const item = e.target.closest('.treinamento-item');
             if (item) {
               const checkbox = item.querySelector('input[type="checkbox"]');
               if (checkbox) {
+                // Alterna visualmente e dispara apenas UM ciclo via evento change
                 checkbox.checked = !checkbox.checked;
+                // Deixe a sincronização para o handler de 'change'
+                const evt = new Event('change', { bubbles: true });
+                checkbox.dispatchEvent(evt);
               }
             }
           });
-        } else {
-          console.warn('Lista de treinamentos não encontrada');
+
+          // Mudança direta no checkbox
+          listaTreinamentos.addEventListener('change', (e) => {
+            if (e.target && e.target.matches('input[type="checkbox"]')) {
+              debugger;
+              window.treinamentosJaMarcados = true;
+              if (typeof syncTempSelecionadosFromDOM === 'function') syncTempSelecionadosFromDOM();
+              if (typeof rebuildSelecionadosUIFromChecked === 'function') rebuildSelecionadosUIFromChecked();
+            }
+          });
         }
       }
 
       // Inicialização
       function init() {
         renderizarTreinamentos();
+        // Garante formato correto antes de manipular
+        window.treinamentosSelecionados = normalizeTreinamentosSelecionados(window.treinamentosSelecionados);
+        // Ao entrar na aba, re-aplica o que estava marcado e reconstrói o painel
+        reaplicarSelecoes();
+        rebuildSelecionadosUIFromChecked();
         setupEventListeners();
         createTotalBanner(); // Cria o banner de totais ao carregar a página
       }
@@ -7116,14 +7412,13 @@ console.log(total); // Exemplo: "180.10"
       const riscosTab = document.querySelector('.tab[data-step="3"]');
       if (riscosTab) {
         riscosTab.addEventListener('click', function() {
-          // Verifica se já foi inicializado
-          if (!window.treinamentosInicializados) {
-            setTimeout(() => {
-              const treinamentos = gerenciarTreinamentos();
+          // Re-inicializa sempre que a aba for clicada; os handlers internos deduplicam binds
+          setTimeout(() => {
+            const treinamentos = gerenciarTreinamentos();
+            if (treinamentos && typeof treinamentos.init === 'function') {
               treinamentos.init();
-              window.treinamentosInicializados = true;
-            }, 100);
-          }
+            }
+          }, 100);
         });
       }
       
