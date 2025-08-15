@@ -6975,7 +6975,7 @@ function buscar_riscos() {
         });
       }
 
-      // Reconstrói o painel da direita e atualiza o total global de faturamento (apenas itens salvos)
+      // Reconstrói o painel da direita e atualiza o total global com base no estado ATUAL (checkboxes marcados)
       function rebuildSelecionadosUIFromChecked() {
         // Evita reentrância (fatAtualizarTotais pode disparar eventos que voltam aqui)
         if (window._rebuildTreinamentosRunning) return;
@@ -6986,10 +6986,9 @@ function buscar_riscos() {
           const totalElement = document.getElementById('totalTreinamentos');
           if (!container) return;
 
-          // Usa SOMENTE os códigos já salvos para exibir no painel
-          const salvosCodes = Array.isArray(window.treinamentosEstadoSalvoCodes) ? window.treinamentosEstadoSalvoCodes : [];
+          const marcados = Array.from(document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked'));
 
-          if (salvosCodes.length === 0) {
+          if (marcados.length === 0) {
             container.innerHTML = `
               <div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
                 Nenhum treinamento selecionado
@@ -7000,28 +6999,23 @@ function buscar_riscos() {
             return;
           }
 
-          // Mapa auxiliar DOM: codigo -> {nome, valor}
-          const domMap = new Map();
-          document.querySelectorAll('#listaTreinamentos input[type="checkbox"]').forEach(cb => {
-            const codigo = String(cb.value);
-            const nome = cb.getAttribute('data-nome') || cb.dataset?.nome || '';
-            const valorStr = cb.getAttribute('data-valor') || cb.dataset?.valor || '0';
-            domMap.set(codigo, { nome, valorStr });
-          });
-
           let html = '';
           let total = 0;
-          salvosCodes.forEach(code => {
-            const codigo = String(code);
-            const info = domMap.get(codigo);
-            const nome = info ? info.nome : `Treinamento ${codigo}`;
-            const valorStr = info ? info.valorStr : '0';
+          marcados.forEach(cb => {
+            const codigo = String(cb.value);
+            const nome = cb.getAttribute('data-nome') || cb.dataset?.nome || `Treinamento ${codigo}`;
+            const valorStr = cb.getAttribute('data-valor') || cb.dataset?.valor || '0';
             const valor = parseFloat((valorStr || '0').replace('.', '').replace(',', '.')) || 0;
             total += valor;
             html += `
-              <div style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
-                <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
-                <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
+              <div class="treinamento-selecionado" style="padding: 8px 0; border-bottom: 1px solid #e9ecef; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div>
+                  <div style=\"font-weight: 500; font-size: 14px; margin-bottom: 4px;\">${nome}</div>
+                  <div style=\"font-size: 12px; color: #6c757d;\">Código: ${codigo}</div>
+                </div>
+                <button type=\"button\" title=\"Remover\" data-acao=\"remover-treinamento\" data-codigo=\"${codigo}\" style=\"border: none; background: transparent; color: #dc3545; cursor: pointer; padding: 4px;\">
+                  <i class=\"fas fa-trash\"></i>
+                </button>
               </div>`;
           });
 
@@ -7044,9 +7038,10 @@ function buscar_riscos() {
 
           // Normaliza estados antes de usar
           window.treinamentosSelecionados = normalizeTreinamentosSelecionados(window.treinamentosSelecionados);
-          window.treinamentosEstadoSalvoCodes = Array.isArray(window.treinamentosEstadoSalvoCodes) ? window.treinamentosEstadoSalvoCodes : [];
-          const salvos = new Set(window.treinamentosEstadoSalvoCodes.map(c => String(c)));
-          const novosDetalhes = window.treinamentosSelecionados.filter(t => t && !salvos.has(String(t.codigo)));
+          // Envia TODOS os itens atualmente selecionados como array
+          const novosDetalhes = Array.isArray(window.treinamentosSelecionados)
+            ? window.treinamentosSelecionados
+            : [];
 
           if (novosDetalhes.length === 0) {
             console.log('Nenhum novo treinamento para salvar.');
@@ -7057,11 +7052,10 @@ function buscar_riscos() {
           json_cursos_selecionados = JSON.stringify(novosDetalhes);
           await gravar_treinamentos_selecionados();
 
-          // Atualiza o estado salvo e reconstroi UI UMA vez
-          window.treinamentosEstadoSalvoCodes = Array.from(new Set([
-            ...Array.from(salvos),
-            ...novosDetalhes.map(t => String(t.codigo))
-          ]));
+          // Atualiza o estado salvo para refletir EXATAMENTE o que foi enviado
+          window.treinamentosEstadoSalvoCodes = Array.from(new Set(
+            novosDetalhes.map(t => String(t.codigo))
+          ));
 
           rebuildSelecionadosUIFromChecked();
         } catch (err) {
@@ -7219,6 +7213,22 @@ console.log(total); // Exemplo: "180.10"
         });
       }
 
+      // Salva imediatamente o estado ATUAL dos treinamentos selecionados (persistência no PHP)
+      async function salvarTreinamentosSelecionadosEstadoAtual() {
+        debugger;
+        try {
+          // Garante que o estado temporário está sincronizado com o DOM
+          if (typeof syncTempSelecionadosFromDOM === 'function') syncTempSelecionadosFromDOM();
+          const listaAtual = Array.isArray(window.treinamentosSelecionados) ? window.treinamentosSelecionados : [];
+          // Reaproveita a mesma variável utilizada pela função de gravação
+          json_cursos_selecionados = JSON.stringify(listaAtual);
+        } catch (e) {
+          console.warn('Falha ao preparar JSON de treinamentos para salvar imediatamente:', e);
+        }
+        // Chama o mesmo endpoint já usado no botão Aplicar
+        return gravar_treinamentos_selecionados();
+      }
+
       // Liga eventos do botão Aplicar e da lista de treinamentos
       function setupEventListeners() {
         debugger;
@@ -7263,6 +7273,32 @@ console.log(total); // Exemplo: "180.10"
               window.treinamentosJaMarcados = true;
               if (typeof syncTempSelecionadosFromDOM === 'function') syncTempSelecionadosFromDOM();
               if (typeof rebuildSelecionadosUIFromChecked === 'function') rebuildSelecionadosUIFromChecked();
+            }
+          });
+        }
+
+        // Remoção via ícone de lixeira no painel de selecionados (agora PERSISTE imediatamente)
+        const selecionadosContainer = document.getElementById('treinamentosSelecionados');
+        if (selecionadosContainer) {
+          selecionadosContainer.addEventListener('click', async (e) => {
+            debugger;
+            const btn = e.target.closest('[data-acao="remover-treinamento"]');
+            if (!btn) return;
+            e.preventDefault();
+            const codigo = String(btn.getAttribute('data-codigo') || '');
+            const cb = document.querySelector('#listaTreinamentos input[type="checkbox"][value="' + codigo + '"]');
+            if (cb) {
+              cb.checked = false;
+              // Atualiza estados temporários e reconstrói painel/total
+              if (typeof syncTempSelecionadosFromDOM === 'function') syncTempSelecionadosFromDOM();
+              if (typeof rebuildSelecionadosUIFromChecked === 'function') rebuildSelecionadosUIFromChecked();
+              // Persiste imediatamente no backend (PHP)
+              debugger;
+              try {
+                await salvarTreinamentosSelecionadosEstadoAtual();
+              } catch (err) {
+                console.error('Falha ao salvar remoção de treinamento imediatamente:', err);
+              }
             }
           });
         }
