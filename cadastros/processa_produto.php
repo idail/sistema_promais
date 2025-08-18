@@ -33,5 +33,20 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_ultimo_codigo_cadastrado_produto = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_cadastrado_produto);
     }
+}else if($_SERVER["REQUEST_METHOD"] === "GET")
+{
+    $recebe_processo_produto = $_GET["processo_produto"];
+
+    if($recebe_processo_produto === "buscar_produto_nome")
+    {
+        $recebe_nome_produto = $_POST["valor_descricao_produto"];
+
+        $instrucao_busca_produto = "select * from produto where nome like :recebe_nome_produto";
+        $comando_busca_produto = $pdo->prepare($instrucao_busca_produto);
+        $comando_busca_produto->bindValue(":recebe_nome_produto","%$recebe_nome_produto%");
+        $comando_busca_produto->execute();
+        $resultado_busca_produto = $comando_busca_produto->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_produto);
+    }
 }
 ?>
