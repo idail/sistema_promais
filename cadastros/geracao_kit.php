@@ -1560,7 +1560,7 @@
         <p>Quando há alteração nas atividades do funcionário</p>
       </div>
       <div class="exam-card" data-exam="exame_laudo">
-        <img src="./img/svg/exame_laudo.svg" alt="Exame com Laudo" width="60" height="60">
+        <img src="./img/svg/exame_laudo.svg" alt="Exame com Laudo" width="60" height="60" style="margin-bottom: 10px;">
         <h3>Exame com Laudo</h3>
         <p>Exames que requerem análise detalhada</p>
       </div>
@@ -10271,8 +10271,12 @@ console.log(total); // Exemplo: "180.10"
     let fatTotalExames = 0; // Será atualizado dinamicamente
     let fatTotalTreinamentos = 0; // Será atualizado dinamicamente
 
+    let recebe_nome_produto;
+    let recebe_valor_produto;
+
     // Função para adicionar produto
-    window.fatAdicionarProduto = function() {
+    window.fatAdicionarProduto = async function() {
+      debugger;
       const descricao = document.getElementById('fat-descricao')?.value.trim();
       const quantidade = parseInt(document.getElementById('fat-quantidade')?.value);
       const valorUnit = parseFloat(document.getElementById('fat-valorUnit')?.value);
@@ -10281,6 +10285,11 @@ console.log(total); // Exemplo: "180.10"
         alert('Preencha todos os campos corretamente.');
         return;
       }
+
+      recebe_nome_produto = descricao;
+      recebe_valor_produto = valorUnit;
+
+      await grava_produto();
   
       const valorTotal = quantidade * valorUnit;
       
@@ -10389,6 +10398,52 @@ console.log(total); // Exemplo: "180.10"
         window.fatAtualizarTotais();
       }
     };
+
+    function grava_produto()
+    {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_produto.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+           processo_produto: "inserir_produto",
+           valor_descricao_produto: recebe_nome_produto,
+           valor_produto: recebe_valor_produto,
+          },
+          success: function(retorno_produto) {
+            debugger;
+            console.log(retorno_produto);
+
+            const mensagemSucesso = `
+                <div id="produto-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <div>
+                      <div>Produto cadastrado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // Remove mensagem anterior se existir
+              $("#produto-gravado").remove();
+
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+
+              // Configura o fade out após 5 segundos
+              setTimeout(function () {
+                $("#produto-gravado").fadeOut(500, function () {
+                  $(this).remove();
+                });
+              }, 5000);
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao inserir produto:" + error);
+          },
+        });
+      });
+    }
   
     // Função para remover produto
     window.fatRemoverProduto = function(botao, valorTotal) {
