@@ -2560,6 +2560,11 @@ function renderResultadoProfissional(tipo) {
                   try {
                     window.fatAtualizarTotais();
                     
+                    // (re)inicializa o live search da descrição após montar a UI de faturamento
+                    if (typeof initFatDescricaoLiveSearch === 'function') {
+                      setTimeout(() => { try { initFatDescricaoLiveSearch(); } catch (e) { console.warn('Falha ao inicializar live search:', e); } }, 0);
+                    }
+                    
                     // Adiciona um ouvinte para atualizações futuras
                     document.removeEventListener('totaisAtualizados', handleTotaisAtualizados);
                     document.addEventListener('totaisAtualizados', handleTotaisAtualizados);
@@ -10433,227 +10438,335 @@ console.log(total); // Exemplo: "180.10"
 
               // Configura o fade out após 5 segundos
               setTimeout(function () {
-                $("#produto-gravado").fadeOut(500, function () {
-                  $(this).remove();
-                });
-              }, 5000);
-          },
+        $("#produto-gravado").fadeOut(500, function () {
+          $(this).remove();
+        });
+      }, 5000);
+          }, // encerra success
           error: function(xhr, status, error) {
             console.log("Falha ao inserir produto:" + error);
-          },
-        });
+          }
+        })
+      })
+    }
+
+// Busca incremental (live search) para #fat-descricao usando $.ajax (GET)
+function initFatDescricaoLiveSearch(){
+  debugger;
+  const $input = $('#fat-descricao');
+  if ($input.length === 0) return false; // não encontrou ainda
+  if ($input.data('lsBound') === true) return true; // já inicializado
+
+  // Container de sugestões
+  let $container = $input.closest('.fat-input-group');
+  if ($container.length === 0) {
+    $container = $input.parent();
+  }
+  if ($container.length === 0) {
+    $container = $('body');
+  }
+  if ($container.css('position') === 'static') {
+    $container.css('position', 'relative');
+  }
+  let $list = $('#fat-suggestions');
+  if ($list.length === 0) {
+    $list = $('<div id="fat-suggestions" />').css({
+      position: 'absolute',
+      top: '100%',
+      left: 0,
+      width: '100%',
+      background: '#fff',
+      border: '1px solid #e2e8f0',
+      borderTop: 'none',
+      borderRadius: '0 0 6px 6px',
+      boxShadow: '0 6px 16px rgba(0,0,0,0.08)',
+      zIndex: 1000,
+      display: 'none',
+      maxHeight: '240px',
+      overflowY: 'auto'
+    });
+    $container.append($list);
+  }
+
+  const debounce = function(fn, wait){
+    let t; return function(){ clearTimeout(t); const args = arguments; t = setTimeout(function(){ fn.apply(null, args); }, wait); };
+  };
+
+  function renderSuggestions(produtos){
+    debugger;
+    if (!Array.isArray(produtos) || produtos.length === 0) { $list.hide().empty(); return; }
+    const html = produtos.map(p => {
+      const nome = p && (p.nome || p.NOME || p.descricao || p.DESCRICAO) ? (p.nome || p.NOME || p.descricao || p.DESCRICAO) : '';
+      return `\n            <div class="fat-suggestion-item" data-nome="${String(nome).replace(/"/g,'&quot;')}">
+          <i class="fas fa-box" style="color:#4a5568;margin-right:8px;"></i>
+          <span>${nome}</span>
+        </div>`;
+    }).join('');
+
+    $list.html(html).show();
+    // estilo dos itens
+    $list.find('.fat-suggestion-item').css({
+      padding: '8px 10px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center'
+    }).off('mouseenter mouseleave click')
+      .on('mouseenter', function(){ $(this).css('background', '#f7fafc'); })
+      .on('mouseleave', function(){ $(this).css('background', '#fff'); })
+      .on('click', function(){
+        const nome = $(this).data('nome') || '';
+        $input.val(nome);
+        $list.hide().empty();
+        $input.trigger('change');
+      });
+  }
+
+  const doSearch = debounce(function(term){
+    term = (term || '').trim();
+    if (!term) { $list.hide().empty(); return; }
+    $.ajax({
+      url: 'cadastros/processa_produto.php',
+      method: 'GET',
+      dataType: 'json',
+      data: {
+        processo_produto: 'buscar_produto_nome',
+        valor_descricao_produto: term
+      },
+      success: function(data){
+        debugger;
+        try { renderSuggestions(data); } catch(e) { console.error('Falha ao renderizar sugestões:', e); }
+      },
+      error: function(xhr, status, error){
+        console.warn('Falha ao buscar produtos:', status, error);
+        $list.hide().empty();
+      }
+    });
+  }, 300);
+
+  $input.on('input', function(){ doSearch(this.value); });
+  // Oculta ao clicar fora
+  $(document).on('click', function(e){
+    if (!$.contains($container.get(0), e.target)) { $list.hide(); }
+  });
+  // Mostra lista se houver conteúdo ao focar
+  $input.on('focus', function(){ if ($list.children().length > 0) $list.show(); });
+  // Esc para fechar
+  $input.on('keydown', function(ev){ if (ev.key === 'Escape') { $list.hide(); } });
+  // marca como inicializado para evitar bind duplicado
+  $input.data('lsBound', true);
+  return true;
+}
+
+// Função para remover produto
+window.fatRemoverProduto = function(botao, valorTotal) {
+  // Cria um elemento de confirmação estilizado
+  const linha = botao.closest('.fat-produto-item');
+  
+  // Adiciona animação de destaque antes de remover
+  linha.style.backgroundColor = '#fff5f5';
+  linha.style.borderLeft = '3px solid #e53e3e';
+  
+  // Usa o SweetAlert2 para confirmar a remoção
+  Swal.fire({
+    title: 'Remover item',
+    text: 'Deseja realmente remover este item?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#e53e3e',
+    cancelButtonColor: '#718096',
+    confirmButtonText: 'Sim, remover',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Adiciona animação de saída
+      linha.style.transition = 'all 0.3s ease';
+      linha.style.opacity = '0';
+      linha.style.transform = 'translateX(100%)';
+      
+      // Remove o item após a animação
+      setTimeout(() => {
+        linha.remove();
+        
+        // Atualiza o total global de EPI/EPC
+        window.fatTotalEPI = Math.max(0, (window.fatTotalEPI || 0) - valorTotal);
+        console.log('Produto removido. Novo total EPI/EPC:', window.fatTotalEPI);
+        
+        // Atualiza os totais exibidos
+        if (typeof window.fatAtualizarTotais === 'function') {
+          window.fatAtualizarTotais();
+        }
+        
+        // Mostra feedback visual
+        const toast = document.createElement('div');
+        toast.className = 'fat-toast';
+        toast.textContent = 'Item removido com sucesso';
+        document.body.appendChild(toast);
+        
+        // Remove o toast após 3 segundos
+        setTimeout(() => {
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+          }, 2000);
+        }, 100);
+      }, 300);
+    } else {
+      // Remove os estilos de destaque se o usuário cancelar
+      linha.style.backgroundColor = '';
+      linha.style.borderLeft = '';
+    }
+  });
+};
+
+// Função para atualizar totais
+function fatAtualizarTotais() {
+  debugger;
+  try {
+    console.log('=== Iniciando fatAtualizarTotais ===');
+    
+    // Garante que as variáveis globais estão definidas
+    window.fatTotalEPI = window.fatTotalEPI || 0;
+    window.fatTotalExames = window.fatTotalExames || 0;
+    window.fatTotalTreinamentos = window.fatTotalTreinamentos || 0;
+    
+    // Utilitário: converte string/valor em número no padrão pt-BR (remove R$, pontos de milhar e usa vírgula como decimal)
+    const toNumberBR = (val) => {
+      if (val === null || val === undefined) return 0;
+      if (typeof val === 'number') return isFinite(val) ? val : 0;
+      if (typeof val === 'string') {
+        // Mantém apenas dígitos, vírgula, ponto, sinal; remove "R$", espaços e outros
+        const limpo = val.replace(/[^0-9,.-]/g, '')
+                         .replace(/\.(?=\d{3}(\D|$))/g, '') // remove pontos de milhar
+                         .replace(',', '.'); // usa ponto como separador decimal
+        const n = parseFloat(limpo);
+        return isNaN(n) ? 0 : n;
+      }
+      // Suporta objetos com propriedade "valor"
+      if (typeof val === 'object' && val !== null && 'valor' in val) {
+        return toNumberBR(val.valor);
+      }
+      return 0;
+    };
+
+    // Inicializa o formatter se não existir
+    if (!window.fatFormatter) {
+      window.fatFormatter = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
       });
     }
-  
-    // Função para remover produto
-    window.fatRemoverProduto = function(botao, valorTotal) {
-      // Cria um elemento de confirmação estilizado
-      const linha = botao.closest('.fat-produto-item');
-      
-      // Adiciona animação de destaque antes de remover
-      linha.style.backgroundColor = '#fff5f5';
-      linha.style.borderLeft = '3px solid #e53e3e';
-      
-      // Usa o SweetAlert2 para confirmar a remoção
-      Swal.fire({
-        title: 'Remover item',
-        text: 'Deseja realmente remover este item?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e53e3e',
-        cancelButtonColor: '#718096',
-        confirmButtonText: 'Sim, remover',
-        cancelButtonText: 'Cancelar',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Adiciona animação de saída
-          linha.style.transition = 'all 0.3s ease';
-          linha.style.opacity = '0';
-          linha.style.transform = 'translateX(100%)';
-          
-          // Remove o item após a animação
-          setTimeout(() => {
-            linha.remove();
-            
-            // Atualiza o total global de EPI/EPC
-            window.fatTotalEPI = Math.max(0, (window.fatTotalEPI || 0) - valorTotal);
-            console.log('Produto removido. Novo total EPI/EPC:', window.fatTotalEPI);
-            
-            // Atualiza os totais exibidos
-            if (typeof window.fatAtualizarTotais === 'function') {
-              window.fatAtualizarTotais();
-            }
-            
-            // Mostra feedback visual
-            const toast = document.createElement('div');
-            toast.className = 'fat-toast';
-            toast.textContent = 'Item removido com sucesso';
-            document.body.appendChild(toast);
-            
-            // Remove o toast após 3 segundos
-            setTimeout(() => {
-              toast.classList.add('show');
-              setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-              }, 2000);
-            }, 100);
-          }, 300);
-        } else {
-          // Remove os estilos de destaque se o usuário cancelar
-          linha.style.backgroundColor = '';
-          linha.style.borderLeft = '';
+    
+    // Normaliza valores e calcula o total geral (evita NaN)
+    const totalEPI = toNumberBR(window.fatTotalEPI);
+    const totalExames = toNumberBR(window.fatTotalExames);
+    const totalTreinamentos = toNumberBR(window.fatTotalTreinamentos);
+    const totalGeral = totalEPI + totalExames + totalTreinamentos;
+    
+    console.log('Valores atuais dos totais:', {
+      fatTotalExames: totalExames,
+      fatTotalTreinamentos: totalTreinamentos,
+      fatTotalEPI: totalEPI,
+      totalGeral: totalGeral,
+      fatFormatter: window.fatFormatter ? 'Disponível' : 'Indisponível'
+    });
+    
+    // Função auxiliar para atualizar o conteúdo de um elemento se ele existir
+    const updateElementIfExists = (id, value) => {
+      try {
+        const element = document.getElementById(id);
+        if (!element) {
+          console.warn(`Elemento não encontrado: ${id}`);
+          return false;
         }
-      });
-    };
-  
-        // Função para atualizar totais
-        function fatAtualizarTotais() {
-          debugger;
-          try {
-            console.log('=== Iniciando fatAtualizarTotais ===');
-            
-            // Garante que as variáveis globais estão definidas
-            window.fatTotalEPI = window.fatTotalEPI || 0;
-            window.fatTotalExames = window.fatTotalExames || 0;
-            window.fatTotalTreinamentos = window.fatTotalTreinamentos || 0;
-            
-            // Utilitário: converte string/valor em número no padrão pt-BR (remove R$, pontos de milhar e usa vírgula como decimal)
-            const toNumberBR = (val) => {
-              if (val === null || val === undefined) return 0;
-              if (typeof val === 'number') return isFinite(val) ? val : 0;
-              if (typeof val === 'string') {
-                // Mantém apenas dígitos, vírgula, ponto, sinal; remove "R$", espaços e outros
-                const limpo = val.replace(/[^0-9,.-]/g, '')
-                                 .replace(/\.(?=\d{3}(\D|$))/g, '') // remove pontos de milhar
-                                 .replace(',', '.'); // usa ponto como separador decimal
-                const n = parseFloat(limpo);
-                return isNaN(n) ? 0 : n;
-              }
-              // Suporta objetos com propriedade "valor"
-              if (typeof val === 'object' && val !== null && 'valor' in val) {
-                return toNumberBR(val.valor);
-              }
-              return 0;
-            };
-
-            // Inicializa o formatter se não existir
-            if (!window.fatFormatter) {
-              window.fatFormatter = new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              });
-            }
-            
-            // Normaliza valores e calcula o total geral (evita NaN)
-            const totalEPI = toNumberBR(window.fatTotalEPI);
-            const totalExames = toNumberBR(window.fatTotalExames);
-            const totalTreinamentos = toNumberBR(window.fatTotalTreinamentos);
-            const totalGeral = totalEPI + totalExames + totalTreinamentos;
-            
-            console.log('Valores atuais dos totais:', {
-              fatTotalExames: totalExames,
-              fatTotalTreinamentos: totalTreinamentos,
-              fatTotalEPI: totalEPI,
-              totalGeral: totalGeral,
-              fatFormatter: window.fatFormatter ? 'Disponível' : 'Indisponível'
-            });
-            
-            // Função auxiliar para atualizar o conteúdo de um elemento se ele existir
-            const updateElementIfExists = (id, value) => {
-              try {
-                const element = document.getElementById(id);
-                if (!element) {
-                  console.warn(`Elemento não encontrado: ${id}`);
-                  return false;
-                }
-                
-                // Formata o valor
-                let formattedValue;
-                try {
-                  const numeric = toNumberBR(value);
-                  formattedValue = window.fatFormatter.format(numeric);
-                } catch (e) {
-                  console.warn(`Erro ao formatar valor ${value} para ${id}, usando fallback`, e);
-                  const numeric = toNumberBR(value);
-                  formattedValue = `R$ ${numeric.toFixed(2).replace('.', ',')}`;
-                }
-                
-                // Atualiza o elemento
-                if (element.textContent !== formattedValue) {
-                  element.textContent = formattedValue;
-                  console.log(`Elemento ${id} atualizado para:`, formattedValue);
-                }
-                return true;
-              } catch (error) {
-                console.error(`Erro ao atualizar o elemento ${id}:`, error);
-                return false;
-              }
-            };
-            
-            // Atualiza os totais individuais
-            const elementsUpdated = [
-              updateElementIfExists('fat-total-epi', totalEPI),
-              updateElementIfExists('fat-total-exames', totalExames),
-              updateElementIfExists('fat-total-treinamentos', totalTreinamentos),
-              updateElementIfExists('fat-total-geral', totalGeral)
-            ];
-            
-            // Se algum elemento não foi encontrado, tenta atualizar o container completo
-            if (elementsUpdated.some(updated => !updated)) {
-              console.log('Alguns elementos não foram encontrados, tentando atualizar o container completo...');
-              const totaisContainer = document.getElementById('fat-totais-container');
-              if (totaisContainer) {
-                console.log('Atualizando container de totais...');
-                totaisContainer.innerHTML = `
-                  <div class="fat-total-item">
-                    <span>EPI/EPC:</span>
-                    <span id="fat-total-epi">${window.fatFormatter.format(totalEPI)}</span>
-                  </div>
-                  <div class="fat-total-item">
-                    <span>Exames:</span>
-                    <span id="fat-total-exames">${window.fatFormatter.format(totalExames)}</span>
-                  </div>
-                  <div class="fat-total-item">
-                    <span>Treinamentos:</span>
-                    <span id="fat-total-treinamentos">${window.fatFormatter.format(totalTreinamentos)}</span>
-                  </div>
-                  <div class="fat-total-item" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
-                    <span style="font-weight: 600; font-size: 16px; color: #2d3748;">Total Geral:</span>
-                    <span id="fat-total-geral" style="font-weight: 700; font-size: 18px; color: #2b6cb0;">
-                      ${window.fatFormatter.format(totalGeral)}
-                    </span>
-                  </div>
-                `;
-              } else {
-                console.warn('Container de totais não encontrado no DOM');
-              }
-            }
-            
-            // Dispara evento de atualização de totais
-            const event = new CustomEvent('totaisAtualizados', { 
-              detail: { 
-                totalEPI: totalEPI,
-                totalExames: totalExames,
-                totalTreinamentos: totalTreinamentos,
-                totalGeral: totalGeral
-              } 
-            });
-            document.dispatchEvent(event);
-            
-          } catch (error) {
-            console.error('Erro ao atualizar totais:', error);
-          }
-          
-          console.log('=== Finalizando fatAtualizarTotais ===');
-        }
-
-        // Torna a função disponível globalmente
-        window.fatAtualizarTotais = fatAtualizarTotais;
         
+        // Formata o valor
+        let formattedValue;
+        try {
+          const numeric = toNumberBR(value);
+          formattedValue = window.fatFormatter.format(numeric);
+        } catch (e) {
+          console.warn(`Erro ao formatar valor ${value} para ${id}, usando fallback`, e);
+          const numeric = toNumberBR(value);
+          formattedValue = `R$ ${numeric.toFixed(2).replace('.', ',')}`;
+        }
+        
+        // Atualiza o elemento
+        if (element.textContent !== formattedValue) {
+          element.textContent = formattedValue;
+          console.log(`Elemento ${id} atualizado para:`, formattedValue);
+        }
+        return true;
+      } catch (error) {
+        console.error(`Erro ao atualizar o elemento ${id}:`, error);
+        return false;
+      }
+    };
+    
+    // Atualiza os totais individuais
+    const elementsUpdated = [
+      updateElementIfExists('fat-total-epi', totalEPI),
+      updateElementIfExists('fat-total-exames', totalExames),
+      updateElementIfExists('fat-total-treinamentos', totalTreinamentos),
+      updateElementIfExists('fat-total-geral', totalGeral)
+    ];
+    
+    // Se algum elemento não foi encontrado, tenta atualizar o container completo
+    if (elementsUpdated.some(updated => !updated)) {
+      console.log('Alguns elementos não foram encontrados, tentando atualizar o container completo...');
+      const totaisContainer = document.getElementById('fat-totais-container');
+      if (totaisContainer) {
+        console.log('Atualizando container de totais...');
+        totaisContainer.innerHTML = `
+          <div class="fat-total-item">
+            <span>EPI/EPC:</span>
+            <span id="fat-total-epi">${window.fatFormatter.format(totalEPI)}</span>
+          </div>
+          <div class="fat-total-item">
+            <span>Exames:</span>
+            <span id="fat-total-exames">${window.fatFormatter.format(totalExames)}</span>
+          </div>
+          <div class="fat-total-item">
+            <span>Treinamentos:</span>
+            <span id="fat-total-treinamentos">${window.fatFormatter.format(totalTreinamentos)}</span>
+          </div>
+          <div class="fat-total-item" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
+            <span style="font-weight: 600; font-size: 16px; color: #2d3748;">Total Geral:</span>
+            <span id="fat-total-geral" style="font-weight: 700; font-size: 18px; color: #2b6cb0;">
+              ${window.fatFormatter.format(totalGeral)}
+            </span>
+          </div>
+        `;
+      } else {
+        console.warn('Container de totais não encontrado no DOM');
+      }
+    }
+    
+    // Dispara evento de atualização de totais
+    const event = new CustomEvent('totaisAtualizados', { 
+      detail: { 
+        totalEPI: totalEPI,
+        totalExames: totalExames,
+        totalTreinamentos: totalTreinamentos,
+        totalGeral: totalGeral
+      } 
+    });
+    document.dispatchEvent(event);
+    
+  } catch (error) {
+    console.error('Erro ao atualizar totais:', error);
+  }
+  
+  console.log('=== Finalizando fatAtualizarTotais ===');
+}
         // Inicializa os eventos quando a página carregar
         document.addEventListener('DOMContentLoaded', function() {
+          // Inicializa o live search da descrição (se a função existir)
+          if (typeof initFatDescricaoLiveSearch === 'function') {
+            debugger;
+            initFatDescricaoLiveSearch();
+          }
           // Adiciona evento de tecla Enter nos campos de entrada
           const descricaoInput = document.getElementById('fat-descricao');
           const quantidadeInput = document.getElementById('fat-quantidade');
@@ -10686,6 +10799,7 @@ console.log(total); // Exemplo: "180.10"
             });
           }
         });
+        
   </script>
   
   <!-- Adiciona uma margem no final da página -->

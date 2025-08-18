@@ -3,6 +3,7 @@ session_start();
 header('Access-Control-Allow-Origin: *');
 
 header("Access-Control-Allow-Methods: POST , GET");
+header('Content-Type: application/json; charset=utf-8');
 
 $host = 'mysql.idailneto.com.br';
 $dbname = 'idailneto06';
@@ -25,10 +26,11 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_nome_produto = $_POST["valor_descricao_produto"];
         $recebe_valor_produto = $_POST["valor_produto"];
 
-        $instrucao_cadastra_produto = "insert into produto(nome,valor)values(:recebe_nome_produto,:recebe_valor_produto)";
+        $instrucao_cadastra_produto = "insert into produto(nome,valor,id_kit)values(:recebe_nome_produto,:recebe_valor_produto,:recebe_id_kit)";
         $comando_cadastra_produto = $pdo->prepare($instrucao_cadastra_produto);
         $comando_cadastra_produto->bindValue(":recebe_nome_produto",$recebe_nome_produto);
         $comando_cadastra_produto->bindValue(":recebe_valor_produto",$recebe_valor_produto);
+        $comando_cadastra_produto->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
         $comando_cadastra_produto->execute();
         $recebe_ultimo_codigo_cadastrado_produto = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_cadastrado_produto);
@@ -39,7 +41,11 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
     if($recebe_processo_produto === "buscar_produto_nome")
     {
-        $recebe_nome_produto = $_POST["valor_descricao_produto"];
+        $recebe_nome_produto = isset($_GET["valor_descricao_produto"]) ? $_GET["valor_descricao_produto"] : '';
+        if ($recebe_nome_produto === '' || strlen($recebe_nome_produto) < 1) {
+            echo json_encode([]);
+            exit;
+        }
 
         $instrucao_busca_produto = "select * from produto where nome like :recebe_nome_produto";
         $comando_busca_produto = $pdo->prepare($instrucao_busca_produto);
