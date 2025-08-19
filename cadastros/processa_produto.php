@@ -3,7 +3,6 @@ session_start();
 header('Access-Control-Allow-Origin: *');
 
 header("Access-Control-Allow-Methods: POST , GET");
-header('Content-Type: application/json; charset=utf-8');
 
 $host = 'mysql.idailneto.com.br';
 $dbname = 'idailneto06';
@@ -41,11 +40,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 
     if($recebe_processo_produto === "buscar_produto_nome")
     {
-        $recebe_nome_produto = isset($_GET["valor_descricao_produto"]) ? $_GET["valor_descricao_produto"] : '';
-        if ($recebe_nome_produto === '' || strlen($recebe_nome_produto) < 1) {
-            echo json_encode([]);
-            exit;
-        }
+        $recebe_nome_produto = $_GET["valor_descricao_produto"];
 
         $instrucao_busca_produto = "select * from produto where nome like :recebe_nome_produto";
         $comando_busca_produto = $pdo->prepare($instrucao_busca_produto);
