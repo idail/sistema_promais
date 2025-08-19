@@ -8724,13 +8724,15 @@ console.log(total); // Exemplo: "180.10"
           </div>
         </div>
           </div>
-        </div>`
-      ];
+        </div>`]
 
-      
-      
-      // Função para atualizar a lista de selecionados
-      function updateSelectedList() {
+     // Função para atualizar a lista de selecionados
+     function updateSelectedList() {
+      debugger;
+        // Controle booleano para evitar múltiplas execuções simultâneas
+        if (window._smDocUpdating) return;
+        window._smDocUpdating = true;
+        try {
         const labels = document.querySelectorAll('.sm-label');
         const selectedList = document.getElementById('sm-selected-list');
         
@@ -8738,6 +8740,8 @@ console.log(total); // Exemplo: "180.10"
         
         // Limpa a lista
         selectedList.innerHTML = '';
+        // Inicializa/zera o array global de nomes selecionados
+        window.smDocumentosSelecionadosNomes = [];
         
         // Adiciona cada item selecionado à lista
         labels.forEach(label => {
@@ -8791,6 +8795,8 @@ console.log(total); // Exemplo: "180.10"
             // Adiciona o texto
             const text = card.querySelector('span').textContent;
             const textNode = document.createTextNode(text);
+            // Armazena o nome do documento selecionado no array global
+            try { window.smDocumentosSelecionadosNomes.push((text || '').trim()); } catch (e) { /* noop */ }
             
             // Botão de remover
             const removeBtn = document.createElement('button');
@@ -8800,6 +8806,8 @@ console.log(total); // Exemplo: "180.10"
             removeBtn.onclick = (e) => {
               e.stopPropagation();
               checkbox.checked = false;
+              // Libera a execução para esta nova interação do usuário
+              window._smDocUpdating = false;
               updateSelectedList();
             };
             
@@ -8812,10 +8820,18 @@ console.log(total); // Exemplo: "180.10"
             selectedList.appendChild(selectedItem);
           }
         });
+
+        console.log(window.smDocumentosSelecionadosNomes);
+        // Remove duplicatas garantindo consistência do estado global
+        try { window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes)); } catch (e) { /* noop */ }
         
         // Mostra mensagem se não houver itens selecionados
         if (selectedList.children.length === 0) {
           selectedList.innerHTML = '<p class="sm-empty-message">Nenhum documento selecionado</p>';
+        }
+        } finally {
+          // Mantém true após concluir, para não reexecutar até uma nova interação do usuário
+          window._smDocUpdating = true;
         }
       }
       
@@ -8843,6 +8859,8 @@ console.log(total); // Exemplo: "180.10"
                 ? '0 8px 20px rgba(0,0,0,0.12)' 
                 : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
             }
+            // Libera a execução para esta nova interação do usuário
+            window._smDocUpdating = false;
             updateSelectedList();
           });
         });
@@ -8852,6 +8870,9 @@ console.log(total); // Exemplo: "180.10"
           label.addEventListener('click', function(e) {
             const checkbox = this.querySelector('input[type="checkbox"]');
             if (checkbox && !e.target.closest('button')) {
+              // Evita o clique nativo do label que também dispara change
+              e.preventDefault();
+              e.stopPropagation();
               checkbox.checked = !checkbox.checked;
               const event = new Event('change');
               checkbox.dispatchEvent(event);
@@ -8860,6 +8881,8 @@ console.log(total); // Exemplo: "180.10"
         });
         
         // Inicializa a lista de selecionados
+        // Garante que a primeira renderização ocorra
+        window._smDocUpdating = false;
         updateSelectedList();
       }
       
