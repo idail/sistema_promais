@@ -2625,7 +2625,6 @@ function renderResultadoProfissional(tipo) {
             try { initFatDescricaoLiveSearch(); } catch (e) { console.warn('Falha ao inicializar live search (fallback):', e); }
           }, 0);
         }
-        
       }
       
       // Atualiza o estado da aplicação
