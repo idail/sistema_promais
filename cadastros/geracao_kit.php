@@ -7287,20 +7287,21 @@ function buscar_riscos() {
                   // Cria formulário oculto
                   let form = document.createElement("form");
                   form.method = "POST";
-                  form.action = "cadastros/processa_geracao_kit.php";
+                  // form.action = "cadastros/processa_geracao_kit.php";
+                  form.action = "cadastros/documentos/geracao.php";
                   form.target = "_blank"; // abre em nova aba
 
                   // Adiciona input hidden "acao"
                   let input = document.createElement("input");
                   input.type = "hidden";
-                  input.name = "processo_geracao_kit";
-                  input.value = "incluir_valores_kit";
+                  input.name = "processo_gerar_documento";
+                  input.value = "gerar_documento";
                   form.appendChild(input);
 
-                  let input_2 = document.createElement("input");
-                  input_2.type = "hidden";
-                  input_2.name = "acao";
-                  input_2.value = "gerar_pdf";
+                  // let input_2 = document.createElement("input");
+                  // input_2.type = "hidden";
+                  // input_2.name = "acao";
+                  // input_2.value = "gerar_pdf";
                   form.appendChild(input_2);
 
                   // Adiciona o form ao body e envia
