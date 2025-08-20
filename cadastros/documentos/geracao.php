@@ -19,8 +19,7 @@ try {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $recebe_processo_geraca = $_POST["processo_geracao"];
 
-    if (isset($recebe_processo_geraca) && strtolower(trim($recebe_processo_geraca)) === "guia_de_encaminhamento") 
-    {
+    if (isset($recebe_processo_geraca) && strtolower(trim($recebe_processo_geraca)) === "guia_de_encaminhamento") {
 
         echo '
 <style>
@@ -149,6 +148,6 @@ function enviarEmpresa(){
 }
 </script>
 ';
-
     }
 }
+?>
