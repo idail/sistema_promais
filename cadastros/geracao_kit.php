@@ -7264,6 +7264,55 @@ function buscar_riscos() {
         }
       }
     }
+
+    function gravar_final_kit()
+      {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "incluir_valores_kit",
+              valor_exames_selecionados: json_exames,
+            },
+            success: function (retorno_exame_geracao_kit) {
+              debugger;
+
+              const mensagemSucesso = `
+                <div id="exame-quarta-etapa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <div>
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // Remove mensagem anterior se existir
+              $("#exame-quarta-etapa-gravado").remove();
+
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+
+              // Configura o fade out após 5 segundos
+              setTimeout(function () {
+                $("#exame-quarta-etapa-gravado").fadeOut(500, function () {
+                  $(this).remove();
+                });
+              }, 5000);
+
+              console.log(retorno_exame_geracao_kit);
+
+              resolve(retorno_exame_geracao_kit);
+            },
+            error: function (xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              reject(error);
+            },
+          });
+        });
+      }
     
     // Função para validar todos os campos obrigatórios do formulário
     function validarFormularioCompleto() {
@@ -8874,6 +8923,9 @@ console.log(total); // Exemplo: "180.10"
         console.log(window.smDocumentosSelecionadosNomes);
         // Remove duplicatas garantindo consistência do estado global
         try { window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes)); } catch (e) { /* noop */ }
+        
+        // Atribui a string JSON global para os documentos selecionados
+        window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
         
         // Mostra mensagem se não houver itens selecionados
         if (selectedList.children.length === 0) {
