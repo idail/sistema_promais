@@ -2945,12 +2945,34 @@ function renderResultadoProfissional(tipo) {
         if (!searchBox._focusBound) {
           searchBox.addEventListener('focus', function() {
             console.log('Search box focused');
+            // Limpa o placeholder ao focar para não atrapalhar a digitação
+            try { this._prevPlaceholder = this.placeholder; } catch(e) { /* noop */ }
+            this.placeholder = '';
             const val = (this.value || '').trim();
+            // Se o campo contém o texto informativo ("Busca em: ..."), limpa para digitação
+            if (/^\s*Busca em:/i.test(val)) {
+              this.value = '';
+            }
             if (val && !/^\s*Busca em:/i.test(val)) {
               performSearch(val);
             }
           });
           searchBox._focusBound = true;
+        }
+        // Restaura placeholder no blur apenas se o campo estiver vazio
+        if (!searchBox._blurPlaceholderBound) {
+          searchBox.addEventListener('blur', function() {
+            try {
+              if (!this.value) {
+                if (typeof updateSearchPlaceholder === 'function') {
+                  updateSearchPlaceholder();
+                } else {
+                  this.placeholder = this._prevPlaceholder || this.placeholder || '';
+                }
+              }
+            } catch(e) { /* noop */ }
+          });
+          searchBox._blurPlaceholderBound = true;
         }
       }
       
