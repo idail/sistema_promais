@@ -4,6 +4,14 @@ header('Access-Control-Allow-Origin: *');
 
 header("Access-Control-Allow-Methods: POST , GET");
 
+// Se instalou via Composer
+require(__DIR__."/../vendor/autoload.php");
+
+use  Dompdf\Dompdf;
+use  Dompdf\Options;
+
+
+
 // conexao.php
 // $host = 'localhost';
 // $dbname = 'promais';
@@ -260,30 +268,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $valor_exames_selecionado_bind = isset($_SESSION["exames_selecionado"]) ? $_SESSION["exames_selecionado"] : null;
 
         //TIPO ORCAMENTO
-        if(isset($_POST["valor_tipo_orcamento"]) && $_POST["valor_tipo_orcamento"]){
+        if (isset($_POST["valor_tipo_orcamento"]) && $_POST["valor_tipo_orcamento"]) {
             $recebe_tipo_orcamento = $_POST["valor_tipo_orcamento"];
 
-            if(!isset($_SESSION["tipo_orcamento"]) || $_SESSION["tipo_orcamento"] !== $recebe_tipo_orcamento){
+            if (!isset($_SESSION["tipo_orcamento"]) || $_SESSION["tipo_orcamento"] !== $recebe_tipo_orcamento) {
                 $_SESSION["tipo_orcamento"] = $recebe_tipo_orcamento;
             }
         }
         $valor_tipo_orcamento_bind = isset($_SESSION["tipo_orcamento"]) ? $_SESSION["tipo_orcamento"] : null;
 
         //DOCUMENTO
-        if(isset($_POST["valor_documento"]) && $_POST["valor_documento"]){
+        if (isset($_POST["valor_documento"]) && $_POST["valor_documento"]) {
             $recebe_documento = $_POST["valor_documento"];
 
-            if(!isset($_SESSION["documento"]) || $_SESSION["documento"] !== $recebe_documento){
+            if (!isset($_SESSION["documento"]) || $_SESSION["documento"] !== $recebe_documento) {
                 $_SESSION["documento"] = $recebe_documento;
             }
         }
         $valor_documento_bind = isset($_SESSION["documento"]) ? $_SESSION["documento"] : null;
 
         //TOTAL
-        if(isset($_POST["valor_total"]) && $_POST["valor_total"]){
+        if (isset($_POST["valor_total"]) && $_POST["valor_total"]) {
             $recebe_total = $_POST["valor_total"];
 
-            if(!isset($_SESSION["total"]) || $_SESSION["total"] !== $recebe_total){
+            if (!isset($_SESSION["total"]) || $_SESSION["total"] !== $recebe_total) {
                 $_SESSION["total"] = $recebe_total;
             }
         }
@@ -291,8 +299,50 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $recebe_status_kit_bind = "RASCUNHO";
         //FINALIZACAO
-        if(isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]){
-            $recebe_status_kit_bind = "FINALIZADO";   
+
+        if (isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]) {
+            $recebe_status_kit_bind = "FINALIZADO";
+        }
+
+
+        // function gerar_pdf_basico()
+        // {
+        //     // Cria a instância do Dompdf
+        //     $dompdf = new Dompdf();
+        //     // HTML que será convertido para PDF
+        //     $html = "
+        //         <html>
+        //         <head>
+        //         <meta charset='UTF-8'>
+        //         <title>PDF com Dompdf</title>
+        //         </head>
+        //         <body>
+        //         <h1 style='text-align: center;'>Promais Informações</h1>
+        //         <p style='text-align: center;'>Este é um PDF básico gerado usando Dompdf e PHP puro.</p>
+        //         </body>
+        //         </html>
+        //         ";
+
+        //     $options = new Options();
+
+        //     $dompdf = new Dompdf(['enable_remote' => true]);
+
+        //     // Carrega o HTML no Dompdf
+        //     $dompdf->loadHtml($html);
+
+        //     // Define tamanho e orientação do papel
+        //     $dompdf->setPaper('A4', 'portrait');
+
+        //     // Renderiza o PDF
+        //     $dompdf->render();
+
+        //     // Envia o PDF para o navegador
+        //     $dompdf->stream("promais_informacoes.pdf", ["Attachment" => false]);
+        // }   
+
+
+        if (isset($_POST['acao']) && $_POST['acao'] === 'gerar_pdf') {
+            // gerar_pdf_basico();
         }
 
         // Atualização

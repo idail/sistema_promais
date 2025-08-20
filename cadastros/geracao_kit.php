@@ -7155,8 +7155,6 @@ function buscar_riscos() {
         return;
       }
 
-      await gravar_final_kit();
-      
       // Mostrar loading com mais detalhes
       Swal.fire({
         title: 'Salvando Kit',
@@ -7175,6 +7173,10 @@ function buscar_riscos() {
           Swal.showLoading();
         }
       });
+
+      await gravar_final_kit();
+      
+      
       
       // Simulando uma requisição assíncrona
       setTimeout(() => {
@@ -7204,35 +7206,14 @@ function buscar_riscos() {
         // });
         
         // Simulando sucesso (remova esta parte quando implementar a chamada real)
-        mostrarSucessoSalvamento();
+        // mostrarSucessoSalvamento();
         restaurarBotaoSalvar();
       }, 1500);
       
       // Função para mostrar mensagem de sucesso
-      function mostrarSucessoSalvamento() {
-        Swal.fire({
-          icon: 'success',
-          title: '<span style="color: #28a745">Sucesso!</span>',
-          html: `
-            <div style="text-align: center;">
-              <div style="font-size: 60px; color: #28a745; margin-bottom: 15px;">
-                <i class="fas fa-check-circle"></i>
-              </div>
-              <h3 style="color: #28a745; margin-bottom: 10px;">Kit salvo com sucesso!</h3>
-              <p style="color: #6c757d;">Seus dados foram armazenados com segurança.</p>
-            </div>
-          `,
-          showConfirmButton: true,
-          confirmButtonText: 'Continuar',
-          confirmButtonColor: '#28a745',
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Redirecionar para a página inicial ou fazer outra ação após salvar
-            // window.location.href = '/inicio';
-          }
-        });
-      }
+      // function mostrarSucessoSalvamento() {
+        
+      // }
       
       // Função para mostrar mensagem de erro
       function mostrarErroSalvamento() {
@@ -7284,31 +7265,54 @@ function buscar_riscos() {
             success: function (retorno_final_kit) {
               debugger;
 
-              // const mensagemSucesso = `
-              //   <div id="kit-finalizado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-              //     <div style="display: flex; align-items: center; justify-content: center;">
-              //       <div>
-              //         <div>KIT finalizado com sucesso.</div>
-              //       </div>
-              //     </div>
-              //   </div>
-              // `;
+              Swal.fire({
+                icon: 'success',
+                title: '<span style="color: #28a745">Sucesso!</span>',
+                html: `
+                  <div style="text-align: center;">
+                    <div style="font-size: 60px; color: #28a745; margin-bottom: 15px;">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 style="color: #28a745; margin-bottom: 10px;">Kit salvo com sucesso!</h3>
+                    <p style="color: #6c757d;">Seus dados foram armazenados com segurança.</p>
+                  </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Visualizar',
+                confirmButtonColor: '#28a745',
+                allowOutsideClick: false
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  debugger;
+                  // Cria formulário oculto
+                  let form = document.createElement("form");
+                  form.method = "POST";
+                  form.action = "cadastros/processa_geracao_kit.php";
+                  form.target = "_blank"; // abre em nova aba
 
-              // // Remove mensagem anterior se existir
-              // $("#exame-quarta-etapa-gravado").remove();
+                  // Adiciona input hidden "acao"
+                  let input = document.createElement("input");
+                  input.type = "hidden";
+                  input.name = "processo_geracao_kit";
+                  input.value = "incluir_valores_kit";
+                  form.appendChild(input);
 
-              // // Adiciona a nova mensagem acima das abas
-              // $(".tabs-container").before(mensagemSucesso);
+                  let input_2 = document.createElement("input");
+                  input_2.type = "hidden";
+                  input_2.name = "acao";
+                  input_2.value = "gerar_pdf";
+                  form.appendChild(input_2);
 
-              // // Configura o fade out após 5 segundos
-              // setTimeout(function () {
-              //   $("#exame-quarta-etapa-gravado").fadeOut(500, function () {
-              //     $(this).remove();
-              //   });
-              // }, 5000);
+                  // Adiciona o form ao body e envia
+                  document.body.appendChild(form);
+                  form.submit();
+
+                  // Remove o form depois de enviar (boa prática)
+                  document.body.removeChild(form);
+                }
+              });
 
               console.log(retorno_final_kit);
-
               resolve(retorno_final_kit);
             },
             error: function (xhr, status, error) {
@@ -7368,31 +7372,31 @@ function buscar_riscos() {
         }
       }
       
-      // Validação dos riscos ocupacionais (etapa 3)
-      if (appState.currentStep >= 3) {
-        // Usa o estado global de riscos acumulado via addSelectedRisk
-        let riskCodes = (typeof window.getSelectedRiskCodes === 'function')
-          ? window.getSelectedRiskCodes()
-          : (typeof selectedRisks !== 'undefined' ? Object.keys(selectedRisks || {}) : []);
-        // Fallback: se vazio, tenta riscos persistidos em window.riscosEstadoSalvoDetalhes
-        if (!riskCodes || riskCodes.length === 0) {
-          try {
-            const persistidos = (window.riscosEstadoSalvoDetalhes && typeof window.riscosEstadoSalvoDetalhes === 'object')
-              ? Object.keys(window.riscosEstadoSalvoDetalhes)
-              : [];
-            if (persistidos && persistidos.length > 0) {
-              riskCodes = persistidos;
-            }
-          } catch (e) { /* noop */ }
-        }
-        if (!riskCodes || riskCodes.length === 0) {
-          mostrarErroValidacao('Por favor, adicione pelo menos um risco ocupacional.');
-          return false;
-        } else {
-          // Confirmação não intrusiva
-          try { console.log('Riscos selecionados:', riskCodes); } catch (e) { /* noop */ }
-        }
-      }
+      // // Validação dos riscos ocupacionais (etapa 3)
+      // if (appState.currentStep >= 3) {
+      //   // Usa o estado global de riscos acumulado via addSelectedRisk
+      //   let riskCodes = (typeof window.getSelectedRiskCodes === 'function')
+      //     ? window.getSelectedRiskCodes()
+      //     : (typeof selectedRisks !== 'undefined' ? Object.keys(selectedRisks || {}) : []);
+      //   // Fallback: se vazio, tenta riscos persistidos em window.riscosEstadoSalvoDetalhes
+      //   if (!riskCodes || riskCodes.length === 0) {
+      //     try {
+      //       const persistidos = (window.riscosEstadoSalvoDetalhes && typeof window.riscosEstadoSalvoDetalhes === 'object')
+      //         ? Object.keys(window.riscosEstadoSalvoDetalhes)
+      //         : [];
+      //       if (persistidos && persistidos.length > 0) {
+      //         riskCodes = persistidos;
+      //       }
+      //     } catch (e) { /* noop */ }
+      //   }
+      //   if (!riskCodes || riskCodes.length === 0) {
+      //     mostrarErroValidacao('Por favor, adicione pelo menos um risco ocupacional.');
+      //     return false;
+      //   } else {
+      //     // Confirmação não intrusiva
+      //     try { console.log('Riscos selecionados:', riskCodes); } catch (e) { /* noop */ }
+      //   }
+      // }
       
       // Validação dos documentos selecionados (etapa 5)
       if (appState.currentStep >= 5) {
