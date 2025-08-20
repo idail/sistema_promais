@@ -7342,10 +7342,25 @@ function buscar_riscos() {
       
       // Validação dos documentos selecionados (etapa 5)
       if (appState.currentStep >= 5) {
-        const documentosSelecionados = document.querySelectorAll('.sm-checkbox:checked');
-        if (documentosSelecionados.length === 0) {
+        // Usa variável global que armazena os nomes dos documentos selecionados
+        let documentosSelecionadosCount = 0;
+        try {
+          if (Array.isArray(window.smDocumentosSelecionadosNomes)) {
+            documentosSelecionadosCount = window.smDocumentosSelecionadosNomes.length;
+          } else if (window.smDocumentosSelecionadosNomes && typeof window.smDocumentosSelecionadosNomes === 'object') {
+            documentosSelecionadosCount = Object.keys(window.smDocumentosSelecionadosNomes).length;
+          }
+        } catch (e) { /* noop */ }
+        // Fallback: caso a variável global não esteja disponível, usa os checkboxes marcados
+        if (!documentosSelecionadosCount) {
+          const documentosSelecionados = document.querySelectorAll('.sm-checkbox:checked');
+          documentosSelecionadosCount = documentosSelecionados ? documentosSelecionados.length : 0;
+        }
+        if (!documentosSelecionadosCount) {
           mostrarErroValidacao('Por favor, selecione pelo menos um documento para gerar.');
           return false;
+        } else {
+          try { console.log('Documentos selecionados (quantidade):', documentosSelecionadosCount); } catch (e) { /* noop */ }
         }
       }
       
