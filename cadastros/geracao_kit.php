@@ -7279,8 +7279,9 @@ function buscar_riscos() {
               valor_tipo_orcamento: window.tiposOrcamentoSelecionadosJSON,
               valor_documento:window.smDocumentosSelecionadosJSON,
               valor_total:window.total_final,
+              valor_finalizamento:"finalizando kit"
             },
-            success: function (retorno_exame_geracao_kit) {
+            success: function (retorno_final_kit) {
               debugger;
 
               // const mensagemSucesso = `
@@ -7306,9 +7307,9 @@ function buscar_riscos() {
               //   });
               // }, 5000);
 
-              console.log(retorno_exame_geracao_kit);
+              console.log(retorno_final_kit);
 
-              resolve(retorno_exame_geracao_kit);
+              resolve(retorno_final_kit);
             },
             error: function (xhr, status, error) {
               console.log("Falha ao incluir exame: " + error);

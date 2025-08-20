@@ -259,6 +259,42 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $valor_exames_selecionado_bind = isset($_SESSION["exames_selecionado"]) ? $_SESSION["exames_selecionado"] : null;
 
+        //TIPO ORCAMENTO
+        if(isset($_POST["valor_tipo_orcamento"]) && $_POST["valor_tipo_orcamento"]){
+            $recebe_tipo_orcamento = $_POST["valor_tipo_orcamento"];
+
+            if(!isset($_SESSION["tipo_orcamento"]) || $_SESSION["tipo_orcamento"] !== $recebe_tipo_orcamento){
+                $_SESSION["tipo_orcamento"] = $recebe_tipo_orcamento;
+            }
+        }
+        $valor_tipo_orcamento_bind = isset($_SESSION["tipo_orcamento"]) ? $_SESSION["tipo_orcamento"] : null;
+
+        //DOCUMENTO
+        if(isset($_POST["valor_documento"]) && $_POST["valor_documento"]){
+            $recebe_documento = $_POST["valor_documento"];
+
+            if(!isset($_SESSION["documento"]) || $_SESSION["documento"] !== $recebe_documento){
+                $_SESSION["documento"] = $recebe_documento;
+            }
+        }
+        $valor_documento_bind = isset($_SESSION["documento"]) ? $_SESSION["documento"] : null;
+
+        //TOTAL
+        if(isset($_POST["valor_total"]) && $_POST["valor_total"]){
+            $recebe_total = $_POST["valor_total"];
+
+            if(!isset($_SESSION["total"]) || $_SESSION["total"] !== $recebe_total){
+                $_SESSION["total"] = $recebe_total;
+            }
+        }
+        $valor_total_bind = isset($_SESSION["total"]) ? $_SESSION["total"] : null;
+
+        $recebe_status_kit_bind = "RASCUNHO";
+        //FINALIZACAO
+        if(isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]){
+            $recebe_status_kit_bind = "FINALIZADO";   
+        }
+
         // Atualização
         $instrucao_atualizar_kit = "UPDATE kits SET 
         tipo_exame = :recebe_tipo_exame,
@@ -278,7 +314,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         agente_nocivo = :recebe_agente_nocivo_selecionado,
         ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado,
         aptidoes_selecionadas = :recebe_aptidao_selecionado,
-        exames_selecionados = :recebe_exames_selecionado
+        exames_selecionados = :recebe_exames_selecionado,
+        tipo_orcamento = :recebe_tipo_orcamento_selecionado,
+        modelos_selecionados = :recebe_documentos_selecionado,
+        valor_total = :recebe_total,
+        status = :recebe_status_kit
     WHERE id = :recebe_kit_id";
 
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -302,6 +342,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado",    $valor_ocorrencia_selecionado_bind,  $valor_ocorrencia_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado",    $valor_aptidao_selecionado_bind,  $valor_aptidao_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_exames_selecionado",    $valor_exames_selecionado_bind,  $valor_exames_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado",    $valor_tipo_orcamento_bind,  $valor_tipo_orcamento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado",    $valor_documento_bind,  $valor_documento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_total",    $valor_total_bind,  $valor_total_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_status_kit",    $recebe_status_kit_bind,  $recebe_status_kit_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
         // Kit ID
         $comando_atualizar_kit->bindValue(":recebe_kit_id", $_SESSION["codigo_kit"], PDO::PARAM_INT);
