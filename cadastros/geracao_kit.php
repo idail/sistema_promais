@@ -7288,10 +7288,16 @@ function buscar_riscos() {
           try { console.log('Uma empresa foi selecionada. ID:', empresaSelecionadaId); } catch (e) { /* noop */ }
         }
 
-        const clinicaSelecionada = document.getElementById('detalhesClinica')?.innerHTML?.trim();
-        if (!clinicaSelecionada) {
+        // Usa estado global/variável para validar a clínica, pois o elemento pode não estar no DOM
+        const clinicaSelecionadaId = (window.ecpState && window.ecpState.clinica && window.ecpState.clinica.id)
+          || (typeof recebe_codigo_clinica_selecionada !== 'undefined' ? recebe_codigo_clinica_selecionada : null)
+          || null;
+        if (!clinicaSelecionadaId) {
           mostrarErroValidacao('Por favor, selecione uma clínica.');
           return false;
+        } else {
+          // Confirmação não intrusiva para depuração
+          try { console.log('Uma clínica foi selecionada. ID:', clinicaSelecionadaId); } catch (e) { /* noop */ }
         }
       }
       
