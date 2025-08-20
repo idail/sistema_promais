@@ -7301,12 +7301,16 @@ function buscar_riscos() {
         }
       }
       
-      // Validação dos profissionais de medicina (etapa 2)
+      // Validação do colaborador (etapa 2)
       if (appState.currentStep >= 2) {
-        const profissionais = document.querySelectorAll('.profissional-selecionado');
-        if (profissionais.length === 0) {
-          mostrarErroValidacao('Por favor, adicione pelo menos um profissional de medicina.');
+        // Usa o estado global salvo em selecionarECP() para confirmar o colaborador selecionado
+        const colaboradorSelecionadoId = (window.ecpState && window.ecpState.colaborador && window.ecpState.colaborador.id) || null;
+        if (!colaboradorSelecionadoId) {
+          mostrarErroValidacao('Por favor, selecione um colaborador.');
           return false;
+        } else {
+          // Confirmação não intrusiva para depuração
+          try { console.log('Um colaborador foi selecionado. ID:', colaboradorSelecionadoId); } catch (e) { /* noop */ }
         }
       }
       
