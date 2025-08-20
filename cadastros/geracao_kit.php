@@ -7316,10 +7316,27 @@ function buscar_riscos() {
       
       // Validação dos riscos ocupacionais (etapa 3)
       if (appState.currentStep >= 3) {
-        const riscosSelecionados = document.querySelectorAll('.risco-selecionado');
-        if (riscosSelecionados.length === 0) {
+        // Usa o estado global de riscos acumulado via addSelectedRisk
+        let riskCodes = (typeof window.getSelectedRiskCodes === 'function')
+          ? window.getSelectedRiskCodes()
+          : (typeof selectedRisks !== 'undefined' ? Object.keys(selectedRisks || {}) : []);
+        // Fallback: se vazio, tenta riscos persistidos em window.riscosEstadoSalvoDetalhes
+        if (!riskCodes || riskCodes.length === 0) {
+          try {
+            const persistidos = (window.riscosEstadoSalvoDetalhes && typeof window.riscosEstadoSalvoDetalhes === 'object')
+              ? Object.keys(window.riscosEstadoSalvoDetalhes)
+              : [];
+            if (persistidos && persistidos.length > 0) {
+              riskCodes = persistidos;
+            }
+          } catch (e) { /* noop */ }
+        }
+        if (!riskCodes || riskCodes.length === 0) {
           mostrarErroValidacao('Por favor, adicione pelo menos um risco ocupacional.');
           return false;
+        } else {
+          // Confirmação não intrusiva
+          try { console.log('Riscos selecionados:', riskCodes); } catch (e) { /* noop */ }
         }
       }
       
