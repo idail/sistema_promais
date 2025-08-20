@@ -3007,7 +3007,7 @@ function renderResultadoProfissional(tipo) {
       
       // Funções
       function updateSearchPlaceholder() {
-        debugger;
+        // debugger;
         if (!searchBox) return;
         
         if (selectedGroups.length === 0) {
@@ -6846,7 +6846,7 @@ function buscar_riscos() {
 
   // Salva (via AJAX) somente se houve alteração em relação ao último estado salvo
   async function atualizarSelecionados() {
-    debugger;
+    // debugger;
     const checkboxes = Array.from(document.querySelectorAll('#listaTreinamentos input[type="checkbox"]:checked'));
 
     // Monta objetos selecionados atuais (estado do DOM agora)
@@ -7316,15 +7316,15 @@ function buscar_riscos() {
                   // Adiciona input hidden "acao"
                   let input = document.createElement("input");
                   input.type = "hidden";
-                  input.name = "processo_gerar_documento";
-                  input.value = "gerar_documento";
+                  input.name = "processo_geracao";
+                  input.value = "guia_de_encaminhamento";
                   form.appendChild(input);
 
                   // let input_2 = document.createElement("input");
                   // input_2.type = "hidden";
                   // input_2.name = "acao";
                   // input_2.value = "gerar_pdf";
-                  form.appendChild(input_2);
+                  // form.appendChild(input_2);
 
                   // Adiciona o form ao body e envia
                   document.body.appendChild(form);
@@ -7781,7 +7781,7 @@ function buscar_riscos() {
 
       // Lê os checkboxes marcados e sincroniza os arrays globais temporários (execução única)
       function syncTempSelecionadosFromDOM() {
-        debugger;
+        // debugger;
         if (window._syncTreinamentosRunning) return;
         window._syncTreinamentosRunning = true;
         try {
@@ -8120,7 +8120,7 @@ console.log(total); // Exemplo: "180.10"
           // Mudança direta no checkbox
           listaTreinamentos.addEventListener('change', (e) => {
             if (e.target && e.target.matches('input[type="checkbox"]')) {
-              debugger;
+              // debugger;
               window.treinamentosJaMarcados = true;
               if (typeof syncTempSelecionadosFromDOM === 'function') syncTempSelecionadosFromDOM();
               if (typeof rebuildSelecionadosUIFromChecked === 'function') rebuildSelecionadosUIFromChecked();
