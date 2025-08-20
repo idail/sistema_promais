@@ -7128,6 +7128,7 @@ function buscar_riscos() {
     
     // Função para salvar o kit
     function salvarKit() {
+      debugger;
       // Desabilita o botão para evitar múltiplos cliques
       const saveButton = document.getElementById('nextBtn');
       const originalButtonHTML = saveButton.innerHTML;
@@ -7266,6 +7267,7 @@ function buscar_riscos() {
     
     // Função para validar todos os campos obrigatórios do formulário
     function validarFormularioCompleto() {
+      debugger;
       // Validação do tipo de exame
       if (!appState.selectedExam) {
         mostrarErroValidacao('Por favor, selecione um tipo de exame.');
