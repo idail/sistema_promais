@@ -10588,6 +10588,8 @@ console.log(total); // Exemplo: "180.10"
     // ==============================
     // Armazena os valores selecionados (pode haver múltiplos checkboxes marcados)
     window.tiposOrcamentoSelecionados = window.tiposOrcamentoSelecionados || [];
+    // Snapshot em JSON dos tipos de orçamento selecionados (estado inicial)
+    window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window.tiposOrcamentoSelecionados || []);
 
     // Função auxiliar para atualizar a lista global a partir do DOM
     function atualizarTiposOrcamentoSelecionados() {
@@ -10596,6 +10598,8 @@ console.log(total); // Exemplo: "180.10"
         const selecionados = Array.from(document.querySelectorAll('input.tipo-orcamento:checked'))
           .map(el => el.value);
         window.tiposOrcamentoSelecionados = selecionados;
+        // Mantém o snapshot JSON sempre sincronizado após cada atualização
+        window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window.tiposOrcamentoSelecionados || []);
         console.log('Tipos de orçamento selecionados:', window.tiposOrcamentoSelecionados);
       } catch (e) {
         console.warn('Falha ao atualizar tipos de orçamento selecionados:', e);
