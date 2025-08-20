@@ -7276,12 +7276,18 @@ function buscar_riscos() {
       
       // Validação dos campos da empresa (etapa 1)
       if (appState.currentStep >= 1) {
-        const empresaSelecionada = document.getElementById('detalhesEmpresa')?.innerHTML?.trim();
-        if (!empresaSelecionada) {
+        // Usa estado global/variável para validar seleção, pois o elemento pode não estar no DOM neste momento
+        const empresaSelecionadaId = (window.ecpState && window.ecpState.empresa && window.ecpState.empresa.id)
+          || (typeof recebe_codigo_empresa_selecionada !== 'undefined' ? recebe_codigo_empresa_selecionada : null)
+          || null;
+        if (!empresaSelecionadaId) {
           mostrarErroValidacao('Por favor, selecione uma empresa.');
           return false;
+        } else {
+          // Confirmação não intrusiva para depuração
+          try { console.log('Uma empresa foi selecionada. ID:', empresaSelecionadaId); } catch (e) { /* noop */ }
         }
-        
+
         const clinicaSelecionada = document.getElementById('detalhesClinica')?.innerHTML?.trim();
         if (!clinicaSelecionada) {
           mostrarErroValidacao('Por favor, selecione uma clínica.');
