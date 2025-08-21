@@ -108,6 +108,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
 
                 var_dump($resultado_cargo_selecionado);
+
+                echo "<br>";
+            }
+
+            if($recebe_exame === "mudanca")
+            {
+                if(isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== ""){
+                    $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                    $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo",$_SESSION["cargo_selecionado"]);
+                    $comando_busca_mudanca_cargo->execute();
+                    $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                    var_dump($resultado_mudanca_cargo_selecionado);
+
+                    echo "<br>";
+                }
+            }
+
+            if(isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "")
+            {
+                echo "ID Médico coordenador:".$_SESSION["medico_coordenador_selecionado"];
+
+                $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+                $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+                $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador",$_SESSION["medico_coordenador_selecionado"]);
+                $comando_busca_medico_coordenador->execute();
+                $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+
+                var_dump($resultado_medico_coordenador_selecionado);
             }
         }
 
@@ -158,11 +188,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>01 - Identificação</h3>
                 <table>
-                    <tr><th>Hospital/Clínica</th><td>'.htmlspecialchars($resultado_clinica_selecionada['nome_fantasia']).'</td></tr>
-                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_clinica_selecionada['cnpj']).'</td></tr>
-                    <tr><th>Endereço</th><td>'.htmlspecialchars($resultado_clinica_selecionada['endereco']).','.htmlspecialchars($resultado_clinica_selecionada['numero']).','.htmlspecialchars($resultado_clinica_selecionada['bairro']).'</td></tr>
-                    <tr><th>Cidade/UF</th><td>'.htmlspecialchars($recebe_cidade_uf).'</td></tr>
-                    <tr><th>Telefone</th><td>'.htmlspecialchars($resultado_clinica_selecionada['telefone']).'</td></tr>
+                    <tr><th>Hospital/Clínica</th><td>'.htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "").'</td></tr>
+                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "").'</td></tr>
+                    <tr><th>Endereço</th><td>'.htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")).','.!empty($resultado_clinica_selecionada['numero'] ?? "").','.!empty($resultado_clinica_selecionada['bairro'] ?? "").'</td></tr>
+                    <tr><th>Cidade/UF</th><td>'.htmlspecialchars($recebe_cidade_uf ?? "").'</td></tr>
+                    <tr><th>Telefone</th><td>'.htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "").'</td></tr>
                 </table>
 
                 <h3>02 - Tipo de Exame / Procedimento</h3>
@@ -171,23 +201,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>03 - Dados do Funcionário / Empresa</h3>
                 <table>
-                    <tr><th>Empresa</th><td>'.htmlspecialchars($resultado_empresa_selecionada['nome']).'</td></tr>
-                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_empresa_selecionada['cnpj']).'</td></tr>
-                    <tr><th>Nome Funcionário</th><td>'.htmlspecialchars($resultado_pessoa_selecionada['nome']).'</td></tr>
-                    <tr><th>Cargo</th><td>'.htmlspecialchars($resultado_cargo_selecionado['titulo_cargo']).'</td></tr>
-                    <tr><th>CBO</th><td>'.htmlspecialchars($resultado_cargo_selecionado['codigo_cargo']).'</td></tr>
+                    <tr><th>Empresa</th><td>'.htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "").'</td></tr>
+                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "").'</td></tr>
+                    <tr><th>Nome Funcionário</th><td>'.htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "").'</td></tr>
+                    <tr><th>Cargo</th><td>'.htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "").'</td></tr>
+                    <tr><th>CBO</th><td>'.htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "").'</td></tr>
                 </table>
 
                 <h3>04 - Mudança de Função</h3>
                 <table>
-                    <tr><th>Novo Cargo</th><td>TRABALHADOR DE PECUÁRIA POLIVALENTE</td></tr>
-                    <tr><th>Novo CBO</th><td>623015</td></tr>
+                    <tr><th>Novo Cargo</th><td>'.htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "").'</td></tr>
+                    <tr><th>Novo CBO</th><td>'.htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "").'</td></tr>
                 </table>
 
                 <h3>05 - Dados dos Médicos</h3>
                 <table>
-                    <tr><th>Médico Coordenador</th><td>WILSON JOSÉ DE BARROS</td></tr>
-                    <tr><th>CRM</th><td>819/MT</td></tr>
+                    <tr><th>Médico Coordenador</th><td>'.htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "").'</td></tr>
+                    <tr><th>CRM</th><td>'.htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "").'</td></tr>
                     <tr><th>Médico Emitente</th><td></td></tr>
                     <tr><th>CRM</th><td>819/MT</td></tr>
                 </table>
