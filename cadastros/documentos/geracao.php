@@ -72,6 +72,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Debug
             // print_r($resultado_clinica_selecionada);
             echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+
+            if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '')
+            {
+                $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                $comando_busca_empresa->bindValue(":recebe_id_empresa",$_SESSION["empresa_selecionado"]);
+                $comando_busca_empresa->execute();
+                $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                var_dump($resultado_empresa_selecionada);
+
+                echo "<br>";
+            }
+
+            if(isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '')
+            {
+                $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                $comando_busca_pessoa->bindValue(":recebe_id_pessoa",$_SESSION["colaborador_selecionado"]);
+                $comando_busca_pessoa->execute();
+                $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                var_dump($resultado_pessoa_selecionada);
+
+                echo "<br>";
+            }
+
+            if(isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "")
+            {
+                $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                $comando_busca_cargo->bindValue(":recebe_id_cargo",$_SESSION["cargo_selecionado"]);
+                $comando_busca_cargo->execute();
+                $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                var_dump($resultado_cargo_selecionado);
+            }
         }
 
         echo '
@@ -134,11 +171,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>03 - Dados do Funcionário / Empresa</h3>
                 <table>
-                    <tr><th>Empresa</th><td>PROMAIS SAÚDE E SEGURANÇA DO TRABALHO</td></tr>
-                    <tr><th>CNPJ</th><td>19.464.436/0001-60</td></tr>
-                    <tr><th>Nome Funcionário</th><td>AMANDA APARECIDA CARVALHO RODRIGUES</td></tr>
-                    <tr><th>Cargo</th><td>LUBRICADOR DE VEÍCULOS AUTOMOTORES</td></tr>
-                    <tr><th>CBO</th><td>621005</td></tr>
+                    <tr><th>Empresa</th><td>'.htmlspecialchars($resultado_empresa_selecionada['nome']).'</td></tr>
+                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_empresa_selecionada['cnpj']).'</td></tr>
+                    <tr><th>Nome Funcionário</th><td>'.htmlspecialchars($resultado_pessoa_selecionada['nome']).'</td></tr>
+                    <tr><th>Cargo</th><td>'.htmlspecialchars($resultado_cargo_selecionado['titulo_cargo']).'</td></tr>
+                    <tr><th>CBO</th><td>'.htmlspecialchars($resultado_cargo_selecionado['codigo_cargo']).'</td></tr>
                 </table>
 
                 <h3>04 - Mudança de Função</h3>
