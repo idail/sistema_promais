@@ -740,6 +740,8 @@
                                 "</tr>";
                         }
                         $("#tabela-medico-associado tbody").append(recebe_tabela_associar_medico_clinica);
+                    }else{
+                        $("#tabela-medico-associado tbody").html("");
                     }
 
                     resolve(); // sinaliza que terminou
