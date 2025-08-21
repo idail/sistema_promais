@@ -7317,7 +7317,7 @@ function buscar_riscos() {
                   let input = document.createElement("input");
                   input.type = "hidden";
                   input.name = "processo_geracao";
-                  input.value = "guia_de_encaminhamento";
+                  input.value = window.smDocumentosSelecionadosNomes;
                   form.appendChild(input);
 
                   // let input_2 = document.createElement("input");
