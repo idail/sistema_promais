@@ -25,7 +25,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') 
         {
-            echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"];
+            echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"]."<br>";
+
+            echo $_SESSION["exame_selecionado"]."<br>";
+
+            $recebe_exame = $_SESSION["exame_selecionado"];
+
+            // Função helper para marcar
+            function marcar($valor, $tipoExame) {
+                return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+            }
 
             $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
             $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
@@ -33,7 +42,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $comando_busca_clinica->execute();
             $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
 
-            print_r($resultado_clinica_selecionada);
+            // print_r($resultado_clinica_selecionada);
+
+            // ----------------- BUSCA NA API DO IBGE -----------------
+            $cidadeNome = '';
+            $estadoSigla = '';
+
+            if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                $cidadeJson = @file_get_contents($urlCidade);
+                if ($cidadeJson !== false) {
+                    $cidadeData = json_decode($cidadeJson, true);
+                    $cidadeNome = $cidadeData['nome'] ?? '';
+                }
+            }
+
+            if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                $estadoJson = @file_get_contents($urlEstado);
+                if ($estadoJson !== false) {
+                    $estadoData = json_decode($estadoJson, true);
+                    $estadoSigla = $estadoData['sigla'] ?? '';
+                }
+            }
+
+            // Exemplo: "ALTO ARAGUAIA - MT"
+            $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+
+            // Debug
+            // print_r($resultado_clinica_selecionada);
+            echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
         }
 
         echo '
@@ -86,12 +124,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <tr><th>Hospital/Clínica</th><td>'.htmlspecialchars($resultado_clinica_selecionada['nome_fantasia']).'</td></tr>
                     <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_clinica_selecionada['cnpj']).'</td></tr>
                     <tr><th>Endereço</th><td>'.htmlspecialchars($resultado_clinica_selecionada['endereco']).','.htmlspecialchars($resultado_clinica_selecionada['numero']).','.htmlspecialchars($resultado_clinica_selecionada['bairro']).'</td></tr>
-                    <tr><th>Cidade/UF</th><td>ALTO ARAGUAIA - MT</td></tr>
-                    <tr><th>Telefone</th><td>(66) 3481-1880</td></tr>
+                    <tr><th>Cidade/UF</th><td>'.htmlspecialchars($recebe_cidade_uf).'</td></tr>
+                    <tr><th>Telefone</th><td>'.htmlspecialchars($resultado_clinica_selecionada['telefone']).'</td></tr>
                 </table>
 
                 <h3>02 - Tipo de Exame / Procedimento</h3>
-                <p>Admissional ( ) Periódico ( ) Demissional ( ) Mudança de Risco/Função ( ) Retorno ao Trabalho ( )</p>
+
+                <p>Admissional '.marcar("admissional",$recebe_exame).' Periódico '.marcar("periodico",$recebe_exame).' Demissional '.marcar("demissional",$recebe_exame).' Mudança de Risco/Função '.marcar("mudanca",$recebe_exame).' Retorno ao Trabalho '.marcar("retorno",$recebe_exame).'</p>
 
                 <h3>03 - Dados do Funcionário / Empresa</h3>
                 <table>
