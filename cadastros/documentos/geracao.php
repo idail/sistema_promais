@@ -21,6 +21,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (isset($recebe_processo_geraca) && strtolower(trim($recebe_processo_geraca)) === "guia de encaminhamento") {
 
+        $informacoes_clinica;
+
+        if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') 
+        {
+            echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"];
+
+            $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+            $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+            $comando_busca_clinica->bindValue(":recebe_clinica_id",$_SESSION["clinica_selecionado"]);
+            $comando_busca_clinica->execute();
+            $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+            print_r($resultado_clinica_selecionada);
+        }
+
         echo '
             <style>
                 body { font-family: Arial, sans-serif; background:#f2f2f2; }
@@ -68,9 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>01 - Identificação</h3>
                 <table>
-                    <tr><th>Hospital/Clínica</th><td>HOSPITAL BOM SAMARITANO</td></tr>
-                    <tr><th>CNPJ</th><td>01.362.987/0001-57</td></tr>
-                    <tr><th>Endereço</th><td>RUA 24 DE FEVEREIRO, S/N - BAIRRO: BOIADEIRO</td></tr>
+                    <tr><th>Hospital/Clínica</th><td>'.htmlspecialchars($resultado_clinica_selecionada['nome_fantasia']).'</td></tr>
+                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_clinica_selecionada['cnpj']).'</td></tr>
+                    <tr><th>Endereço</th><td>'.htmlspecialchars($resultado_clinica_selecionada['endereco']).','.htmlspecialchars($resultado_clinica_selecionada['numero']).','.htmlspecialchars($resultado_clinica_selecionada['bairro']).'</td></tr>
                     <tr><th>Cidade/UF</th><td>ALTO ARAGUAIA - MT</td></tr>
                     <tr><th>Telefone</th><td>(66) 3481-1880</td></tr>
                 </table>
