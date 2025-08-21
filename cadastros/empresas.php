@@ -182,15 +182,16 @@
             recebe_tabela_empresas.search(this.value).draw();
         });
 
-        async function buscar_informacoes_rapidas_empresa() {
-            await popula_cidades_informacoes_rapidas_empresa();
-        }
+        // async function buscar_informacoes_rapidas_empresa() {
+        //     await popula_cidades_informacoes_rapidas_empresa();
+        // }
 
-        buscar_informacoes_rapidas_empresa();
+        // buscar_informacoes_rapidas_empresa();
     });
 
 
     async function popula_cidades_informacoes_rapidas_empresa(cidadeSelecionada = "", estadoSelecionado = "") {
+        debugger;
         const cidadeSelect = document.getElementById('cidade_id');
 
         // Estado inicial do <select>
@@ -388,8 +389,9 @@
         }
 
         $(document).on("click", "#visualizar-informacoes-empresa", function(e) {
+            debugger;
             e.preventDefault();
-            const recebe_codigo_empresa_informacoes_rapida = $(this).data("codigo-empresa");
+            recebe_codigo_empresa_informacoes_rapida = $(this).data("codigo-empresa");
             $("#modal-informacoes-rapidas-empresa").modal("show");
 
             // Limpa os campos antes de preencher
