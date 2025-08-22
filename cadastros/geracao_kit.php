@@ -5707,6 +5707,7 @@ function renderResultadoProfissional(tipo) {
 
     function busca_medicos_relacionados_empresa()
     {
+      debugger;
       let medicos_relacionados_empresa = [];
       $.ajax({
           url: "cadastros/processa_medico.php",
