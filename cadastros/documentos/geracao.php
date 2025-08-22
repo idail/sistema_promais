@@ -139,6 +139,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 var_dump($resultado_medico_coordenador_selecionado);
             }
+
+            if(isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "")
+            {
+                echo "ID médico emitente:".$_SESSION["medico_clinica_selecionado"];
+
+                $instrucao_busca_medico_clinica = "select * from medicos where id = :recebe_id_medico_clinica";
+                $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
+                $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica",$_SESSION["medico_clinica_selecionado"]);
+                $comando_busca_medico_clinica->execute();
+                $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+                var_dump($resultado_medico_clinica_selecionado);
+            }
         }
 
         echo '
