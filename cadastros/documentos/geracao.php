@@ -280,6 +280,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $aptidoesTabela .= '</p>';
             // =====================================================================
 
+
+            // Função helper para marcar Apto/Inapto
+            function marcarAptidao($nome, $aptidoesSelecionadas) {
+                $nomeLower = strtolower($nome);
+                $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
+                $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
+                return "$nome ( $apto ) Apto ( $inapto ) Inapto";
+            }
+
         }
 
         echo '
@@ -447,7 +456,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>13 - Conclusão</h3>
                 <p>Atesto que o trabalhador se submeteu aos exames ocupacionais NR-07: ( ) APTO ( ) INAPTO</p>
-                <div class="assinatura"></div><small>Médico Responsável - CRM 819/MT</small>
+                <div class="assinatura"></div><small>Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT</small>
             </div>
 
             <!-- ===================== ASO ===================== -->
@@ -456,29 +465,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>Dados do Funcionário / Empresa</h3>
                 <table>
-                    <tr><th>Empresa</th><td>PROMAIS SAÚDE E SEGURANÇA DO TRABALHO</td></tr>
-                    <tr><th>CNPJ</th><td>19.464.436/0001-60</td></tr>
-                    <tr><th>Funcionário</th><td>AMANDA APARECIDA CARVALHO RODRIGUES</td></tr>
-                    <tr><th>CPF</th><td>072.143.511-45</td></tr>
+                    <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+                    <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
                     <tr><th>Idade</th><td>25 anos</td></tr>
                     <tr><th>Cargo</th><td>LUBRICADOR DE VEÍCULOS AUTOMOTORES</td></tr>
                     <tr><th>CBO</th><td>621005</td></tr>
                 </table>
 
                 <h3>Procedimentos / Exames</h3>
-                <p>Avaliação Clínica Ocupacional (0295) - Data: / /2024</p>
+                <p>' . htmlspecialchars($recebe_exame_exibicao ?? "") . ' - Data:' . htmlspecialchars($dataAtual ?? "") . '</p>
+                <!-- <p>Avaliação Clínica Ocupacional (0295) - Data: / /2024</p> -->
 
                 <h3>Aptidões Extras</h3>
-                <p>Trabalho em Altura ( ) Apto ( ) Inapto — Alimentos ( ) Apto ( ) Inapto<br>
-                Eletricidade ( ) Apto ( ) Inapto — Máquinas ( ) Apto ( ) Inapto<br>
-                Veículos ( ) Apto ( ) Inapto — Quente ( ) Apto ( ) Inapto<br>
-                Inflamáveis ( ) Apto ( ) Inapto — Radiações ( ) Apto ( ) Inapto<br>
-                Confinado ( ) Apto ( ) Inapto — Inspeções ( ) Apto ( ) Inapto</p>
+                <p>
+                '. marcarAptidao('Trabalho em Altura', $aptidoesSelecionadas) .' <br> 
+                '. marcarAptidao('Manusear Produtos Alimentícios', $aptidoesSelecionadas) .' <br>
+                '. marcarAptidao('Trabalho com Eletricidade', $aptidoesSelecionadas). '<br>
+                '. marcarAptidao('Operar Máquinas e Equipamentos', $aptidoesSelecionadas). ' <br>
+                '. marcarAptidao('Conduzir Veículos', $aptidoesSelecionadas). ' <br>
+                '. marcarAptidao('Trabalho a Quente', $aptidoesSelecionadas). '<br>
+                '. marcarAptidao('Trabalho com Líquidos Inflamáveis', $aptidoesSelecionadas). ' <br>
+                '. marcarAptidao('Trabalho com Exposição a Radiações Ionizantes', $aptidoesSelecionadas) .' <br>
+                '. marcarAptidao('Trabalho em Espaço Confinado', $aptidoesSelecionadas).' <br>
+                '. marcarAptidao('Inspeções e Manutenções em Máquinas e Equipamentos', $aptidoesSelecionadas). '
+                </p>
 
                 <h3>Conclusão</h3>
                 <p>Atesto que o trabalhador foi avaliado conforme NR-07: ( ) APTO ( ) INAPTO<br>
-                Local: ALTO ARAGUAIA-MT — Data: / /2024</p>
-                <div class="assinatura"></div><small>Médico Responsável - CRM 819/MT</small>
+                Local: ALTO ARAGUAIA-MT — Data:' . htmlspecialchars($dataAtual ?? "") . '</p>
+                <div class="assinatura"></div><small>Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT</small>
             </div>
 
             <div class="actions">
