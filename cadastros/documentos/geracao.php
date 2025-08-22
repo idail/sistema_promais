@@ -30,6 +30,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $recebe_exame = $_SESSION["exame_selecionado"];
 
+            $recebe_exame_exibicao;
+
+            if($recebe_exame === "admissional")
+            {
+                $recebe_exame_exibicao = "Admissional";
+            }else if($recebe_exame === "mudanca")
+            {
+                $recebe_exame_exibicao = "Mudança de função";
+            }
+
+            // Define o fuso horário do Brasil (evita diferenças)
+            date_default_timezone_set('America/Sao_Paulo');
+
+            // Data atual no formato brasileiro
+            $dataAtual = date('d/m/Y');
+
             // Função helper para marcar
             function marcar($valor, $tipoExame)
             {
@@ -281,8 +297,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>07 - Procedimentos / Exames Realizados</h3>
                 <table>
-                    <tr><th>Exame</th><td>Avaliação Clínica Ocupacional (0295)</td></tr>
-                    <tr><th>Data</th><td>/ /2024</td></tr>
+                    <tr><th>Exame</th><td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td></tr>
+                    <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
                 </table>
 
                 <h3>08 - Aptidões Extras</h3>
