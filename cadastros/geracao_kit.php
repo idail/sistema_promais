@@ -1875,11 +1875,17 @@ function renderResultadoProfissional(tipo) {
         if (areaMed) areaMed.innerHTML = '';
         if (areaMed && prof.medico && prof.medico.nome) {
           if (typeof window.renderizarPessoa === 'function') {
+            // Remove prefixos repetidos (Dr./Dra.) para evitar "Dr. Dra. Nome"
+            const nomeBruto = String(prof.medico.nome || '').trim();
+            const nomeSemTitulo = nomeBruto.replace(/^(?:\s*(?:Dr\.?|Dra\.?))+\s+/i, '').trim();
             const payload = {
               id: (prof.medico.medicoClinicaId || prof.medico.id || null),
-              nome: prof.medico.nome
+              nome: nomeSemTitulo
             };
-            if (prof.medico.cpf) payload.cpf = prof.medico.cpf;
+            if (prof.medico.cpf) {
+              payload.cpf = prof.medico.cpf;
+              payload.cpf_medico = prof.medico.cpf; // compat para renderizadores que esperam outro campo
+            }
             try { window.renderizarPessoa('medico', payload, areaMed); } catch (e) { /* fallback abaixo */ }
           }
           if (!areaMed.hasChildNodes()) {
@@ -1912,7 +1918,7 @@ function renderResultadoProfissional(tipo) {
           if (item.dataset) {
             nome = item.dataset.nomeMedico || item.dataset.nome || '';
           }
-          const cpf = item.dataset && item.dataset.cpf ? item.dataset.cpf : '';
+          const cpf = (item.dataset && (item.dataset.cpf || item.dataset.cpfMedico || item.dataset.cpf_medico)) ? (item.dataset.cpf || item.dataset.cpfMedico || item.dataset.cpf_medico) : '';
           if (!nome) nome = (item.textContent || '').trim();
           if (!nome) return;
           if (input) input.value = nome;
