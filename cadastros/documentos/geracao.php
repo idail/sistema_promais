@@ -108,6 +108,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $comando_busca_pessoa->execute();
                 $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
 
+                $recebe_nascimento_colaborador = '';
+
+                $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                    try {
+                        $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                    } catch (Exception $e) {
+                        $recebe_nascimento_colaborador = '';
+                    }
+                }
+
                 var_dump($resultado_pessoa_selecionada);
 
                 echo "<br>";
@@ -210,6 +221,65 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
             $riscosTabela .= '</table>';
             // =====================================================================
+
+            // ===================== AJUSTE NAS APTIDÕES =====================
+            $aptidoesTabela = '';
+
+            $listaAptidoes = [
+                "trabalho em altura"            => "Trabalho em Altura",
+                "manusear produtos alimentícios"=> "Manusear Produtos Alimentícios",
+                "eletricidade"                  => "Eletricidade",
+                "operar máquinas"               => "Operar Máquinas",
+                "conduzir veículos"             => "Conduzir Veículos",
+                "trabalho a quente"             => "Trabalho a Quente",
+                "inflamáveis"                   => "Inflamáveis",
+                "radiações ionizantes"          => "Radiações Ionizantes",
+                "espaço confinado"              => "Espaço Confinado",
+                "inspeções e manutenções"       => "Inspeções e Manutenções"
+            ];
+
+            // transforma o JSON da sessão em array associativo
+            $aptidoesSelecionadas = [];
+            if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                var_dump($_SESSION["aptidao_selecionado"]);
+
+
+                $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                    foreach ($dataApt as $apt) {
+                        if (isset($apt['nome'])) {
+                            $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                        }
+                    }
+                }
+            }
+
+            // função para marcar sim/não
+            function marcarApt($nomeExibicao, $aptidoesSelecionadas) {
+                $nomeLower = strtolower($nomeExibicao);
+                $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                $nao  = $sim === "X" ? " " : "X";
+                return "( $sim ) Sim ( $nao ) Não";
+            }
+
+            // define os pares para exibição (duas colunas por linha)
+            $linhas = [
+                ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
+                ["Eletricidade", "Operar Máquinas"],
+                ["Conduzir Veículos", "Trabalho a Quente"],
+                ["Inflamáveis", "Radiações Ionizantes"],
+                ["Espaço Confinado", "Inspeções e Manutenções"]
+            ];
+
+            $aptidoesTabela .= '<h3>08 - Aptidões Extras</h3><p>';
+            foreach ($linhas as $par) {
+                $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+                $aptidoesTabela .= $esq . " — " . $dir . "<br>";
+            }
+            $aptidoesTabela .= '</p>';
+            // =====================================================================
+
         }
 
         echo '
@@ -301,17 +371,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
                 </table>
 
-                <h3>08 - Aptidões Extras</h3>
-                <p>Trabalho em Altura ( ) Sim ( ) Não — Manusear Produtos Alimentícios ( ) Sim ( ) Não<br>
-                Eletricidade ( ) Sim ( ) Não — Operar Máquinas ( ) Sim ( ) Não<br>
-                Conduzir Veículos ( ) Sim ( ) Não — Trabalho a Quente ( ) Sim ( ) Não<br>
-                Inflamáveis ( ) Sim ( ) Não — Radiações Ionizantes ( ) Sim ( ) Não<br>
-                Espaço Confinado ( ) Sim ( ) Não — Inspeções e Manutenções ( ) Sim ( ) Não</p>
+                ' . $aptidoesTabela . '
 
                 <h3>09 - Conclusão</h3>
-                <p>ALTO ARAGUAIA - MT, DATA: / /2024</p>
+                <p>ALTO ARAGUAIA - MT, DATA:' . htmlspecialchars($dataAtual ?? "") . '</p>
                 <p>Resultado: ( ) APTO  ( ) INAPTO</p>
-                <div class="assinatura"></div><small>Médico Responsável - CRM 819/MT</small>
+                <div class="assinatura"></div><small>Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT</small>
             </div>
 
             <!-- ===================== PRONTUÁRIO MÉDICO ===================== -->
@@ -320,11 +385,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>03 - Dados do Funcionário / Empresa</h3>
                 <table>
-                    <tr><th>Empresa</th><td>PROMAIS SAÚDE E SEGURANÇA DO TRABALHO</td></tr>
-                    <tr><th>CNPJ</th><td>19.464.436/0001-60</td></tr>
-                    <tr><th>Funcionário</th><td>AMANDA APARECIDA CARVALHO RODRIGUES</td></tr>
-                    <tr><th>CPF</th><td>072.143.511-45</td></tr>
-                    <tr><th>Data Nascimento</th><td>08/10/1998</td></tr>
+                    <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+                    <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
+                    <tr><th>Data Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador, ENT_QUOTES, 'UTF-8' ?? "") . '</td></tr>
                     <tr><th>Idade</th><td>25 anos</td></tr>
                     <tr><th>Cargo</th><td>LUBRICADOR DE VEÍCULOS AUTOMOTORES</td></tr>
                     <tr><th>CBO</th><td>621005</td></tr>
