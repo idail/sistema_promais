@@ -23,22 +23,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $informacoes_clinica;
 
-        if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') 
-        {
-            echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"]."<br>";
+        if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+            echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
 
-            echo $_SESSION["exame_selecionado"]."<br>";
+            echo $_SESSION["exame_selecionado"] . "<br>";
 
             $recebe_exame = $_SESSION["exame_selecionado"];
 
             // Função helper para marcar
-            function marcar($valor, $tipoExame) {
+            function marcar($valor, $tipoExame)
+            {
                 return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
             }
 
             $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
             $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
-            $comando_busca_clinica->bindValue(":recebe_clinica_id",$_SESSION["clinica_selecionado"]);
+            $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
             $comando_busca_clinica->execute();
             $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
 
@@ -73,11 +73,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // print_r($resultado_clinica_selecionada);
             echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
 
-            if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '')
-            {
+            if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
                 $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
                 $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
-                $comando_busca_empresa->bindValue(":recebe_id_empresa",$_SESSION["empresa_selecionado"]);
+                $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
                 $comando_busca_empresa->execute();
                 $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
 
@@ -86,11 +85,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 echo "<br>";
             }
 
-            if(isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '')
-            {
+            if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
                 $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
                 $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
-                $comando_busca_pessoa->bindValue(":recebe_id_pessoa",$_SESSION["colaborador_selecionado"]);
+                $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
                 $comando_busca_pessoa->execute();
                 $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
 
@@ -99,11 +97,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 echo "<br>";
             }
 
-            if(isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "")
-            {
+            if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
                 $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
                 $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
-                $comando_busca_cargo->bindValue(":recebe_id_cargo",$_SESSION["cargo_selecionado"]);
+                $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
                 $comando_busca_cargo->execute();
                 $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
 
@@ -112,12 +109,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 echo "<br>";
             }
 
-            if($recebe_exame === "mudanca")
-            {
-                if(isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== ""){
+            if ($recebe_exame === "mudanca") {
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+
                     $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
                     $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
-                    $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo",$_SESSION["cargo_selecionado"]);
+                    $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
                     $comando_busca_mudanca_cargo->execute();
                     $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
 
@@ -127,38 +125,75 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
             }
 
-            if(isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "")
-            {
-                echo "ID Médico coordenador:".$_SESSION["medico_coordenador_selecionado"];
+            if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
 
                 $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
                 $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
-                $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador",$_SESSION["medico_coordenador_selecionado"]);
+                $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
                 $comando_busca_medico_coordenador->execute();
                 $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
 
                 var_dump($resultado_medico_coordenador_selecionado);
             }
 
-            if(isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "")
-            {
-                echo "ID médico emitente:".$_SESSION["medico_clinica_selecionado"]."<br>";
+            if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
 
                 $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
                 $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
-                $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica",$_SESSION["medico_clinica_selecionado"]);
+                $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
                 $comando_busca_medico_clinica->execute();
                 $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
 
 
                 $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
                 $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
-                $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica",$resultado_medico_clinica_selecionado["medico_id"]);
+                $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_medico_clinica_selecionado["medico_id"]);
                 $comando_busca_medico_relacionado_clinica->execute();
                 $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
 
                 var_dump($resultado_medico_relacionado_clinica);
+
+                echo "<br>";
             }
+
+            // ===================== AJUSTE APENAS NOS RISCOS =====================
+            $riscosTabela = '';
+            $grupos = [
+                "acidente"   => "Acidentes / Mecânicos",
+                "ergonomico" => "Ergonômicos",
+                "fisico"     => "Físicos",
+                "quimico"    => "Químicos",
+                "biologico"  => "Biológicos"
+            ];
+
+            // Prepara array vazio para armazenar riscos por grupo
+            $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
+
+            if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
+                $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    for ($i = 0; $i < count($data); $i++) {
+                        $grupo     = strtolower($data[$i]['grupo']);
+                        $descricao = $data[$i]['descricao'] ?? "";
+
+                        if (isset($riscosPorGrupo[$grupo])) {
+                            $riscosPorGrupo[$grupo][] = $descricao;
+                        }
+                    }
+                }
+            }
+
+            // Monta a tabela de riscos
+            $riscosTabela .= '<h3>06 - Fatores de Risco</h3><table>';
+            foreach ($grupos as $chave => $titulo) {
+                $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
+                $riscosTabela .= "<tr><th>{$titulo}</th><td>{$valores}</td></tr>";
+            }
+            $riscosTabela .= '</table>';
+            // =====================================================================
         }
 
         echo '
@@ -208,48 +243,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <h3>01 - Identificação</h3>
                 <table>
-                    <tr><th>Hospital/Clínica</th><td>'.htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "").'</td></tr>
-                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "").'</td></tr>
-                    <tr><th>Endereço</th><td>'.htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")).','.!empty($resultado_clinica_selecionada['numero'] ?? "").','.!empty($resultado_clinica_selecionada['bairro'] ?? "").'</td></tr>
-                    <tr><th>Cidade/UF</th><td>'.htmlspecialchars($recebe_cidade_uf ?? "").'</td></tr>
-                    <tr><th>Telefone</th><td>'.htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "").'</td></tr>
+                    <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
+                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
+                    <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . ',' . !empty($resultado_clinica_selecionada['numero'] ?? "") . ',' . !empty($resultado_clinica_selecionada['bairro'] ?? "") . '</td></tr>
+                    <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
+                    <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
                 </table>
 
                 <h3>02 - Tipo de Exame / Procedimento</h3>
 
-                <p>Admissional '.marcar("admissional",$recebe_exame).' Periódico '.marcar("periodico",$recebe_exame).' Demissional '.marcar("demissional",$recebe_exame).' Mudança de Risco/Função '.marcar("mudanca",$recebe_exame).' Retorno ao Trabalho '.marcar("retorno",$recebe_exame).'</p>
+                <p>Admissional ' . marcar("admissional", $recebe_exame) . ' Periódico ' . marcar("periodico", $recebe_exame) . ' Demissional ' . marcar("demissional", $recebe_exame) . ' Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
 
                 <h3>03 - Dados do Funcionário / Empresa</h3>
                 <table>
-                    <tr><th>Empresa</th><td>'.htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "").'</td></tr>
-                    <tr><th>CNPJ</th><td>'.htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "").'</td></tr>
-                    <tr><th>Nome Funcionário</th><td>'.htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "").'</td></tr>
-                    <tr><th>Cargo</th><td>'.htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "").'</td></tr>
-                    <tr><th>CBO</th><td>'.htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "").'</td></tr>
+                    <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+                    <tr><th>Nome Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+                    <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
                 </table>
 
                 <h3>04 - Mudança de Função</h3>
                 <table>
-                    <tr><th>Novo Cargo</th><td>'.htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "").'</td></tr>
-                    <tr><th>Novo CBO</th><td>'.htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "").'</td></tr>
+                    <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+                    <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
                 </table>
 
                 <h3>05 - Dados dos Médicos</h3>
                 <table>
-                    <tr><th>Médico Coordenador</th><td>'.htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "").'</td></tr>
-                    <tr><th>CRM</th><td>'.htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "").'</td></tr>
-                    <tr><th>Médico Emitente</th><td>'.htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "").'</td></tr>
-                    <tr><th>CRM</th><td>'.htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "").'</td></tr>
+                    <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td></tr>
+                    <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
+                    <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td></tr>
+                    <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
                 </table>
 
-                <h3>06 - Fatores de Risco</h3>
-                <table>
-                    <tr><th>Acidentes / Mecânicos</th><td>N/A</td></tr>
-                    <tr><th>Ergonômicos</th><td>N/A</td></tr>
-                    <tr><th>Físicos</th><td>Vibração Corpo Inteiro Aren, VDVR, Ruído Previdenciário e Trabalhista</td></tr>
-                    <tr><th>Químicos</th><td>N/A</td></tr>
-                    <tr><th>Biológicos</th><td>N/A</td></tr>
-                </table>
+                ' . $riscosTabela . '
 
                 <h3>07 - Procedimentos / Exames Realizados</h3>
                 <table>
@@ -516,7 +544,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ';
 
 
-    echo '<style>
+        echo '<style>
         body { font-family: Arial, sans-serif; background:#f2f2f2; }
         .guia-container {
             width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
@@ -620,7 +648,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </script>
     ';
 
-    echo '<style>
+        echo '<style>
         body { font-family: Arial, sans-serif; background:#f2f2f2; }
         .guia-container {
             width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
@@ -749,8 +777,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </script>
     ';
 
-    echo 
-      '<style>
+        echo
+        '<style>
       body { font-family: Arial, sans-serif; background:#f2f2f2; }
       .guia-container {
           width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
@@ -849,9 +877,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
   </script>
   ';
-
-    }else if(isset($recebe_processo_geraca) && strtolower(trim($recebe_processo_geraca)) === "acuidade visual")
-    {
+    } else if (isset($recebe_processo_geraca) && strtolower(trim($recebe_processo_geraca)) === "acuidade visual") {
         echo '
     <!DOCTYPE html>
     <html lang="pt-br">
@@ -979,7 +1005,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ';
 
 
-    echo '<style>
+        echo '<style>
         body { font-family: Arial, sans-serif; background:#f2f2f2; }
         .guia-container {
             width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
@@ -1083,7 +1109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </script>
     ';
 
-    echo '<style>
+        echo '<style>
         body { font-family: Arial, sans-serif; background:#f2f2f2; }
         .guia-container {
             width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
@@ -1212,8 +1238,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </script>
     ';
 
-    echo 
-      '<style>
+        echo
+        '<style>
       body { font-family: Arial, sans-serif; background:#f2f2f2; }
       .guia-container {
           width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
