@@ -142,15 +142,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if(isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "")
             {
-                echo "ID médico emitente:".$_SESSION["medico_clinica_selecionado"];
+                echo "ID médico emitente:".$_SESSION["medico_clinica_selecionado"]."<br>";
 
-                $instrucao_busca_medico_clinica = "select * from medicos where id = :recebe_id_medico_clinica";
+                $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
                 $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
                 $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica",$_SESSION["medico_clinica_selecionado"]);
                 $comando_busca_medico_clinica->execute();
                 $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
 
-                var_dump($resultado_medico_clinica_selecionado);
+
+                $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
+                $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica",$resultado_medico_clinica_selecionado["medico_id"]);
+                $comando_busca_medico_relacionado_clinica->execute();
+                $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
+
+                var_dump($resultado_medico_relacionado_clinica);
             }
         }
 
@@ -231,8 +238,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <table>
                     <tr><th>Médico Coordenador</th><td>'.htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "").'</td></tr>
                     <tr><th>CRM</th><td>'.htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "").'</td></tr>
-                    <tr><th>Médico Emitente</th><td></td></tr>
-                    <tr><th>CRM</th><td>819/MT</td></tr>
+                    <tr><th>Médico Emitente</th><td>'.htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "").'</td></tr>
+                    <tr><th>CRM</th><td>'.htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "").'</td></tr>
                 </table>
 
                 <h3>06 - Fatores de Risco</h3>
