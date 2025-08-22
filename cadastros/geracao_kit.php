@@ -1788,7 +1788,8 @@
       chip.style.padding = '6px 10px';
       chip.style.marginTop = '6px';
       chip.style.fontSize = '14px';
-      chip.innerHTML = `<i class="fas fa-user-md" style="color:#2563eb"></i> <span>${prof.nome}</span>`;
+      const cpfHtml = prof.cpf ? `<small style="color:#334155;opacity:.8; margin-left:6px;">CPF: ${prof.cpf}</small>` : '';
+      chip.innerHTML = `<i class="fas fa-user-md" style="color:#2563eb"></i> <span>${prof.nome}</span>${cpfHtml}`;
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.setAttribute('aria-label', 'Remover');
@@ -1840,7 +1841,8 @@ function renderResultadoProfissional(tipo) {
   chip.style.padding = '6px 10px';
   chip.style.marginTop = '6px';
   chip.style.fontSize = '14px';
-  chip.innerHTML = `<i class="fas fa-user-md" style="color:#2563eb"></i> <span>${prof.nome}</span>`;
+  const cpfHtml = prof.cpf ? `<small style="color:#334155;opacity:.8; margin-left:6px;">CPF: ${prof.cpf}</small>` : '';
+  chip.innerHTML = `<i class="fas fa-user-md" style="color:#2563eb"></i> <span>${prof.nome}</span>${cpfHtml}`;
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.setAttribute('aria-label', 'Remover');
@@ -1859,47 +1861,33 @@ function renderResultadoProfissional(tipo) {
       try {
         const st = window.ecpState || {};
         const prof = st.profissionais || {};
+        // Restaura inputs
         const inpCoord = document.getElementById('inputCoordenador');
+        if (inpCoord) inpCoord.value = (prof.coordenador && prof.coordenador.nome) ? prof.coordenador.nome : '';
         const inpMed = document.getElementById('inputMedico');
-        if (inpCoord && prof.coordenador && prof.coordenador.nome) inpCoord.value = prof.coordenador.nome;
-        if (inpMed && prof.medico && prof.medico.nome) inpMed.value = prof.medico.nome;
-        // Atualiza cabeçalho com clínica
-        applyMedicosHeaderFromEcp();
-        // Renderiza card detalhado do coordenador (no lugar do chip)
-        try {
-          const areaC = document.getElementById('resultadoCoordenador');
-          if (areaC && prof.coordenador && prof.coordenador.nome) {
-            const coordData = { id: prof.coordenador.id, nome: prof.coordenador.nome, cpf: prof.coordenador.cpf || '' };
-            renderizarPessoa('coordenador', coordData, areaC);
+        if (inpMed) inpMed.value = (prof.medico && prof.medico.nome) ? prof.medico.nome : '';
+
+        // Renderiza chip do coordenador
+        try { renderResultadoProfissional('coordenador'); } catch (e) { /* noop */ }
+
+        // Renderiza cartão/chip do médico
+        const areaMed = document.getElementById('resultadoMedico');
+        if (areaMed) areaMed.innerHTML = '';
+        if (areaMed && prof.medico && prof.medico.nome) {
+          if (typeof window.renderizarPessoa === 'function') {
+            const payload = {
+              id: (prof.medico.medicoClinicaId || prof.medico.id || null),
+              nome: prof.medico.nome
+            };
+            if (prof.medico.cpf) payload.cpf = prof.medico.cpf;
+            try { window.renderizarPessoa('medico', payload, areaMed); } catch (e) { /* fallback abaixo */ }
           }
-        } catch (e) { /* noop */ }
-        // Render detalhado do médico, se houver no estado
-        try {
-          const area = document.getElementById('resultadoMedico');
-          if (area && prof.medico && prof.medico.nome) {
-            const medicoData = { id: prof.medico.medicoClinicaId || prof.medico.id, nome: prof.medico.nome, cpf: prof.medico.cpf || '' };
-            renderizarPessoa('medico', medicoData, area);
+          if (!areaMed.hasChildNodes()) {
+            try { renderResultadoProfissional('medico'); } catch (e) { /* noop */ }
           }
-        } catch (e) { /* noop */ }
+        }
       } catch (e) { /* noop */ }
     }
-
-    // Faz o bind dos inputs da aba Médicos para persistir seleções
-    function bindMedicosInputsOnce() {
-      const bind = (id, tipo) => {
-        const el = document.getElementById(id);
-        if (!el || el._mdBound) return;
-        const handler = () => {
-          const nome = (el.value || '').trim();
-          if (nome) saveProfissional(tipo, { nome });
-        };
-        el.addEventListener('change', handler);
-        el.addEventListener('blur', handler);
-        el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') handler(); });
-        el._mdBound = true;
-      };
-      bind('inputCoordenador', 'coordenador');
-      bind('inputMedico', 'medico');
 
       // Delegação de clique nas listas de autocomplete (se existirem)
       const bindAuto = (listaId, inputId, tipo) => {
@@ -1907,6 +1895,7 @@ function renderResultadoProfissional(tipo) {
         const input = document.getElementById(inputId);
         if (!lista || lista._mdAutoBound) return;
         lista.addEventListener('click', (ev) => {
+          debugger;
           const item = ev.target.closest('[data-medico-id], [data-medico-clinica-id], [data-id], [data-nome-medico], [data-nome]') || ev.target.closest('div,li');
           if (!item) return;
           let medicoId = null;
@@ -1927,54 +1916,50 @@ function renderResultadoProfissional(tipo) {
           if (!nome) nome = (item.textContent || '').trim();
           if (!nome) return;
           if (input) input.value = nome;
-          // Monte o objeto preservando ids específicos
-          const data = (medicoId || relId) 
-            ? { medico_id: medicoId || null, medico_clinica_id: relId || null, id: medicoId || relId || null, nome, nome_medico: nome, cpf }
-            : { nome, cpf };
-          saveProfissional(tipo, data);
-          // Renderiza o card detalhado do médico/coordenador com CPF
+          // Salva conforme o tipo selecionado
           try {
-            if (tipo === 'medico') {
-              const area = document.getElementById('resultadoMedico');
-              if (area) renderizarPessoa('medico', { id: relId || medicoId || null, nome, cpf }, area);
-            } else if (tipo === 'coordenador') {
-              const areaC = document.getElementById('resultadoCoordenador');
-              const cid = medicoId || null;
-              if (areaC) renderizarPessoa('coordenador', { id: cid, nome, cpf }, areaC);
+            if (tipo === 'medico' && typeof window.grava_medico_clinica_kit === 'function') {
+              window.grava_medico_clinica_kit({
+                id: relId || medicoId || null,
+                medico_id: medicoId || null,
+                medico_clinica_id: relId || null,
+                nome,
+                cpf
+              });
             }
+            if (tipo === 'coordenador' && typeof window.grava_medico_coordenador_kit === 'function') {
+              window.grava_medico_coordenador_kit({
+                id: medicoId || null,
+                medico_id: medicoId || null,
+                nome,
+                cpf
+              });
+            }
+            // Atualiza estado global e UI imediatamente
+            try {
+              const payload = { id: medicoId || null, medico_id: medicoId || null, nome, cpf };
+              if (relId) payload.medico_clinica_id = relId;
+              saveProfissional(tipo, payload);
+              applyMedicosStateToUI();
+            } catch(e) { /* noop */ }
           } catch (e) { /* noop */ }
-          // Salva no KIT imediatamente se houver id da relação disponível e a função existir
-          if (relId && typeof window.grava_medico_clinica_kit === 'function') {
-            debugger;
-            try { window.grava_medico_clinica_kit({ id: Number(relId) }); } catch (e) { /* noop */ }
-          }
-          // limpa lista se for dropdown
+          // Limpa a lista de autocomplete após a seleção
           try { lista.innerHTML = ''; } catch (e) {}
         });
+        // marca para não rebindar
         lista._mdAutoBound = true;
-      };
-    
-    // Grava no KIT o id da relação médico_clínica
-    async function saveKitMedicoClinicaId(relId) {
-      try {
-        const form = new FormData();
-        form.append('processo_geracao_kit', 'incluir_valores_kit');
-        form.append('valor_medico_clinica_id', String(relId));
-        const resp = await fetch('cadastros/processa_geracao_kit.php', {
-          method: 'POST',
-          body: form
-        });
-        const txt = await resp.text();
-        if (!resp.ok) console.warn('Falha ao salvar médico_clínica no KIT:', resp.statusText, txt);
-        else console.log('KIT atualizado (medico_clinica_id):', txt);
-      } catch (err) {
-        console.error('Erro ao salvar medico_clinica_id no KIT:', err);
       }
-    }
+      // Tenta (re)ligar os handlers das listas de profissionais quando o DOM da aba existir
+      function bindMedicosInputsOnce() {
+        try {
+          // Chamar bindAuto é seguro e idempotente: ele verifica _mdAutoBound em cada lista
+          bindAuto('listaCoordenador', 'inputCoordenador', 'coordenador');
+          bindAuto('listaMedico', 'inputMedico', 'medico');
+        } catch(e) { /* noop */ }
+      }
       bindAuto('listaCoordenador', 'inputCoordenador', 'coordenador');
       bindAuto('listaMedico', 'inputMedico', 'medico');
-    }
-
+    
     function applyMedicosHeaderFromEcp() {
       try {
         const st = window.ecpState || {};
@@ -5868,46 +5853,59 @@ function renderResultadoProfissional(tipo) {
     };
 
     const tipoMapeado = {
-      coordenador: "coordenadores",
-      medico: "medicos"
+      coordenador: 'coordenadores',
+      medico: 'medicos'
     };
 
-    // Funções para o formulário de Profissionais de Medicina
     function mostrarListaProfissionais(tipo) {
       // debugger;
-
-
       const inputElement = document.getElementById(`input${capitalize(tipo)}`);
-      const input = inputElement.value.toLowerCase();
-      const lista = profissionaisMedicinaData[tipoMapeado[tipo]];
+      const input = (inputElement && inputElement.value ? inputElement.value : '').toLowerCase();
+      const lista = profissionaisMedicinaData[tipoMapeado[tipo]] || [];
       const container = document.getElementById(`lista${capitalize(tipo)}`);
-      
+      if (!container) return;
+
       if (input.trim() === '') {
         container.style.display = 'none';
+        container.innerHTML = '';
         return;
       }
-      
+
       container.style.display = 'block';
       container.innerHTML = '';
 
-      lista.filter(p => p.nome.toLowerCase().includes(input)).forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'ecp-result-item';
-        // Atribui datasets para o handler delegado em bindMedicosInputsOnce -> bindAuto
-        div.dataset.medicoClinicaId = p.id; // relação médico_clínica
-        div.dataset.nomeMedico = p.nome;
-        div.dataset.nome = p.nome; // nome genérico para coordenador/medico
-        if (p.cpf) div.dataset.cpf = p.cpf;
-        div.innerHTML = `
-          <div class="font-medium">${p.nome}</div>
-          <div class="text-sm text-gray-500">CPF: ${p.cpf || ''}</div>
-        `;
-        container.appendChild(div);
-      });
-    }
+      lista
+        .filter(p => ((p && (p.nome || p.nome_medico)) ? (p.nome || p.nome_medico) : '').toLowerCase().includes(input))
+        .forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'ecp-result-item';
 
-    function abrirModalProfissionais(id) {
-      document.getElementById(id).style.display = 'flex';
+          // Normaliza campos possíveis vindos do backend
+          const nome = p && (p.nome || p.nome_medico) ? (p.nome || p.nome_medico) : '';
+          const cpf = p && (p.cpf || p.cpf_medico) ? (p.cpf || p.cpf_medico) : '';
+
+          // Para 'medico', p.id tende a ser da relação medico_clinica e p.medico_id o id do médico
+          // Para 'coordenador', p.id tende a ser o id do médico
+          if (tipo === 'medico') {
+            if (p && p.id != null) div.dataset.medicoClinicaId = p.id; // relação
+            if (p && p.medico_id != null) div.dataset.medicoId = p.medico_id; // id do médico
+          } else if (tipo === 'coordenador') {
+            if (p && p.id != null) div.dataset.medicoId = p.id; // id do médico
+          }
+
+          // Sempre prover nomes esperados pelo handler
+          if (nome) {
+            div.dataset.nomeMedico = nome;
+            div.dataset.nome = nome;
+          }
+          if (cpf) div.dataset.cpf = cpf;
+
+          div.innerHTML = `
+            <div class="font-medium">${nome}</div>
+            <div class="text-sm text-gray-500">CPF: ${cpf}</div>
+          `;
+          container.appendChild(div);
+        });
     }
 
     function formatarCPF(input) {
@@ -5975,6 +5973,7 @@ function renderResultadoProfissional(tipo) {
 
 
     function gravar_medico_coordenador(valores) {
+      debugger;
       return new Promise((resolve, reject) => {
           $.ajax({
               url: "cadastros/processa_medico.php",
@@ -6130,7 +6129,7 @@ function renderResultadoProfissional(tipo) {
 
     function grava_medico_coordenador_kit(valores)
     {
-        // debugger;
+        debugger;
 
         console.log(valores);
         $.ajax({
