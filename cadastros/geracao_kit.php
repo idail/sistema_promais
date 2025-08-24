@@ -7326,7 +7326,7 @@ function buscar_riscos() {
                   input.value = window.smDocumentosSelecionadosNomes;
                   form.appendChild(input);
 
-                  
+
                   // let input_2 = document.createElement("input");
                   // input_2.type = "hidden";
                   // input_2.name = "acao";
@@ -8865,116 +8865,112 @@ console.log(total); // Exemplo: "180.10"
         </div>`]
 
      // Função para atualizar a lista de selecionados
-     function updateSelectedList() {
-      debugger;
-        // Controle booleano para evitar múltiplas execuções simultâneas
-        if (window._smDocUpdating) return;
-        window._smDocUpdating = true;
-        try {
-        const labels = document.querySelectorAll('.sm-label');
-        const selectedList = document.getElementById('sm-selected-list');
-        
-        if (!selectedList) return;
-        
-        // Limpa a lista
-        selectedList.innerHTML = '';
-        // Inicializa/zera o array global de nomes selecionados
-        window.smDocumentosSelecionadosNomes = [];
-        
-        // Adiciona cada item selecionado à lista
-        labels.forEach(label => {
-          const checkbox = label.querySelector('input[type="checkbox"]');
-          const card = label.querySelector('.sm-card');
-          const icon = card ? card.querySelector('i') : null;
-          
-          if (checkbox && checkbox.checked && card && icon) {
-            // Cria o elemento do item selecionado
-            const selectedItem = document.createElement('div');
-            selectedItem.className = 'sm-selected-item';
-            
-            // Obtém a classe de cor baseada no ícone
-            let bgColor = '#f3f4f6';
-            let textColor = '#1f2937';
-            
-            if (icon.classList.contains('fa-paper-plane')) {
-              bgColor = '#dbeafe';
-              textColor = '#1e40af';
-            } else if (icon.classList.contains('fa-clipboard-list')) {
-              bgColor = '#d1fae5';
-              textColor = '#065f46';
-            } else if (icon.classList.contains('fa-file-medical')) {
-              bgColor = '#fef3c7';
-              textColor = '#92400e';
-            } else if (icon.classList.contains('fa-eye')) {
-              bgColor = '#fee2e2';
-              textColor = '#991b1b';
-            } else if (icon.classList.contains('fa-users')) {
-              bgColor = '#e0e7ff';
-              textColor = '#3730a3';
-            } else if (icon.classList.contains('fa-exclamation-triangle')) {
-              bgColor = '#fef3c7';
-              textColor = '#92400e';
-            } else if (icon.classList.contains('fa-file-alt')) {
-              bgColor = '#1e1b4b';
-              textColor = '#ffffff';
-            } else if (icon.classList.contains('fa-dollar-sign')) {
-              bgColor = '#ecfdf5';
-              textColor = '#065f46';
-            }
-            
-            // Aplica os estilos ao item
-            selectedItem.style.backgroundColor = bgColor;
-            selectedItem.style.color = textColor;
-            
-            // Adiciona o ícone
-            const iconClone = icon.cloneNode(true);
-            iconClone.className = 'sm-selected-icon';
-            
-            // Adiciona o texto
-            const text = card.querySelector('span').textContent;
-            const textNode = document.createTextNode(text);
-            // Armazena o nome do documento selecionado no array global
-            try { window.smDocumentosSelecionadosNomes.push((text || '').trim()); } catch (e) { /* noop */ }
-            
-            // Botão de remover
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-document';
-            removeBtn.innerHTML = '×';
-            removeBtn.title = 'Remover';
-            removeBtn.onclick = (e) => {
-              e.stopPropagation();
-              checkbox.checked = false;
-              // Libera a execução para esta nova interação do usuário
-              window._smDocUpdating = false;
-              updateSelectedList();
-            };
-            
-            // Monta o item
-            selectedItem.appendChild(iconClone);
-            selectedItem.appendChild(textNode);
-            selectedItem.appendChild(removeBtn);
-            
-            // Adiciona o item à lista
-            selectedList.appendChild(selectedItem);
-          }
-        });
+function updateSelectedList() {
+  debugger;
+  if (window._smDocUpdating) return;
+  window._smDocUpdating = true;
 
-        console.log(window.smDocumentosSelecionadosNomes);
-        // Remove duplicatas garantindo consistência do estado global
-        try { window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes)); } catch (e) { /* noop */ }
-        
-        // Atribui a string JSON global para os documentos selecionados
-        window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
-        
-        // Mostra mensagem se não houver itens selecionados
-        if (selectedList.children.length === 0) {
-          selectedList.innerHTML = '<p class="sm-empty-message">Nenhum documento selecionado</p>';
+  try {
+    const selectedList = document.getElementById('sm-selected-list');
+    if (!selectedList) return;
+
+    // Limpa a lista
+    selectedList.innerHTML = '';
+    // Zera array global
+    window.smDocumentosSelecionadosNomes = [];
+
+    // Seleciona documentos (.sm-label) e orçamentos (.tipo-orcamento-label)
+    const labels = document.querySelectorAll('.sm-label, .tipo-orcamento-label');
+
+    labels.forEach(label => {
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      const card = label.querySelector('.sm-card, .tipo-orcamento-card');
+      const icon = card ? card.querySelector('i') : null;
+
+      if (checkbox && checkbox.checked && card) {
+        // Cria o item selecionado
+        const selectedItem = document.createElement('div');
+        selectedItem.className = 'sm-selected-item';
+
+        let bgColor = '#f3f4f6';
+        let textColor = '#1f2937';
+
+        if (icon) {
+          if (icon.classList.contains('fa-paper-plane')) {
+            bgColor = '#dbeafe'; textColor = '#1e40af';
+          } else if (icon.classList.contains('fa-clipboard-list')) {
+            bgColor = '#d1fae5'; textColor = '#065f46';
+          } else if (icon.classList.contains('fa-file-medical')) {
+            bgColor = '#fef3c7'; textColor = '#92400e';
+          } else if (icon.classList.contains('fa-eye')) {
+            bgColor = '#fee2e2'; textColor = '#991b1b';
+          } else if (icon.classList.contains('fa-users')) {
+            bgColor = '#e0e7ff'; textColor = '#3730a3';
+          } else if (icon.classList.contains('fa-exclamation-triangle')) {
+            bgColor = '#fef3c7'; textColor = '#92400e';
+          } else if (icon.classList.contains('fa-file-alt')) {
+            bgColor = '#1e1b4b'; textColor = '#ffffff';
+          } else if (icon.classList.contains('fa-dollar-sign')) {
+            bgColor = '#ecfdf5'; textColor = '#065f46';
+          } else if (icon.classList.contains('fa-stethoscope')) {
+            bgColor = '#f3e8ff'; textColor = '#6d28d9';
+          } else if (icon.classList.contains('fa-graduation-cap')) {
+            bgColor = '#fff7ed'; textColor = '#9a3412';
+          } else if (icon.classList.contains('fa-hard-hat')) {
+            bgColor = '#fef9c3'; textColor = '#854d0e';
+          }
         }
-        } finally {
-          // Mantém true após concluir, para não reexecutar até uma nova interação do usuário
-          window._smDocUpdating = true;
+
+        selectedItem.style.backgroundColor = bgColor;
+        selectedItem.style.color = textColor;
+
+        // Ícone
+        if (icon) {
+          const iconClone = icon.cloneNode(true);
+          iconClone.className = 'sm-selected-icon';
+          selectedItem.appendChild(iconClone);
         }
+
+        // Texto
+        const text = card.querySelector('span')?.textContent || '';
+        const textNode = document.createTextNode(text);
+        try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
+        
+        // Botão remover
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-document';
+        removeBtn.innerHTML = '×';
+        removeBtn.title = 'Remover';
+        removeBtn.onclick = (e) => {
+          e.stopPropagation();
+          checkbox.checked = false;
+          window._smDocUpdating = false;
+          updateSelectedList();
+        };
+
+        selectedItem.appendChild(textNode);
+        selectedItem.appendChild(removeBtn);
+
+        selectedList.appendChild(selectedItem);
       }
+    });
+
+    // Remove duplicatas
+    try { 
+      window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes));
+    } catch (e) {}
+
+    // JSON global
+    window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
+
+    if (selectedList.children.length === 0) {
+      selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
+    }
+  } finally {
+    window._smDocUpdating = true;
+  }
+}
+
       
       // Inicializa a seleção de documentos
       function initDocumentSelection() {
