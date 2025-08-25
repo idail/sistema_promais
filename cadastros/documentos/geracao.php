@@ -19,7 +19,20 @@ try {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $recebe_processo_geraca = $_POST["processo_geracao"];
 
+    // Função helper para log
+    function salvarLog($conteudo)
+    {
+        $arquivo = __DIR__ . "/debug_log.txt"; // cria debug_log.txt na mesma pasta
+        $data = "[" . date("d/m/Y H:i:s") . "] " . $conteudo . PHP_EOL;
+        file_put_contents($arquivo, $data, FILE_APPEND);
+    }
+
+    // Substitui var_dump por log
+    ob_start();
     var_dump($recebe_processo_geraca);
+    salvarLog(ob_get_clean());
+
+    // var_dump($recebe_processo_geraca);
 
     // Primeiro verifica se não está vazio
     if (!empty($recebe_processo_geraca)) {
@@ -73,7 +86,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
         // Exemplo de uso
+        // var_dump($guia_encaminhamento, $aso, $prontuario_medico);
+
+
+        // Substitui var_dump por log
+        ob_start();
         var_dump($guia_encaminhamento, $aso, $prontuario_medico);
+        salvarLog(ob_get_clean());
 
 
         if ($guia_encaminhamento || $aso || $prontuario_medico) {
@@ -83,9 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
-                echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+                salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
+                salvarLog($_SESSION["exame_selecionado"]);
 
-                echo $_SESSION["exame_selecionado"] . "<br>";
+                // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+
+                // echo $_SESSION["exame_selecionado"] . "<br>";
 
                 $recebe_exame = $_SESSION["exame_selecionado"];
 
@@ -141,10 +163,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 // Exemplo: "ALTO ARAGUAIA - MT"
                 $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
 
                 // Debug
                 // print_r($resultado_clinica_selecionada);
-                echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+                // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
 
                 if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
                     $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
@@ -153,9 +176,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $comando_busca_empresa->execute();
                     $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
 
-                    var_dump($resultado_empresa_selecionada);
+                    // var_dump($resultado_empresa_selecionada);
 
-                    echo "<br>";
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_empresa_selecionada);
+                    salvarLog(ob_get_clean());
                 }
 
                 if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
@@ -174,11 +201,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         } catch (Exception $e) {
                             $recebe_nascimento_colaborador = '';
                         }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
                     }
 
-                    var_dump($resultado_pessoa_selecionada);
+                    // var_dump($resultado_pessoa_selecionada);
 
-                    echo "<br>";
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_pessoa_selecionada);
+                    salvarLog(ob_get_clean());
                 }
 
                 if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
@@ -188,9 +228,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $comando_busca_cargo->execute();
                     $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
 
-                    var_dump($resultado_cargo_selecionado);
+                    // var_dump($resultado_cargo_selecionado);
 
-                    echo "<br>";
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_cargo_selecionado);
+                    salvarLog(ob_get_clean());
                 }
 
                 if ($recebe_exame === "mudanca") {
@@ -203,9 +247,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $comando_busca_mudanca_cargo->execute();
                         $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
 
-                        var_dump($resultado_mudanca_cargo_selecionado);
+                        // var_dump($resultado_mudanca_cargo_selecionado);
 
-                        echo "<br>";
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_mudanca_cargo_selecionado);
+                        salvarLog(ob_get_clean());
                     }
                 }
 
@@ -218,7 +266,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $comando_busca_medico_coordenador->execute();
                     $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
 
+                    // var_dump($resultado_medico_coordenador_selecionado);
+
+                    ob_start();
                     var_dump($resultado_medico_coordenador_selecionado);
+                    salvarLog(ob_get_clean());
                 }
 
                 if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
@@ -237,9 +289,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $comando_busca_medico_relacionado_clinica->execute();
                     $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
 
-                    var_dump($resultado_medico_relacionado_clinica);
+                    // var_dump($resultado_medico_relacionado_clinica);
 
-                    echo "<br>";
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_medico_relacionado_clinica);
+                    salvarLog(ob_get_clean());
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -350,228 +406,404 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
                 echo '
-            <style>
-                body { font-family: Arial, sans-serif; background:#f2f2f2; }
-                .guia-container {
-                    width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                    background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                    page-break-after: always;
-                }
-                h2 { text-align:center; margin:20px 0; }
-                h3 {
-                    margin-top:20px; margin-bottom:10px;
-                    background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
-                }
-                table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-                th, td { border:1px solid #ccc; padding:6px; font-size:13px; vertical-align:top; }
-                th { background:#f8f9fa; text-align:left; width:35%; }
-                input, textarea {
-                    width:100%; border:none; background:transparent; font-size:13px;
-                }
-                input:disabled, textarea:disabled {
-                    color:#000; cursor:not-allowed;
-                }
-                .assinatura { height:40px; border-bottom:1px solid #000; margin-top:10px; }
-                .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
-                .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
-                .btn {
-                    padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
-                    cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
-                }
-                .btn-email { background:#007bff; }
-                .btn-whatsapp { background:#25d366; }
-                .btn-print { background:#6c757d; }
-                .btn:hover { opacity:.9; }
-                @media print { .actions { display:none; } body { background:#fff; } }
-                .logo { text-align:center; margin-bottom:15px; }
-                .logo img { max-height:80px; }
-            </style>
+<style>
+    body { font-family: Arial, sans-serif; background:#f2f2f2; }
+    .guia-container {
+        width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
+        background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
+        page-break-after: always;
+    }
+    h2 { text-align:center; margin:20px 0; }
+    h3 {
+        margin-top:20px; margin-bottom:10px;
+        background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
+    }
+    table { width:100%; border-collapse:collapse; margin-bottom:15px; }
+    th, td { border:1px solid #ccc; padding:6px; font-size:13px; vertical-align:top; }
+    th { background:#f8f9fa; text-align:left; width:35%; }
+    input, textarea {
+        width:100%; border:none; background:transparent; font-size:13px;
+    }
+    input:disabled, textarea:disabled {
+        color:#000; cursor:not-allowed;
+    }
+    .assinatura { height:40px; border-bottom:1px solid #000; margin-top:10px; }
+    .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
+    .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
+    .btn {
+        padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
+        cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
+    }
+    .btn-email { background:#007bff; }
+    .btn-whatsapp { background:#25d366; }
+    .btn-print { background:#6c757d; }
+    .btn:hover { opacity:.9; }
+    @media print { .actions { display:none; } body { background:#fff; } }
+    .logo { text-align:center; margin-bottom:15px; }
+    .logo img { max-height:80px; }
+</style>
 
-            <!-- ===================== GUIA DE ENCAMINHAMENTO ===================== -->
-            <div class="guia-container">
-                <div class="logo">
-                    <img src="logo.png" alt="Logo da Empresa">
-                </div>
-                <h2>GUIA DE ENCAMINHAMENTO</h2>
+<!-- ===================== GUIA DE ENCAMINHAMENTO ===================== -->
+<div class="guia-container">
+    <div class="logo">
+        <img src="logo.png" alt="Logo da Empresa">
+    </div>
+    <h2>GUIA DE ENCAMINHAMENTO</h2>
 
-                <h3>01 - Identificação</h3>
-                <table>
-                    <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
-                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
-                    <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . ',' . !empty($resultado_clinica_selecionada['numero'] ?? "") . ',' . !empty($resultado_clinica_selecionada['bairro'] ?? "") . '</td></tr>
-                    <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
-                    <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
-                </table>
+    <h3>01 - Identificação</h3>
+    <table>
+        <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
+        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
+        <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . ', ' . htmlspecialchars($resultado_clinica_selecionada['numero'] ?? "") . ', ' . htmlspecialchars($resultado_clinica_selecionada['bairro'] ?? "") . '</td></tr>
+        <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
+        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
+    </table>
 
-                <h3>02 - Tipo de Exame / Procedimento</h3>
+    <h3>02 - Tipo de Exame / Procedimento</h3>
+    <p>Admissional ' . marcar("admissional", $recebe_exame) . ' 
+       Periódico ' . marcar("periodico", $recebe_exame) . ' 
+       Demissional ' . marcar("demissional", $recebe_exame) . ' 
+       Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' 
+       Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
 
-                <p>Admissional ' . marcar("admissional", $recebe_exame) . ' Periódico ' . marcar("periodico", $recebe_exame) . ' Demissional ' . marcar("demissional", $recebe_exame) . ' Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
+    <h3>03 - Dados do Funcionário / Empresa</h3>
+    <table>
+        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+        <tr><th>Nome Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+        <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
+        <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+    </table>
 
-                <h3>03 - Dados do Funcionário / Empresa</h3>
-                <table>
-                    <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                    <tr><th>Nome Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                    <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
-                </table>
+    <h3>04 - Mudança de Função</h3>
+    <table>
+        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+    </table>
 
-                <h3>04 - Mudança de Função</h3>
-                <table>
-                    <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                    <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
-                </table>
+    <h3>05 - Dados dos Médicos</h3>
+    <table>
+        <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td></tr>
+        <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
+        <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td></tr>
+        <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
+    </table>
 
-                <h3>05 - Dados dos Médicos</h3>
-                <table>
-                    <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td></tr>
-                    <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
-                    <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td></tr>
-                    <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
-                </table>
+    ' . $riscosTabela . '
 
-                ' . $riscosTabela . '
+    <h3>07 - Procedimentos / Exames Realizados</h3>
+    <table>
+        <tr><th>Exame</th><td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td></tr>
+        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
+    </table>
 
-                <h3>07 - Procedimentos / Exames Realizados</h3>
-                <table>
-                    <tr><th>Exame</th><td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td></tr>
-                    <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
-                </table>
+    ' . $aptidoesTabela . '
 
-                ' . $aptidoesTabela . '
+    <h3>09 - Conclusão</h3>
+    <p>ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '</p>
+    <p>Resultado: ( ) APTO  ( ) INAPTO</p>
+    <div class="assinatura"></div>
+    <small>
+        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+    </small>
+</div>
 
-                <h3>09 - Conclusão</h3>
-                <p>ALTO ARAGUAIA - MT, DATA:' . htmlspecialchars($dataAtual ?? "") . '</p>
-                <p>Resultado: ( ) APTO  ( ) INAPTO</p>
-                <div class="assinatura"></div><small>Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT</small>
-            </div>
+<!-- ===================== PRONTUÁRIO MÉDICO ===================== -->
+<div class="guia-container">
+    <div class="logo">
+        <img src="logo.png" alt="Logo da Empresa">
+    </div>
+    <h2>PRONTUÁRIO MÉDICO</h2>
 
-            <!-- ===================== PRONTUÁRIO MÉDICO ===================== -->
-            <div class="guia-container">
-                <h2>PRONTUÁRIO MÉDICO</h2>
+    <h3>01 - Identificação</h3>
+    <table>
+        <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
+        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
+        <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . '</td></tr>
+        <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
+        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
+    </table>
 
-                <h3>03 - Dados do Funcionário / Empresa</h3>
-                <table>
-                    <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                    <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                    <tr><th>Data Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador, ENT_QUOTES, 'UTF-8' ?? "") . '</td></tr>
-                    <tr><th>Idade</th><td>25 anos</td></tr>
-                    <tr><th>Cargo</th><td>LUBRICADOR DE VEÍCULOS AUTOMOTORES</td></tr>
-                    <tr><th>CBO</th><td>621005</td></tr>
-                </table>
+    <h3>02 - Tipo de Prontuário</h3>
+    <p>Admissional ' . marcar("admissional", $recebe_exame) . ' 
+       Periódico ' . marcar("periodico", $recebe_exame) . ' 
+       Demissional ' . marcar("demissional", $recebe_exame) . ' 
+       Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' 
+       Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
 
-                <h3>06 - Informações Clínicas</h3>
-                <p><strong>Antecedentes Familiares / Pessoais:</strong><br>
-                Diabetes ( ) Sim ( ) Não — Doença grave ( ) Sim ( ) Não<br>
-                Asma/Bronquite ( ) Sim ( ) Não — Usa Medicamento ( ) Sim ( ) Não<br>
-                Doenças Nervosas ( ) Sim ( ) Não — Acidente ( ) Sim ( ) Não<br>
-                Epilepsia ( ) Sim ( ) Não — Internação ( ) Sim ( ) Não<br>
-                Alcoolismo ( ) Sim ( ) Não — Já operado ( ) Sim ( ) Não<br>
-                Reumatismo ( ) Sim ( ) Não — Deficiência ( ) Sim ( ) Não<br>
-                Gastrite/Úlcera ( ) Sim ( ) Não — Ruído ( ) Sim ( ) Não<br>
-                Pressão Alta ( ) Sim ( ) Não — Convulsão ( ) Sim ( ) Não<br>
-                Câncer ( ) Sim ( ) Não — Dor de cabeça ( ) Sim ( ) Não<br>
-                Derrame ( ) Sim ( ) Não — Trauma cabeça ( ) Sim ( ) Não<br>
-                Colesterol ( ) Sim ( ) Não — Alergia ( ) Sim ( ) Não<br>
-                Tuberculose ( ) Sim ( ) Não — Doença Pulmão ( ) Sim ( ) Não</p>
+    <h3>03 - Dados do Funcionário / Empresa</h3>
+    <table>
+        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+        <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+        <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
+        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td></tr>
+        <tr><th>Data Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador ?? "") . '</td></tr>
+        <tr><th>Idade</th><td>' . htmlspecialchars($idade) . ' anos</td></tr>
+        <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+    </table>
 
-                <p><strong>Hábitos de Vida:</strong><br>
-                Coluna ( ) Sim ( ) Não — Fuma ( ) Sim ( ) Não<br>
-                Bebe ( ) Sim ( ) Não — Hérnia ( ) Sim ( ) Não<br>
-                Drogas ( ) Sim ( ) Não — Doença Chagas ( ) Sim ( ) Não<br>
-                Esporte ( ) Sim ( ) Não — Cansaço ( ) Sim ( ) Não<br>
-                Dorme bem ( ) Sim ( ) Não — Febre/Perda peso ( ) Sim ( ) Não</p>
+    <h3>04 - Mudança de Função</h3>
+    <table>
+        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+    </table>
 
-                <p><strong>Antecedentes Ocupacionais:</strong><br>
-                Fraturas ( ) Sim ( ) Não — Tarefas pesadas ( ) Sim ( ) Não<br>
-                Trabalho externo ( ) Sim ( ) Não — Insalubres ( ) Sim ( ) Não<br>
-                Doente pelo trabalho ( ) Sim ( ) Não — Dificuldade motora ( ) Sim ( ) Não<br>
-                Demitido por doença ( ) Sim ( ) Não — Afastado INSS ( ) Sim ( ) Não<br>
-                Acidente trabalho ( ) Sim ( ) Não — Mulher: Última menstruação / /, Último preventivo / /</p>
+    <h3>05 - Dados dos Médicos</h3>
+    <table>
+        <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - CRM: ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
+        <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
+    </table>
 
-                <h3>08 - Aptidão Física e Mental</h3>
-                <p>Altura: ____ Peso: ____ Temperatura: ____ Pulso: ____ Pressão: ____</p>
-                <table>
-                    <tr><th>Aspecto Geral</th><td>Normal ( ) Anormal ( ) Obs:</td></tr>
-                    <tr><th>Olhos</th><td></td></tr>
-                    <tr><th>Otoscopia</th><td></td></tr>
-                    <tr><th>Nariz</th><td></td></tr>
-                    <tr><th>Boca</th><td></td></tr>
-                    <tr><th>Pescoço</th><td></td></tr>
-                    <tr><th>Pulmão</th><td></td></tr>
-                    <tr><th>Coração</th><td></td></tr>
-                    <tr><th>Abdome</th><td></td></tr>
-                    <tr><th>Coluna</th><td></td></tr>
-                    <tr><th>Membros</th><td></td></tr>
-                    <tr><th>Pele</th><td></td></tr>
-                    <tr><th>Psiquismo</th><td></td></tr>
-                </table>
+    <h3>06 - Informações Clínicas</h3>
+    <table>
+        <tr><th colspan="2">ANTECEDENTES FAMILIARES</th><th>SIM</th><th>NÃO</th><th colspan="2">ANTECEDENTES PESSOAIS</th><th>SIM</th><th>NÃO</th></tr>
 
-                <h3>09 - Demissional</h3>
-                <p>Doença adquirida? ( ) Sim ( ) Não — Acidente? ( ) Sim ( ) Não — Recebeu EPI? ( ) Sim ( ) Não</p>
+        <tr><td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
+            <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td></tr>
 
-                <h3>13 - Conclusão</h3>
-                <p>Atesto que o trabalhador se submeteu aos exames ocupacionais NR-07: ( ) APTO ( ) INAPTO</p>
-                <div class="assinatura"></div><small>Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT</small>
-            </div>
+        <tr><td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
+            <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td></tr>
 
-            <!-- ===================== ASO ===================== -->
-            <div class="guia-container">
-                <h2>ASO - Atestado de Saúde Ocupacional</h2>
+        <tr><td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
+            <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td></tr>
 
-                <h3>Dados do Funcionário / Empresa</h3>
-                <table>
-                    <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                    <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                    <tr><th>Idade</th><td>25 anos</td></tr>
-                    <tr><th>Cargo</th><td>LUBRICADOR DE VEÍCULOS AUTOMOTORES</td></tr>
-                    <tr><th>CBO</th><td>621005</td></tr>
-                </table>
+        <tr><td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
+            <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td></tr>
 
-                <h3>Procedimentos / Exames</h3>
-                <p>' . htmlspecialchars($recebe_exame_exibicao ?? "") . ' - Data:' . htmlspecialchars($dataAtual ?? "") . '</p>
-                <!-- <p>Avaliação Clínica Ocupacional (0295) - Data: / /2024</p> -->
+        <tr><td colspan="2">ALCOOLISMO</td><td></td><td></td>
+            <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td></tr>
 
-                <h3>Aptidões Extras</h3>
-                <p>
-                ' . marcarAptidao('Trabalho em Altura', $aptidoesSelecionadas) . ' <br> 
-                ' . marcarAptidao('Manusear Produtos Alimentícios', $aptidoesSelecionadas) . ' <br>
-                ' . marcarAptidao('Trabalho com Eletricidade', $aptidoesSelecionadas) . '<br>
-                ' . marcarAptidao('Operar Máquinas e Equipamentos', $aptidoesSelecionadas) . ' <br>
-                ' . marcarAptidao('Conduzir Veículos', $aptidoesSelecionadas) . ' <br>
-                ' . marcarAptidao('Trabalho a Quente', $aptidoesSelecionadas) . '<br>
-                ' . marcarAptidao('Trabalho com Líquidos Inflamáveis', $aptidoesSelecionadas) . ' <br>
-                ' . marcarAptidao('Trabalho com Exposição a Radiações Ionizantes', $aptidoesSelecionadas) . ' <br>
-                ' . marcarAptidao('Trabalho em Espaço Confinado', $aptidoesSelecionadas) . ' <br>
-                ' . marcarAptidao('Inspeções e Manutenções em Máquinas e Equipamentos', $aptidoesSelecionadas) . '
-                </p>
+        <tr><td colspan="2">REUMATISMO</td><td></td><td></td>
+            <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td></tr>
 
-                <h3>Conclusão</h3>
-                <p>Atesto que o trabalhador foi avaliado conforme NR-07: ( ) APTO ( ) INAPTO<br>
-                Local: ALTO ARAGUAIA-MT — Data:' . htmlspecialchars($dataAtual ?? "") . '</p>
-                <div class="assinatura"></div><small>Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT</small>
-            </div>
+        <tr><td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
+            <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td></tr>
 
-            <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
-                <button class="btn btn-print" onclick="window.print()">Salvar</button>
-            </div>
+        <tr><td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
+            <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td></tr>
 
-            <script>
-            function enviarClinica(){
-                alert("Função de envio de email para clínica ainda não implementada.");
-            }
-            function enviarEmpresa(){
-                let msg = encodeURIComponent("Segue documento médico.");
-                window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
-            }
-            </script>
-            ';
+        <tr><td colspan="2">CÂNCER</td><td></td><td></td>
+            <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">DERRAME</td><td></td><td></td>
+            <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
+            <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">TUBERCULOSE</td><td></td><td></td>
+            <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td></tr>
+    </table>
+
+    <h3>07 - Hábitos de Vida</h3>
+    <table>
+        <tr><th colspan="2">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th><th colspan="2"></th><th>SIM</th><th>NÃO</th></tr>
+
+        <tr><td colspan="2">FUMA?</td><td></td><td></td>
+            <td colspan="2">TEM REUMATISMO?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">TOMA/TOMAVA BEBIDA ALCOÓLICA?</td><td></td><td></td>
+            <td colspan="2">TEM HÉRNIA (SACO RENDIDO)?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">USA/USAVA DROGA?</td><td></td><td></td>
+            <td colspan="2">TEVE DOENÇA DE CHAGAS?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">PRATICA ESPORTE?</td><td></td><td></td>
+            <td colspan="2">SENTE CANSAÇO FACILMENTE?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">DORME BEM?</td><td></td><td></td>
+            <td colspan="2">ESTÁ COM FEBRE OU PERDA DE PESO?</td><td></td><td></td></tr>
+    </table>
+
+    <h3>08 - Antecedentes Ocupacionais</h3>
+    <table>
+        <tr><th colspan="2">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th><th colspan="2"></th><th>SIM</th><th>NÃO</th></tr>
+
+        <tr><td colspan="2">JÁ TEVE FRATURAS?</td><td></td><td></td>
+            <td colspan="2">PODE EXECUTAR TAREFAS PESADAS?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">REALIZA TRABALHO FORA DA EMPRESA?</td><td></td><td></td>
+            <td colspan="2">EXECUTOU TAREFAS INSALUBRES/PERIGOSAS?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">JÁ ESTEVE DOENTE DEVIDO AO SEU TRABALHO?</td><td></td><td></td>
+            <td colspan="2">POSSUI DIFICULDADE MOTORA?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">JÁ FOI DEMITIDO POR MOTIVO DE DOENÇA?</td><td></td><td></td>
+            <td colspan="2">JÁ ESTEVE AFASTADO PELO INSS?</td><td></td><td></td></tr>
+
+        <tr><td colspan="2">JÁ TEVE ACIDENTE DE TRABALHO?</td><td></td><td></td>
+            <td colspan="2">PARA MULHERES — DATA DA ÚLTIMA MENSTRUAÇÃO ___/___/____ &nbsp; DATA DO ÚLTIMO PREVENTIVO ___/___/____</td><td></td><td></td></tr>
+    </table>
+
+    <p><strong>07 - Declaração:</strong> Declaro como verdade os dados preenchidos neste prontuário.<br>
+    ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '</p>
+
+    <div class="assinatura"></div>
+    <small>
+        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+    </small>
+
+
+        <h3>08 - Aptidão Física e Mental</h3>
+<table>
+    <tr>
+        <th>Altura</th>
+        <th>Peso</th>
+        <th>Temperatura</th>
+        <th>Pulso</th>
+        <th>Pressão Arterial</th>
+    </tr>
+</table>
+
+<table>
+    <tr><th>Normal</th><th>Anormal</th><th>Observação</th></tr>
+    <tr><td colspan="3">Aspecto Geral</td></tr>
+    <tr><td colspan="3">Olhos</td></tr>
+    <tr><td colspan="3">Otoscopia</td></tr>
+    <tr><td colspan="3">Nariz</td></tr>
+    <tr><td colspan="3">Boca - Amígdalas - Dentes</td></tr>
+    <tr><td colspan="3">Pescoço - Gânglios</td></tr>
+    <tr><td colspan="3">Pulmão</td></tr>
+    <tr><td colspan="3">Coração</td></tr>
+    <tr><td colspan="3">Abdome</td></tr>
+    <tr><td colspan="3">Coluna</td></tr>
+    <tr><td colspan="3">Membros Superiores</td></tr>
+    <tr><td colspan="3">Membros Inferiores</td></tr>
+    <tr><td colspan="3">Pele e Faneros</td></tr>
+    <tr><td colspan="3">Psiquismo</td></tr>
+    <tr><td colspan="3">Exames Complementares</td></tr>
+</table>
+
+<h3>09 - Preenchimento Obrigatório em Caso de Exame Demissional</h3>
+<table>
+    <tr><th colspan="6">Demissional</th></tr>
+<tr><td colspan="6">Adquiriu alguma doença em virtude da função?</td></tr>
+<tr><td colspan="6">Sofreu acidente de trabalho na empresa?</td></tr>
+<tr><td colspan="6">Recebeu EPI da empresa?</td></tr>
+<tr>
+  <td colspan="6">
+    PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+    PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+    TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+</tr>
+</table>
+
+
+<h3>10 - Para Mulheres</h3>
+<table>
+    <tr>
+        <th>Data da Última Menstruação</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['ultima_menstruacao'] ?? "") . '</td>
+        <th>Data do Último Preventivo</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['ultimo_preventivo'] ?? "") . '</td>
+    </tr>
+</table>
+
+<h3>11 - Exames Complementares</h3>
+<p>___________________________________________________________________________________</p>
+
+<h3>12 - Evolução Clínica</h3>
+<p>___________________________________________________________________________________</p>
+
+<h3>13 - Conclusão</h3>
+<p>Atesto que o trabalhador acima identificado se submeteu aos exames médicos ocupacionais em cumprimento à NR-07, itens 7.5.19.1 e 7.5.19.2.<br>
+Resultado: ( ) APTO  ( ) INAPTO</p>
+<p>ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '</p>
+
+<div class="assinatura"></div>
+<small>
+    Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+    Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+</small>
+
+    </div>
+
+
+<!-- ===================== ASO ===================== -->
+<div class="guia-container">
+    <h2>ASO - Atestado de Saúde Ocupacional</h2>
+    <table>
+        <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
+        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
+        <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . '</td></tr>
+        <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
+        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
+    </table>
+
+    <h3>02 - Tipo de Prontuário</h3>
+    <p>Admissional ' . marcar("admissional", $recebe_exame) . ' 
+       Periódico ' . marcar("periodico", $recebe_exame) . ' 
+       Demissional ' . marcar("demissional", $recebe_exame) . ' 
+       Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' 
+       Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
+
+    <h3>03 - Dados do Funcionário / Empresa</h3>
+    <table>
+        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+        <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+        <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
+        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td></tr>
+        <tr><th>Data Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador ?? "") . '</td></tr>
+        <tr><th>Idade</th><td>' . htmlspecialchars($idade) . ' anos</td></tr>
+        <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+    </table>
+
+    <h3>04 - Mudança de Função</h3>
+    <table>
+        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+    </table>
+
+    <h3>05 - Dados dos Médicos</h3>
+    <table>
+        <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td></tr>
+        <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
+        <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td></tr>
+        <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
+    </table>
+
+    ' . $riscosTabela . '
+
+    <h3>07 - Procedimentos / Exames Realizados</h3>
+    <table>
+        <tr><th>Exame</th><td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td></tr>
+        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
+    </table>
+
+    ' . $aptidoesTabela . '
+
+    <h3>Conclusão</h3>
+    <p>Atesto que o trabalhador foi avaliado conforme NR-07: ( ) APTO ( ) INAPTO<br>
+    Local: ALTO ARAGUAIA-MT — Data:' . htmlspecialchars($dataAtual ?? "") . '</p>
+    <div class="assinatura"></div>
+    <small>
+        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+    </small>
+</div>
+
+<div class="actions">
+    <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+    <button class="btn btn-print" onclick="window.print()">Salvar</button>
+</div>
+
+<script>
+function enviarClinica(){
+    alert("Função de envio de email para clínica ainda não implementada.");
+}
+function enviarEmpresa(){
+    let msg = encodeURIComponent("Segue documento médico.");
+    window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
+}
+</script>
+';
             }
 
             if ($acuidade_visual) {
@@ -1064,28 +1296,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <table>
                     <tr><th colspan="2">Itens Selecionados</th></tr>';
 
-                        // Garante valores padrão
-                        $total_exames = $total_exames ?? 0;
-                        $total_treinamentos = $total_treinamentos ?? 0;
-                        $total_epi = $total_epi ?? 0;
+            // Garante valores padrão
+            $total_exames = $total_exames ?? 0;
+            $total_treinamentos = $total_treinamentos ?? 0;
+            $total_epi = $total_epi ?? 0;
 
-                        // Exames
-                        if (!empty($itens_exames) && isset($itens_exames)) {
-                            echo '<tr><td>Exames e Procedimentos</td><td class="valor">R$ ' . number_format($total_exames, 2, ",", ".") . '</td></tr>';
-                        }
+            // Exames
+            if (!empty($itens_exames) && isset($itens_exames)) {
+                echo '<tr><td>Exames e Procedimentos</td><td class="valor">R$ ' . number_format($total_exames, 2, ",", ".") . '</td></tr>';
+            }
 
-                        // Treinamentos
-                        if (!empty($itens_treinamentos) && isset($itens_treinamentos)) {
-                            echo '<tr><td>Treinamentos</td><td class="valor">R$ ' . number_format($total_treinamentos, 2, ",", ".") . '</td></tr>';
-                        }
+            // Treinamentos
+            if (!empty($itens_treinamentos) && isset($itens_treinamentos)) {
+                echo '<tr><td>Treinamentos</td><td class="valor">R$ ' . number_format($total_treinamentos, 2, ",", ".") . '</td></tr>';
+            }
 
-                        // EPI/EPC
-                        if (!empty($itens_epi) && isset($itens_epi)) {
-                            echo '<tr><td>EPI / EPC</td><td class="valor">R$ ' . number_format($total_epi, 2, ",", ".") . '</td></tr>';
-                        }
+            // EPI/EPC
+            if (!empty($itens_epi) && isset($itens_epi)) {
+                echo '<tr><td>EPI / EPC</td><td class="valor">R$ ' . number_format($total_epi, 2, ",", ".") . '</td></tr>';
+            }
 
 
-                        echo '
+            echo '
                     <tr>
                         <th>Total Geral</th>
                         <td class="valor">R$ ' . number_format(($total_exames + $total_treinamentos + $total_epi), 2, ",", ".") . '</td>
@@ -1096,43 +1328,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <table>
                     <tr><th>Descrição</th><th>Qtd</th><th>Valor Unitário</th><th>Total</th></tr>';
 
-                        // Lista os exames
-                        if (!empty($itens_exames)) {
-                            foreach ($itens_exames as $exame) {
-                                echo '<tr>
+            // Lista os exames
+            if (!empty($itens_exames)) {
+                foreach ($itens_exames as $exame) {
+                    echo '<tr>
                                     <td>' . htmlspecialchars($exame["descricao"]) . '</td>
                                     <td>' . htmlspecialchars($exame["quantidade"]) . '</td>
                                     <td class="valor">R$ ' . number_format($exame["valor_unitario"], 2, ",", ".") . '</td>
                                     <td class="valor">R$ ' . number_format($exame["total"], 2, ",", ".") . '</td>
                                 </tr>';
-                            }
-                        }
+                }
+            }
 
-                        // Lista os treinamentos
-                        if (!empty($itens_treinamentos)) {
-                            foreach ($itens_treinamentos as $trein) {
-                                echo '<tr>
+            // Lista os treinamentos
+            if (!empty($itens_treinamentos)) {
+                foreach ($itens_treinamentos as $trein) {
+                    echo '<tr>
                                     <td>' . htmlspecialchars($trein["descricao"]) . '</td>
                                     <td>' . htmlspecialchars($trein["quantidade"]) . '</td>
                                     <td class="valor">R$ ' . number_format($trein["valor_unitario"], 2, ",", ".") . '</td>
                                     <td class="valor">R$ ' . number_format($trein["total"], 2, ",", ".") . '</td>
                                 </tr>';
-                            }
-                        }
+                }
+            }
 
-                        // Lista os EPIs
-                        if (!empty($itens_epi)) {
-                            foreach ($itens_epi as $epi) {
-                                echo '<tr>
+            // Lista os EPIs
+            if (!empty($itens_epi)) {
+                foreach ($itens_epi as $epi) {
+                    echo '<tr>
                                     <td>' . htmlspecialchars($epi["descricao"]) . '</td>
                                     <td>' . htmlspecialchars($epi["quantidade"]) . '</td>
                                     <td class="valor">R$ ' . number_format($epi["valor_unitario"], 2, ",", ".") . '</td>
                                     <td class="valor">R$ ' . number_format($epi["total"], 2, ",", ".") . '</td>
                                 </tr>';
-                            }
-                        }
+                }
+            }
 
-                        echo '
+            echo '
                 </table>
             </div>
             ';
