@@ -478,8 +478,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <h3>04 - Mudança de Função</h3>
     <table>
-        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
     </table>
 
     <h3>05 - Dados dos Médicos</h3>
@@ -548,8 +548,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <h3>04 - Mudança de Função</h3>
     <table>
-        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
     </table>
 
     <h3>05 - Dados dos Médicos</h3>
@@ -756,8 +756,8 @@ Resultado: ( ) APTO  ( ) INAPTO</p>
 
     <h3>04 - Mudança de Função</h3>
     <table>
-        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+        <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
     </table>
 
     <h3>05 - Dados dos Médicos</h3>
