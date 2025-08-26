@@ -258,7 +258,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
                 if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                    ob_start();
                     echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
+                    salvarLog(ob_get_clean());
 
                     $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
                     $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
@@ -274,7 +276,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
                 if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                    ob_start();
                     echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
+                    salvarLog(ob_get_clean());
+
 
                     $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
                     $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
