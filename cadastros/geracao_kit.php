@@ -4241,7 +4241,7 @@ function renderResultadoProfissional(tipo) {
     let recebe_nome_clinica_selecionado;
 
     function selecionarECP(inputId, resultadoId, item, chave,situacao) {
-      // debugger;
+      debugger;
       // Se o item for uma string, faz o parse do JSON
       const itemObj = typeof item === 'string' ? JSON.parse(item) : item;
     
@@ -5586,7 +5586,7 @@ function renderResultadoProfissional(tipo) {
     }
 
     function salvarNovoCargo() {
-      // debugger;
+      debugger;
       const titulo = document.getElementById('novoCargoTitulo').value.trim();
       const cbo = document.getElementById('novoCargoCBO').value.trim();
       const descricao = document.getElementById('novoCargoDescricao').value.trim();
@@ -5635,7 +5635,7 @@ function renderResultadoProfissional(tipo) {
           valor_descricao_cargo:novo.descricao,
         },
         success: function(retorno_cargo) {
-          // debugger;
+          debugger;
           console.log(retorno_cargo);
             if (retorno_cargo > 0) {
 
