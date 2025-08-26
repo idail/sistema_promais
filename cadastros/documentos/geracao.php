@@ -828,28 +828,28 @@ function enviarEmpresa(){
                 }
                 h2 { text-align:center; margin-bottom:15px; }
                 table { 
-        border-collapse:collapse; 
-        width:100%; 
-        margin-bottom:15px; 
-    }
-    th, td { 
-        border:1px solid #ccc; 
-        padding:6px; 
-        font-size:13px; 
-    }
-    th { 
-        background:#f8f9fa; 
-        text-align:left; 
-    }
-    td { 
-        text-align:left; 
-    }
+                    border-collapse:collapse; 
+                    width:100%; 
+                    margin-bottom:15px; 
+                }
+                th, td { 
+                    border:1px solid #ccc; 
+                    padding:6px; 
+                    font-size:13px; 
+                }
+                th { 
+                    background:#f8f9fa; 
+                    text-align:left; 
+                }
+                td { 
+                    text-align:left; 
+                }
 
-    /* Apenas tabelas de testes visuais centralizadas */
-    .table-center td, 
-    .table-center th { 
-        text-align:center; 
-    }
+                /* Apenas tabelas de testes visuais centralizadas */
+                .table-center td, 
+                .table-center th { 
+                    text-align:center; 
+                }
                 .bloco-titulo {
                     margin:15px 0 8px 0; font-weight:bold; font-size:14px;
                     background:#e9ecef; padding:6px 10px; border:1px solid #ccc; text-align:left;
@@ -1348,82 +1348,75 @@ function enviarEmpresa(){
                     </table>
 
                     <h3>08 - Teste de Nicotina de Fagerström</h3>
-<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
-    <!-- Título das colunas -->
-    <tr>
-        <th style="border:1px solid #000;">Responda as questões</th>
-        <th style="border:1px solid #000; text-align:center;" colspan="4">Pontuações</th>
-    </tr>
-    <!-- Números das pontuações -->
-    <tr>
-        <th style="border:1px solid #000;"></th>
-        <th style="border:1px solid #000; text-align:center;">3</th>
-        <th style="border:1px solid #000; text-align:center;">2</th>
-        <th style="border:1px solid #000; text-align:center;">1</th>
-        <th style="border:1px solid #000; text-align:center;">0</th>
-    </tr>
-    <!-- Linha "Não fumo" abaixo da célula vazia -->
-    <tr>
-        <td style="border:1px solid #000; text-align:center;">Não fumo</td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-    </tr>
+                    <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
+                        <!-- Título das colunas -->
+                        <tr>
+                            <th style="border:1px solid #000;">Responda as questões</th>
+                            <th style="border:1px solid #000; text-align:center;" colspan="4">Pontuações</th>
+                        </tr>
+                        <!-- Números das pontuações -->
+                        <tr>
+                            <th style="border:1px solid #000;"></th>
+                            <th style="border:1px solid #000; text-align:center;">3</th>
+                            <th style="border:1px solid #000; text-align:center;">2</th>
+                            <th style="border:1px solid #000; text-align:center;">1</th>
+                            <th style="border:1px solid #000; text-align:center;">0</th>
+                        </tr>
+                        <!-- Linha "Não fumo" abaixo da célula vazia -->
+                        <tr>
+                            <td style="border:1px solid #000; text-align:center;">Não fumo</td>
+                            <td style="border:1px solid #000;"></td>
+                            <td style="border:1px solid #000;"></td>
+                            <td style="border:1px solid #000;"></td>
+                            <td style="border:1px solid #000;"></td>
+                        </tr>
 
-    <!-- Pergunta 1 -->
-    <tr>
-        <td style="border:1px solid #000;">1. Depois de quanto tempo, após acordar, você acende o primeiro cigarro do dia?</td>
-        <td style="border:1px solid #000; text-align:center;">Menos de 5 min</td>
-        <td style="border:1px solid #000; text-align:center;">De 6 a 30 min</td>
-        <td style="border:1px solid #000; text-align:center;">De 31 a 60 min</td>
-        <td style="border:1px solid #000; text-align:center;">Mais de 60 min</td>
-    </tr>
+                        <!-- Pergunta 1 -->
+                        <tr>
+                            <td style="border:1px solid #000;">1. Depois de quanto tempo, após acordar, você acende o primeiro cigarro do dia?</td>
+                            <td style="border:1px solid #000; text-align:center;">Menos de 5 min</td>
+                            <td style="border:1px solid #000; text-align:center;">De 6 a 30 min</td>
+                            <td style="border:1px solid #000; text-align:center;">De 31 a 60 min</td>
+                            <td style="border:1px solid #000; text-align:center;">Mais de 60 min</td>
+                        </tr>
 
-    <!-- Pergunta 2 -->
-    <tr>
-        <td style="border:1px solid #000;">2. Atualmente quantos cigarros você fuma por dia?</td>
-        <td style="border:1px solid #000; text-align:center;">Mais de 31</td>
-        <td style="border:1px solid #000; text-align:center;">De 21 a 30</td>
-        <td style="border:1px solid #000; text-align:center;">De 11 a 20</td>
-        <td style="border:1px solid #000; text-align:center;">Menos de 10</td>
-    </tr>
+                        <!-- Pergunta 2 -->
+                        <tr>
+                            <td style="border:1px solid #000;">2. Atualmente quantos cigarros você fuma por dia?</td>
+                            <td style="border:1px solid #000; text-align:center;">Mais de 31</td>
+                            <td style="border:1px solid #000; text-align:center;">De 21 a 30</td>
+                            <td style="border:1px solid #000; text-align:center;">De 11 a 20</td>
+                            <td style="border:1px solid #000; text-align:center;">Menos de 10</td>
+                        </tr>
 
-    <!-- Pergunta 3 -->
-    <tr>
-        <td style="border:1px solid #000;">3. Qual o cigarro do dia que você acha que será mais difícil de largar?</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">O primeiro da manhã</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Qualquer outro</td>
-    </tr>
+                        <!-- Pergunta 3 -->
+                        <tr>
+                            <td style="border:1px solid #000;">3. Qual o cigarro do dia que você acha que será mais difícil de largar?</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">O primeiro da manhã</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Qualquer outro</td>
+                        </tr>
 
-    <!-- Pergunta 4 -->
-    <tr>
-        <td style="border:1px solid #000;">4. Você fuma mais frequentemente (ou mais) cigarros no período da manhã do que no resto do dia?</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Manhã</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Resto do dia</td>
-    </tr>
+                        <!-- Pergunta 4 -->
+                        <tr>
+                            <td style="border:1px solid #000;">4. Você fuma mais frequentemente (ou mais) cigarros no período da manhã do que no resto do dia?</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Manhã</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Resto do dia</td>
+                        </tr>
 
-    <!-- Pergunta 5 -->
-    <tr>
-        <td style="border:1px solid #000;">5. Você fumaria se estivesse doente a ponto de ficar de cama a maior parte do dia?</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
-    </tr>
+                        <!-- Pergunta 5 -->
+                        <tr>
+                            <td style="border:1px solid #000;">5. Você fumaria se estivesse doente a ponto de ficar de cama a maior parte do dia?</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
+                        </tr>
 
-    <!-- Pergunta 6 -->
-    <tr>
-        <td style="border:1px solid #000;">6. É difícil ficar sem fumar em locais proibidos (igrejas, bibliotecas, cinemas, etc.)?</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
-        <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
-    </tr>
-</table>
-
-
-
-
-
-
-
+                        <!-- Pergunta 6 -->
+                        <tr>
+                            <td style="border:1px solid #000;">6. É difícil ficar sem fumar em locais proibidos (igrejas, bibliotecas, cinemas, etc.)?</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
+                            <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
+                        </tr>
+                    </table>
 
                     <h3>08 - Assinatura</h3>
                     <div class="assinatura"></div>
@@ -1481,15 +1474,19 @@ function enviarEmpresa(){
                 </style>
 
                 <div class="guia-container">
+                    <div class="logo">
+                        <img src="logo.png" alt="Logo da Empresa">
+                    </div>
+
                     <h2>GUIA DE ENCAMINHAMENTO - EXAME TOXICOLÓGICO</h2>
 
                     <h3>01 - Encaminhado por</h3>
                     <table>
-                        <tr><th>Empresa</th><td><input type="text" value="PROMAIS SAÚDE E SEGURANÇA DO TRABALHO" disabled></td></tr>
-                        <tr><th>CNPJ</th><td><input type="text" value="19.464.436/0001-60" disabled></td></tr>
-                        <tr><th>Endereço</th><td><input type="text" value="Rua Antonio Aires Favero, 647, Bairro: Atlântico" disabled></td></tr>
-                        <tr><th>Cidade / UF</th><td><input type="text" value="Alto Araguaia - MT, CEP 78780-000" disabled></td></tr>
-                        <tr><th>Telefone</th><td><input type="text" value="(66) 3481-3786 / (66) 99967-2766" disabled></td></tr>
+                        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+                        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+                        <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . '</td></tr>
+                        <tr><th>Cidade / UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
+                        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
                     </table>
 
                     <h3>02 - Tipo de Exame</h3>
@@ -1497,29 +1494,29 @@ function enviarEmpresa(){
 
                     <h3>03 - Dados do Funcionário / Empresa</h3>
                     <table>
-                        <tr><th>Empresa</th><td><input type="text" value="PROMAIS SAÚDE E SEGURANÇA DO TRABALHO" disabled></td></tr>
-                        <tr><th>CNPJ / CAEPF</th><td><input type="text" value="19.464.436/0001-60" disabled></td></tr>
-                        <tr><th>Nome do Funcionário</th><td><input type="text" value="Amanda Aparecida Carvalho Rodrigues" disabled></td></tr>
-                        <tr><th>CPF</th><td><input type="text" value="072.143.511-45" disabled></td></tr>
-                        <tr><th>Data de Nascimento</th><td><input type="text" value="08/10/1998" disabled></td></tr>
-                        <tr><th>Idade</th><td><input type="text" value="25 anos" disabled></td></tr>
+                        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
+                        <tr><th>CNPJ / CAEPF</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
+                        <tr><th>Nome do Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+                        <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
+                        <tr><th>Data de Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador ?? "") . '</td></tr>
+                        <tr><th>Idade</th><td>' . htmlspecialchars($idade) . ' anos</td></tr>
                         <tr><th>RG</th><td><input type="text" value="2943351 - SSP/MT" disabled></td></tr>
-                        <tr><th>Telefone</th><td><input type="text" value="(66) 99656-4161" disabled></td></tr>
-                        <tr><th>Cidade</th><td><input type="text" value="Santa Rita do Araguaia - GO, CEP 75840-000" disabled></td></tr>
-                        <tr><th>Cargo</th><td><input type="text" value="Lubricador de Veículos Automotores (exceto embarcações)" disabled></td></tr>
-                        <tr><th>CBO</th><td><input type="text" value="621005" disabled></td></tr>
+                        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td></tr>
+                        <tr><th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
+                        <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+                        <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
                     </table>
 
                     <h3>07 - Procedimentos / Exames Realizados</h3>
                     <table>
                         <tr><th>Exame</th><td><input type="text" value="Exame Toxicológico (AA999999999)" disabled></td></tr>
-                        <tr><th>Data</th><td><input type="text" value="__/__/2024" disabled></td></tr>
+                        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
                     </table>
 
                     <h3>09 - Conclusão</h3>
                     <table>
                         <tr><th>Cidade</th><td><input type="text" value="Alto Araguaia - MT" disabled></td></tr>
-                        <tr><th>Data</th><td><input type="text" value="__/__/2024" disabled></td></tr>
+                        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
                         <tr>
                             <th>Assinaturas</th>
                             <td>
