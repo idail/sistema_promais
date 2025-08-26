@@ -822,9 +822,29 @@ function enviarEmpresa(){
                     background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
                 }
                 h2 { text-align:center; margin-bottom:15px; }
-                table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-                th, td { border:1px solid #ccc; padding:6px; font-size:13px; text-align:center; }
-                th { background:#f8f9fa; }
+                table { 
+        border-collapse:collapse; 
+        width:100%; 
+        margin-bottom:15px; 
+    }
+    th, td { 
+        border:1px solid #ccc; 
+        padding:6px; 
+        font-size:13px; 
+    }
+    th { 
+        background:#f8f9fa; 
+        text-align:left; 
+    }
+    td { 
+        text-align:left; 
+    }
+
+    /* Apenas tabelas de testes visuais centralizadas */
+    .table-center td, 
+    .table-center th { 
+        text-align:center; 
+    }
                 .bloco-titulo {
                     margin:15px 0 8px 0; font-weight:bold; font-size:14px;
                     background:#e9ecef; padding:6px 10px; border:1px solid #ccc; text-align:left;
@@ -858,23 +878,23 @@ function enviarEmpresa(){
                 <div class="bloco-titulo">Identificação</div>
                 <table>
                     <tr>
-                    <th>Nome</th><td>AGNALDO MORAIS MENDES</td>
-                    <th>Código</th><td>4732661300</td>
+                    <th>Nome</th><td>'. htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") .'</td>
+                    <th>Código</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td>
                     </tr>
                     <tr>
-                    <th>Cidade</th><td>RONDONOPOLIS</td>
-                    <th>Função</th><td>AJUDANTE DE ELETRICISTA</td>
+                    <th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td>
+                    <th>Função</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
                     </tr>
                     <tr>
-                    <th>Empresa</th><td colspan="3">ECOPROJ</td>
+                    <th>Empresa</th><td colspan="3">' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td>
                     </tr>
                 </table>
 
                 <div class="bloco-titulo">Questionário</div>
                 <table>
-                    <tr><th>1) Usa óculos / lentes de contato?</th><td>Não</td></tr>
-                    <tr><th>2) Já teve algum problema com os olhos?</th><td>Não</td></tr>
-                    <tr><th>3) Exame será realizado com óculos/lentes?</th><td>Não</td></tr>
+                    <tr><th>1) Usa óculos / lentes de contato?</th><td></td></tr>
+                    <tr><th>2) Já teve algum problema com os olhos?</th><td></td></tr>
+                    <tr><th>3) Exame será realizado com óculos/lentes?</th><td></td></tr>
                 </table>
 
                 <div class="bloco-titulo">Tabela de Snellen</div>
@@ -884,32 +904,32 @@ function enviarEmpresa(){
                     <th>20/200</th><th>20/100</th><th>20/50</th><th>20/40</th><th>20/30</th>
                     <th>20/25</th><th>20/20</th><th>20/15</th><th>20/13</th><th>20/10</th>
                     </tr>
-                    <tr><th>OD</th><td colspan="10">X</td></tr>
-                    <tr><th>OE</th><td colspan="10">X</td></tr>
-                    <tr><th>AO</th><td colspan="10">X</td></tr>
+                    <tr><th>OD</th><td colspan="10"></td></tr>
+                    <tr><th>OE</th><td colspan="10"></td></tr>
+                    <tr><th>AO</th><td colspan="10"></td></tr>
                 </table>
 
                 <div class="bloco-titulo">Carta de Jeager (Visão de Perto)</div>
                 <table>
                     <tr><th>J6</th><th>J5</th><th>J4</th><th>J3</th><th>J2</th><th>J1</th></tr>
-                    <tr><td></td><td></td><td></td><td></td><td></td><td>X</td></tr>
+                    <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                 </table>
 
                 <div class="bloco-titulo">Teste de Ishihara</div>
                 <div class="options">
-                    <label class="opt"><input type="checkbox" checked disabled> Normal</label>
-                    <label class="opt"><input type="checkbox" disabled> Alterado</label>
+                    <label class="opt"><input type="checkbox"> Normal</label>
+                    <label class="opt"><input type="checkbox"> Alterado</label>
                 </div>
 
                 <div class="bloco-titulo">Conclusão</div>
                 <table>
-                    <tr><th>Tabela de Snellen</th><td>Normal</td></tr>
-                    <tr><th>Carta de Jeager</th><td>Normal</td></tr>
+                    <tr><th>Tabela de Snellen</th><td></td></tr>
+                    <tr><th>Carta de Jeager</th><td></td></tr>
                 </table>
 
                 <div class="bloco-titulo">Assinaturas</div>
                 <table>
-                    <tr><th>Data</th><td>22/01/2025</td></tr>
+                    <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
                     <tr><th>Examinador</th><td><div class="assinatura"></div></td></tr>
                     <tr><th>Colaborador</th><td><div class="assinatura"></div></td></tr>
                 </table>
