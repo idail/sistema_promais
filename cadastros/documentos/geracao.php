@@ -992,11 +992,31 @@ function enviarEmpresa(){
 
                     <h3>01 - Identificação</h3>
                     <table>
-                        <tr><th>Nome</th><td><input type="text" value="________________" disabled></td><th>Data</th><td><input type="text" value="__/__/____" disabled></td></tr>
-                        <tr><th>RG</th><td><input type="text" value="___________" disabled></td><th>Telefone</th><td><input type="text" value="____________" disabled></td></tr>
-                        <tr><th>Idade</th><td><input type="text" value="___" disabled></td><th>Peso</th><td><input type="text" value="___ kg" disabled></td></tr>
-                        <tr><th>Altura</th><td><input type="text" value="___ cm" disabled></td><td colspan="2"></td></tr>
+                        <tr>
+                            <th style="width:10%;">Nome</th>
+                            <td>'. htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") .'</td>
+                            <th style="width:10%;">Data</th>
+                            <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
+                        </tr>
+                        <tr>
+                            <th style="width:10%;">RG</th>
+                            <td><input type="text" value="" disabled></td>
+                            <th style="width:10%;">Telefone</th>
+                            <td>'. htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") .'</td>
+                        </tr>
+                        <tr>
+                            <th style="width:10%;">Idade</th>
+                            <td>' . htmlspecialchars($idade) . ' anos</td>
+                            <th style="width:10%;">Peso</th>
+                            <td><input type="text" value="" disabled></td>
+                        </tr>
+                        <tr>
+                            <th style="width:10%;">Altura</th>
+                            <td><input type="text" value="" disabled></td>
+                            <td colspan="2"></td>
+                        </tr>
                     </table>
+
 
                     <h3>02 - Avaliação da Qualidade do Sono</h3>
                     <table>
@@ -1013,54 +1033,392 @@ function enviarEmpresa(){
                     </table>
 
                     <h3>03 - Escala de Sonolência Diurna (Epworth)</h3>
-                    <table>
-                        <tr><th>Situação</th><th>Nunca (0)</th><th>Pouca (1)</th><th>Média (2)</th><th>Grande (3)</th></tr>
-                        <tr><td>Lendo</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Assistindo TV</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Em local público</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Como passageiro em carro</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Conversando com alguém</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Sentado calmamente</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Após almoço sem álcool</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>No carro, parado no trânsito</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                    </table>
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <th style="width:40%;">Situação</th>
+                                <th style="width:15%;">Nunca (0)</th>
+                                <th style="width:15%;">Pouca (1)</th>
+                                <th style="width:15%;">Média (2)</th>
+                                <th style="width:15%;">Grande (3)</th>
+                            </tr>
+                            <tr><td>Lendo</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>Assistindo TV</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>Em local público</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>Como passageiro em carro</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>Conversando com alguém</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>Sentado calmamente</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>Após almoço sem álcool</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                            <tr><td>No carro, parado no trânsito</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
+                        </table>
+
 
                     <h3>04 - Escala de Fadiga de Chalder</h3>
-                    <table>
-                        <tr><th>Sintomas Físicos</th><th>Nunca</th><th>Como Normal</th><th>Mais que Normal</th><th>Muito mais</th></tr>
-                        <tr><td>Vorça muscular reduzida?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Você sente fraqueza?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+                    <table style="width:100%; border-collapse:collapse; border: 1px solid #000;">
+                        <tr>
+                            <th style="width:40%; border: 1px solid #000;">Sintomas Físicos</th>
+                            <th style="width:15%; border: 1px solid #000;">Não ou Menos que o Normal</th>
+                            <th style="width:15%; border: 1px solid #000;">Igual ao Normal</th>
+                            <th style="width:15%; border: 1px solid #000;">Mais que Normal</th>
+                            <th style="width:15%; border: 1px solid #000;">Muito mais que o Normal</th>
+                        </tr>
+                        <tr>
+                            <td>1. Você tem problemas com cansaço?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>2. Você precisa descansar mais?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>3. Você se sente com sono ou sonolência?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>4. Você tem problemas para começar a fazer as coisas?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>5. Você começa coisas com dificuldade mas fica cansado quando continua?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>6. Você está perdendo energia?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>7. Você tem menos força em seus músculos?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>8. Você se sente fraco?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+
+                        <!-- Sintomas Mentais -->
+                        <tr>
+                            <th style="border: 1px solid #000;" colspan="5">Sintomas Mentais</th>
+                        </tr>
+                        <tr>
+                            <td>9. Você tem dificuldade de concentração?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>10. Você tem problemas em pensar claramente?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>11. Você comete erros, sem intenção, na sua língua (Português) quando acha mais difícil de encontrar a palavra correta?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>12. Como está sua memória?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
+                        <tr>
+                            <td>13. Você perdeu o interesse em coisas que costumava fazer?</td>
+                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
+                        </tr>
                     </table>
 
-                    <h3>05 - Avaliação Psicológica / SRQ</h3>
-                    <table>
-                        <tr><td>Você tem dores de cabeça frequentes?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>Você dorme mal?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>Você tem má digestão?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>Você tem dificuldade para pensar com clareza?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>Você se sente inútil, sem préstimo?</td><td>Sim ( ) Não ( )</td></tr>
+
+
+
+                    <h3>05 - Avaliação Psicológica</h3>
+                    <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
+                        <tr>
+                            <td style="width:50%; border:1px solid #000;">3. Você tem ou teve síndrome do pânico?</td>
+                            <td style="width:25%; border:1px solid #000;">SIM ( )</td>
+                            <td style="width:25%; border:1px solid #000;">NÃO ( )</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000;">4. Você tem ou teve familiar com síndrome do pânico?</td>
+                            <td style="border:1px solid #000;">SIM ( )</td>
+                            <td style="border:1px solid #000;">NÃO ( )</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000;">5. Você tem ou teve depressão?</td>
+                            <td style="border:1px solid #000;">SIM ( )</td>
+                            <td style="border:1px solid #000;">NÃO ( )</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000;">6. Você tem ou teve familiar com depressão?</td>
+                            <td style="border:1px solid #000;">SIM ( )</td>
+                            <td style="border:1px solid #000;">NÃO ( )</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000;">9. Você tem ou já teve crise convulsiva?</td>
+                            <td style="border:1px solid #000;">SIM ( )</td>
+                            <td style="border:1px solid #000;">NÃO ( )</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000;">10. Você tem tonturas? Labirintite?</td>
+                            <td style="border:1px solid #000;">SIM ( )</td>
+                            <td style="border:1px solid #000;">NÃO ( )</td>
+                        </tr>
                     </table>
 
-                    <h3>06 - Distúrbio de Uso do Álcool (AUDIT)</h3>
-                    <table>cê tem problemas com cansaço?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Você precisa descansar mais?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Você sente sono ou sonolência?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Você tem problemas para começar coisas?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Fica cansado quando começa?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Você está perdendo energia?</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Fo
-                        <tr><th>Pergunta</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
-                        <tr><td>Frequência de consumo</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Quantidade ingerida</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
-                        <tr><td>Beber 6 ou mais em uma ocasião</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+
+                    <h3>06 - Self Report Questionnaire (SRQ) (HARDING et al., 1980)</h3>
+                    <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
+                    <tr>
+                        <td style="width:30%; border:1px solid #000;">1. Tem dores de cabeça frequentes?</td>
+                        <td style="width:7%; border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="width:8%; border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="width:40%; border:1px solid #000;">11. Tem falta de apetite?</td>
+                        <td style="width:7%; border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="width:8%; border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">2. Assusta-se com facilidade?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">12. Dorme mal?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">3. Tem tremores de mão?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">13. Tem perdido o interesse pelas coisas?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">4. Tem má digestão?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">14. Você cansa com facilidade?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">5. Você tem se sentido triste ultimamente?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">15. Tem tido ideias de acabar com a própria vida?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">6. Você tem chorado mais do que de costume?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">16. Sente-se cansado (a) o tempo todo?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">7. Tem dificuldade de pensar com clareza?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">17. Tem sensações desagradáveis no estômago?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">8. Tem dificuldades no serviço (ou trabalho de casa, causas sofrimento)?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">18. Tem dificuldades para tomar decisões?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">9. É incapaz de desempenhar um papel útil na sua vida?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">19. Encontra dificuldades para realizar com satisfação suas atividades?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;">10. Sente-se nervoso, tenso ou preocupado?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                        <td style="border:1px solid #000;">20. Você se sente uma pessoa inútil, sem préstimo?</td>
+                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
+                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
+                    </tr>
                     </table>
 
-                    <h3>07 - Teste de Nicotina de Fagerstrom</h3>
-                    <table>
-                        <tr><td>Quanto tempo após acordar você fuma o primeiro cigarro?</td><td>( ) 5 min ( ) 6-30 ( ) 31-60 ( ) >60</td></tr>
-                        <tr><td>Você fuma mais pela manhã?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>Você fuma mesmo doente?</td><td>Sim ( ) Não ( )</td></tr>
+                    <h3>07 - Distúrbio de Uso do Álcool (AUDIT)</h3>
+                    <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
+                    <tr>
+                        <th style="text-align:left; border:1px solid #000;">Pergunta</th>
+                        <th style="width:18%; border:1px solid #000; text-align:center;">0</th>
+                        <th style="width:18%; border:1px solid #000; text-align:center;">1</th>
+                        <th style="width:18%; border:1px solid #000; text-align:center;">2</th>
+                        <th style="width:18%; border:1px solid #000; text-align:center;">3</th>
+                        <th style="width:18%; border:1px solid #000; text-align:center;">4</th>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">1. Frequência de consumo de bebidas alcoólicas</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">1 vez/mês ou menos</td>
+                        <td style="border:1px solid #000;">2 a 4 vezes/mês</td>
+                        <td style="border:1px solid #000;">2 a 3 vezes/semana</td>
+                        <td style="border:1px solid #000;">4 ou mais vezes/semana</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">2. Quantidade ingerida em um dia típico</td>
+                        <td style="border:1px solid #000;">1 ou 2 doses</td>
+                        <td style="border:1px solid #000;">3 ou 4 doses</td>
+                        <td style="border:1px solid #000;">5 ou 6 doses</td>
+                        <td style="border:1px solid #000;">7 a 9 doses</td>
+                        <td style="border:1px solid #000;">10 ou mais doses</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">3. Frequência de beber 6 ou mais doses em uma ocasião</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
+                        <td style="border:1px solid #000;">Mensalmente</td>
+                        <td style="border:1px solid #000;">Semanalmente</td>
+                        <td style="border:1px solid #000;">Quase todos os dias</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">4. Incapaz de parar de beber uma vez iniciado</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
+                        <td style="border:1px solid #000;">Mensalmente</td>
+                        <td style="border:1px solid #000;">Semanalmente</td>
+                        <td style="border:1px solid #000;">Diariamente</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">5. Falhou em cumprir tarefas por causa do álcool</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
+                        <td style="border:1px solid #000;">Mensalmente</td>
+                        <td style="border:1px solid #000;">Semanalmente</td>
+                        <td style="border:1px solid #000;">Diariamente</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">6. Precisa beber pela manhã para “pegar no tranco”</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
+                        <td style="border:1px solid #000;">Mensalmente</td>
+                        <td style="border:1px solid #000;">Semanalmente</td>
+                        <td style="border:1px solid #000;">Diariamente</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">7. Sentiu culpa ou remorso após beber</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
+                        <td style="border:1px solid #000;">Mensalmente</td>
+                        <td style="border:1px solid #000;">Semanalmente</td>
+                        <td style="border:1px solid #000;">Diariamente</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">8. Incapaz de lembrar o que aconteceu (blackout)</td>
+                        <td style="border:1px solid #000;">Nunca</td>
+                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
+                        <td style="border:1px solid #000;">Mensalmente</td>
+                        <td style="border:1px solid #000;">Semanalmente</td>
+                        <td style="border:1px solid #000;">Diariamente</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">9. Você ou outra pessoa já se feriu por causa do seu beber</td>
+                        <td style="border:1px solid #000;">Não</td>
+                        <td style="border:1px solid #000;">-----------</td>
+                        <td style="border:1px solid #000;">Sim, no último ano</td>
+                        <td style="border:1px solid #000;" colspan="2">-----------</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000;">10. Alguém sugeriu que você diminuísse o consumo</td>
+                        <td style="border:1px solid #000;">Não</td>
+                        <td style="border:1px solid #000;">-----------</td>
+                        <td style="border:1px solid #000;">Sim, no último ano</td>
+                        <td style="border:1px solid #000;" colspan="2">-----------</td>
+                    </tr>
                     </table>
+
+                    <h3>08 - Teste de Nicotina de Fagerström</h3>
+<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
+    <!-- Título das colunas -->
+    <tr>
+        <th style="border:1px solid #000;">Responda as questões</th>
+        <th style="border:1px solid #000; text-align:center;" colspan="4">Pontuações</th>
+    </tr>
+    <!-- Números das pontuações -->
+    <tr>
+        <th style="border:1px solid #000;"></th>
+        <th style="border:1px solid #000; text-align:center;">3</th>
+        <th style="border:1px solid #000; text-align:center;">2</th>
+        <th style="border:1px solid #000; text-align:center;">1</th>
+        <th style="border:1px solid #000; text-align:center;">0</th>
+    </tr>
+    <!-- Linha "Não fumo" abaixo da célula vazia -->
+    <tr>
+        <td style="border:1px solid #000; text-align:center;">Não fumo</td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+    </tr>
+
+    <!-- Pergunta 1 -->
+    <tr>
+        <td style="border:1px solid #000;">1. Depois de quanto tempo, após acordar, você acende o primeiro cigarro do dia?</td>
+        <td style="border:1px solid #000; text-align:center;">Menos de 5 min</td>
+        <td style="border:1px solid #000; text-align:center;">De 6 a 30 min</td>
+        <td style="border:1px solid #000; text-align:center;">De 31 a 60 min</td>
+        <td style="border:1px solid #000; text-align:center;">Mais de 60 min</td>
+    </tr>
+
+    <!-- Pergunta 2 -->
+    <tr>
+        <td style="border:1px solid #000;">2. Atualmente quantos cigarros você fuma por dia?</td>
+        <td style="border:1px solid #000; text-align:center;">Mais de 31</td>
+        <td style="border:1px solid #000; text-align:center;">De 21 a 30</td>
+        <td style="border:1px solid #000; text-align:center;">De 11 a 20</td>
+        <td style="border:1px solid #000; text-align:center;">Menos de 10</td>
+    </tr>
+
+    <!-- Pergunta 3 -->
+    <tr>
+        <td style="border:1px solid #000;">3. Qual o cigarro do dia que você acha que será mais difícil de largar?</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">O primeiro da manhã</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Qualquer outro</td>
+    </tr>
+
+    <!-- Pergunta 4 -->
+    <tr>
+        <td style="border:1px solid #000;">4. Você fuma mais frequentemente (ou mais) cigarros no período da manhã do que no resto do dia?</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Manhã</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Resto do dia</td>
+    </tr>
+
+    <!-- Pergunta 5 -->
+    <tr>
+        <td style="border:1px solid #000;">5. Você fumaria se estivesse doente a ponto de ficar de cama a maior parte do dia?</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
+    </tr>
+
+    <!-- Pergunta 6 -->
+    <tr>
+        <td style="border:1px solid #000;">6. É difícil ficar sem fumar em locais proibidos (igrejas, bibliotecas, cinemas, etc.)?</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
+        <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
+    </tr>
+</table>
+
+
+
+
+
+
+
 
                     <h3>08 - Assinatura</h3>
                     <div class="assinatura"></div>
