@@ -53,7 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $resumo_laudo          = strpos($dados_lower, strtolower('Resumo de Laudo')) !== false;
         $exames_procedimentos  = strpos($dados_lower, strtolower('Exames e Procedimentos')) !== false;
         $treinamentos          = strpos($dados_lower, strtolower('Treinamentos')) !== false;
-        $epi_epc          = strpos($dados_lower, strtolower('EPI/EPC')) !== false;
+        $epi_epc               = strpos($dados_lower, strtolower('EPI/EPC')) !== false;
+        $faturamento           = strpos($dados_lower, strtolower('Faturamento')) !== false;
 
         // // Verificações simples
         // if (stripos($recebe_processo_geraca, 'Guia de Encaminhamento') !== false) {
@@ -1584,22 +1585,22 @@ function enviarEmpresa(){
 
                     <h3>01 - Identificação</h3>
                     <table>
-                        <tr><th>Paciente</th><td><input type="text" value="Bruno Henrique" disabled></td></tr>
-                        <tr><th>Data</th><td><input type="text" value="02/10/2023" disabled></td></tr>
-                        <tr><th>Sexo</th><td><input type="text" value="M" disabled></td></tr>
-                        <tr><th>Profissão</th><td><input type="text" value="Motorista" disabled></td></tr>
-                        <tr><th>Encaminhado por</th><td><input type="text" value="Samaritano Medicina do Trabalho" disabled></td></tr>
+                        <tr><th>Paciente</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+                        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
+                        <tr><th>Sexo</th><td>' . htmlspecialchars(ucfirst($resultado_pessoa_selecionada['sexo'] ?? "")) . '</td></tr>
+                        <tr><th>Profissão</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+                        <tr><th>Encaminhado por</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
                     </table>
 
                     <h3>02 - Audiometria Tonal Limiar</h3>
                     <table>
                         <tr>
                             <th>Orelha Direita (OD)</th>
-                            <td><input type="text" value="Média: 22 dB" disabled></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th>Orelha Esquerda (OE)</th>
-                            <td><input type="text" value="Média: 16 dB" disabled></td>
+                            <td></td>
                         </tr>
                     </table>
 
@@ -1607,17 +1608,17 @@ function enviarEmpresa(){
                     <table>
                         <tr><th>Lim. Reconhecimento de Fala (OD)</th><td><input type="text" value="" disabled></td></tr>
                         <tr><th>Lim. Reconhecimento de Fala (OE)</th><td><input type="text" value="" disabled></td></tr>
-                        <tr><th>Índice de Reconhecimento de Fala</th><td><input type="text" value="Monossílabos / Dissílabos / Dissílabos" disabled></td></tr>
+                        <tr><th>Índice de Reconhecimento de Fala</th><td></td></tr>
                     </table>
 
                     <h3>04 - Exames Complementares</h3>
                     <table>
-                        <tr><th>Weber Audiométrico</th><td><input type="text" value="Sem alterações" disabled></td></tr>
-                        <tr><th>Tone Decay Técnica Rosenberg</th><td><input type="text" value="Normal" disabled></td></tr>
+                        <tr><th>Weber Audiométrico</th><td></td></tr>
+                        <tr><th>Tone Decay Técnica Rosenberg</th><td></td></tr>
                     </table>
 
                     <h3>05 - Parecer Fonoaudiólogo</h3>
-                    <textarea disabled>Mínima alteração auditiva neurossensorial unilateral em OD.</textarea>
+                    <textarea disabled></textarea>
 
                     <h3>06 - Assinaturas</h3>
                     <table>
@@ -1649,7 +1650,7 @@ function enviarEmpresa(){
                 </script>
                 ';
             }
-        } else if ($exames_procedimentos || $treinamentos || $epi_epc) {
+        } else if ($exames_procedimentos || $treinamentos || $epi_epc || $faturamento) {
             echo '
             <style>
                 body { font-family: Arial, sans-serif; background:#f2f2f2; }
