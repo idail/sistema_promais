@@ -240,7 +240,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 if ($recebe_exame === "mudanca") {
                     if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                        ob_start();
                         echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                        salvarLog(ob_get_clean());
 
                         $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
                         $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
