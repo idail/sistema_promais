@@ -231,7 +231,8 @@ function cadastrarEmpresa($pdo)
             ]);
         }
     } else {
-        echo json_encode(['status' => 'success', 'message' => 'Empresa cadastrada com sucesso!']);
+        // echo json_encode(['status' => 'success', 'message' => $recebe_ultimo_codigo_gerado_cadastramento_clinica]);
+        echo json_encode($recebe_ultimo_codigo_gerado_cadastramento_clinica);
     }
 
     // if(!empty($_POST["codigos_medicos_associados"]))

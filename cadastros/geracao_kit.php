@@ -4327,6 +4327,9 @@ function renderResultadoProfissional(tipo) {
       if (inputId === 'inputClinica') {
         const detalhes = document.getElementById('detalhesClinica');
         if (itemObj.nome || itemObj.cnpj) {
+
+          await grava_ecp_kit("clinica",itemObj.id);
+
           detalhes.className = 'ecp-details';
           detalhes.style.display = 'block';
           detalhes.innerHTML = `
@@ -5456,7 +5459,6 @@ function renderResultadoProfissional(tipo) {
       
       ecpData.clinicas.push(nova);
 
-      selecionarECP('inputClinica', 'resultadoClinica', nova, 'nome',"gravando");
       fecharModal('modalClinica');
       limparCampos(['novaClinicaNome', 'novaClinicaCnpj']);
 
@@ -5471,7 +5473,7 @@ function renderResultadoProfissional(tipo) {
         },
         success: function(retorno_grava_rapido_clinica) 
         {
-          // debugger;
+          debugger;
 
           console.log(retorno_grava_rapido_clinica);
 
@@ -5503,6 +5505,8 @@ function renderResultadoProfissional(tipo) {
             if (clinicaIndex !== -1) {
               ecpData.clinicas[clinicaIndex].id = retorno_grava_rapido_clinica;
             }
+
+            selecionarECP('inputClinica', 'resultadoClinica', nova, 'nome',"gravando");
         },
         error:function(xhr,status,error)
         {
