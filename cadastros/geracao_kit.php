@@ -6155,6 +6155,14 @@ function renderResultadoProfissional(tipo) {
     {
         debugger;
 
+        let recebe_id;
+        if(valores.id !== undefined)
+        {
+          recebe_id = valores.id;
+        }else{
+          recebe_id = valores;
+        }
+
         console.log(valores);
         $.ajax({
           url: "cadastros/processa_geracao_kit.php",
@@ -6162,7 +6170,7 @@ function renderResultadoProfissional(tipo) {
           dataType: "json",
           data: {
             processo_geracao_kit: "incluir_valores_kit",
-            valor_medico_coordenador_id: valores.id,
+            valor_medico_coordenador_id: recebe_id,
           },
           success: function(retorno_exame_geracao_kit) {
             // debugger;
@@ -6210,6 +6218,14 @@ function renderResultadoProfissional(tipo) {
     {
         debugger;
 
+        let recebe_id;
+        if(valores.id !== undefined)
+        {
+          recebe_id = valores.id;
+        }else{
+          recebe_id = valores;
+        }
+
         console.log(valores);
         $.ajax({
           url: "cadastros/processa_geracao_kit.php",
@@ -6217,7 +6233,7 @@ function renderResultadoProfissional(tipo) {
           dataType: "json",
           data: {
             processo_geracao_kit: "incluir_valores_kit",
-            valor_medico_clinica_id: valores,
+            valor_medico_clinica_id: recebe_id,
           },
           success: function(retorno_exame_geracao_kit) {
              debugger;
