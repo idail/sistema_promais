@@ -4288,6 +4288,9 @@ function renderResultadoProfissional(tipo) {
       if (inputId === 'inputEmpresa') {
         const detalhes = document.getElementById('detalhesEmpresa');
         if (itemObj.nome || itemObj.cnpj) {
+          
+          await grava_ecp_kit("empresa",itemObj.id);
+
           detalhes.className = 'ecp-details';
           detalhes.style.display = 'block';
           detalhes.innerHTML = `
@@ -5364,9 +5367,6 @@ function renderResultadoProfissional(tipo) {
         // Adiciona a nova empresa ao array de empresas
         ecpData.empresas.push(novaEmpresaObj);
         
-        // Chama a função selecionarECP para atualizar a interface
-        selecionarECP('inputEmpresa', 'resultadoEmpresa', novaEmpresaObj, 'nome',"gravando");
-        
         // Fecha a modal e limpa os campos
         fecharModal('modalEmpresa');
         limparCampos(['novaEmpresaNome', 'novaEmpresaEndereco', 'novaEmpresaCidade', 'novaEmpresaCnpj']);
@@ -5431,6 +5431,9 @@ function renderResultadoProfissional(tipo) {
               if (empresaIndex !== -1) {
                 ecpData.empresas[empresaIndex].id = response;
               }
+
+              // Chama a função selecionarECP para atualizar a interface
+              selecionarECP('inputEmpresa', 'resultadoEmpresa', novaEmpresaObj, 'nome',"gravando");
             }
           },
           error: function(xhr, status, error) {
