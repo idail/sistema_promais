@@ -4345,6 +4345,9 @@ function renderResultadoProfissional(tipo) {
       if (inputId === 'inputColaborador') {
         const detalhes = document.getElementById('detalhesColaborador');
         if (itemObj.nome || itemObj.cpf) {
+
+          await grava_ecp_kit("colaborador",itemObj.id);
+
           detalhes.className = 'ecp-details';
           detalhes.style.display = 'block';
           
@@ -5521,7 +5524,7 @@ function renderResultadoProfissional(tipo) {
     }
 
     function salvarNovoColaborador() {
-      // debugger;
+      debugger;
       const novo = {
         id:'temp_' + Date.now(),
         nome: document.getElementById('novoColaboradorNome').value,
@@ -5529,9 +5532,6 @@ function renderResultadoProfissional(tipo) {
       };
       
       ecpData.colaboradores.push(novo);
-
-      // Chama a função selecionarECP para atualizar a interface
-      selecionarECP('inputColaborador', 'resultadoPessoa', novo, 'nome',"gravando");
 
       fecharModal('modalColaborador');
       limparCampos(['novoColaboradorNome', 'novoColaboradorCpf']);
@@ -5551,7 +5551,7 @@ function renderResultadoProfissional(tipo) {
           valor_cpf_pessoa: novo.cpf,
         },
         success: function(retorno_pessoa) {
-          // debugger;
+          debugger;
           console.log(retorno_pessoa);
             if (retorno_pessoa > 0) {
 
@@ -5587,6 +5587,9 @@ function renderResultadoProfissional(tipo) {
               }
 
               console.log("Pessoa cadastrada com sucesso");
+
+              // Chama a função selecionarECP para atualizar a interface
+              selecionarECP('inputColaborador', 'resultadoPessoa', novo, 'nome',"gravando");
             }
           },
         error: function(xhr, status, error) {
