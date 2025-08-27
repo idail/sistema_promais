@@ -4240,7 +4240,7 @@ function renderResultadoProfissional(tipo) {
 
     let recebe_nome_clinica_selecionado;
 
-    function selecionarECP(inputId, resultadoId, item, chave,situacao) {
+    async function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
       // Se o item for uma string, faz o parse do JSON
       const itemObj = typeof item === 'string' ? JSON.parse(item) : item;
@@ -4249,14 +4249,14 @@ function renderResultadoProfissional(tipo) {
       {
         if(inputId === "inputEmpresa")
         {
-          grava_ecp_kit("empresa",itemObj.id);
+          await grava_ecp_kit("empresa",itemObj.id);
 
           recebe_codigo_empresa_selecionada = itemObj.id;
 
           busca_medicos_relacionados_empresa();
         }else if(inputId === "inputClinica")
         {
-          grava_ecp_kit("clinica",itemObj.id);
+          await grava_ecp_kit("clinica",itemObj.id);
 
           recebe_codigo_clinica_selecionada = itemObj.id;
 
@@ -4265,10 +4265,10 @@ function renderResultadoProfissional(tipo) {
           recebe_nome_clinica_selecionado = itemObj.nome;
         }else if(inputId === "inputColaborador")
         {
-          grava_ecp_kit("colaborador",itemObj.id);
+          await grava_ecp_kit("colaborador",itemObj.id);
         }else if(inputId === "inputCargo")
         {
-          grava_ecp_kit("cargo",itemObj.id);
+          await grava_ecp_kit("cargo",itemObj.id);
         }
       }
       
@@ -4474,6 +4474,9 @@ function renderResultadoProfissional(tipo) {
       if (inputId === 'inputCargo') {
         const detalhes = document.getElementById('detalhesCargo');
         if (detalhes) {
+
+          await grava_ecp_kit("cargo",itemObj.id);
+
           if (itemObj.titulo || itemObj.cbo) {
             detalhes.className = 'ecp-details';
             detalhes.style.display = 'block';
@@ -4564,7 +4567,7 @@ function renderResultadoProfissional(tipo) {
 
     function grava_ecp_kit(tipo,valores)
     {
-      // debugger;
+      debugger;
 
       if(tipo === "empresa")
       {
@@ -5606,9 +5609,6 @@ function renderResultadoProfissional(tipo) {
       ecpData.cargos.push(novo);
       fecharModal('modalCargo');
       limparCampos(['novoCargoTitulo', 'novoCargoCBO', 'novoCargoDescricao']);
-
-      // Chama a função selecionarECP para atualizar a interface
-      selecionarECP('inputCargo', 'resultCargo', novo, 'nome',"gravando");
       
       // // Atualiza o input e mostra os detalhes
       // const inputCargo = document.getElementById('inputCargo');
@@ -5669,6 +5669,9 @@ function renderResultadoProfissional(tipo) {
               if (cargoIndex !== -1) {
                 ecpData.cargos[cargoIndex].id = retorno_cargo;
               }
+
+              // Chama a função selecionarECP para atualizar a interface
+              selecionarECP('inputCargo', 'resultCargo', novo, 'nome',"gravando");
 
               console.log("Pessoa cadastrada com sucesso");
             }
