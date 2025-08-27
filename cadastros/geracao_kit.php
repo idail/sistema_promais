@@ -5928,6 +5928,10 @@ function renderResultadoProfissional(tipo) {
         });
     }
 
+    function abrirModalProfissionais(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
     function formatarCPF(input) {
       let value = input.value.replace(/\D/g, '');
       if (value.length > 11) value = value.substring(0, 11);
@@ -5946,7 +5950,7 @@ function renderResultadoProfissional(tipo) {
     let recebe_codigo_medico_coordenador_apos_gravar_rapido;
 
     async function confirmarAdicaoProfissional(tipo) {
-      // debugger;
+      debugger;
       const nomeInput = document.getElementById(`novo${capitalize(tipo)}`);
       const cpfInput = document.getElementById(`cpf${capitalize(tipo)}`);
       const crmInput = tipo === 'medico' ? document.getElementById('crmMedico') : null;
@@ -6213,7 +6217,7 @@ function renderResultadoProfissional(tipo) {
           dataType: "json",
           data: {
             processo_geracao_kit: "incluir_valores_kit",
-            valor_medico_clinica_id: valores.id,
+            valor_medico_clinica_id: valores,
           },
           success: function(retorno_exame_geracao_kit) {
              debugger;
