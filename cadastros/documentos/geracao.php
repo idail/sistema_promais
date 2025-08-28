@@ -1653,6 +1653,23 @@ function enviarEmpresa(){
                 ';
             }
         } else if ($exames_procedimentos || $treinamentos || $epi_epc || $faturamento) {
+
+            if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+            }
+
+            if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+            }
+
             echo '
             <style>
                 body { font-family: Arial, sans-serif; background:#f2f2f2; }
@@ -1675,82 +1692,88 @@ function enviarEmpresa(){
             <div class="guia-container">
                 <h2>FATURAMENTO</h2>
 
+                <h3>Dados do Funcionário</h3>
+                <table>
+                    <tr><th>Nome</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
+                    <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
+                    <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
+                </table>
+
                 <h3>Resumo do Faturamento</h3>
                 <table>
                     <tr><th colspan="2">Itens Selecionados</th></tr>';
 
-            // Garante valores padrão
             $total_exames = $total_exames ?? 0;
             $total_treinamentos = $total_treinamentos ?? 0;
             $total_epi = $total_epi ?? 0;
 
             // Exames
-            if (!empty($itens_exames) && isset($itens_exames)) {
+            if (!empty($itens_exames)) {
                 echo '<tr><td>Exames e Procedimentos</td><td class="valor">R$ ' . number_format($total_exames, 2, ",", ".") . '</td></tr>';
             }
 
             // Treinamentos
-            if (!empty($itens_treinamentos) && isset($itens_treinamentos)) {
+            if (!empty($itens_treinamentos)) {
                 echo '<tr><td>Treinamentos</td><td class="valor">R$ ' . number_format($total_treinamentos, 2, ",", ".") . '</td></tr>';
             }
 
-            // EPI/EPC
-            if (!empty($itens_epi) && isset($itens_epi)) {
+            // EPIs
+            if (!empty($itens_epi)) {
                 echo '<tr><td>EPI / EPC</td><td class="valor">R$ ' . number_format($total_epi, 2, ",", ".") . '</td></tr>';
             }
 
+                echo '
+                        <tr>
+                            <th>Total Geral</th>
+                            <td class="valor">R$ ' . number_format(($total_exames + $total_treinamentos + $total_epi), 2, ",", ".") . '</td>
+                        </tr>
+                    </table>
 
-            echo '
-                    <tr>
-                        <th>Total Geral</th>
-                        <td class="valor">R$ ' . number_format(($total_exames + $total_treinamentos + $total_epi), 2, ",", ".") . '</td>
-                    </tr>
-                </table>
+                    <h3>Detalhamento dos Serviços</h3>
+                    <table>
+                        <tr><th>Descrição</th><th>Qtd</th><th>Valor Unitário</th><th>Total</th></tr>';
 
-                <h3>Detalhamento</h3>
-                <table>
-                    <tr><th>Descrição</th><th>Qtd</th><th>Valor Unitário</th><th>Total</th></tr>';
-
-            // Lista os exames
-            if (!empty($itens_exames)) {
-                foreach ($itens_exames as $exame) {
-                    echo '<tr>
-                                    <td>' . htmlspecialchars($exame["descricao"]) . '</td>
-                                    <td>' . htmlspecialchars($exame["quantidade"]) . '</td>
-                                    <td class="valor">R$ ' . number_format($exame["valor_unitario"], 2, ",", ".") . '</td>
-                                    <td class="valor">R$ ' . number_format($exame["total"], 2, ",", ".") . '</td>
-                                </tr>';
+                // Lista os exames
+                if (!empty($itens_exames)) {
+                    foreach ($itens_exames as $exame) {
+                        echo '<tr>
+                                <td>' . htmlspecialchars($exame["descricao"]) . '</td>
+                                <td>' . htmlspecialchars($exame["quantidade"]) . '</td>
+                                <td class="valor">R$ ' . number_format($exame["valor_unitario"], 2, ",", ".") . '</td>
+                                <td class="valor">R$ ' . number_format($exame["total"], 2, ",", ".") . '</td>
+                            </tr>';
+                    }
                 }
-            }
 
-            // Lista os treinamentos
-            if (!empty($itens_treinamentos)) {
-                foreach ($itens_treinamentos as $trein) {
-                    echo '<tr>
-                                    <td>' . htmlspecialchars($trein["descricao"]) . '</td>
-                                    <td>' . htmlspecialchars($trein["quantidade"]) . '</td>
-                                    <td class="valor">R$ ' . number_format($trein["valor_unitario"], 2, ",", ".") . '</td>
-                                    <td class="valor">R$ ' . number_format($trein["total"], 2, ",", ".") . '</td>
-                                </tr>';
+                // Lista os treinamentos
+                if (!empty($itens_treinamentos)) {
+                    foreach ($itens_treinamentos as $trein) {
+                        echo '<tr>
+                                <td>' . htmlspecialchars($trein["descricao"]) . '</td>
+                                <td>' . htmlspecialchars($trein["quantidade"]) . '</td>
+                                <td class="valor">R$ ' . number_format($trein["valor_unitario"], 2, ",", ".") . '</td>
+                                <td class="valor">R$ ' . number_format($trein["total"], 2, ",", ".") . '</td>
+                            </tr>';
+                    }
                 }
-            }
 
-            // Lista os EPIs
-            if (!empty($itens_epi)) {
-                foreach ($itens_epi as $epi) {
-                    echo '<tr>
-                                    <td>' . htmlspecialchars($epi["descricao"]) . '</td>
-                                    <td>' . htmlspecialchars($epi["quantidade"]) . '</td>
-                                    <td class="valor">R$ ' . number_format($epi["valor_unitario"], 2, ",", ".") . '</td>
-                                    <td class="valor">R$ ' . number_format($epi["total"], 2, ",", ".") . '</td>
-                                </tr>';
+                // Lista os EPIs
+                if (!empty($itens_epi)) {
+                    foreach ($itens_epi as $epi) {
+                        echo '<tr>
+                                <td>' . htmlspecialchars($epi["descricao"]) . '</td>
+                                <td>' . htmlspecialchars($epi["quantidade"]) . '</td>
+                                <td class="valor">R$ ' . number_format($epi["valor_unitario"], 2, ",", ".") . '</td>
+                                <td class="valor">R$ ' . number_format($epi["total"], 2, ",", ".") . '</td>
+                            </tr>';
+                    }
                 }
-            }
 
-            echo '
-                </table>
-            </div>
-            ';
+                echo '
+                    </table>
+                </div>
+                ';
+
         }
     } else {
         echo "String vazia.";
