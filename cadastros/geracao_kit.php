@@ -11162,9 +11162,14 @@ function updateSelectedList() {
                   $(this).remove();
                 });
               }, 5000);
+
+            // Resolve a Promise para permitir a continuação do fluxo
+            try { resolve(retorno_produto); } catch(e) { resolve(); }
           },
           error: function(xhr, status, error) {
             console.log("Falha ao inserir produto:" + error);
+            // Rejeita a Promise para que o chamador possa tratar
+            reject(error || status || 'erro_desconhecido');
           },
         });
       });
