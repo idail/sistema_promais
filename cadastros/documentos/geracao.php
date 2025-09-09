@@ -886,7 +886,7 @@ function enviarEmpresa(){
                 <div class="bloco-titulo">Identificação</div>
                 <table>
                     <tr>
-                    <th>Nome</th><td>'. htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") .'</td>
+                    <th>Nome</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td>
                     <th>Código</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td>
                     </tr>
                     <tr>
@@ -1002,7 +1002,7 @@ function enviarEmpresa(){
                     <table>
                         <tr>
                             <th style="width:10%;">Nome</th>
-                            <td>'. htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") .'</td>
+                            <td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td>
                             <th style="width:10%;">Data</th>
                             <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
                         </tr>
@@ -1010,7 +1010,7 @@ function enviarEmpresa(){
                             <th style="width:10%;">RG</th>
                             <td><input type="text" value="" disabled></td>
                             <th style="width:10%;">Telefone</th>
-                            <td>'. htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") .'</td>
+                            <td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td>
                         </tr>
                         <tr>
                             <th style="width:10%;">Idade</th>
@@ -1654,126 +1654,466 @@ function enviarEmpresa(){
             }
         } else if ($exames_procedimentos || $treinamentos || $epi_epc || $faturamento) {
 
+            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+
+                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                $comando_busca_clinica->execute();
+                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                // print_r($resultado_clinica_selecionada);
+
+                // ----------------- BUSCA NA API DO IBGE -----------------
+                $cidadeNome = '';
+                $estadoSigla = '';
+
+                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                    $cidadeJson = @file_get_contents($urlCidade);
+                    if ($cidadeJson !== false) {
+                        $cidadeData = json_decode($cidadeJson, true);
+                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    }
+                }
+
+                if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                    $estadoJson = @file_get_contents($urlEstado);
+                    if ($estadoJson !== false) {
+                        $estadoData = json_decode($estadoJson, true);
+                        $estadoSigla = $estadoData['sigla'] ?? '';
+                    }
+                }
+
+                // Exemplo: "ALTO ARAGUAIA - MT"
+                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+            }
+
+
+            if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                $comando_busca_empresa->execute();
+                $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                // var_dump($resultado_empresa_selecionada);
+
+                // echo "<br>";
+
+                ob_start();
+                var_dump($resultado_empresa_selecionada);
+                salvarLog(ob_get_clean());
+            }
+
             if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
-                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
-                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
-                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
-                    $comando_busca_pessoa->execute();
-                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+                $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                $comando_busca_pessoa->execute();
+                $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
             }
 
             if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
-                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
-                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
-                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
-                    $comando_busca_cargo->execute();
-                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+                $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                $comando_busca_cargo->execute();
+                $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
             }
 
             echo '
-            <style>
-                body { font-family: Arial, sans-serif; background:#f2f2f2; }
-                .guia-container {
-                    width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                    background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                    page-break-after: always;
-                }
-                h2 { text-align:center; margin:20px 0; }
-                h3 {
-                    margin-top:20px; margin-bottom:10px;
-                    background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
-                }
-                table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-                th, td { border:1px solid #ccc; padding:6px; font-size:13px; vertical-align:top; }
-                th { background:#f8f9fa; text-align:left; }
-                .valor { text-align:right; font-weight:bold; }
-            </style>
+        <style>
+            body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:0; }
+            .guia-container {
+                width: 210mm; min-height: 297mm;
+                margin:5mm auto;           /* margem mais suave */
+                padding:10px;              /* leve respiro interno */
+                background:#fff;
+                border:1px solid #000;
+            }
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; } /* padding reduzido */
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;       /* menos espaço */
+                height:22px;       /* altura mais suave */
+            }
+            .section-title {
+            background:#eaeaea;
+            border:1px solid #666;  /* cinza escuro mais suave que preto */
+            font-weight:bold;
+            font-size:12px;
+            padding:3px 5px;
+            text-align:left;
+        }
+            .dados-hospital {
+                font-size:12px;
+                line-height:1.4;
+            }
+            .hospital-nome {
+                font-weight:bold;
+                text-transform:uppercase;
+                text-decoration:underline;
+                display:block;
+                margin-bottom:3px;
+            }
+            .logo {
+                text-align:center;
+            }
+            .logo img {
+                max-height:45px;   /* um pouco menor */
+            }
+            .actions {
+                margin:10px 0;     /* menos espaço */
+                text-align:center;
+            }
+            .actions button {
+                margin:0 4px;
+                padding:5px 10px;
+                border:1px solid #000;
+                border-radius:3px;
+                cursor:pointer;
+                background:#f2f2f2;
+                font-size:11px;
+            }
+            @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body { background:#fff; }
 
-            <div class="guia-container">
-                <h2>FATURAMENTO</h2>
+            .actions {
+                display: none !important; /* 🔹 esconde os botões na impressão */
+            }
+        }
+        }
 
-                <h3>Dados do Funcionário</h3>
-                <table>
-                    <tr><th>Nome</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                    <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                    <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                </table>
+        </style>
 
-                <h3>Resumo do Faturamento</h3>
-                <table>
-                    <tr><th colspan="2">Itens Selecionados</th></tr>';
+        <div class="guia-container">
+            <table>
+                <!-- Linha do título -->
+                <tr>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                </tr>
+                <!-- Linha dados hospital + logo -->
+                <tr>
+                    <td class="dados-hospital">
+                        <span class="hospital-nome">HOSPITAL BOM SAMARITANO</span>
+                        CNPJ: 01.362.987/0001-57 ( MATRIZ )<br>
+                        ENDEREÇO: RUA: 24 DE FEVEREIRO, S/N BAIRRO: BOIADEIRO<br>
+                        CIDADE: ALTO ARAGUAIA – MATO GROSSO, CEP: 78780-000. TELEFONE PARA CONTATO 3481-1880.
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
 
-            $total_exames = $total_exames ?? 0;
-            $total_treinamentos = $total_treinamentos ?? 0;
-            $total_epi = $total_epi ?? 0;
+            <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        <span class="hospital-nome">HOSPITAL BOM SAMARITANO</span>
+                        CNPJ: 01.362.987/0001-57 ( MATRIZ ) ENDEREÇO: RUA: 24 DE FEVEREIRO, S/N BAIRRO: BOIADEIRO CIDADE: ALTO ARAGUAIA – MATO GROSSO,
+                        CEP: 78780-000 TELEFONE PARA CONTATO 3481-1880.
+                    </td>
+                </tr>
+            </table>
 
-            // Exames
-            if (!empty($itens_exames)) {
-                echo '<tr><td>Exames e Procedimentos</td><td class="valor">R$ ' . number_format($total_exames, 2, ",", ".") . '</td></tr>';
+            <!-- 🔹 Seção IDENTIFICAÇÃO DO FUNCIONÁRIO -->
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        NOME DO FUNCIONÁRIO: LUIS CARLOS LEOTERIO DA SILVA<br>
+                        CPF: 998.677.021-15&nbsp;&nbsp;&nbsp;&nbsp;
+                        DATA DE NASCIMENTO: 30/03/1983&nbsp;&nbsp;&nbsp;&nbsp;
+                        IDADE: 42 ANOS&nbsp;&nbsp;&nbsp;&nbsp;
+                        TELEFONE: 66-999672766<br>
+                        CARGO: LUBRIFICADOR DE VEÍCULOS AUTOMOTORES (EXCETO EMBARCAÇÕES)&nbsp;&nbsp;&nbsp;&nbsp;
+                        CBO: 621005
+                    </td>
+                </tr>
+            </table>
+
+            <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
+            ';
+
+    
+
+    if ($exames_procedimentos && $treinamentos && $epi_epc) {
+        echo '<h4 style="font-size: 15px;line-height: 1.4;margin-top:5px;">01 - Exames / Procedimentos</h4>';
+        $combinar = "<h4 style='font-size: 12px;line-height: 1.4;'>A combinar</h4>";
+
+        echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+    
+
+    <table style="width:100%; border-collapse:collapse; font-size:12px; border:1px solid #000;">
+            <tr style="border:1px solid #000;">
+                <th style="border:1px solid #000; padding:4px;">Código</th>
+                <th style="border:1px solid #000; padding:4px;">Barras</th>
+                <th style="border:1px solid #000; padding:4px;">Descrição dos produtos/serviços</th>
+                <th style="border:1px solid #000; padding:4px;">Und</th>
+                <th style="border:1px solid #000; padding:4px;">Pço.Unt.</th>
+                <th style="border:1px solid #000; padding:4px;">Quant.</th>
+                <th style="border:1px solid #000; padding:4px;">Total do item</th>
+            </tr>
+        ';
+
+                    $totalGeral = 0;
+                    $numeroItens = 0;
+
+                    if (!empty($itens)) {
+                        foreach ($itens as $item) {
+                            $totalItem = $item["quantidade"] * $item["valor_unitario"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                    <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["barras"] ?? "") . '</td>
+                    <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["descricao"]) . '</td>
+                    <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["unidade"]) . '</td>
+                    <td style="border:1px solid #000; padding:4px; text-align:right;">' . number_format($item["valor_unitario"], 2, ",", ".") . '</td>
+                    <td style="border:1px solid #000; padding:4px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                    <td style="border:1px solid #000; padding:4px; text-align:right;">' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                        }
+                    }
+
+                    echo '
+        </table>
+
+        <table style="width:100%; margin-top:8px; font-size:12px; border-collapse:collapse;">
+            <tr>
+                <td style="padding:4px;">quinta-feira, ' . date("d \d\e F \d\e Y") . '</td>
+                <td style="padding:4px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+            </tr>
+            <tr>
+                <td style="padding:4px;">Formas de Pagamento:</td>
+                <td style="padding:4px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding:4px;">Desconto Concedido: <strong>0,00</strong></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding:4px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+            </tr>
+        </table>
+
+            <!-- Rodapé -->
+            <p><strong style="font-size: 12px;line-height: 1.4;">Prazo de Entrega:</strong> ';
+             if(isset($prazo_entrega) && !empty($prazo_entrega)){
+                echo $prazo_entrega;
+             }else{
+                echo '<label style="font-size: 12px;line-height: 1.4;">A combinar</label>';
+             }
+
+            echo '</p>
+            <p><strong style="font-size: 12px;line-height: 1.4;">Observações:</strong> ';
+            if(isset($obsevacoes) && !empty($observacoes))
+            {
+                echo $observacoes;
+            }else{
+                echo '<label style="font-size: 12px;line-height: 1.4;">Nenhuma</label>';
             }
 
-            // Treinamentos
-            if (!empty($itens_treinamentos)) {
-                echo '<tr><td>Treinamentos</td><td class="valor">R$ ' . number_format($total_treinamentos, 2, ",", ".") . '</td></tr>';
-            }
+            echo '</p>
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 30px;"></div>';
 
-            // EPIs
-            if (!empty($itens_epi)) {
-                echo '<tr><td>EPI / EPC</td><td class="valor">R$ ' . number_format($total_epi, 2, ",", ".") . '</td></tr>';
-            }
+            echo '<h4 style="font-size: 15px;line-height: 1.4;margin-top:5px;">02 - Treinamentos</h4>';
+        $combinar = "<h4 style='font-size: 12px;line-height: 1.4;'>A combinar</h4>";
 
-                echo '
-                        <tr>
-                            <th>Total Geral</th>
-                            <td class="valor">R$ ' . number_format(($total_exames + $total_treinamentos + $total_epi), 2, ",", ".") . '</td>
-                        </tr>
-                    </table>
+        echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
 
-                    <h3>Detalhamento dos Serviços</h3>
-                    <table>
-                        <tr><th>Descrição</th><th>Qtd</th><th>Valor Unitário</th><th>Total</th></tr>';
+        <table style="width:100%; border-collapse:collapse; font-size:12px; border:1px solid #000;">
+                <tr style="border:1px solid #000;">
+                    <th style="border:1px solid #000; padding:4px;">Código</th>
+                    <th style="border:1px solid #000; padding:4px;">Barras</th>
+                    <th style="border:1px solid #000; padding:4px;">Descrição dos produtos/serviços</th>
+                    <th style="border:1px solid #000; padding:4px;">Und</th>
+                    <th style="border:1px solid #000; padding:4px;">Pço.Unt.</th>
+                    <th style="border:1px solid #000; padding:4px;">Quant.</th>
+                    <th style="border:1px solid #000; padding:4px;">Total do item</th>
+                </tr>
+            ';
 
-                // Lista os exames
-                if (!empty($itens_exames)) {
-                    foreach ($itens_exames as $exame) {
-                        echo '<tr>
-                                <td>' . htmlspecialchars($exame["descricao"]) . '</td>
-                                <td>' . htmlspecialchars($exame["quantidade"]) . '</td>
-                                <td class="valor">R$ ' . number_format($exame["valor_unitario"], 2, ",", ".") . '</td>
-                                <td class="valor">R$ ' . number_format($exame["total"], 2, ",", ".") . '</td>
-                            </tr>';
-                    }
+                        $totalGeral = 0;
+                        $numeroItens = 0;
+
+                        if (!empty($itens)) {
+                            foreach ($itens as $item) {
+                                $totalItem = $item["quantidade"] * $item["valor_unitario"];
+                                $totalGeral += $totalItem;
+                                $numeroItens++;
+
+                                echo '<tr style="border:1px solid #000;">
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["barras"] ?? "") . '</td>
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["descricao"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["unidade"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px; text-align:right;">' . number_format($item["valor_unitario"], 2, ",", ".") . '</td>
+                        <td style="border:1px solid #000; padding:4px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px; text-align:right;">' . number_format($totalItem, 2, ",", ".") . '</td>
+                    </tr>';
+                            }
+                        }
+
+                        echo '
+            </table>
+
+            <table style="width:100%; margin-top:8px; font-size:12px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:4px;">quinta-feira, ' . date("d \d\e F \d\e Y") . '</td>
+                    <td style="padding:4px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:4px;">Formas de Pagamento:</td>
+                    <td style="padding:4px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:4px;">Desconto Concedido: <strong>0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:4px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+                <!-- Rodapé -->
+                <p><strong style="font-size: 12px;line-height: 1.4;">Prazo de Entrega:</strong> ';
+                if(isset($prazo_entrega) && !empty($prazo_entrega)){
+                    echo $prazo_entrega;
+                }else{
+                    echo '<label style="font-size: 12px;line-height: 1.4;">A combinar</label>';
                 }
 
-                // Lista os treinamentos
-                if (!empty($itens_treinamentos)) {
-                    foreach ($itens_treinamentos as $trein) {
-                        echo '<tr>
-                                <td>' . htmlspecialchars($trein["descricao"]) . '</td>
-                                <td>' . htmlspecialchars($trein["quantidade"]) . '</td>
-                                <td class="valor">R$ ' . number_format($trein["valor_unitario"], 2, ",", ".") . '</td>
-                                <td class="valor">R$ ' . number_format($trein["total"], 2, ",", ".") . '</td>
-                            </tr>';
-                    }
+                echo '</p>
+                <p><strong style="font-size: 12px;line-height: 1.4;">Observações:</strong> ';
+                if(isset($obsevacoes) && !empty($observacoes))
+                {
+                    echo $observacoes;
+                }else{
+                    echo '<label style="font-size: 12px;line-height: 1.4;">Nenhuma</label>';
                 }
 
-                // Lista os EPIs
-                if (!empty($itens_epi)) {
-                    foreach ($itens_epi as $epi) {
-                        echo '<tr>
-                                <td>' . htmlspecialchars($epi["descricao"]) . '</td>
-                                <td>' . htmlspecialchars($epi["quantidade"]) . '</td>
-                                <td class="valor">R$ ' . number_format($epi["valor_unitario"], 2, ",", ".") . '</td>
-                                <td class="valor">R$ ' . number_format($epi["total"], 2, ",", ".") . '</td>
-                            </tr>';
-                    }
+                echo '</p>
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top: 30px;"></div>';
+
+                echo '<h4 style="font-size: 15px;line-height: 1.4;margin-top:5px;">03 - EPIs / EPCs </h4>';
+        $combinar = "<h4 style='font-size: 12px;line-height: 1.4;'>A combinar</h4>";
+
+        echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+        <table style="width:100%; border-collapse:collapse; font-size:12px; border:1px solid #000;">
+                <tr style="border:1px solid #000;">
+                    <th style="border:1px solid #000; padding:4px;">Código</th>
+                    <th style="border:1px solid #000; padding:4px;">Barras</th>
+                    <th style="border:1px solid #000; padding:4px;">Descrição dos produtos/serviços</th>
+                    <th style="border:1px solid #000; padding:4px;">Und</th>
+                    <th style="border:1px solid #000; padding:4px;">Pço.Unt.</th>
+                    <th style="border:1px solid #000; padding:4px;">Quant.</th>
+                    <th style="border:1px solid #000; padding:4px;">Total do item</th>
+                </tr>
+            ';
+
+                        $totalGeral = 0;
+                        $numeroItens = 0;
+
+                        if (!empty($itens)) {
+                            foreach ($itens as $item) {
+                                $totalItem = $item["quantidade"] * $item["valor_unitario"];
+                                $totalGeral += $totalItem;
+                                $numeroItens++;
+
+                                echo '<tr style="border:1px solid #000;">
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["barras"] ?? "") . '</td>
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["descricao"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px;">' . htmlspecialchars($item["unidade"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px; text-align:right;">' . number_format($item["valor_unitario"], 2, ",", ".") . '</td>
+                        <td style="border:1px solid #000; padding:4px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                        <td style="border:1px solid #000; padding:4px; text-align:right;">' . number_format($totalItem, 2, ",", ".") . '</td>
+                    </tr>';
+                            }
+                        }
+
+                        echo '
+            </table>
+
+            <table style="width:100%; margin-top:8px; font-size:12px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:4px;">quinta-feira, ' . date("d \d\e F \d\e Y") . '</td>
+                    <td style="padding:4px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:4px;">Formas de Pagamento:</td>
+                    <td style="padding:4px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:4px;">Desconto Concedido: <strong>0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:4px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+                <!-- Rodapé -->
+                <p><strong style="font-size: 12px;line-height: 1.4;">Prazo de Entrega:</strong> ';
+                if(isset($prazo_entrega) && !empty($prazo_entrega)){
+                    echo $prazo_entrega;
+                }else{
+                    echo '<label style="font-size: 12px;line-height: 1.4;">A combinar</label>';
                 }
 
-                echo '
-                    </table>
-                </div>
-                ';
+                echo '</p>
+                <p><strong style="font-size: 12px;line-height: 1.4;">Observações:</strong> ';
+                if(isset($obsevacoes) && !empty($observacoes))
+                {
+                    echo $observacoes;
+                }else{
+                    echo '<label style="font-size: 12px;line-height: 1.4;">Nenhuma</label>';
+                }
 
+                echo '</p>
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top: 30px;"></div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+            echo '</div>';        
+    } 
         }
     } else {
         echo "String vazia.";
@@ -1786,3 +2126,4 @@ function enviarEmpresa(){
     // ) {
     // }
 }
+?>
