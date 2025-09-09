@@ -8728,15 +8728,7 @@ console.log(total); // Exemplo: "180.10"
           </div>
         </div>
         
-        <!-- Botão de Adicionar Chave PIX (posicionado abaixo do Tipo de Orçamento) -->
-        <div style="margin-top: 1rem; margin-bottom: 2rem; text-align: right;">
-          <button type="button" id="btn-adicionar-pix-outside" class="btn btn-primary" 
-                  style="padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; 
-                         background-color: #3b82f6; color: white; cursor: pointer; 
-                         font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fas fa-plus"></i> Adicionar Chave PIX
-          </button>
-        </div>
+       
 
         <!-- Seção de Conta Bancária -->
           <div class="sm-container" style="margin-top: 40px; margin-bottom: 2rem;">
@@ -8776,12 +8768,12 @@ console.log(total); // Exemplo: "180.10"
                 <div style="display: flex; gap: 1rem; align-items: center;">
                   <div style="flex: 1;">
                     <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Chave PIX</label>
-                    <select id="pix-key-select" class="form-control" style="width: 100%;">
+                    <select id="pix-key-select" class="form-control" style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
                       <option value="">Selecione uma chave PIX</option>
                     </select>
                   </div>
-                  <button type="button" id="btn-adicionar-pix" class="btn btn-primary" style="margin-top: 1.5rem;">
-                    <i class="fas fa-plus"></i> Adicionar
+                  <button type="button" id="btn-adicionar-pix" class="btn btn-primary" style="margin-top: 1.5rem; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                    <i class="fas fa-plus"></i> Adicionar Chave PIX
                   </button>
                 </div>
               </div>
