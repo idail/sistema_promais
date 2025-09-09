@@ -8560,6 +8560,16 @@ console.log(total); // Exemplo: "180.10"
             </div>
           </div>
         </div>
+        
+        <!-- Botão de Adicionar Chave PIX (posicionado abaixo do Tipo de Orçamento) -->
+        <div style="margin-top: 1rem; margin-bottom: 2rem; text-align: right;">
+          <button type="button" id="btn-adicionar-pix-outside" class="btn btn-primary" 
+                  style="padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; 
+                         background-color: #3b82f6; color: white; cursor: pointer; 
+                         font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-plus"></i> Adicionar Chave PIX
+          </button>
+        </div>
 
         <!-- Seção de Conta Bancária -->
           <div class="sm-container" style="margin-top: 40px; margin-bottom: 2rem;">
@@ -9048,29 +9058,58 @@ document.addEventListener('DOMContentLoaded', function() {
   const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
   const pixSelectorContainer = document.getElementById('pix-selector-container');
   const btnAdicionarPix = document.getElementById('btn-adicionar-pix');
+  const btnAdicionarPixOutside = document.getElementById('btn-adicionar-pix-outside');
   const modalContaBancaria = document.getElementById('modal-conta-bancaria');
   const btnCancelar = document.getElementById('btn-cancelar');
   const btnSalvarConta = document.getElementById('btn-salvar-conta');
   const closeModal = document.querySelector('.close');
   
+  // Verificar se o tipo PIX já está selecionado ao carregar a página
+  const pixRadio = document.querySelector('input[value="pix"]');
+  if (pixRadio && pixRadio.checked && pixSelectorContainer) {
+    pixSelectorContainer.style.display = 'block';
+  }
+  
   // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
   tipoContaInputs.forEach(input => {
     input.addEventListener('change', function() {
-      if (this.value === 'pix') {
+      if (this.value === 'pix' && pixSelectorContainer) {
         pixSelectorContainer.style.display = 'block';
-      } else {
+      } else if (pixSelectorContainer) {
         pixSelectorContainer.style.display = 'none';
       }
     });
   });
   
-  // Abrir modal ao clicar em Adicionar chave PIX
-  if (btnAdicionarPix) {
-    btnAdicionarPix.addEventListener('click', function() {
-      if (modalContaBancaria) {
-        modalContaBancaria.style.display = 'block';
+  // Função para abrir o modal de cadastro de chave PIX
+  function abrirModalChavePix() {
+    if (modalContaBancaria) {
+      // Marcar o radio de PIX se ainda não estiver marcado
+      const radioPix = document.querySelector('input[value="pix"]');
+      if (radioPix && !radioPix.checked) {
+        radioPix.checked = true;
+        // Disparar evento de mudança para mostrar o seletor de chave PIX
+        const event = new Event('change');
+        radioPix.dispatchEvent(event);
       }
-    });
+      
+      // Mostrar o modal
+      modalContaBancaria.style.display = 'block';
+      
+      // Focar no primeiro campo do modal
+      const primeiroCampo = document.getElementById('banco');
+      if (primeiroCampo) primeiroCampo.focus();
+    }
+  }
+  
+  // Abrir modal ao clicar em Adicionar chave PIX (dentro da seção de PIX)
+  if (btnAdicionarPix) {
+    btnAdicionarPix.addEventListener('click', abrirModalChavePix);
+  }
+  
+  // Abrir modal ao clicar em Adicionar Chave PIX (botão fora da seção)
+  if (btnAdicionarPixOutside) {
+    btnAdicionarPixOutside.addEventListener('click', abrirModalChavePix);
   }
   
   // Fechar modal
@@ -9095,13 +9134,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
+  // Fechar modal com a tecla ESC
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && modalContaBancaria && modalContaBancaria.style.display === 'block') {
+      closeModalFunc();
+    }
+  });
+  
   // Salvar nova conta
   if (btnSalvarConta) {
     btnSalvarConta.addEventListener('click', function() {
       const banco = document.getElementById('banco')?.value || '';
       const agencia = document.getElementById('agencia')?.value || '';
       const conta = document.getElementById('conta')?.value || '';
-      const tipoChave = document.getElementById('tipo-chave')?.value || '';
+      const tipoChaveSelect = document.getElementById('tipo-chave');
+      const tipoChave = tipoChaveSelect ? tipoChaveSelect.value : '';
       const chavePix = document.getElementById('chave-pix')?.value || '';
       const pixKeySelect = document.getElementById('pix-key-select');
       
@@ -9111,8 +9158,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
+      // Validação do tipo de chave PIX
+      if (!tipoChave) {
+        alert('Por favor, selecione o tipo de chave PIX.');
+        return;
+      }
+      
       // Adiciona a opção ao select
       if (pixKeySelect) {
+        // Verifica se a chave já existe
+        const chaveExistente = Array.from(pixKeySelect.options).some(
+          option => option.value === chavePix
+        );
+        
+        if (chaveExistente) {
+          alert('Esta chave PIX já está cadastrada.');
+          return;
+        }
+        
         const option = document.createElement('option');
         option.value = chavePix;
         option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
@@ -9132,8 +9195,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (campo) campo.value = '';
       });
       
+      // Reseta o select de tipo de chave
+      if (tipoChaveSelect) {
+        tipoChaveSelect.value = 'cpf';
+      }
+      
       // Mostra mensagem de sucesso
-      alert('Conta cadastrada com sucesso!');
+      Swal.fire({
+        title: 'Sucesso!',
+        text: 'Conta cadastrada com sucesso!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3b82f6'
+      });
     });
   }
   
