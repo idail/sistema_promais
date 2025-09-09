@@ -8561,6 +8561,98 @@ console.log(total); // Exemplo: "180.10"
           </div>
         </div>
 
+        <!-- Seção de Conta Bancária -->
+          <div class="sm-container" style="margin-top: 40px; margin-bottom: 2rem;">
+            <h2 style="font-size: 24px; font-weight: 500; color: #111; margin-bottom: 20px;">Conta Bancária</h2>
+            <div style="background: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; padding: 1.5rem;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <!-- QR Code -->
+                <label class="conta-bancaria-label">
+                  <input type="radio" name="tipo-conta" class="conta-bancaria" value="qrcode">
+                  <div class="conta-bancaria-card">
+                    <i class="fas fa-qrcode"></i>
+                    <span>QR Code</span>
+                  </div>
+                </label>
+                
+                <!-- Agência e Conta -->
+                <label class="conta-bancaria-label">
+                  <input type="radio" name="tipo-conta" class="conta-bancaria" value="agencia-conta">
+                  <div class="conta-bancaria-card">
+                    <i class="fas fa-university"></i>
+                    <span>Agência e Conta</span>
+                  </div>
+                </label>
+                
+                <!-- PIX -->
+                <label class="conta-bancaria-label">
+                  <input type="radio" name="tipo-conta" class="conta-bancaria" value="pix">
+                  <div class="conta-bancaria-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>PIX</span>
+                  </div>
+                </label>
+              </div>
+              
+              <!-- Seletor de Chave PIX -->
+              <div id="pix-selector-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Chave PIX</label>
+                    <select id="pix-key-select" class="form-control" style="width: 100%;">
+                      <option value="">Selecione uma chave PIX</option>
+                    </select>
+                  </div>
+                  <button type="button" id="btn-adicionar-pix" class="btn btn-primary" style="margin-top: 1.5rem;">
+                    <i class="fas fa-plus"></i> Adicionar
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Modal de Cadastro Rápido de Conta -->
+              <div id="modal-conta-bancaria" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+                <div style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                    <h3 style="margin: 0;">Cadastrar Nova Conta</h3>
+                    <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Banco</label>
+                    <input type="text" id="banco" class="form-control" placeholder="Nome do Banco" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; margin-bottom: 15px;">
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: 500;">Agência</label>
+                      <input type="text" id="agencia" class="form-control" placeholder="Número da Agência" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                    </div>
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: 500;">Conta</label>
+                      <input type="text" id="conta" class="form-control" placeholder="Número da Conta" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Tipo de Chave PIX</label>
+                    <select id="tipo-chave" class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; margin-bottom: 15px;">
+                      <option value="cpf">CPF</option>
+                      <option value="email">E-mail</option>
+                      <option value="telefone">Telefone</option>
+                      <option value="aleatoria">Chave Aleatória</option>
+                    </select>
+                  </div>
+                  <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Chave PIX</label>
+                    <input type="text" id="chave-pix" class="form-control" placeholder="Sua chave PIX" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                  </div>
+                  <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancelar" class="btn btn-secondary" style="padding: 8px 16px; border: none; border-radius: 4px; background-color: #e5e7eb; color: #374151; cursor: pointer; font-weight: 500;">Cancelar</button>
+                    <button type="button" id="btn-salvar-conta" class="btn btn-primary" style="padding: 8px 16px; border: none; border-radius: 4px; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500;">Salvar Conta</button>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+
         <!-- Seção de Modelos de Documentos -->
         <div class="sm-container" style="margin-bottom: 2rem;">
           <h2 style="font-size: 24px; font-weight: 500; color: #111; margin-bottom: 20px;">Modelos de Documentos</h2>
@@ -8786,6 +8878,59 @@ console.log(total); // Exemplo: "180.10"
             .tipo-orcamento:focus + .tipo-orcamento-card {
               box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
             }
+            
+            /* Estilos para a seção de Conta Bancária */
+            .conta-bancaria-label {
+              display: block;
+              cursor: pointer;
+              margin: 0;
+              transition: transform 0.2s ease;
+            }
+            .conta-bancaria {
+              position: absolute;
+              opacity: 0;
+              height: 0;
+              width: 0;
+            }
+            .conta-bancaria-card {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 0.75rem;
+              padding: 1.5rem 1rem;
+              border: 1px solid #e5e7eb;
+              border-radius: 0.5rem;
+              background: white;
+              transition: all 0.2s ease;
+              height: 100%;
+              text-align: center;
+            }
+            .conta-bancaria-card i {
+              font-size: 1.75rem;
+              color: #3b82f6;
+              transition: all 0.2s ease;
+            }
+            .conta-bancaria-card span {
+              font-size: 0.9375rem;
+              font-weight: 500;
+              color: #374151;
+            }
+            .conta-bancaria:checked + .conta-bancaria-card {
+              border-color: #3b82f6;
+              background-color: #f0f7ff;
+              box-shadow: 0 0 0 1px #3b82f6;
+            }
+            .conta-bancaria:focus + .conta-bancaria-card {
+              box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            }
+            .conta-bancaria-card:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            .conta-bancaria:checked + .conta-bancaria-card i {
+              transform: scale(1.1);
+            }
           </style>
           
           <!-- Lista de Documentos Selecionados -->
@@ -8896,6 +9041,131 @@ console.log(total); // Exemplo: "180.10"
         </div>
           </div>
         </div>`]
+
+// Script para controle da seção de Conta Bancária
+document.addEventListener('DOMContentLoaded', function() {
+  // Elementos da interface
+  const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
+  const pixSelectorContainer = document.getElementById('pix-selector-container');
+  const btnAdicionarPix = document.getElementById('btn-adicionar-pix');
+  const modalContaBancaria = document.getElementById('modal-conta-bancaria');
+  const btnCancelar = document.getElementById('btn-cancelar');
+  const btnSalvarConta = document.getElementById('btn-salvar-conta');
+  const closeModal = document.querySelector('.close');
+  
+  // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
+  tipoContaInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.value === 'pix') {
+        pixSelectorContainer.style.display = 'block';
+      } else {
+        pixSelectorContainer.style.display = 'none';
+      }
+    });
+  });
+  
+  // Abrir modal ao clicar em Adicionar chave PIX
+  if (btnAdicionarPix) {
+    btnAdicionarPix.addEventListener('click', function() {
+      if (modalContaBancaria) {
+        modalContaBancaria.style.display = 'block';
+      }
+    });
+  }
+  
+  // Fechar modal
+  function closeModalFunc() {
+    if (modalContaBancaria) {
+      modalContaBancaria.style.display = 'none';
+    }
+  }
+  
+  if (closeModal) {
+    closeModal.addEventListener('click', closeModalFunc);
+  }
+  
+  if (btnCancelar) {
+    btnCancelar.addEventListener('click', closeModalFunc);
+  }
+  
+  // Fechar modal ao clicar fora dele
+  window.addEventListener('click', function(event) {
+    if (event.target === modalContaBancaria) {
+      closeModalFunc();
+    }
+  });
+  
+  // Salvar nova conta
+  if (btnSalvarConta) {
+    btnSalvarConta.addEventListener('click', function() {
+      const banco = document.getElementById('banco')?.value || '';
+      const agencia = document.getElementById('agencia')?.value || '';
+      const conta = document.getElementById('conta')?.value || '';
+      const tipoChave = document.getElementById('tipo-chave')?.value || '';
+      const chavePix = document.getElementById('chave-pix')?.value || '';
+      const pixKeySelect = document.getElementById('pix-key-select');
+      
+      // Validação básica
+      if (!banco || !agencia || !conta || !chavePix) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+      }
+      
+      // Adiciona a opção ao select
+      if (pixKeySelect) {
+        const option = document.createElement('option');
+        option.value = chavePix;
+        option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+        pixKeySelect.appendChild(option);
+        
+        // Seleciona a opção recém-adicionada
+        option.selected = true;
+      }
+      
+      // Fecha o modal e limpa os campos
+      closeModalFunc();
+      
+      // Limpa os campos
+      const campos = ['banco', 'agencia', 'conta', 'chave-pix'];
+      campos.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) campo.value = '';
+      });
+      
+      // Mostra mensagem de sucesso
+      alert('Conta cadastrada com sucesso!');
+    });
+  }
+  
+  // Carregar chaves PIX existentes (exemplo)
+  function carregarChavesPix() {
+    const pixKeySelect = document.getElementById('pix-key-select');
+    if (!pixKeySelect) return;
+    
+    // Limpa as opções exceto a primeira
+    while (pixKeySelect.options.length > 1) {
+      pixKeySelect.remove(1);
+    }
+    
+    // Exemplo de chaves PIX (substitua por dados reais do banco de dados)
+    const chavesExemplo = [
+      { tipo: 'CPF', chave: '123.456.789-00', banco: 'Banco do Brasil', agencia: '1234', conta: '56789-0' },
+      { tipo: 'E-mail', chave: 'empresa@exemplo.com', banco: 'Itaú', agencia: '9876', conta: '12345-6' },
+      { tipo: 'Telefone', chave: '(11) 99999-9999', banco: 'Bradesco', agencia: '4567', conta: '78901-2' }
+    ];
+    
+    // Adiciona as chaves ao select
+    chavesExemplo.forEach(chave => {
+      const option = document.createElement('option');
+      option.value = chave.chave;
+      option.textContent = `${chave.tipo}: ${chave.chave} (${chave.banco} - Ag ${chave.agencia} C/C ${chave.conta})`;
+      pixKeySelect.appendChild(option);
+    });
+  }
+  
+  // Carrega as chaves PIX ao carregar a página
+  carregarChavesPix();
+});
 
      // Função para atualizar a lista de selecionados
 function updateSelectedList() {
