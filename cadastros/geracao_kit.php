@@ -2649,12 +2649,179 @@ function renderResultadoProfissional(tipo) {
         carregar_exames();
       }
       
-      // Se for a aba de faturamento (etapa 5), atualiza os totais
+      // Se for a aba de faturamento (etapa 5), atualiza os totais e inicializa a conta bancária
       if (step === 5) {
-        console.log('=== Aba de faturamento aberta ===');
-        console.log('Conteúdo da etapa:', etapas[step].substring(0, 200) + '...');
-        console.log('Função fatAtualizarTotais disponível:', typeof fatAtualizarTotais);
-        console.log('Função window.fatAtualizarTotais disponível:', typeof window.fatAtualizarTotais);
+        console.log('=== Aba de faturamento aberta (etapa 5) ===');
+        
+        // Pequeno atraso para garantir que o DOM foi atualizado
+        setTimeout(() => {
+          console.log('=== Inicializando módulo de Conta Bancária ===');
+          
+          // Elementos da interface
+          const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
+          const pixSelectorContainer = document.getElementById('pix-selector-container');
+          const btnAdicionarPix = document.getElementById('btn-adicionar-pix');
+          const btnAdicionarPixOutside = document.getElementById('btn-adicionar-pix-outside');
+          const modalContaBancaria = document.getElementById('modal-conta-bancaria');
+          
+          // Verificar se os elementos necessários existem
+          if (!tipoContaInputs.length || !pixSelectorContainer || !modalContaBancaria) {
+            console.warn('Elementos necessários para o módulo de Conta Bancária não encontrados');
+            return;
+          }
+          
+          // Verificar se o módulo já foi inicializado
+          if (window.contaBancariaInicializada) {
+            console.log('Módulo de Conta Bancária já foi inicializado');
+            return;
+          }
+          
+          // Marcar como inicializado
+          window.contaBancariaInicializada = true;
+          
+          // Verificar se o tipo PIX já está selecionado
+          const pixRadio = document.querySelector('input[value="pix"]');
+          if (pixRadio && pixRadio.checked) {
+            pixSelectorContainer.style.display = 'block';
+          }
+          
+          // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
+          function atualizarVisibilidadePix() {
+            const pixSelecionado = Array.from(tipoContaInputs).some(
+              input => input.value === 'pix' && input.checked
+            );
+            
+            pixSelectorContainer.style.display = pixSelecionado ? 'block' : 'none';
+          }
+          
+          tipoContaInputs.forEach(input => {
+            input.addEventListener('change', atualizarVisibilidadePix);
+          });
+          
+          // Função para abrir o modal de cadastro de chave PIX
+          function abrirModalChavePix() {
+            // Marcar o radio de PIX se ainda não estiver marcado
+            const radioPix = document.querySelector('input[value="pix"]');
+            if (radioPix && !radioPix.checked) {
+              radioPix.checked = true;
+              atualizarVisibilidadePix();
+            }
+            
+            // Mostrar o modal
+            modalContaBancaria.style.display = 'block';
+            
+            // Focar no primeiro campo do modal
+            const primeiroCampo = document.getElementById('banco');
+            if (primeiroCampo) primeiroCampo.focus();
+          }
+          
+          // Fechar modal
+          function fecharModal() {
+            modalContaBancaria.style.display = 'none';
+          }
+          
+          // Configurar eventos
+          if (btnAdicionarPix) {
+            btnAdicionarPix.addEventListener('click', abrirModalChavePix);
+          }
+          
+          if (btnAdicionarPixOutside) {
+            btnAdicionarPixOutside.addEventListener('click', abrirModalChavePix);
+          }
+          
+          const closeModal = document.querySelector('.close');
+          if (closeModal) {
+            closeModal.addEventListener('click', fecharModal);
+          }
+          
+          const btnCancelar = document.getElementById('btn-cancelar');
+          if (btnCancelar) {
+            btnCancelar.addEventListener('click', fecharModal);
+          }
+          
+          // Fechar modal ao clicar fora
+          window.addEventListener('click', (event) => {
+            if (event.target === modalContaBancaria) {
+              fecharModal();
+            }
+          });
+          
+          // Fechar com ESC
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modalContaBancaria.style.display === 'block') {
+              fecharModal();
+            }
+          });
+          
+          // Salvar conta
+          const btnSalvarConta = document.getElementById('btn-salvar-conta');
+          if (btnSalvarConta) {
+            btnSalvarConta.addEventListener('click', () => {
+              const banco = document.getElementById('banco')?.value.trim() || '';
+              const agencia = document.getElementById('agencia')?.value.trim() || '';
+              const conta = document.getElementById('conta')?.value.trim() || '';
+              const tipoChaveSelect = document.getElementById('tipo-chave');
+              const tipoChave = tipoChaveSelect?.value || '';
+              const chavePix = document.getElementById('chave-pix')?.value.trim() || '';
+              const pixKeySelect = document.getElementById('pix-key-select');
+              
+              // Validação
+              if (!banco || !agencia || !conta || !tipoChave || !chavePix) {
+                Swal.fire({
+                  title: 'Atenção!',
+                  text: 'Por favor, preencha todos os campos obrigatórios.',
+                  icon: 'warning',
+                  confirmButtonColor: '#3b82f6'
+                });
+                return;
+              }
+              
+              // Verificar se a chave já existe
+              if (pixKeySelect) {
+                const chaveExistente = Array.from(pixKeySelect.options).some(
+                  option => option.value === chavePix
+                );
+                
+                if (chaveExistente) {
+                  Swal.fire({
+                    title: 'Atenção!',
+                    text: 'Esta chave PIX já está cadastrada.',
+                    icon: 'warning',
+                    confirmButtonColor: '#3b82f6'
+                  });
+                  return;
+                }
+                
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                pixKeySelect.appendChild(option);
+                option.selected = true;
+                
+                // Fechar e limpar o formulário
+                fecharModal();
+                
+                // Limpar campos
+                document.getElementById('banco').value = '';
+                document.getElementById('agencia').value = '';
+                document.getElementById('conta').value = '';
+                document.getElementById('chave-pix').value = '';
+                if (tipoChaveSelect) tipoChaveSelect.value = 'cpf';
+                
+                // Mensagem de sucesso
+                Swal.fire({
+                  title: 'Sucesso!',
+                  text: 'Chave PIX cadastrada com sucesso!',
+                  icon: 'success',
+                  confirmButtonColor: '#3b82f6'
+                });
+              }
+            });
+          }
+          
+          console.log('Módulo de Conta Bancária inicializado com sucesso');
+        }, 100); // Pequeno atraso para garantir que o DOM foi completamente renderizado
         
         // Pequeno atraso para garantir que o DOM foi atualizado
         setTimeout(() => {
