@@ -11196,6 +11196,7 @@ function updateSelectedList() {
       debugger;
       try {
         window.fatProdutosSelecionadosJSON = JSON.stringify(window.fatProdutosSelecionados || []);
+        alert(window.fatProdutosSelecionadosJSON);
       } catch(e) {
         console.warn('Falha ao serializar produtos selecionados:', e);
       }
@@ -11295,6 +11296,7 @@ function initFatDescricaoLiveSearch(){
       .on('mouseenter', function(){ $(this).css('background', '#f7fafc'); })
       .on('mouseleave', function(){ $(this).css('background', '#fff'); })
       .on('click', function(){
+        debugger;
         const nome = $(this).data('nome') || '';
         $input.val(nome);
         $list.hide().empty();
