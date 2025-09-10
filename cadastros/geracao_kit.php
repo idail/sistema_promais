@@ -9439,10 +9439,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnSalvarConta = document.getElementById('btn-salvar-conta');
   const closeModal = document.querySelector('.close');
 
-  // Captura o valor selecionado do tipo de conta e envia para gravação
-  const tipoContaSelecionada = document.querySelector('input[name="tipo-conta"]:checked');
-  const tipo_dado_bancario = tipoContaSelecionada ? tipoContaSelecionada.value : '';
-  gravar_tipo_dado_bancario(tipo_dado_bancario);
+  // A gravação agora ocorre somente no clique/troca (listener de change abaixo)
 
   function gravar_tipo_dado_bancario(tipo_dado_bancario) {
       debugger;
@@ -9511,6 +9508,8 @@ document.addEventListener('DOMContentLoaded', function() {
       } else if (pixSelectorContainer) {
         pixSelectorContainer.style.display = 'none';
       }
+      // Grava imediatamente quando o usuário clica/troca a opção
+      gravar_tipo_dado_bancario(this.value);
     });
   });
   
