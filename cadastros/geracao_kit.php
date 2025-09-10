@@ -2840,33 +2840,49 @@ function renderResultadoProfissional(tipo) {
           }
 
           // Carregar chaves PIX existentes (exemplo)
-  function carregarChavesPix() {
-    const pixKeySelect = document.getElementById('pix-key-select');
-    if (!pixKeySelect) return;
-    
-    // Limpa as opções exceto a primeira
-    while (pixKeySelect.options.length > 1) {
-      pixKeySelect.remove(1);
-    }
-    
-    // Exemplo de chaves PIX (substitua por dados reais do banco de dados)
-    const chavesExemplo = [
-      { tipo: 'CPF', chave: '123.456.789-00', banco: 'Banco do Brasil', agencia: '1234', conta: '56789-0' },
-      { tipo: 'E-mail', chave: 'empresa@exemplo.com', banco: 'Itaú', agencia: '9876', conta: '12345-6' },
-      { tipo: 'Telefone', chave: '(11) 99999-9999', banco: 'Bradesco', agencia: '4567', conta: '78901-2' }
-    ];
-    
-    // Adiciona as chaves ao select
-    chavesExemplo.forEach(chave => {
-      const option = document.createElement('option');
-      option.value = chave.chave;
-      option.textContent = `${chave.tipo}: ${chave.chave} (${chave.banco} - Ag ${chave.agencia} C/C ${chave.conta})`;
-      pixKeySelect.appendChild(option);
-    });
-  }
-  
-  // Carrega as chaves PIX ao carregar a página
-  carregarChavesPix();
+          function carregarChavesPix() {
+            const pixKeySelect = document.getElementById('pix-key-select');
+            if (!pixKeySelect) return;
+            
+            // Limpa as opções exceto a primeira
+            while (pixKeySelect.options.length > 1) {
+              pixKeySelect.remove(1);
+            }
+            
+            // Exemplo de chaves PIX (substitua por dados reais do banco de dados)
+            const chavesExemplo = [
+              { tipo: 'CPF', chave: '123.456.789-00', banco: 'Banco do Brasil', agencia: '1234', conta: '56789-0' },
+              { tipo: 'E-mail', chave: 'empresa@exemplo.com', banco: 'Itaú', agencia: '9876', conta: '12345-6' },
+              { tipo: 'Telefone', chave: '(11) 99999-9999', banco: 'Bradesco', agencia: '4567', conta: '78901-2' }
+            ];
+            
+            // Adiciona as chaves ao select
+            chavesExemplo.forEach(chave => {
+              const option = document.createElement('option');
+              option.value = chave.chave;
+              option.textContent = `${chave.tipo}: ${chave.chave} (${chave.banco} - Ag ${chave.agencia} C/C ${chave.conta})`;
+              pixKeySelect.appendChild(option);
+            });
+          }
+          
+          // Carrega as chaves PIX ao carregar a página
+          carregarChavesPix();
+
+          $.ajax({
+            url: "cadastros/processa_conta_bancaria.php",
+            method: "GET",
+            dataType: "json",
+            data: { processo_conta_bancaria: "buscar_contas_bancarias" },
+          success: async function(resposta_conta_bancaria) 
+          {
+            debugger;
+            console.log(resposta_conta_bancaria);
+          },
+          error:function(xhr,status,error)
+          {
+
+          },
+        });
 
           // === Agência e Conta (apenas adiciona; não altera PIX) ===
           try {
