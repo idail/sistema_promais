@@ -2849,7 +2849,31 @@ function renderResultadoProfissional(tipo) {
               data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
               success: function(res){
                 debugger;
-                console.log(res);
+                try {
+                  const pixKeySelect = document.getElementById('pix-key-select');
+                  if (!pixKeySelect) return;
+                  // Limpa as opções exceto a primeira (placeholder)
+                  while (pixKeySelect.options.length > 1) {
+                    pixKeySelect.remove(1);
+                  }
+                  if (Array.isArray(res) && res.length) {
+                    const vistos = new Set();
+                    res.forEach(item => {
+                      const tipo = String(item.tipo_pix || '').trim();
+                      const valor = String(item.valor_pix || '').trim();
+                      if (!tipo || !valor) return;
+                      const chave = `${tipo}|${valor}`;
+                      if (vistos.has(chave)) return;
+                      vistos.add(chave);
+                      const opt = document.createElement('option');
+                      opt.value = valor;
+                      opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                      pixKeySelect.appendChild(opt);
+                    });
+                  }
+                } catch(e) {
+                  console.warn('Falha ao popular chaves PIX:', e);
+                }
               },
               error:function(xhr,status,error)
               {
@@ -2865,20 +2889,7 @@ function renderResultadoProfissional(tipo) {
               pixKeySelect.remove(1);
             }
             
-            // Exemplo de chaves PIX (substitua por dados reais do banco de dados)
-            const chavesExemplo = [
-              { tipo: 'CPF', chave: '123.456.789-00', banco: 'Banco do Brasil', agencia: '1234', conta: '56789-0' },
-              { tipo: 'E-mail', chave: 'empresa@exemplo.com', banco: 'Itaú', agencia: '9876', conta: '12345-6' },
-              { tipo: 'Telefone', chave: '(11) 99999-9999', banco: 'Bradesco', agencia: '4567', conta: '78901-2' }
-            ];
-            
-            // Adiciona as chaves ao select
-            chavesExemplo.forEach(chave => {
-              const option = document.createElement('option');
-              option.value = chave.chave;
-              option.textContent = `${chave.tipo}: ${chave.chave} (${chave.banco} - Ag ${chave.agencia} C/C ${chave.conta})`;
-              pixKeySelect.appendChild(option);
-            });
+            // Opções agora são preenchidas pelo AJAX acima
           }
           // Chama o carregador de chaves PIX
           carregarChavesPix();
