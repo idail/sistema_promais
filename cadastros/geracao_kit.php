@@ -2773,6 +2773,8 @@ function renderResultadoProfissional(tipo) {
           const btnSalvarConta = document.getElementById('btn-salvar-conta');
           if (btnSalvarConta) {
             btnSalvarConta.addEventListener('click', () => {
+
+              debugger;
               const banco = document.getElementById('banco')?.value.trim() || '';
               const agencia = document.getElementById('agencia')?.value.trim() || '';
               const conta = document.getElementById('conta')?.value.trim() || '';
@@ -2782,7 +2784,7 @@ function renderResultadoProfissional(tipo) {
               const pixKeySelect = document.getElementById('pix-key-select');
               
               // Validação
-              if (!banco || !agencia || !conta || !tipoChave || !chavePix) {
+              if (!tipoChave || !chavePix) {
                 Swal.fire({
                   title: 'Atenção!',
                   text: 'Por favor, preencha todos os campos obrigatórios.',
@@ -2811,7 +2813,8 @@ function renderResultadoProfissional(tipo) {
                 // Adicionar nova opção
                 const option = document.createElement('option');
                 option.value = chavePix;
-                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
                 pixKeySelect.appendChild(option);
                 option.selected = true;
                 
@@ -2819,9 +2822,9 @@ function renderResultadoProfissional(tipo) {
                 fecharModal();
                 
                 // Limpar campos
-                document.getElementById('banco').value = '';
-                document.getElementById('agencia').value = '';
-                document.getElementById('conta').value = '';
+                // document.getElementById('banco').value = '';
+                // document.getElementById('agencia').value = '';
+                // document.getElementById('conta').value = '';
                 document.getElementById('chave-pix').value = '';
                 if (tipoChaveSelect) tipoChaveSelect.value = 'cpf';
                 
@@ -9313,6 +9316,30 @@ document.addEventListener('DOMContentLoaded', function() {
       const tipoChave = tipoChaveSelect ? tipoChaveSelect.value : '';
       const chavePix = document.getElementById('chave-pix')?.value || '';
       const pixKeySelect = document.getElementById('pix-key-select');
+      // Logs estruturados para depuração
+      try {
+        const payload = {
+          banco,
+          agencia,
+          conta,
+          tipoChave,
+          chavePix,
+          pixKeySelectExists: !!pixKeySelect,
+          pixOptionsCount: pixKeySelect ? pixKeySelect.options.length : 0
+        };
+        window.__pixDebugPayload = payload; // disponível no console para inspeção
+        console.group('PIX > Salvar nova conta - Payload recebido');
+        console.table(payload);
+        console.log('Elementos brutos:', {
+          bancoEl: document.getElementById('banco'),
+          agenciaEl: document.getElementById('agencia'),
+          contaEl: document.getElementById('conta'),
+          tipoChaveSelect,
+          chavePixEl: document.getElementById('chave-pix'),
+          pixKeySelect
+        });
+        console.groupEnd();
+      } catch(e) { console.warn('Falha ao logar payload PIX:', e); }
       debugger;
       // Validação básica
       if (!chavePix) {
