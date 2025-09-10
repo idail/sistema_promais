@@ -2679,7 +2679,83 @@ function renderResultadoProfissional(tipo) {
           const btnAdicionarPix = document.getElementById('btn-adicionar-pix');
           const btnAdicionarPixOutside = document.getElementById('btn-adicionar-pix-outside');
           const modalContaBancaria = document.getElementById('modal-conta-bancaria');
-          
+
+          function gravar_tipo_dado_bancario(tipo_dado_bancario) {
+            debugger;
+            try {
+              console.group('Conta Bancária > gravar_tipo_dado_bancario');
+              console.log('Valor recebido para gravação:', tipo_dado_bancario);
+              console.groupEnd();
+            } catch (e) { /* noop */ }
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              async: false,
+              data: {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_tipo_dado_bancario: tipo_dado_bancario,
+              },
+              success: function(retorno_exame_geracao_kit) {
+                debugger;
+                try {
+                  console.group('AJAX > sucesso inclusão valor kit');
+                  console.log('Retorno:', retorno_exame_geracao_kit);
+                  console.groupEnd();
+                } catch(e) { /* noop */ }
+
+                const mensagemSucesso = `
+                      <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                          
+                          <div>
+                            
+                            <div>Exame cadastrado com sucesso.</div>
+                          </div>
+                        </div>
+                      </div>
+                `;
+
+                // Remove mensagem anterior se existir
+                $("#exame-gravado").remove();
+                    
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
+
+                // Configura o fade out após 5 segundos
+                setTimeout(function() {
+                  $("#exame-gravado").fadeOut(500, function() {
+                  $(this).remove();
+                  });
+                }, 5000);
+
+
+                $("#exame-gravado").html(retorno_exame_geracao_kit);
+                $("#exame-gravado").show();
+                $("#exame-gravado").fadeOut(4000);
+                console.log(retorno_exame_geracao_kit);
+                ajaxEmExecucao = false; // libera para nova requisição
+              },
+              error: function(xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                ajaxEmExecucao = false; // libera para tentar de novo
+              },
+              complete: function() {
+                try {
+                  console.log('AJAX > inclusão valor kit finalizado');
+                } catch(e) { /* noop */ }
+              }
+            });
+          }
+          // Captura o valor selecionado no momento e grava antes de seguir
+          // try {
+          //   const selecionadoEtapa5 = document.querySelector('input[name="tipo-conta"]:checked');
+          //   const tipoValorInicialEtapa5 = selecionadoEtapa5 ? selecionadoEtapa5.value : '';
+          //   if (tipoValorInicialEtapa5) {
+          //     gravar_tipo_dado_bancario(tipoValorInicialEtapa5);
+          //   }
+          // } catch (e) { /* noop */ }
+
           // Verificar se os elementos necessários existem
           if (!tipoContaInputs.length || !pixSelectorContainer || !modalContaBancaria) {
             console.warn('Elementos necessários para o módulo de Conta Bancária não encontrados');
@@ -2711,7 +2787,20 @@ function renderResultadoProfissional(tipo) {
           }
           
           tipoContaInputs.forEach(input => {
-            input.addEventListener('change', atualizarVisibilidadePix);
+            input.addEventListener('change', function() {
+              debugger;
+              try {
+                console.group('Conta Bancária (Etapa 5) > tipo-conta change');
+                console.log('Input clicado:', this);
+                console.log('Valor selecionado:', this.value);
+                console.groupEnd();
+              } catch (e) { /* noop */ }
+              atualizarVisibilidadePix();
+              // Grava imediatamente quando o usuário clica/troca a opção (etapa 5)
+              if (typeof gravar_tipo_dado_bancario === 'function') {
+                gravar_tipo_dado_bancario(this.value);
+              }
+            });
           });
           
           // Função para abrir o modal de cadastro de chave PIX
@@ -9443,17 +9532,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function gravar_tipo_dado_bancario(tipo_dado_bancario) {
       debugger;
+      try {
+        console.group('Conta Bancária > gravar_tipo_dado_bancario');
+        console.log('Valor recebido para gravação:', tipo_dado_bancario);
+        console.groupEnd();
+      } catch (e) { /* noop */ }
       $.ajax({
         url: "cadastros/processa_geracao_kit.php",
         type: "POST",
         dataType: "json",
         async: false,
+        beforeSend: function() {
+          try {
+            console.group('AJAX > inclusão valor kit (beforeSend)');
+            console.log('Processo:', 'incluir_valores_kit');
+            console.log('valor_tipo_dado_bancario:', tipo_dado_bancario);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+        },
         data: {
           processo_geracao_kit: "incluir_valores_kit",
           valor_tipo_dado_bancario: tipo_dado_bancario,
         },
         success: function(retorno_exame_geracao_kit) {
           debugger;
+          try {
+            console.group('AJAX > sucesso inclusão valor kit');
+            console.log('Retorno:', retorno_exame_geracao_kit);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
 
           const mensagemSucesso = `
                 <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
@@ -9491,6 +9598,11 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("Falha ao incluir exame: " + error);
           ajaxEmExecucao = false; // libera para tentar de novo
         },
+        complete: function() {
+          try {
+            console.log('AJAX > inclusão valor kit finalizado');
+          } catch(e) { /* noop */ }
+        }
       });
     }
   
@@ -9508,6 +9620,12 @@ document.addEventListener('DOMContentLoaded', function() {
       } else if (pixSelectorContainer) {
         pixSelectorContainer.style.display = 'none';
       }
+      try {
+        console.group('Conta Bancária > tipo-conta change');
+        console.log('Input clicado:', this);
+        console.log('Valor selecionado:', this.value);
+        console.groupEnd();
+      } catch (e) { /* noop */ }
       // Grava imediatamente quando o usuário clica/troca a opção
       gravar_tipo_dado_bancario(this.value);
     });
