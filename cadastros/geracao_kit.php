@@ -2841,6 +2841,22 @@ function renderResultadoProfissional(tipo) {
 
           // Carregar chaves PIX existentes (exemplo)
           function carregarChavesPix() {
+
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+              success: function(res){
+                debugger;
+                console.log(res);
+              },
+              error:function(xhr,status,error)
+              {
+
+              },
+            });
+
             const pixKeySelect = document.getElementById('pix-key-select');
             if (!pixKeySelect) return;
             
