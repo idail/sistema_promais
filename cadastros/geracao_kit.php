@@ -9428,6 +9428,7 @@ console.log(total); // Exemplo: "180.10"
 
 // Script para controle da seção de Conta Bancária
 document.addEventListener('DOMContentLoaded', function() {
+  debugger;
   // Elementos da interface
   const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
   const pixSelectorContainer = document.getElementById('pix-selector-container');
@@ -9438,7 +9439,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnSalvarConta = document.getElementById('btn-salvar-conta');
   const closeModal = document.querySelector('.close');
 
-
+  // Captura o valor selecionado do tipo de conta e envia para gravação
+  const tipoContaSelecionada = document.querySelector('input[name="tipo-conta"]:checked');
+  const tipo_dado_bancario = tipoContaSelecionada ? tipoContaSelecionada.value : '';
   gravar_tipo_dado_bancario(tipo_dado_bancario);
 
   function gravar_tipo_dado_bancario(tipo_dado_bancario) {
@@ -9447,6 +9450,7 @@ document.addEventListener('DOMContentLoaded', function() {
         url: "cadastros/processa_geracao_kit.php",
         type: "POST",
         dataType: "json",
+        async: false,
         data: {
           processo_geracao_kit: "incluir_valores_kit",
           valor_tipo_dado_bancario: tipo_dado_bancario,
