@@ -8798,22 +8798,8 @@ console.log(total); // Exemplo: "180.10"
               <div id="modal-conta-bancaria" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
                 <div style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-                    <h3 style="margin: 0;">Cadastrar Nova Conta</h3>
+                    <h3 style="margin: 0;">Cadastrar PIX</h3>
                     <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
-                  </div>
-                  <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Banco</label>
-                    <input type="text" id="banco" class="form-control" placeholder="Nome do Banco" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; margin-bottom: 15px;">
-                  </div>
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div>
-                      <label style="display: block; margin-bottom: 5px; font-weight: 500;">Agência</label>
-                      <input type="text" id="agencia" class="form-control" placeholder="Número da Agência" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
-                    </div>
-                    <div>
-                      <label style="display: block; margin-bottom: 5px; font-weight: 500;">Conta</label>
-                      <input type="text" id="conta" class="form-control" placeholder="Número da Conta" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
-                    </div>
                   </div>
                   <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: 500;">Tipo de Chave PIX</label>
@@ -9319,6 +9305,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Salvar nova conta
   if (btnSalvarConta) {
     btnSalvarConta.addEventListener('click', function() {
+      
       const banco = document.getElementById('banco')?.value || '';
       const agencia = document.getElementById('agencia')?.value || '';
       const conta = document.getElementById('conta')?.value || '';
@@ -9326,9 +9313,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const tipoChave = tipoChaveSelect ? tipoChaveSelect.value : '';
       const chavePix = document.getElementById('chave-pix')?.value || '';
       const pixKeySelect = document.getElementById('pix-key-select');
-      
+      debugger;
       // Validação básica
-      if (!banco || !agencia || !conta || !chavePix) {
+      if (!chavePix) {
         alert('Por favor, preencha todos os campos obrigatórios.');
         return;
       }
@@ -9353,7 +9340,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const option = document.createElement('option');
         option.value = chavePix;
-        option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+        // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+        option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
         pixKeySelect.appendChild(option);
         
         // Seleciona a opção recém-adicionada
