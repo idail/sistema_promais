@@ -2838,7 +2838,80 @@ function renderResultadoProfissional(tipo) {
               }
             });
           }
-          
+
+          // === Agência e Conta (apenas adiciona; não altera PIX) ===
+          try {
+            const acSelector = document.getElementById('agencia-selector-container');
+            const acBtnAdd = document.getElementById('btn-adicionar-agencia-conta');
+            const acModal = document.getElementById('modal-agencia-conta');
+            const acClose = document.querySelector('.close-agencia');
+            const acBtnCancel = document.getElementById('btn-cancelar-agencia');
+            const acBtnSave = document.getElementById('btn-salvar-agencia');
+
+            function acAtualizarVisibilidade() {
+              const agSelecionado = Array.from(tipoContaInputs).some(i => i.value === 'agencia-conta' && i.checked);
+              if (acSelector) acSelector.style.display = agSelecionado ? 'block' : 'none';
+            }
+            tipoContaInputs.forEach(i => i.addEventListener('change', acAtualizarVisibilidade));
+            acAtualizarVisibilidade();
+
+            function acAbrirModal() {
+              const radioAg = document.querySelector('input[value="agencia-conta"]');
+              if (radioAg && !radioAg.checked) { radioAg.checked = true; acAtualizarVisibilidade(); }
+              if (acModal) {
+                acModal.style.display = 'block';
+                const agCampo = document.getElementById('agencia-rapida');
+                if (agCampo) agCampo.focus();
+              }
+            }
+            if (acBtnAdd) acBtnAdd.addEventListener('click', acAbrirModal);
+            if (acClose && acModal) acClose.addEventListener('click', () => { acModal.style.display = 'none'; });
+            if (acBtnCancel && acModal) acBtnCancel.addEventListener('click', () => { acModal.style.display = 'none'; });
+            window.addEventListener('click', (ev) => { if (ev.target === acModal) acModal.style.display = 'none'; });
+            document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && acModal && acModal.style.display === 'block') acModal.style.display = 'none'; });
+
+            // Popular exemplos no select se ainda não existirem
+            (function acPopularExemplos(){
+              const sel = document.getElementById('agencia-conta-select');
+              if (!sel) return;
+              if (sel.options.length > 1) return;
+              [
+                { banco: 'Banco do Brasil', agencia: '1234', conta: '56789-0' },
+                { banco: 'Itaú', agencia: '9876', conta: '12345-6' },
+                { banco: 'Bradesco', agencia: '4567', conta: '78901-2' }
+              ].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = `${item.agencia}|${item.conta}`;
+                opt.textContent = `${item.banco} - Ag ${item.agencia} • C/C ${item.conta}`;
+                sel.appendChild(opt);
+              });
+            })();
+
+            if (acBtnSave) {
+              acBtnSave.addEventListener('click', () => {
+                const agencia = document.getElementById('agencia-rapida')?.value.trim() || '';
+                const conta = document.getElementById('conta-rapida')?.value.trim() || '';
+                const sel = document.getElementById('agencia-conta-select');
+                if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (sel) {
+                  const value = `${agencia}|${conta}`;
+                  const existe = Array.from(sel.options).some(o => o.value === value);
+                  if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  const opt = document.createElement('option');
+                  opt.value = value;
+                  opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  sel.appendChild(opt);
+                  opt.selected = true;
+                }
+                if (acModal) acModal.style.display = 'none';
+                const agCampo = document.getElementById('agencia-rapida');
+                const ccCampo = document.getElementById('conta-rapida');
+                if (agCampo) agCampo.value = '';
+                if (ccCampo) ccCampo.value = '';
+              });
+            }
+          } catch(e) { /* silencioso para não quebrar PIX */ }
+
           console.log('Módulo de Conta Bancária inicializado com sucesso');
         }, 100); // Pequeno atraso para garantir que o DOM foi completamente renderizado
         
@@ -8820,6 +8893,45 @@ console.log(total); // Exemplo: "180.10"
                   <div style="display: flex; justify-content: flex-end; gap: 10px;">
                     <button type="button" id="btn-cancelar" class="btn btn-secondary" style="padding: 8px 16px; border: none; border-radius: 4px; background-color: #e5e7eb; color: #374151; cursor: pointer; font-weight: 500;">Cancelar</button>
                     <button type="button" id="btn-salvar-conta" class="btn btn-primary" style="padding: 8px 16px; border: none; border-radius: 4px; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500;">Salvar Conta</button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Seletor de Agência/Conta -->
+              <div id="agencia-selector-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Agência e Conta</label>
+                    <select id="agencia-conta-select" class="form-control" style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                      <option value="">Selecione uma Agência/Conta</option>
+                    </select>
+                  </div>
+                  <button type="button" id="btn-adicionar-agencia-conta" class="btn btn-primary" style="margin-top: 1.5rem; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                    <i class="fas fa-plus"></i> Adicionar Agência/Conta
+                  </button>
+                </div>
+              </div>
+
+              <!-- Modal de Cadastro Rápido de Agência/Conta -->
+              <div id="modal-agencia-conta" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+                <div style="background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                    <h3 style="margin: 0;">Cadastrar Agência/Conta</h3>
+                    <span class="close-agencia" style="font-size: 24px; cursor: pointer;">&times;</span>
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: 500;">Agência</label>
+                      <input type="text" id="agencia-rapida" class="form-control" placeholder="Número da Agência" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                    </div>
+                    <div>
+                      <label style="display: block; margin-bottom: 5px; font-weight: 500;">Conta</label>
+                      <input type="text" id="conta-rapida" class="form-control" placeholder="Número da Conta" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                    </div>
+                  </div>
+                  <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="btn-cancelar-agencia" class="btn btn-secondary" style="padding: 8px 16px; border: none; border-radius: 4px; background-color: #e5e7eb; color: #374151; cursor: pointer; font-weight: 500;">Cancelar</button>
+                    <button type="button" id="btn-salvar-agencia" class="btn btn-primary" style="padding: 8px 16px; border: none; border-radius: 4px; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500;">Salvar</button>
                   </div>
                 </div>
               </div>
