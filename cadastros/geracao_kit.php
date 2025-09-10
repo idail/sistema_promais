@@ -11183,6 +11183,24 @@ function updateSelectedList() {
     // Snapshot em JSON dos tipos de orçamento selecionados (estado inicial)
     window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window.tiposOrcamentoSelecionados || []);
 
+    // ==============================
+    // Captura global: Produtos adicionados/selecionados
+    // ==============================
+    // Armazena objetos no formato { descricao, quantidade, valorunit }
+    window.fatProdutosSelecionados = window.fatProdutosSelecionados || [];
+    // Snapshot em JSON dos produtos selecionados (estado inicial)
+    window.fatProdutosSelecionadosJSON = JSON.stringify(window.fatProdutosSelecionados || []);
+
+    // Função utilitária para sincronizar o JSON global de produtos
+    function fatSyncProdutosJSON() {
+      debugger;
+      try {
+        window.fatProdutosSelecionadosJSON = JSON.stringify(window.fatProdutosSelecionados || []);
+      } catch(e) {
+        console.warn('Falha ao serializar produtos selecionados:', e);
+      }
+    }
+
     // Função auxiliar para atualizar a lista global a partir do DOM
     function atualizarTiposOrcamentoSelecionados() {
       debugger;
@@ -11259,7 +11277,8 @@ function initFatDescricaoLiveSearch(){
     if (!Array.isArray(produtos) || produtos.length === 0) { $list.hide().empty(); return; }
     const html = produtos.map(p => {
       const nome = p && (p.nome || p.NOME || p.descricao || p.DESCRICAO) ? (p.nome || p.NOME || p.descricao || p.DESCRICAO) : '';
-      return `\n            <div class="fat-suggestion-item" data-nome="${String(nome).replace(/"/g,'&quot;')}">
+      return `
+            <div class="fat-suggestion-item" data-nome="${String(nome).replace(/"/g,'&quot;')}">
           <i class="fas fa-box" style="color:#4a5568;margin-right:8px;"></i>
           <span>${nome}</span>
         </div>`;
@@ -11280,6 +11299,22 @@ function initFatDescricaoLiveSearch(){
         $input.val(nome);
         $list.hide().empty();
         $input.trigger('change');
+
+        // Tenta armazenar no array global se quantidade e valor unitário forem válidos no momento da seleção
+        try {
+          const qtdEl = document.getElementById('fat-quantidade');
+          const vuEl = document.getElementById('fat-valorUnit');
+          const q = parseInt(qtdEl && qtdEl.value);
+          const vu = parseFloat(vuEl && vuEl.value);
+          if (!isNaN(q) && !isNaN(vu)) {
+            window.fatProdutosSelecionados = window.fatProdutosSelecionados || [];
+            window.fatProdutosSelecionados.push({ descricao: nome, quantidade: q, valorunit: vu });
+            fatSyncProdutosJSON();
+          } else {
+            // Se ainda não há quantidade/valor, apenas sincroniza o JSON atual (sem inserir incompleto)
+            fatSyncProdutosJSON();
+          }
+        } catch(e) { console.warn('Não foi possível registrar seleção do produto no array global:', e); }
       });
   }
 
@@ -11436,6 +11471,13 @@ function initFatDescricaoLiveSearch(){
   
       // Adiciona à lista de produtos
       document.getElementById('fat-lista-produtos').appendChild(linha);
+
+      // Armazena no array global e sincroniza JSON
+      try {
+        window.fatProdutosSelecionados = window.fatProdutosSelecionados || [];
+        window.fatProdutosSelecionados.push({ descricao: descricao, quantidade: quantidade, valorunit: valorUnit });
+        fatSyncProdutosJSON();
+      } catch(e) { console.warn('Falha ao registrar produto no array global:', e); }
 
       // Limpa os campos
       document.getElementById('fat-descricao').value = '';
