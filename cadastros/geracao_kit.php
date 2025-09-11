@@ -2906,6 +2906,108 @@ function renderResultadoProfissional(tipo) {
                 option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
                 pixKeySelect.appendChild(option);
                 option.selected = true;
+
+                let recebe_pix_kit = `${tipoChave.toUpperCase()}: ${chavePix}`;
+
+                $.ajax({
+          url: "cadastros/processa_conta_bancaria.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_conta_bancaria: "inserir_conta_bancaria",
+            valor_tipo_pix_conta_bancaria: tipoChave,
+            valor_pix_conta_bancaria: chavePix,
+          },
+          success: function(retorno_conta_bancaria) {
+            debugger;
+            console.log(retorno_conta_bancaria);
+            if (retorno_conta_bancaria) {
+              const mensagemSucesso = `
+                  <div id="pix-rapido-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <div>
+                    <div>PIX cadastrado com sucesso.</div>
+                    </div>
+                   </div>
+                  </div>
+                  `;
+
+            // Remove mensagem anterior se existir
+            $("#pix-rapido-gravado").remove();
+                         
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#pix-rapido-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+            }
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao inserir empresa:" + error);
+          },
+        });
+
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          async: false,
+          data: {
+             processo_geracao_kit: "incluir_valores_kit",
+             valor_agencia_conta: recebe_pix_kit,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+            try {
+               console.group('AJAX > sucesso inclusão valor kit');
+               console.log('Retorno:', retorno_exame_geracao_kit);
+               console.groupEnd();
+            } catch(e) { /* noop */ }
+
+            const mensagemSucesso = `
+             <div id="pix-gravado-kit" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                  <div>
+                  <div>KIT Atualizado com com sucesso.</div>
+                  </div>
+                </div>
+              </div>
+             `;
+
+            // Remove mensagem anterior se existir
+            $("#pix-gravado-kit").remove();
+                          
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+            $("#pix-gravado-kit").fadeOut(500, function() {
+               $(this).remove();
+            });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            ajaxEmExecucao = false; // libera para nova requisição
+           },
+           error: function(xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              ajaxEmExecucao = false; // libera para tentar de novo
+           },
+           complete: function() {
+              try {
+                console.log('AJAX > inclusão valor kit finalizado');
+              } catch(e) { /* noop */ }
+            }
+          });
                 
                 // Fechar e limpar o formulário
                 fecharModal();
@@ -9977,7 +10079,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Salvar nova conta
   if (btnSalvarConta) {
     btnSalvarConta.addEventListener('click', function() {
-      
+      debugger;
       const banco = document.getElementById('banco')?.value || '';
       const agencia = document.getElementById('agencia')?.value || '';
       const conta = document.getElementById('conta')?.value || '';
@@ -10039,6 +10141,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
         option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
         pixKeySelect.appendChild(option);
+
+        
         
         // Seleciona a opção recém-adicionada
         option.selected = true;
