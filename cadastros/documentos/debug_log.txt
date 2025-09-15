@@ -1,6 +1,46 @@
-[27/08/2025 23:14:59] string(22) "Exames e Procedimentos"
+[15/09/2025 12:02:49] string(43) "Exames e Procedimentos,Treinamentos,EPI/EPC"
 
-[27/08/2025 23:14:59] bool(false)
+[15/09/2025 12:02:49] bool(false)
 bool(false)
 bool(false)
+
+[15/09/2025 12:02:49] Cidade/UF via IBGE: Alto Taquari - MT
+[15/09/2025 12:02:49] array(18) {
+  ["id"]=>
+  int(3)
+  ["nome"]=>
+  string(10) "Agro-campo"
+  ["empresa_id"]=>
+  int(1)
+  ["cnpj"]=>
+  string(18) "02.369.702/0001-72"
+  ["endereco"]=>
+  string(26) "Avenida Carlos Hugueney,84"
+  ["id_cidade"]=>
+  int(5100300)
+  ["id_estado"]=>
+  int(51)
+  ["telefone"]=>
+  string(10) "6634811615"
+  ["email"]=>
+  string(0) ""
+  ["chave_id"]=>
+  int(0)
+  ["razao_social"]=>
+  string(53) "BERIGO E DIAS COMERCIO DE PRODUTOS AGROPECUARIOS LTDA"
+  ["bairro"]=>
+  string(6) "Centro"
+  ["cep"]=>
+  string(9) "78780-000"
+  ["complemento"]=>
+  string(0) ""
+  ["nome_contabilidade"]=>
+  string(0) ""
+  ["email_contabilidade"]=>
+  string(0) ""
+  ["created_at"]=>
+  string(19) "2025-05-22 10:26:00"
+  ["updated_at"]=>
+  string(19) "2025-05-22 10:26:00"
+}
 
