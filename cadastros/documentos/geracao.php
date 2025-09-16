@@ -39,10 +39,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Primeiro verifica se não está vazio
     if (!empty($recebe_processo_geraca)) {
 
+        // Inicializa tudo como false
+        $exames_procedimentos = false;
+        $treinamentos         = false;
+        $epi_epc              = false;
+
         $dados = trim($recebe_processo_geraca); // remove espaços no começo/fim
         $dados = str_replace(["\r", "\n"], "", $dados); // remove quebras de linha
 
         $dados_lower = strtolower($dados);
+
+        $itens = array_map('trim', explode(',', $dados_lower));
+
+        //         function getBooleanCampo(string $dados, string $campo): bool {
+        //     // strtolower e trim garantem que espaços e maiúsculas/minúsculas não afetem
+        //     return strpos($dados, strtolower(trim($campo))) !== false;
+        // }
+
+        foreach ($itens as $item) {
+            if ($item === 'exames e procedimentos') {
+                $exames_procedimentos = true;
+            } elseif ($item === 'treinamentos') {
+                $treinamentos = true;
+            } elseif ($item === 'epi/epc' || $item === 'epi,epc') {
+                $epi_epc = true;
+            }
+        }
 
 
         // Variáveis começam como false (ou vazio)
@@ -53,10 +75,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $psicosocial           = strpos($dados_lower, strtolower('Psico Social')) !== false;
         $toxicologico          = strpos($dados_lower, strtolower('Toxicológico')) !== false;
         $resumo_laudo          = strpos($dados_lower, strtolower('Resumo de Laudo')) !== false;
-        $exames_procedimentos  = strpos($dados_lower, strtolower('Exames e Procedimentos')) !== false;
-        $treinamentos          = strpos($dados_lower, strtolower('Treinamentos')) !== false;
-        $epi_epc               = strpos($dados_lower, strtolower('EPI/EPC')) !== false;
+        // $exames_procedimentos = getBooleanCampo($dados_lower, 'exames e procedimentos');
+        // $treinamentos         = getBooleanCampo($dados_lower, 'treinamentos');
+        // $epi_epc              = getBooleanCampo($dados_lower, 'epi/epc'); // ou 'epi,epc'
         $faturamento           = strpos($dados_lower, strtolower('Faturamento')) !== false;
+
+        // Debug
+        // var_dump([
+        //     'exames_procedimentos' => $exames_procedimentos,
+        //     'treinamentos'         => $treinamentos,
+        //     'epi_epc'              => $epi_epc
+        // ]);
 
         // // Verificações simples
         // if (stripos($recebe_processo_geraca, 'Guia de Encaminhamento') !== false) {
@@ -96,6 +125,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ob_start();
         var_dump($guia_encaminhamento, $aso, $prontuario_medico);
         salvarLog(ob_get_clean());
+
+        //echo "exame:".$exames_procedimentos.",treinamentos:".$treinamentos.",epi,epc:".$epi_epc;
 
 
         if ($guia_encaminhamento || $aso || $prontuario_medico) {
@@ -1654,7 +1685,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </script>
                 ';
             }
-        } else if ($exames_procedimentos || $treinamentos || $epi_epc || $faturamento) {
+        } else if ($exames_procedimentos === true || $treinamentos === true || $epi_epc === true || $faturamento === true) {
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
 
@@ -1769,6 +1800,131 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $comando_busca_cargo->execute();
                 $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
             }
+
+            $valores_pedidos = [];
+
+            // -------------------
+            // Buscar EPIs (Produtos)
+            // -------------------
+            $instrucao_busca_pedidos = "SELECT * FROM produto WHERE id_kit = :recebe_id_kit";
+            $comando_busca_pedidos = $pdo->prepare($instrucao_busca_pedidos);
+            $comando_busca_pedidos->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+            $comando_busca_pedidos->execute();
+            $resultado_busca_pedidos = $comando_busca_pedidos->fetchAll(PDO::FETCH_ASSOC);
+
+            for ($i = 0; $i < count($resultado_busca_pedidos); $i++) {
+                $item = $resultado_busca_pedidos[$i];
+                $valores_pedidos[] = [
+                    "tipo"       => "epi",
+                    "nome"       => $item["nome"] ?? "Sem nome",
+                    "quantidade" => $item["quantidade"] ?? 1,
+                    "valor"      => (float) ($item["valor"] ?? 0),
+                    "codigo"     => $item["id"]
+                ];
+            }
+
+            // -------------------
+            // Buscar Treinamentos
+            // -------------------
+            $instrucao_busca_treinamentos_kit = "SELECT treinamentos_selecionados FROM kits WHERE id = :recebe_id_kit";
+            $comando_busca_treinamentos_kit = $pdo->prepare($instrucao_busca_treinamentos_kit);
+            $comando_busca_treinamentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+            $comando_busca_treinamentos_kit->execute();
+            $resultado_busca_treinamentos_kit = $comando_busca_treinamentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+            // Contador associativo para treinamentos
+            $treinamentos_count = [];
+
+            for ($i = 0; $i < count($resultado_busca_treinamentos_kit); $i++) {
+                $registro = $resultado_busca_treinamentos_kit[$i];
+                if (!empty($registro["treinamentos_selecionados"])) {
+                    $treinamentos_recebidos = json_decode($registro["treinamentos_selecionados"], true);
+                    if (is_array($treinamentos_recebidos)) {
+                        for ($j = 0; $j < count($treinamentos_recebidos); $j++) {
+                            $treinamento = $treinamentos_recebidos[$j];
+                            $codigo = $treinamento["codigo"];
+                            $nome = $treinamento["nome"] ?? "Sem nome";
+                            $valor = (float) str_replace(",", ".", $treinamento["valor"] ?? 0);
+                            $descricao = $treinamento["descricao"];
+
+                            if (isset($treinamentos_count[$nome])) {
+                                $treinamentos_count[$nome]["quantidade"]++;
+                            } else {
+                                $treinamentos_count[$nome] = [
+                                    "tipo"       => "treinamento",
+                                    "nome"       => $descricao,
+                                    "quantidade" => 1,
+                                    "valor"      => $valor,
+                                    "codigo"     => $codigo
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Adiciona os treinamentos ao array final
+            foreach ($treinamentos_count as $treinamento) {
+                $valores_pedidos[] = $treinamento;
+            }
+
+            // -------------------
+            // Buscar Exames
+            // -------------------
+            $instrucao_busca_exames_kit = "SELECT exames_selecionados FROM kits WHERE id = :recebe_id_kit";
+            $comando_busca_exames_kit = $pdo->prepare($instrucao_busca_exames_kit);
+            $comando_busca_exames_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+            $comando_busca_exames_kit->execute();
+            $resultado_busca_exames_kit = $comando_busca_exames_kit->fetchAll(PDO::FETCH_ASSOC);
+
+            // Contador associativo para exames
+            $exames_count = [];
+
+            for ($i = 0; $i < count($resultado_busca_exames_kit); $i++) {
+                $registro = $resultado_busca_exames_kit[$i];
+                if (!empty($registro["exames_selecionados"])) {
+                    $exames = json_decode($registro["exames_selecionados"], true);
+                    if (is_array($exames)) {
+                        for ($j = 0; $j < count($exames); $j++) {
+                            $exame = $exames[$j];
+                            $codigo = $exame["codigo"];
+                            $nome = $exame["nome"] ?? "Sem nome";
+                            $valor = (float) str_replace(",", ".", $exame["valor"] ?? 0);
+
+                            if (isset($exames_count[$nome])) {
+                                $exames_count[$nome]["quantidade"]++;
+                            } else {
+                                $exames_count[$nome] = [
+                                    "tipo"       => "exame",
+                                    "codigo"     => $codigo,
+                                    "nome"       => $nome,
+                                    "quantidade" => 1,
+                                    "valor"      => $valor
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Adiciona os exames ao array final
+            foreach ($exames_count as $exame) {
+                $valores_pedidos[] = $exame;
+            }
+
+            // -------------------
+            // Log final do array
+            // -------------------
+            ob_start();
+            var_dump($valores_pedidos);
+            salvarLog(ob_get_clean());
+
+
+
+            ob_start();
+            var_dump($resultado_busca_exames_kit);
+            salvarLog(ob_get_clean());
+
 
             $chave = '(64) 99606-5577';
 
@@ -1891,30 +2047,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </tr>
                 <tr>
                     <td class="dados-hospital" colspan="2">
-                        ' . (!empty($resultado_empresa_selecionada['nome']) 
-    ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>' 
-    : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
 
-                        ' . (!empty($resultado_empresa_selecionada['cnpj']) 
-    ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) 
-    : '') . '
-' . (!empty($resultado_empresa_selecionada['endereco']) 
-    ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) 
-    : '') . '
-' . (!empty($resultado_empresa_selecionada['bairro']) 
-    ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) 
-    : '') . '
-' . (!empty($recebe_cidade_uf) 
-    ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) 
-    : '') . '
-,
-                        ' . (!empty($resultado_empresa_selecionada['cep']) 
-    ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) 
-    : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj'])
+                : '') . '
+                    ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco'])
+                : '') . '
+                    ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro'])
+                : '') . '
+                    ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf)
+                : '') . '
+                    ,
+                                            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep'])
+                : '') . '
 
-' . (!empty($resultado_empresa_selecionada['telefone']) 
-    ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' 
-    : '') . '
+                    ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
                     </td>
                 </tr>
             </table>
@@ -1928,8 +2084,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
-                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: '.$recebe_nascimento_colaborador.'&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
-                        ' . (!empty($idade) ? 'Idade: '.$idade.' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
                         ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
                         ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
@@ -1940,9 +2096,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
             ';
 
+            
 
-
-            if ($exames_procedimentos && $treinamentos && $epi_epc) {
+            if ($exames_procedimentos === true && $treinamentos === true && $epi_epc === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -1953,7 +2109,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
                 <tr>
                     <th style="padding:3px;">Código</th>
-                    <th style="padding:3px;">Barras</th>
                     <th style="padding:3px;">Descrição dos produtos/serviços</th>
                     <th style="padding:3px;">Und</th>
                     <th style="padding:3px;">Pço.Unt.</th>
@@ -1962,47 +2117,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </tr>
         ';
 
+                // Total geral e número de itens
                 $totalGeral = 0;
-                $numeroItens = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
 
-                if (!empty($itens)) {
-                    foreach ($itens as $item) {
-                        $totalItem = $item["quantidade"] * $item["valor_unitario"];
-                        $totalGeral += $totalItem;
-                        $numeroItens++;
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
 
-                        echo '<tr>
-                <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
-                <td style="padding:3px;">' . htmlspecialchars($item["barras"] ?? "") . '</td>
-                <td style="padding:3px;">' . htmlspecialchars($item["descricao"]) . '</td>
-                <td style="padding:3px;">' . htmlspecialchars($item["unidade"]) . '</td>
-                <td style="padding:3px; text-align:right;">' . number_format($item["valor_unitario"], 2, ",", ".") . '</td>
-                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
-                <td style="padding:3px; text-align:right;">' . number_format($totalItem, 2, ",", ".") . '</td>
-            </tr>';
-                    }
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
                 }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
 
                 echo '</table>
 
-            <table style="width:100%; margin-top:6px; font-size:11px; border-collapse:collapse;">
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
                 <tr>
-                    <td style="padding:3px;">' . date("l, d \d\e F \d\e Y") . '</td>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
                     <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
                 </tr>
                 <tr>
                     <td style="padding:3px;">Formas de Pagamento:</td>
-                    <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
                 </tr>
             </table>
+
 
             <!-- Rodapé -->
             <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
@@ -2025,7 +2187,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
             <tr>
                 <th style="padding:3px;">Código</th>
-                <th style="padding:3px;">Barras</th>
                 <th style="padding:3px;">Descrição dos produtos/serviços</th>
                 <th style="padding:3px;">Und</th>
                 <th style="padding:3px;">Pço.Unt.</th>
@@ -2036,29 +2197,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $totalGeral = 0;
                 $numeroItens = 0;
 
-                if (!empty($itens)) {
-                    foreach ($itens as $item) {
-                        $totalItem = $item["quantidade"] * $item["valor_unitario"];
-                        $totalGeral += $totalItem;
-                        $numeroItens++;
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
 
-                        echo '<tr>
-            <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
-            <td style="padding:3px;">' . htmlspecialchars($item["barras"] ?? "") . '</td>
-            <td style="padding:3px;">' . htmlspecialchars($item["descricao"]) . '</td>
-            <td style="padding:3px;">' . htmlspecialchars($item["unidade"]) . '</td>
-            <td style="padding:3px; text-align:right;">' . number_format($item["valor_unitario"], 2, ",", ".") . '</td>
-            <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
-            <td style="padding:3px; text-align:right;">' . number_format($totalItem, 2, ",", ".") . '</td>
-        </tr>';
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
                     }
                 }
 
+
+
                 echo '</table>
 
-                <table style="width:100%; margin-top:6px; font-size:11px; border-collapse:collapse;">
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
                     <tr>
-                        <td style="padding:3px;">' . strftime("%A, %d de %B de %Y") . '</td>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
                         <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
                     </tr>
                     <tr>
@@ -2105,7 +2272,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
             <tr>
                 <th style="padding:3px;">Código</th>
-                <th style="padding:3px;">Barras</th>
                 <th style="padding:3px;">Descrição dos produtos/serviços</th>
                 <th style="padding:3px;">Und</th>
                 <th style="padding:3px;">Pço.Unt.</th>
@@ -2116,30 +2282,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $totalGeral = 0;
                 $numeroItens = 0;
 
-                if (!empty($itens)) {
-                    foreach ($itens as $item) {
-                        $totalItem = $item["quantidade"] * $item["valor_unitario"];
-                        $totalGeral += $totalItem;
-                        $numeroItens++;
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
 
-                        echo '<tr style="border:1px solid #000;">
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"]) . '</td>
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["barras"] ?? "") . '</td>
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["descricao"]) . '</td>
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">' . htmlspecialchars($item["unidade"]) . '</td>
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . number_format($item["valor_unitario"], 2, ",", ".") . '</td>
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
-                        <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . number_format($totalItem, 2, ",", ".") . '</td>
-                    </tr>';
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
                     }
                 }
+
 
                 echo '
             </table>
 
-            <table style="width:100%; margin-top:6px; font-size:11px; border-collapse:collapse;">
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
                     <tr>
-                        <td style="padding:3px;">' . strftime("%A, %d de %B de %Y") . '</td>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
                         <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
                     </tr>
                     <tr>
@@ -2190,6 +2361,873 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <button class="btn btn-print" onclick="window.print()">Salvar</button>
         </div>';
 
+
+                echo '</div>';
+            } else if ($exames_procedimentos === true && $treinamentos === true) {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 10px;"></div>';
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>
+
+
+                <!-- Rodapé -->
+                <div style="text-align:left; margin-top:20px;">
+                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
+                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+
+                </div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            } else if ($exames_procedimentos === true && $epi_epc === true) {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 10px;"></div>';
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>
+
+
+                <!-- Rodapé -->
+                <div style="text-align:left; margin-top:20px;">
+                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
+                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+
+                </div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+                echo '</div>';
+            }else if($treinamentos === true && $epi_epc === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div style="margin-top:10px;"></div>';
+
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>
+
+
+                <!-- Rodapé -->
+                <div style="text-align:left; margin-top:20px;">
+                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
+                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+
+                </div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            }else if($exames_procedimentos === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>
+
+
+                <!-- Rodapé -->
+                <div style="text-align:left; margin-top:20px;">
+                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
+                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+
+                </div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+                echo '</div>';
+            }else if($treinamentos === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>
+
+
+                <!-- Rodapé -->
+                <div style="text-align:left; margin-top:20px;">
+                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
+                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+
+                </div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            }else if($epi_epc === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>
+
+
+                <!-- Rodapé -->
+                <div style="text-align:left; margin-top:20px;">
+                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
+                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+
+                </div>
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
 
                 echo '</div>';
             }

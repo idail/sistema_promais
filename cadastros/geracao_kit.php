@@ -10789,7 +10789,8 @@ function updateSelectedList() {
             // Cria um novo array apenas com os itens atuais, sem duplicatas
             aptidoes_selecionadas = itens.map(item => ({
                 codigo: item.codigo,
-                nome: item.recebe_apenas_nome
+                nome: item.recebe_apenas_nome,
+                valor: item.valor
             }));
             
             // Remove duplicatas baseado no código
@@ -10807,7 +10808,8 @@ function updateSelectedList() {
             // Cria um novo array apenas com os itens atuais, sem duplicatas
             exames_selecionados = itens.map(item => ({
                 codigo: item.codigo,
-                nome: item.recebe_apenas_nome
+                nome: item.recebe_apenas_nome,
+                valor: item.valor
             }));
             
             // Remove duplicatas baseado no código
@@ -11006,7 +11008,7 @@ function updateSelectedList() {
         const item = { 
           codigo, 
           recebe_apenas_nome,
-          // valor
+          valor
         };
         
         // Determina qual array e container usar com base no tipo
@@ -11786,6 +11788,7 @@ function updateSelectedList() {
 
     let recebe_nome_produto;
     let recebe_valor_produto;
+    let recebe_quantidade_produto;
 
     // Função para adicionar produto
     window.fatAdicionarProduto = async function() {
@@ -11801,6 +11804,7 @@ function updateSelectedList() {
 
       recebe_nome_produto = descricao;
       recebe_valor_produto = valorUnit;
+      recebe_quantidade_produto = quantidade;
 
       await grava_produto();
   
@@ -11923,6 +11927,7 @@ function updateSelectedList() {
            processo_produto: "inserir_produto",
            valor_descricao_produto: recebe_nome_produto,
            valor_produto: recebe_valor_produto,
+           valor_quantidade_produto:recebe_quantidade_produto
           },
           success: function(retorno_produto) {
             debugger;
@@ -12162,6 +12167,7 @@ function initFatDescricaoLiveSearch(){
 
       recebe_nome_produto = descricao;
       recebe_valor_produto = valorUnit;
+      recebe_quantidade_produto = quantidade;
 
       await grava_produto();
   

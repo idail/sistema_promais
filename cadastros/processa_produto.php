@@ -24,11 +24,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
     {
         $recebe_nome_produto = $_POST["valor_descricao_produto"];
         $recebe_valor_produto = $_POST["valor_produto"];
+        $recebe_quantidade_produto = $_POST["valor_quantidade_produto"];
 
-        $instrucao_cadastra_produto = "insert into produto(nome,valor,id_kit)values(:recebe_nome_produto,:recebe_valor_produto,:recebe_id_kit)";
+        $instrucao_cadastra_produto = "insert into produto(nome,valor,quantidade,id_kit)values(:recebe_nome_produto,:recebe_valor_produto,:recebe_quantidade_produto,:recebe_id_kit)";
         $comando_cadastra_produto = $pdo->prepare($instrucao_cadastra_produto);
         $comando_cadastra_produto->bindValue(":recebe_nome_produto",$recebe_nome_produto);
         $comando_cadastra_produto->bindValue(":recebe_valor_produto",$recebe_valor_produto);
+        $comando_cadastra_produto->bindValue(":recebe_quantidade_produto",$recebe_quantidade_produto);
         $comando_cadastra_produto->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
         $comando_cadastra_produto->execute();
         $recebe_ultimo_codigo_cadastrado_produto = $pdo->lastInsertId();

@@ -1,11 +1,11 @@
-[15/09/2025 12:02:49] string(43) "Exames e Procedimentos,Treinamentos,EPI/EPC"
+[15/09/2025 20:29:46] string(30) "Exames e Procedimentos,EPI/EPC"
 
-[15/09/2025 12:02:49] bool(false)
+[15/09/2025 20:29:46] bool(false)
 bool(false)
 bool(false)
 
-[15/09/2025 12:02:49] Cidade/UF via IBGE: Alto Taquari - MT
-[15/09/2025 12:02:49] array(18) {
+[15/09/2025 20:29:46] Cidade/UF via IBGE: Alto Taquari - MT
+[15/09/2025 20:29:46] array(18) {
   ["id"]=>
   int(3)
   ["nome"]=>
@@ -42,5 +42,81 @@ bool(false)
   string(19) "2025-05-22 10:26:00"
   ["updated_at"]=>
   string(19) "2025-05-22 10:26:00"
+}
+
+[15/09/2025 20:29:46] array(5) {
+  [0]=>
+  array(5) {
+    ["tipo"]=>
+    string(3) "epi"
+    ["nome"]=>
+    string(5) "teste"
+    ["quantidade"]=>
+    int(1)
+    ["valor"]=>
+    float(9.5)
+    ["codigo"]=>
+    int(8)
+  }
+  [1]=>
+  array(5) {
+    ["tipo"]=>
+    string(3) "epi"
+    ["nome"]=>
+    string(7) "tesoura"
+    ["quantidade"]=>
+    int(1)
+    ["valor"]=>
+    float(10.25)
+    ["codigo"]=>
+    int(9)
+  }
+  [2]=>
+  array(5) {
+    ["tipo"]=>
+    string(3) "epi"
+    ["nome"]=>
+    string(7) "vasoura"
+    ["quantidade"]=>
+    int(1)
+    ["valor"]=>
+    float(10)
+    ["codigo"]=>
+    int(11)
+  }
+  [3]=>
+  array(5) {
+    ["tipo"]=>
+    string(11) "treinamento"
+    ["nome"]=>
+    string(32) "NR 10- Trabalho com eletricidade"
+    ["quantidade"]=>
+    int(1)
+    ["valor"]=>
+    float(380)
+    ["codigo"]=>
+    string(4) "0207"
+  }
+  [4]=>
+  array(5) {
+    ["tipo"]=>
+    string(5) "exame"
+    ["codigo"]=>
+    string(4) "0068"
+    ["nome"]=>
+    string(34) "Acetilcolinesterase eritrocitária"
+    ["quantidade"]=>
+    int(1)
+    ["valor"]=>
+    float(18.25)
+  }
+}
+
+[15/09/2025 20:29:46] array(1) {
+  [0]=>
+  array(1) {
+    ["exames_selecionados"]=>
+    string(79) "[{"codigo":"0068","nome":"Acetilcolinesterase eritrocitária","valor":"18,25"}]"
+  }
 }
 
