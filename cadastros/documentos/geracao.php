@@ -129,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //echo "exame:".$exames_procedimentos.",treinamentos:".$treinamentos.",epi,epc:".$epi_epc;
 
 
-        if ($guia_encaminhamento || $aso || $prontuario_medico) {
+        if ($guia_encaminhamento && $aso && $prontuario_medico) {
 
 
 
@@ -368,12 +368,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
                 // Monta a tabela de riscos
-                $riscosTabela .= '<h3>06 - Fatores de Risco</h3><table>';
+                $riscosTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                    </tr>';
                 foreach ($grupos as $chave => $titulo) {
                     $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
-                    $riscosTabela .= "<tr><th>{$titulo}</th><td>{$valores}</td></tr>";
+                    $riscosTabela .= "
+                    <tr>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
+                    </tr>";
                 }
                 $riscosTabela .= '</table>';
+
+
                 // =====================================================================
 
                 // ===================== AJUSTE NAS APTIDÕES =====================
@@ -426,13 +436,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     ["Espaço Confinado", "Inspeções e Manutenções"]
                 ];
 
-                $aptidoesTabela .= '<h3>08 - Aptidões Extras</h3><p>';
+                $aptidoesTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    </tr>';
                 foreach ($linhas as $par) {
                     $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
                     $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
-                    $aptidoesTabela .= $esq . " — " . $dir . "<br>";
+
+                    $aptidoesTabela .= '
+                    <tr>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    </tr>';
                 }
-                $aptidoesTabela .= '</p>';
+                $aptidoesTabela .= '
+                </table>';
+
                 // =====================================================================
 
 
@@ -445,1246 +466,2951 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     return "$nome ( $apto ) Apto ( $inapto ) Inapto";
                 }
 
-
                 echo '
         <style>
-            body { font-family: Arial, sans-serif; background:#f2f2f2; }
+            body {
+                font-family: Arial, sans-serif;
+                background:#f2f2f2;
+                margin:0;
+                padding:0;
+            }
             .guia-container {
-                width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                page-break-after: always;
+                width: 210mm;
+                /*min-height: 297mm;*/
+                margin:5mm auto;
+                padding:10px;
+                background:#fff;
+                border:1px solid #000;
             }
-            h2 { text-align:center; margin:20px 0; }
-            h3 {
-                margin-top:20px; margin-bottom:10px;
-                background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;
+                height:22px;
             }
-            table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-            th, td { border:1px solid #ccc; padding:6px; font-size:13px; vertical-align:top; }
-            th { background:#f8f9fa; text-align:left; width:35%; }
-            input, textarea {
-                width:100%; border:none; background:transparent; font-size:13px;
+            .section-title {
+                background:#eaeaea;
+                border:1px solid #666;
+                font-weight:bold;
+                font-size:12px;
+                padding:3px 5px;
+                text-align:left;
             }
-            input:disabled, textarea:disabled {
-                color:#000; cursor:not-allowed;
+            .dados-hospital { font-size:12px; line-height:1.4; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+            .logo { text-align:center; }
+            .logo img { max-height:45px; }
+
+            /* QR Code */
+            .qrcode img {
+                display:block;
+                width:120px;
+                height:auto;
+                margin-top:5px;
             }
-            .assinatura { height:40px; border-bottom:1px solid #000; margin-top:10px; }
-            .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
-            .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
+
+            /* Botões - Centralizados abaixo do formulário */
+            .actions {
+                margin-top: 15px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid #ccc; /* linha de separação opcional */
+            }
             .btn {
-                padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
-                cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
+                padding:10px 18px;
+                font-size:14px;
+                font-weight:bold;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+                color:#fff;
+                box-shadow:0 2px 5px rgba(0,0,0,.2);
+                margin:0 5px;
             }
             .btn-email { background:#007bff; }
             .btn-whatsapp { background:#25d366; }
             .btn-print { background:#6c757d; }
             .btn:hover { opacity:.9; }
-            @media print { .actions { display:none; } body { background:#fff; } }
-            .logo { text-align:center; margin-bottom:15px; }
-            .logo img { max-height:80px; }
+
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { background:#fff; }
+                .actions { display: none !important; }
+            }
+
+            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+        .table-riscos th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+        .table-riscos td {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .table-exames th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+        /* 🔹 Quebra de página forçada */
+.page-break {
+    page-break-before: always; /* compatível com navegadores antigos */
+    break-before: page;        /* compatível com navegadores modernos */
+}
+
         </style>
 
-        <!-- ===================== GUIA DE ENCAMINHAMENTO ===================== -->
         <div class="guia-container">
-            <div class="logo">
-                <img src="logo.png" alt="Logo da Empresa">
-            </div>
-            <h2>GUIA DE ENCAMINHAMENTO</h2>
-
-            <h3>01 - Identificação</h3>
             <table>
-                <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
-                <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
-                <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . ', ' . htmlspecialchars($resultado_clinica_selecionada['numero'] ?? "") . ', ' . htmlspecialchars($resultado_clinica_selecionada['bairro'] ?? "") . '</td></tr>
-                <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
-                <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
+                <tr>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
             </table>
 
-            <h3>02 - Tipo de Exame / Procedimento</h3>
-            <p>Admissional ' . marcar("admissional", $recebe_exame) . ' 
-            Periódico ' . marcar("periodico", $recebe_exame) . ' 
-            Demissional ' . marcar("demissional", $recebe_exame) . ' 
-            Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' 
-            Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
-
-            <h3>03 - Dados do Funcionário / Empresa</h3>
             <table>
-                <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                <tr><th>Nome Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>04 - Mudança de Função</h3>
             <table>
-                <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>05 - Dados dos Médicos</h3>
             <table>
-                <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td></tr>
-                <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
-                <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td></tr>
-                <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE EXAME / PROCEDIMENTO</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+                        Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Mudança de Função</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Dados dos Médicos</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                </tr>
             </table>
 
             ' . $riscosTabela . '
 
-            <h3>07 - Procedimentos / Exames Realizados</h3>
-            <table>
-                <tr><th>Exame</th><td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td></tr>
-                <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
+            <table class="table-exames">
+                <tr>
+                    <td colspan="2" class="section-title">PROCEDIMENTOS / EXAMES REALIZADOS</td>
+                </tr>
+                <tr>
+                    <th>Exame</th>
+                    <td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th>Data</th>
+                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
+                </tr>
             </table>
 
             ' . $aptidoesTabela . '
+            
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">09 - CONCLUSÃO</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:4px;">
+                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:4px;">
+                        Resultado: ( ) APTO &nbsp;&nbsp; ( ) INAPTO
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:11px; padding:4px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT
+                        <br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
 
-            <h3>09 - Conclusão</h3>
-            <p>ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '</p>
-            <p>Resultado: ( ) APTO  ( ) INAPTO</p>
-            <div class="assinatura"></div>
-            <small>
-                Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
-                Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            </small>
+            <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="printSection(this)">Salvar</button>
+            </div>
         </div>
 
-        <!-- ===================== PRONTUÁRIO MÉDICO ===================== -->
-        <div class="guia-container">
-            <div class="logo">
-                <img src="logo.png" alt="Logo da Empresa">
-            </div>
-            <h2>PRONTUÁRIO MÉDICO</h2>
-
-            <h3>01 - Identificação</h3>
+            <div class="page-break"></div> <!-- 🔹 QUEBRA DE PÁGINA -->
+         <div class="guia-container">   
             <table>
-                <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
-                <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
-                <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . '</td></tr>
-                <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
-                <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
+                <tr>
+                    <th colspan="2" class="titulo-guia">PRONTUARIO MÉDICO</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
             </table>
 
-            <h3>02 - Tipo de Prontuário</h3>
-            <p>Admissional ' . marcar("admissional", $recebe_exame) . ' 
-            Periódico ' . marcar("periodico", $recebe_exame) . ' 
-            Demissional ' . marcar("demissional", $recebe_exame) . ' 
-            Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' 
-            Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
-
-            <h3>03 - Dados do Funcionário / Empresa</h3>
             <table>
-                <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td></tr>
-                <tr><th>Data Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador ?? "") . '</td></tr>
-                <tr><th>Idade</th><td>' . htmlspecialchars($idade) . ' anos</td></tr>
-                <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>04 - Mudança de Função</h3>
             <table>
-                <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>05 - Dados dos Médicos</h3>
             <table>
-                <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - CRM: ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
-                <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE PRONTUARIO MÉDICO EXAME OCUPACIONAL ANAMNESE CLINICA E PROFISSIONAL</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+                        Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>06 - Informações Clínicas</h3>
             <table>
-                <tr><th colspan="2">ANTECEDENTES FAMILIARES</th><th>SIM</th><th>NÃO</th><th colspan="2">ANTECEDENTES PESSOAIS</th><th>SIM</th><th>NÃO</th></tr>
-
-                <tr><td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
-                    <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
-                    <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
-                    <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
-                    <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">ALCOOLISMO</td><td></td><td></td>
-                    <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">REUMATISMO</td><td></td><td></td>
-                    <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
-                    <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
-                    <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">CÂNCER</td><td></td><td></td>
-                    <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">DERRAME</td><td></td><td></td>
-                    <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
-                    <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td></tr>
-
-                <tr><td colspan="2">TUBERCULOSE</td><td></td><td></td>
-                    <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">Mudança de Função</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
+                </tr>
             </table>
 
-            <h3>07 - Hábitos de Vida</h3>
             <table>
-                <tr><th colspan="2">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th><th colspan="2"></th><th>SIM</th><th>NÃO</th></tr>
+                <tr>
+                    <td colspan="2" class="section-title">Dados dos Médicos</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                </tr>
+            </table>
 
+
+            <!-- 🔹 06 - Informações Clínicas -->
+            <table>
+                <tr>
+                    <td colspan="8" class="section-title">INFORMAÇÕES CLÍNICAS</td>
+                </tr>
+                <tr>
+                    <th colspan="2">ANTECEDENTES FAMILIARES</th>
+                    <th>SIM</th>
+                    <th>NÃO</th>
+                    <th colspan="2">ANTECEDENTES PESSOAIS</th>
+                    <th>SIM</th>
+                    <th>NÃO</th>
+                </tr>
+                <tr>
+                    <td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
+                    <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
+                    <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
+                    <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
+                    <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">ALCOOLISMO</td><td></td><td></td>
+                    <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">REUMATISMO</td><td></td><td></td>
+                    <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
+                    <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
+                    <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">CÂNCER</td><td></td><td></td>
+                    <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">DERRAME</td><td></td><td></td>
+                    <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
+                    <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">TUBERCULOSE</td><td></td><td></td>
+                    <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td>
+                </tr>
+            </table>
+
+            <!-- 🔹 07 - Hábitos de Vida -->
+            <table>
+                <tr>
+                    <td colspan="8" class="section-title">HÁBITOS DE VIDA</td>
+                </tr>
+                <tr>
+                    <th colspan="2">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th>
+                    <th colspan="2"></th><th>SIM</th><th>NÃO</th>
+                </tr>
                 <tr><td colspan="2">FUMA?</td><td></td><td></td>
                     <td colspan="2">TEM REUMATISMO?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">TOMA/TOMAVA BEBIDA ALCOÓLICA?</td><td></td><td></td>
                     <td colspan="2">TEM HÉRNIA (SACO RENDIDO)?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">USA/USAVA DROGA?</td><td></td><td></td>
                     <td colspan="2">TEVE DOENÇA DE CHAGAS?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">PRATICA ESPORTE?</td><td></td><td></td>
                     <td colspan="2">SENTE CANSAÇO FACILMENTE?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">DORME BEM?</td><td></td><td></td>
                     <td colspan="2">ESTÁ COM FEBRE OU PERDA DE PESO?</td><td></td><td></td></tr>
             </table>
 
-            <h3>08 - Antecedentes Ocupacionais</h3>
+            <!-- 🔹 08 - Antecedentes Ocupacionais -->
             <table>
-                <tr><th colspan="2">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th><th colspan="2"></th><th>SIM</th><th>NÃO</th></tr>
-
+                <tr>
+                    <td colspan="8" class="section-title">ANTECEDENTES OCUPACIONAIS</td>
+                </tr>
+                <tr>
+                    <th colspan="2">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th>
+                    <th colspan="2"></th><th>SIM</th><th>NÃO</th>
+                </tr>
                 <tr><td colspan="2">JÁ TEVE FRATURAS?</td><td></td><td></td>
                     <td colspan="2">PODE EXECUTAR TAREFAS PESADAS?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">REALIZA TRABALHO FORA DA EMPRESA?</td><td></td><td></td>
                     <td colspan="2">EXECUTOU TAREFAS INSALUBRES/PERIGOSAS?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">JÁ ESTEVE DOENTE DEVIDO AO SEU TRABALHO?</td><td></td><td></td>
                     <td colspan="2">POSSUI DIFICULDADE MOTORA?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">JÁ FOI DEMITIDO POR MOTIVO DE DOENÇA?</td><td></td><td></td>
                     <td colspan="2">JÁ ESTEVE AFASTADO PELO INSS?</td><td></td><td></td></tr>
-
                 <tr><td colspan="2">JÁ TEVE ACIDENTE DE TRABALHO?</td><td></td><td></td>
-                    <td colspan="2">PARA MULHERES — DATA DA ÚLTIMA MENSTRUAÇÃO ___/___/____ &nbsp; DATA DO ÚLTIMO PREVENTIVO ___/___/____</td><td></td><td></td></tr>
+                    <td colspan="2">PARA MULHERES — DATA DA ÚLTIMA MENSTRUAÇÃO ___/___/____ &nbsp;&nbsp; DATA DO ÚLTIMO PREVENTIVO ___/___/____</td><td></td><td></td></tr>
             </table>
 
-            <p><strong>07 - Declaração:</strong> Declaro como verdade os dados preenchidos neste prontuário.<br>
-            ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '</p>
+            <!-- 🔹 Declaração -->
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">DECLARAÇÃO</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:4px;">
+                        Declaro como verdade os dados preenchidos neste prontuário.<br>
+                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:11px; padding:4px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT
+                        <br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
 
-            <div class="assinatura"></div>
-            <small>
-                Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
-                Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            </small>
+            <br>
+            <br>
+        
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">APTIDÃO FÍSICA E MENTAL</th>
+                </tr>
+            </table>
+
+                        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
+                <tr>
+                    <th style="text-align:left; padding:4px;">Altura</th>
+                    <th style="text-align:left; padding:4px;">Peso</th>
+                    <th style="text-align:left; padding:4px;">Temperatura</th>
+                    <th style="text-align:left; padding:4px;">Pulso</th>
+                    <th style="text-align:left; padding:4px;">Pressão Arterial</th>
+                </tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
+                <tr>
+                    <th style="text-align:left; padding:4px;">Normal</th>
+                    <th style="text-align:left; padding:4px;">Anormal</th>
+                    <th style="text-align:left; padding:4px;">Observação</th>
+                </tr>
+                <tr><td colspan="3" style="padding:4px;">Aspecto Geral</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Olhos</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Otoscopia</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Nariz</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Boca - Amígdalas - Dentes</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Pescoço - Gânglios</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Pulmão</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Coração</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Abdome</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Coluna</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Membros Superiores</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Membros Inferiores</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Pele e Faneros</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Psiquismo</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Exames Complementares</td></tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">Preenchimento Obrigatório em Caso de Exame Demissional</th>
+                </tr>
+
+                <tr><th colspan="6" style="text-align:left; padding:4px;" class="titulo-guia">Demissional</th></tr>
+                <tr><td colspan="6" style="padding:4px;">Adquiriu alguma doença em virtude da função?</td></tr>
+                <tr><td colspan="6" style="padding:4px;">Sofreu acidente de trabalho na empresa?</td></tr>
+                <tr><td colspan="6" style="padding:4px;">Recebeu EPI da empresa?</td></tr>
+                <tr>
+                    <td colspan="6" style="padding:4px;">
+                        PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th colspan="4" class="titulo-guia" style="text-align:left;">Para Mulheres</th>
+                </tr>
+                <tr>
+                    <th style="text-align:left; padding:4px;width: 160px;">Data da Última Menstruação</th>
+                    <td style="padding:4px;width:200px"></td>
+                    <th style="text-align:left; padding:4px;width: 160px;">Data do Último Preventivo</th>
+                    <td style="padding:4px;width:200px"></td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">EXAMES COMPLEMENTARES</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        ___________________________________________________________________________________
+                    </td>
+                </tr>
+            </table>
 
 
-                <h3>08 - Aptidão Física e Mental</h3>
-        <table>
-            <tr>
-                <th>Altura</th>
-                <th>Peso</th>
-                <th>Temperatura</th>
-                <th>Pulso</th>
-                <th>Pressão Arterial</th>
-            </tr>
-        </table>
 
-        <table>
-            <tr><th>Normal</th><th>Anormal</th><th>Observação</th></tr>
-            <tr><td colspan="3">Aspecto Geral</td></tr>
-            <tr><td colspan="3">Olhos</td></tr>
-            <tr><td colspan="3">Otoscopia</td></tr>
-            <tr><td colspan="3">Nariz</td></tr>
-            <tr><td colspan="3">Boca - Amígdalas - Dentes</td></tr>
-            <tr><td colspan="3">Pescoço - Gânglios</td></tr>
-            <tr><td colspan="3">Pulmão</td></tr>
-            <tr><td colspan="3">Coração</td></tr>
-            <tr><td colspan="3">Abdome</td></tr>
-            <tr><td colspan="3">Coluna</td></tr>
-            <tr><td colspan="3">Membros Superiores</td></tr>
-            <tr><td colspan="3">Membros Inferiores</td></tr>
-            <tr><td colspan="3">Pele e Faneros</td></tr>
-            <tr><td colspan="3">Psiquismo</td></tr>
-            <tr><td colspan="3">Exames Complementares</td></tr>
-        </table>
-
-        <h3>09 - Preenchimento Obrigatório em Caso de Exame Demissional</h3>
-        <table>
-            <tr><th colspan="6">Demissional</th></tr>
-        <tr><td colspan="6">Adquiriu alguma doença em virtude da função?</td></tr>
-        <tr><td colspan="6">Sofreu acidente de trabalho na empresa?</td></tr>
-        <tr><td colspan="6">Recebeu EPI da empresa?</td></tr>
-        <tr>
-        <td colspan="6">
-            PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
-            PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
-            TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </td>
-        </tr>
-        </table>
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">EVOLUÇÃO CLÍNICA</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        ___________________________________________________________________________________
+                    </td>
+                </tr>
+            </table>
 
 
-        <h3>10 - Para Mulheres</h3>
-        <table>
-            <tr>
-                <th>Data da Última Menstruação</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['ultima_menstruacao'] ?? "") . '</td>
-                <th>Data do Último Preventivo</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['ultimo_preventivo'] ?? "") . '</td>
-            </tr>
-        </table>
-
-        <h3>11 - Exames Complementares</h3>
-        <p>___________________________________________________________________________________</p>
-
-        <h3>12 - Evolução Clínica</h3>
-        <p>___________________________________________________________________________________</p>
-
-        <h3>13 - Conclusão</h3>
-        <p>Atesto que o trabalhador acima identificado se submeteu aos exames médicos ocupacionais em cumprimento à NR-07, itens 7.5.19.1 e 7.5.19.2.<br>
-        Resultado: ( ) APTO  ( ) INAPTO</p>
-        <p>ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '</p>
-
-        <div class="assinatura"></div>
-        <small>
-            Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
-            Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </small>
-
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">CONCLUSÃO</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        Atesto que o trabalhador acima identificado se submeteu aos exames médicos ocupacionais em cumprimento à NR-07, itens 7.5.19.1 e 7.5.19.2.<br>
+                        Resultado: ( ) APTO  ( ) INAPTO
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital">
+                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:50px;">
+                        <div class="assinatura"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="font-size:10px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
+            <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="printSection(this)">Salvar</button>
             </div>
+        </div>
 
+            <div class="page-break"></div> <!-- 🔹 QUEBRA DE PÁGINA -->
 
-        <!-- ===================== ASO ===================== -->
+            <br>
+            <br>
         <div class="guia-container">
-            <h2>ASO - Atestado de Saúde Ocupacional</h2>
             <table>
-                <tr><th>Hospital/Clínica</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
-                <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_clinica_selecionada['cnpj'] ?? "") . '</td></tr>
-                <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . '</td></tr>
-                <tr><th>Cidade/UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
-                <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
+                <tr>
+                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
             </table>
 
-            <h3>02 - Tipo de Prontuário</h3>
-            <p>Admissional ' . marcar("admissional", $recebe_exame) . ' 
-            Periódico ' . marcar("periodico", $recebe_exame) . ' 
-            Demissional ' . marcar("demissional", $recebe_exame) . ' 
-            Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' 
-            Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</p>
-
-            <h3>03 - Dados do Funcionário / Empresa</h3>
             <table>
-                <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                <tr><th>Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td></tr>
-                <tr><th>Data Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador ?? "") . '</td></tr>
-                <tr><th>Idade</th><td>' . htmlspecialchars($idade) . ' anos</td></tr>
-                <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>04 - Mudança de Função</h3>
             <table>
-                <tr><th>Novo Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                <tr><th>Novo CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
             </table>
 
-            <h3>05 - Dados dos Médicos</h3>
             <table>
-                <tr><th>Médico Coordenador</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td></tr>
-                <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td></tr>
-                <tr><th>Médico Emitente</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td></tr>
-                <tr><th>CRM</th><td>' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td></tr>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE PRONTUARIO MÉDICO EXAME OCUPACIONAL ANAMNESE CLINICA E PROFISSIONAL</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+                        Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Mudança de Função</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Dados dos Médicos</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                </tr>
             </table>
 
             ' . $riscosTabela . '
 
-            <h3>07 - Procedimentos / Exames Realizados</h3>
-            <table>
-                <tr><th>Exame</th><td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td></tr>
-                <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
+            <table class="table-exames">
+                <tr>
+                    <td colspan="2" class="section-title">PROCEDIMENTOS / EXAMES REALIZADOS</td>
+                </tr>
+                <tr>
+                    <th>Exame</th>
+                    <td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th>Data</th>
+                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
+                </tr>
             </table>
 
             ' . $aptidoesTabela . '
 
-            <h3>Conclusão</h3>
-            <p>Atesto que o trabalhador foi avaliado conforme NR-07: ( ) APTO ( ) INAPTO<br>
-            Local: ALTO ARAGUAIA-MT — Data:' . htmlspecialchars($dataAtual ?? "") . '</p>
-            <div class="assinatura"></div>
-            <small>
-                Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
-                Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            </small>
-        </div>
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">CONCLUSÃO</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        Atesto que o trabalhador foi avaliado conforme NR-07: ( ) APTO ( ) INAPTO<br>
+                        Local: ALTO ARAGUAIA-MT — Data: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:50px;">
+                        <div class="assinatura"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="font-size:10px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
 
-        <div class="actions">
-            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
-            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
-            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+
+            <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="printSection(this)">Salvar</button>
+            </div>
         </div>
 
         <script>
-        function enviarClinica(){
-            alert("Função de envio de email para clínica ainda não implementada.");
+function printSection(button) {
+    // Pega o conteúdo do formulário específico
+    var container = button.closest(".guia-container").outerHTML;
+
+    // Captura o CSS já existente na página
+    var styles = document.querySelector("style").outerHTML;
+
+    // Abre nova janela só com esse formulário
+    var newWin = window.open("", "_blank", "width=900,height=650");
+    newWin.document.write(`
+        <html>
+        <head>
+            <title>Imprimir</title>
+            ${styles} <!-- 🔹 Inclui o CSS original -->
+            <style>
+                body { background:#fff; margin:0; padding:0; }
+                .actions { display:none !important; } /* esconde botões */
+                
+                /* 🔹 Força tamanho A4 e remove cabeçalho/rodapé */
+                @page {
+                    size: A4;
+                    margin: 10mm;
+                }
+                @page {
+                    @top-left { content: none }
+                    @top-center { content: none }
+                    @top-right { content: none }
+                    @bottom-left { content: none }
+                    @bottom-center { content: none }
+                    @bottom-right { content: none }
+                }
+            </style>
+        </head>
+        <body>
+            ${container}
+        </body>
+        </html>
+    `);
+
+    newWin.document.close();
+    newWin.focus();
+    newWin.print();
+    newWin.close();
+}
+</script>
+
+
+
+';
+
+
+
+            }
+        }else if($guia_encaminhamento)
+        {
+
+            $informacoes_clinica;
+
+            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+                salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
+                salvarLog($_SESSION["exame_selecionado"]);
+
+                // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+
+                // echo $_SESSION["exame_selecionado"] . "<br>";
+
+                $recebe_exame = $_SESSION["exame_selecionado"];
+
+                $recebe_exame_exibicao;
+
+                if ($recebe_exame === "admissional") {
+                    $recebe_exame_exibicao = "Admissional";
+                } else if ($recebe_exame === "mudanca") {
+                    $recebe_exame_exibicao = "Mudança de função";
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                // Função helper para marcar
+                function marcar($valor, $tipoExame)
+                {
+                    return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+                }
+
+                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                $comando_busca_clinica->execute();
+                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                // print_r($resultado_clinica_selecionada);
+
+                // ----------------- BUSCA NA API DO IBGE -----------------
+                $cidadeNome = '';
+                $estadoSigla = '';
+
+                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                    $cidadeJson = @file_get_contents($urlCidade);
+                    if ($cidadeJson !== false) {
+                        $cidadeData = json_decode($cidadeJson, true);
+                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    }
+                }
+
+                if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                    $estadoJson = @file_get_contents($urlEstado);
+                    if ($estadoJson !== false) {
+                        $estadoData = json_decode($estadoJson, true);
+                        $estadoSigla = $estadoData['sigla'] ?? '';
+                    }
+                }
+
+                // Exemplo: "ALTO ARAGUAIA - MT"
+                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+
+                // Debug
+                // print_r($resultado_clinica_selecionada);
+                // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+
+                if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                    $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                    $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                    $comando_busca_empresa->execute();
+                    $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_empresa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_empresa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                    $recebe_nascimento_colaborador = '';
+
+                    $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                    if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                        try {
+                            $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                        } catch (Exception $e) {
+                            $recebe_nascimento_colaborador = '';
+                        }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
+                    }
+
+                    // var_dump($resultado_pessoa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_pessoa_selecionada);
+                    salvarLog(ob_get_clean());
+
+                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_cargo_selecionado);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_cargo_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if ($recebe_exame === "mudanca") {
+                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                        ob_start();
+                        echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                        salvarLog(ob_get_clean());
+
+                        $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                        $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                        $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                        $comando_busca_mudanca_cargo->execute();
+                        $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_mudanca_cargo_selecionado);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_mudanca_cargo_selecionado);
+                        salvarLog(ob_get_clean());
+                    }
+                }
+
+                if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
+                    salvarLog(ob_get_clean());
+
+                    $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+                    $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+                    $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
+                    $comando_busca_medico_coordenador->execute();
+                    $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_coordenador_selecionado);
+
+                    ob_start();
+                    var_dump($resultado_medico_coordenador_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
+                    salvarLog(ob_get_clean());
+
+
+                    $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
+                    $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
+                    $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
+                    $comando_busca_medico_clinica->execute();
+                    $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+
+                    $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
+                    $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_medico_clinica_selecionado["medico_id"]);
+                    $comando_busca_medico_relacionado_clinica->execute();
+                    $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_relacionado_clinica);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_medico_relacionado_clinica);
+                    salvarLog(ob_get_clean());
+                }
+
+                // ===================== AJUSTE APENAS NOS RISCOS =====================
+                $riscosTabela = '';
+                $grupos = [
+                    "acidente"   => "Acidentes / Mecânicos",
+                    "ergonomico" => "Ergonômicos",
+                    "fisico"     => "Físicos",
+                    "quimico"    => "Químicos",
+                    "biologico"  => "Biológicos"
+                ];
+
+                // Prepara array vazio para armazenar riscos por grupo
+                $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
+
+                if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
+                    $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        for ($i = 0; $i < count($data); $i++) {
+                            $grupo     = strtolower($data[$i]['grupo']);
+                            $descricao = $data[$i]['descricao'] ?? "";
+
+                            if (isset($riscosPorGrupo[$grupo])) {
+                                $riscosPorGrupo[$grupo][] = $descricao;
+                            }
+                        }
+                    }
+                }
+
+                // Monta a tabela de riscos
+                $riscosTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                    </tr>';
+                foreach ($grupos as $chave => $titulo) {
+                    $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
+                    $riscosTabela .= "
+                    <tr>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
+                    </tr>";
+                }
+                $riscosTabela .= '</table>';
+
+
+                // =====================================================================
+
+                // ===================== AJUSTE NAS APTIDÕES =====================
+                $aptidoesTabela = '';
+
+                $listaAptidoes = [
+                    "trabalho em altura"            => "Trabalho em Altura",
+                    "manusear produtos alimentícios" => "Manusear Produtos Alimentícios",
+                    "eletricidade"                  => "Eletricidade",
+                    "operar máquinas"               => "Operar Máquinas",
+                    "conduzir veículos"             => "Conduzir Veículos",
+                    "trabalho a quente"             => "Trabalho a Quente",
+                    "inflamáveis"                   => "Inflamáveis",
+                    "radiações ionizantes"          => "Radiações Ionizantes",
+                    "espaço confinado"              => "Espaço Confinado",
+                    "inspeções e manutenções"       => "Inspeções e Manutenções"
+                ];
+
+                // transforma o JSON da sessão em array associativo
+                $aptidoesSelecionadas = [];
+                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                    var_dump($_SESSION["aptidao_selecionado"]);
+
+
+                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                        foreach ($dataApt as $apt) {
+                            if (isset($apt['nome'])) {
+                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                            }
+                        }
+                    }
+                }
+
+                // função para marcar sim/não
+                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nomeExibicao);
+                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                    $nao  = $sim === "X" ? " " : "X";
+                    return "( $sim ) Sim ( $nao ) Não";
+                }
+
+                // define os pares para exibição (duas colunas por linha)
+                $linhas = [
+                    ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
+                    ["Eletricidade", "Operar Máquinas"],
+                    ["Conduzir Veículos", "Trabalho a Quente"],
+                    ["Inflamáveis", "Radiações Ionizantes"],
+                    ["Espaço Confinado", "Inspeções e Manutenções"]
+                ];
+
+                $aptidoesTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    </tr>';
+                foreach ($linhas as $par) {
+                    $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+
+                    $aptidoesTabela .= '
+                    <tr>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    </tr>';
+                }
+                $aptidoesTabela .= '
+                </table>';
+
+                // =====================================================================
+
+
+                // Função helper para marcar Apto/Inapto
+                function marcarAptidao($nome, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nome);
+                    $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
+                    $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
+                    return "$nome ( $apto ) Apto ( $inapto ) Inapto";
+                }
+
+                }
+            }
+
+            echo '
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background:#f2f2f2;
+                margin:0;
+                padding:0;
+            }
+            .guia-container {
+                width: 210mm;
+                min-height: 297mm;
+                margin:5mm auto;
+                padding:10px;
+                background:#fff;
+                border:1px solid #000;
+            }
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;
+                height:22px;
+            }
+            .section-title {
+                background:#eaeaea;
+                border:1px solid #666;
+                font-weight:bold;
+                font-size:12px;
+                padding:3px 5px;
+                text-align:left;
+            }
+            .dados-hospital { font-size:12px; line-height:1.4; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+            .logo { text-align:center; }
+            .logo img { max-height:45px; }
+
+            /* QR Code */
+            .qrcode img {
+                display:block;
+                width:120px;
+                height:auto;
+                margin-top:5px;
+            }
+
+            /* Botões - Centralizados abaixo do formulário */
+            .actions {
+                margin-top: 15px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid #ccc; /* linha de separação opcional */
+            }
+            .btn {
+                padding:10px 18px;
+                font-size:14px;
+                font-weight:bold;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+                color:#fff;
+                box-shadow:0 2px 5px rgba(0,0,0,.2);
+                margin:0 5px;
+            }
+            .btn-email { background:#007bff; }
+            .btn-whatsapp { background:#25d366; }
+            .btn-print { background:#6c757d; }
+            .btn:hover { opacity:.9; }
+
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { background:#fff; }
+                .actions { display: none !important; }
+            }
+
+            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+        .table-riscos th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
         }
-        function enviarEmpresa(){
-            let msg = encodeURIComponent("Segue documento médico.");
-            window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
+        .table-riscos td {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
         }
-        </script>
+
+        .table-exames th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+
+        </style>
+
+        <div class="guia-container">
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE EXAME / PROCEDIMENTO</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+                        Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Mudança de Função</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Dados dos Médicos</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            ' . $riscosTabela . '
+
+            <table class="table-exames">
+                <tr>
+                    <td colspan="2" class="section-title">PROCEDIMENTOS / EXAMES REALIZADOS</td>
+                </tr>
+                <tr>
+                    <th>Exame</th>
+                    <td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th>Data</th>
+                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
+                </tr>
+            </table>
+
+            ' . $aptidoesTabela . '
+            
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">09 - CONCLUSÃO</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:4px;">
+                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:4px;">
+                        Resultado: ( ) APTO &nbsp;&nbsp; ( ) INAPTO
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:11px; padding:4px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT
+                        <br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
+            
+            
+        </div>';
+
+        echo '
+            <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="window.print()">Salvar</button>
+            </div>
         ';
+        }else if($aso)
+        {
+            $informacoes_clinica;
+
+            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+                salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
+                salvarLog($_SESSION["exame_selecionado"]);
+
+                // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+
+                // echo $_SESSION["exame_selecionado"] . "<br>";
+
+                $recebe_exame = $_SESSION["exame_selecionado"];
+
+                $recebe_exame_exibicao;
+
+                if ($recebe_exame === "admissional") {
+                    $recebe_exame_exibicao = "Admissional";
+                } else if ($recebe_exame === "mudanca") {
+                    $recebe_exame_exibicao = "Mudança de função";
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                // Função helper para marcar
+                function marcar($valor, $tipoExame)
+                {
+                    return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+                }
+
+                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                $comando_busca_clinica->execute();
+                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                // print_r($resultado_clinica_selecionada);
+
+                // ----------------- BUSCA NA API DO IBGE -----------------
+                $cidadeNome = '';
+                $estadoSigla = '';
+
+                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                    $cidadeJson = @file_get_contents($urlCidade);
+                    if ($cidadeJson !== false) {
+                        $cidadeData = json_decode($cidadeJson, true);
+                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    }
+                }
+
+                if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                    $estadoJson = @file_get_contents($urlEstado);
+                    if ($estadoJson !== false) {
+                        $estadoData = json_decode($estadoJson, true);
+                        $estadoSigla = $estadoData['sigla'] ?? '';
+                    }
+                }
+
+                // Exemplo: "ALTO ARAGUAIA - MT"
+                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+
+                // Debug
+                // print_r($resultado_clinica_selecionada);
+                // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+
+                if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                    $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                    $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                    $comando_busca_empresa->execute();
+                    $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_empresa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_empresa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                    $recebe_nascimento_colaborador = '';
+
+                    $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                    if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                        try {
+                            $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                        } catch (Exception $e) {
+                            $recebe_nascimento_colaborador = '';
+                        }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
+                    }
+
+                    // var_dump($resultado_pessoa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_pessoa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_cargo_selecionado);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_cargo_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if ($recebe_exame === "mudanca") {
+                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                        ob_start();
+                        echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                        salvarLog(ob_get_clean());
+
+                        $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                        $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                        $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                        $comando_busca_mudanca_cargo->execute();
+                        $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_mudanca_cargo_selecionado);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_mudanca_cargo_selecionado);
+                        salvarLog(ob_get_clean());
+                    }
+                }
+
+                if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
+                    salvarLog(ob_get_clean());
+
+                    $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+                    $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+                    $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
+                    $comando_busca_medico_coordenador->execute();
+                    $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_coordenador_selecionado);
+
+                    ob_start();
+                    var_dump($resultado_medico_coordenador_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
+                    salvarLog(ob_get_clean());
+
+
+                    $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
+                    $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
+                    $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
+                    $comando_busca_medico_clinica->execute();
+                    $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+
+                    $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
+                    $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_medico_clinica_selecionado["medico_id"]);
+                    $comando_busca_medico_relacionado_clinica->execute();
+                    $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_relacionado_clinica);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_medico_relacionado_clinica);
+                    salvarLog(ob_get_clean());
+                }
+
+                // ===================== AJUSTE APENAS NOS RISCOS =====================
+                $riscosTabela = '';
+                $grupos = [
+                    "acidente"   => "Acidentes / Mecânicos",
+                    "ergonomico" => "Ergonômicos",
+                    "fisico"     => "Físicos",
+                    "quimico"    => "Químicos",
+                    "biologico"  => "Biológicos"
+                ];
+
+                // Prepara array vazio para armazenar riscos por grupo
+                $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
+
+                if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
+                    $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        for ($i = 0; $i < count($data); $i++) {
+                            $grupo     = strtolower($data[$i]['grupo']);
+                            $descricao = $data[$i]['descricao'] ?? "";
+
+                            if (isset($riscosPorGrupo[$grupo])) {
+                                $riscosPorGrupo[$grupo][] = $descricao;
+                            }
+                        }
+                    }
+                }
+
+                // Monta a tabela de riscos
+                $riscosTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                    </tr>';
+                foreach ($grupos as $chave => $titulo) {
+                    $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
+                    $riscosTabela .= "
+                    <tr>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
+                    </tr>";
+                }
+                $riscosTabela .= '</table>';
+
+
+                // =====================================================================
+
+                // ===================== AJUSTE NAS APTIDÕES =====================
+                $aptidoesTabela = '';
+
+                $listaAptidoes = [
+                    "trabalho em altura"            => "Trabalho em Altura",
+                    "manusear produtos alimentícios" => "Manusear Produtos Alimentícios",
+                    "eletricidade"                  => "Eletricidade",
+                    "operar máquinas"               => "Operar Máquinas",
+                    "conduzir veículos"             => "Conduzir Veículos",
+                    "trabalho a quente"             => "Trabalho a Quente",
+                    "inflamáveis"                   => "Inflamáveis",
+                    "radiações ionizantes"          => "Radiações Ionizantes",
+                    "espaço confinado"              => "Espaço Confinado",
+                    "inspeções e manutenções"       => "Inspeções e Manutenções"
+                ];
+
+                // transforma o JSON da sessão em array associativo
+                $aptidoesSelecionadas = [];
+                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                    var_dump($_SESSION["aptidao_selecionado"]);
+
+
+                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                        foreach ($dataApt as $apt) {
+                            if (isset($apt['nome'])) {
+                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                            }
+                        }
+                    }
+                }
+
+                // função para marcar sim/não
+                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nomeExibicao);
+                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                    $nao  = $sim === "X" ? " " : "X";
+                    return "( $sim ) Sim ( $nao ) Não";
+                }
+
+                // define os pares para exibição (duas colunas por linha)
+                $linhas = [
+                    ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
+                    ["Eletricidade", "Operar Máquinas"],
+                    ["Conduzir Veículos", "Trabalho a Quente"],
+                    ["Inflamáveis", "Radiações Ionizantes"],
+                    ["Espaço Confinado", "Inspeções e Manutenções"]
+                ];
+
+                $aptidoesTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    </tr>';
+                foreach ($linhas as $par) {
+                    $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+
+                    $aptidoesTabela .= '
+                    <tr>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    </tr>';
+                }
+                $aptidoesTabela .= '
+                </table>';
+
+                // =====================================================================
+
+
+                // Função helper para marcar Apto/Inapto
+                function marcarAptidao($nome, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nome);
+                    $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
+                    $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
+                    return "$nome ( $apto ) Apto ( $inapto ) Inapto";
+                }
             }
 
-            if ($acuidade_visual) {
-
-
-                echo '
-                <!DOCTYPE html>
-                <html lang="pt-br">
-                <head>
-                <meta charset="UTF-8">
-                <title>Teste de Acuidade Visual</title>
-                <style>
-                body { font-family: Arial, sans-serif; background:#f2f2f2; }
-                .documento {
-                    width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                    background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                }
-                h2 { text-align:center; margin-bottom:15px; }
-                table { 
-                    border-collapse:collapse; 
-                    width:100%; 
-                    margin-bottom:15px; 
-                }
-                th, td { 
-                    border:1px solid #ccc; 
-                    padding:6px; 
-                    font-size:13px; 
-                }
-                th { 
-                    background:#f8f9fa; 
-                    text-align:left; 
-                }
-                td { 
-                    text-align:left; 
-                }
-
-                /* Apenas tabelas de testes visuais centralizadas */
-                .table-center td, 
-                .table-center th { 
-                    text-align:center; 
-                }
-                .bloco-titulo {
-                    margin:15px 0 8px 0; font-weight:bold; font-size:14px;
-                    background:#e9ecef; padding:6px 10px; border:1px solid #ccc; text-align:left;
-                }
-                .assinatura { height:40px; border-bottom:1px solid #000; margin:10px 0; }
-                .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
-                .options { display:flex; gap:20px; margin:5px 0; }
-                .opt { display:flex; align-items:center; gap:5px; font-size:13px; }
-                input { border:none; background:transparent; width:100%; text-align:center; }
-                input:disabled { color:#000; }
-
-                /* Botões de ação */
-                .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
-                .btn {
-                    padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
-                    cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
-                }
-                .btn-email { background:#007bff; }
-                .btn-whatsapp { background:#25d366; }
-                .btn-print { background:#6c757d; }
-                .btn:hover { opacity:.9; }
-
-                @media print { body { background:#fff; } .actions { display:none; } }
-                </style>
-                </head>
-                <body>
-
-                <div class="documento">
-                <h2>TESTE DE ACUIDADE VISUAL</h2>
-
-                <div class="bloco-titulo">Identificação</div>
-                <table>
-                    <tr>
-                    <th>Nome</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td>
-                    <th>Código</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td>
-                    </tr>
-                    <tr>
-                    <th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td>
-                    <th>Função</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
-                    </tr>
-                    <tr>
-                    <th>Empresa</th><td colspan="3">' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td>
-                    </tr>
-                </table>
-
-                <div class="bloco-titulo">Questionário</div>
-                <table>
-                    <tr><th>1) Usa óculos / lentes de contato?</th><td></td></tr>
-                    <tr><th>2) Já teve algum problema com os olhos?</th><td></td></tr>
-                    <tr><th>3) Exame será realizado com óculos/lentes?</th><td></td></tr>
-                </table>
-
-                <div class="bloco-titulo">Tabela de Snellen</div>
-                <table>
-                    <tr>
-                    <th></th>
-                    <th>20/200</th><th>20/100</th><th>20/50</th><th>20/40</th><th>20/30</th>
-                    <th>20/25</th><th>20/20</th><th>20/15</th><th>20/13</th><th>20/10</th>
-                    </tr>
-                    <tr><th>OD</th><td colspan="10"></td></tr>
-                    <tr><th>OE</th><td colspan="10"></td></tr>
-                    <tr><th>AO</th><td colspan="10"></td></tr>
-                </table>
-
-                <div class="bloco-titulo">Carta de Jeager (Visão de Perto)</div>
-                <table>
-                    <tr><th>J6</th><th>J5</th><th>J4</th><th>J3</th><th>J2</th><th>J1</th></tr>
-                    <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                </table>
-
-                <div class="bloco-titulo">Teste de Ishihara</div>
-                <div class="options">
-                    <label class="opt"><input type="checkbox"> Normal</label>
-                    <label class="opt"><input type="checkbox"> Alterado</label>
-                </div>
-
-                <div class="bloco-titulo">Conclusão</div>
-                <table>
-                    <tr><th>Tabela de Snellen</th><td></td></tr>
-                    <tr><th>Carta de Jeager</th><td></td></tr>
-                </table>
-
-                <div class="bloco-titulo">Assinaturas</div>
-                <table>
-                    <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
-                    <tr><th>Examinador</th><td><div class="assinatura"></div></td></tr>
-                    <tr><th>Colaborador</th><td><div class="assinatura"></div></td></tr>
-                </table>
-
-                <div class="actions">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
-                    <button class="btn btn-print" onclick="window.print()">Salvar</button>
-                </div>
-                </div>
-
-                <script>
-                function enviarClinica(){
-                alert("Função de envio de email para clínica ainda não implementada.");
-                }
-                function enviarEmpresa(){
-                var msg = encodeURIComponent("Segue o Teste de Acuidade Visual.");
-                window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
-                }
-                </script>
-
-                </body>
-                </html>
-                ';
-            } else if ($psicosocial) {
-                echo '<style>
-                    body { font-family: Arial, sans-serif; background:#f2f2f2; }
-                    .guia-container {
-                        width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                        background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                    }
-                    h2 { text-align:center; margin-bottom:20px; }
-                    h3 {
-                        margin-top:20px; margin-bottom:10px;
-                        background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
-                    }
-                    table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-                    th, td { border:1px solid #ccc; padding:6px; font-size:13px; text-align:left; }
-                    th { background:#f8f9fa; }
-                    input, textarea {
-                        width:100%; border:none; background:transparent; font-size:13px;
-                    }
-                    input:disabled, textarea:disabled { color:#000; cursor:not-allowed; }
-                    .assinatura { height:40px; border-bottom:1px solid #000; margin-top:10px; }
-                    .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
-                    .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
-                    .btn {
-                        padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
-                        cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
-                    }
-                    .btn-email { background:#007bff; }
-                    .btn-whatsapp { background:#25d366; }
-                    .btn-print { background:#6c757d; }
-                    .btn:hover { opacity:.9; }
-                    @media print { .actions { display:none; } body { background:#fff; } }
-                </style>
-
-                <div class="guia-container">
-                    <h2>QUESTIONÁRIO PSICOSSOCIAL</h2>
-
-                    <h3>01 - Identificação</h3>
-                    <table>
-                        <tr>
-                            <th style="width:10%;">Nome</th>
-                            <td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td>
-                            <th style="width:10%;">Data</th>
-                            <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
-                        </tr>
-                        <tr>
-                            <th style="width:10%;">RG</th>
-                            <td><input type="text" value="" disabled></td>
-                            <th style="width:10%;">Telefone</th>
-                            <td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td>
-                        </tr>
-                        <tr>
-                            <th style="width:10%;">Idade</th>
-                            <td>' . htmlspecialchars($idade) . ' anos</td>
-                            <th style="width:10%;">Peso</th>
-                            <td><input type="text" value="" disabled></td>
-                        </tr>
-                        <tr>
-                            <th style="width:10%;">Altura</th>
-                            <td><input type="text" value="" disabled></td>
-                            <td colspan="2"></td>
-                        </tr>
-                    </table>
-
-
-                    <h3>02 - Avaliação da Qualidade do Sono</h3>
-                    <table>
-                        <tr><td>1. Você leva mais de 30 minutos para adormecer?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>2. Você acorda muitas vezes durante a noite?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>3. E quando acorda, demora muito para voltar a dormir?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>4. Seu sono é agitado, inquieto?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>5. Precisa de um despertador para acordar?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>6. Tem dificuldades para levantar de manhã?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>7. Sente-se cansado ao longo do dia?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>8. Já sofreu algum acidente de estepe por dormir pouco?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>9. Cochila diante da TV ou em outras situações?</td><td>Sim ( ) Não ( )</td></tr>
-                        <tr><td>10. Dorme mais nos finais de semana?</td><td>Sim ( ) Não ( )</td></tr>
-                    </table>
-
-                    <h3>03 - Escala de Sonolência Diurna (Epworth)</h3>
-                        <table style="width:100%; border-collapse:collapse;">
-                            <tr>
-                                <th style="width:40%;">Situação</th>
-                                <th style="width:15%;">Nunca (0)</th>
-                                <th style="width:15%;">Pouca (1)</th>
-                                <th style="width:15%;">Média (2)</th>
-                                <th style="width:15%;">Grande (3)</th>
-                            </tr>
-                            <tr><td>Lendo</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>Assistindo TV</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>Em local público</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>Como passageiro em carro</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>Conversando com alguém</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>Sentado calmamente</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>Após almoço sem álcool</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                            <tr><td>No carro, parado no trânsito</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td><td style="text-align:center;">( )</td></tr>
-                        </table>
-
-
-                    <h3>04 - Escala de Fadiga de Chalder</h3>
-                    <table style="width:100%; border-collapse:collapse; border: 1px solid #000;">
-                        <tr>
-                            <th style="width:40%; border: 1px solid #000;">Sintomas Físicos</th>
-                            <th style="width:15%; border: 1px solid #000;">Não ou Menos que o Normal</th>
-                            <th style="width:15%; border: 1px solid #000;">Igual ao Normal</th>
-                            <th style="width:15%; border: 1px solid #000;">Mais que Normal</th>
-                            <th style="width:15%; border: 1px solid #000;">Muito mais que o Normal</th>
-                        </tr>
-                        <tr>
-                            <td>1. Você tem problemas com cansaço?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>2. Você precisa descansar mais?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>3. Você se sente com sono ou sonolência?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>4. Você tem problemas para começar a fazer as coisas?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>5. Você começa coisas com dificuldade mas fica cansado quando continua?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>6. Você está perdendo energia?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>7. Você tem menos força em seus músculos?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>8. Você se sente fraco?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-
-                        <!-- Sintomas Mentais -->
-                        <tr>
-                            <th style="border: 1px solid #000;" colspan="5">Sintomas Mentais</th>
-                        </tr>
-                        <tr>
-                            <td>9. Você tem dificuldade de concentração?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>10. Você tem problemas em pensar claramente?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>11. Você comete erros, sem intenção, na sua língua (Português) quando acha mais difícil de encontrar a palavra correta?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>12. Como está sua memória?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                        <tr>
-                            <td>13. Você perdeu o interesse em coisas que costumava fazer?</td>
-                            <td style="text-align:center;">1</td><td style="text-align:center;">2</td><td style="text-align:center;">3</td><td style="text-align:center;">4</td>
-                        </tr>
-                    </table>
-
-
-
-
-                    <h3>05 - Avaliação Psicológica</h3>
-                    <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-                        <tr>
-                            <td style="width:50%; border:1px solid #000;">3. Você tem ou teve síndrome do pânico?</td>
-                            <td style="width:25%; border:1px solid #000;">SIM ( )</td>
-                            <td style="width:25%; border:1px solid #000;">NÃO ( )</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000;">4. Você tem ou teve familiar com síndrome do pânico?</td>
-                            <td style="border:1px solid #000;">SIM ( )</td>
-                            <td style="border:1px solid #000;">NÃO ( )</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000;">5. Você tem ou teve depressão?</td>
-                            <td style="border:1px solid #000;">SIM ( )</td>
-                            <td style="border:1px solid #000;">NÃO ( )</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000;">6. Você tem ou teve familiar com depressão?</td>
-                            <td style="border:1px solid #000;">SIM ( )</td>
-                            <td style="border:1px solid #000;">NÃO ( )</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000;">9. Você tem ou já teve crise convulsiva?</td>
-                            <td style="border:1px solid #000;">SIM ( )</td>
-                            <td style="border:1px solid #000;">NÃO ( )</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000;">10. Você tem tonturas? Labirintite?</td>
-                            <td style="border:1px solid #000;">SIM ( )</td>
-                            <td style="border:1px solid #000;">NÃO ( )</td>
-                        </tr>
-                    </table>
-
-
-                    <h3>06 - Self Report Questionnaire (SRQ) (HARDING et al., 1980)</h3>
-                    <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
-                    <tr>
-                        <td style="width:30%; border:1px solid #000;">1. Tem dores de cabeça frequentes?</td>
-                        <td style="width:7%; border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="width:8%; border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="width:40%; border:1px solid #000;">11. Tem falta de apetite?</td>
-                        <td style="width:7%; border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="width:8%; border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">2. Assusta-se com facilidade?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">12. Dorme mal?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">3. Tem tremores de mão?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">13. Tem perdido o interesse pelas coisas?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">4. Tem má digestão?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">14. Você cansa com facilidade?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">5. Você tem se sentido triste ultimamente?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">15. Tem tido ideias de acabar com a própria vida?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">6. Você tem chorado mais do que de costume?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">16. Sente-se cansado (a) o tempo todo?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">7. Tem dificuldade de pensar com clareza?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">17. Tem sensações desagradáveis no estômago?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">8. Tem dificuldades no serviço (ou trabalho de casa, causas sofrimento)?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">18. Tem dificuldades para tomar decisões?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">9. É incapaz de desempenhar um papel útil na sua vida?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">19. Encontra dificuldades para realizar com satisfação suas atividades?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000;">10. Sente-se nervoso, tenso ou preocupado?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                        <td style="border:1px solid #000;">20. Você se sente uma pessoa inútil, sem préstimo?</td>
-                        <td style="border:1px solid #000; text-align:center;">SIM ( )</td>
-                        <td style="border:1px solid #000; text-align:center;">NÃO ( )</td>
-                    </tr>
-                    </table>
-
-                    <h3>07 - Distúrbio de Uso do Álcool (AUDIT)</h3>
-                    <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
-                    <tr>
-                        <th style="text-align:left; border:1px solid #000;">Pergunta</th>
-                        <th style="width:18%; border:1px solid #000; text-align:center;">0</th>
-                        <th style="width:18%; border:1px solid #000; text-align:center;">1</th>
-                        <th style="width:18%; border:1px solid #000; text-align:center;">2</th>
-                        <th style="width:18%; border:1px solid #000; text-align:center;">3</th>
-                        <th style="width:18%; border:1px solid #000; text-align:center;">4</th>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">1. Frequência de consumo de bebidas alcoólicas</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">1 vez/mês ou menos</td>
-                        <td style="border:1px solid #000;">2 a 4 vezes/mês</td>
-                        <td style="border:1px solid #000;">2 a 3 vezes/semana</td>
-                        <td style="border:1px solid #000;">4 ou mais vezes/semana</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">2. Quantidade ingerida em um dia típico</td>
-                        <td style="border:1px solid #000;">1 ou 2 doses</td>
-                        <td style="border:1px solid #000;">3 ou 4 doses</td>
-                        <td style="border:1px solid #000;">5 ou 6 doses</td>
-                        <td style="border:1px solid #000;">7 a 9 doses</td>
-                        <td style="border:1px solid #000;">10 ou mais doses</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">3. Frequência de beber 6 ou mais doses em uma ocasião</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
-                        <td style="border:1px solid #000;">Mensalmente</td>
-                        <td style="border:1px solid #000;">Semanalmente</td>
-                        <td style="border:1px solid #000;">Quase todos os dias</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">4. Incapaz de parar de beber uma vez iniciado</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
-                        <td style="border:1px solid #000;">Mensalmente</td>
-                        <td style="border:1px solid #000;">Semanalmente</td>
-                        <td style="border:1px solid #000;">Diariamente</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">5. Falhou em cumprir tarefas por causa do álcool</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
-                        <td style="border:1px solid #000;">Mensalmente</td>
-                        <td style="border:1px solid #000;">Semanalmente</td>
-                        <td style="border:1px solid #000;">Diariamente</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">6. Precisa beber pela manhã para “pegar no tranco”</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
-                        <td style="border:1px solid #000;">Mensalmente</td>
-                        <td style="border:1px solid #000;">Semanalmente</td>
-                        <td style="border:1px solid #000;">Diariamente</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">7. Sentiu culpa ou remorso após beber</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
-                        <td style="border:1px solid #000;">Mensalmente</td>
-                        <td style="border:1px solid #000;">Semanalmente</td>
-                        <td style="border:1px solid #000;">Diariamente</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">8. Incapaz de lembrar o que aconteceu (blackout)</td>
-                        <td style="border:1px solid #000;">Nunca</td>
-                        <td style="border:1px solid #000;">Menos de 1 vez/mês</td>
-                        <td style="border:1px solid #000;">Mensalmente</td>
-                        <td style="border:1px solid #000;">Semanalmente</td>
-                        <td style="border:1px solid #000;">Diariamente</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">9. Você ou outra pessoa já se feriu por causa do seu beber</td>
-                        <td style="border:1px solid #000;">Não</td>
-                        <td style="border:1px solid #000;">-----------</td>
-                        <td style="border:1px solid #000;">Sim, no último ano</td>
-                        <td style="border:1px solid #000;" colspan="2">-----------</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000;">10. Alguém sugeriu que você diminuísse o consumo</td>
-                        <td style="border:1px solid #000;">Não</td>
-                        <td style="border:1px solid #000;">-----------</td>
-                        <td style="border:1px solid #000;">Sim, no último ano</td>
-                        <td style="border:1px solid #000;" colspan="2">-----------</td>
-                    </tr>
-                    </table>
-
-                    <h3>08 - Teste de Nicotina de Fagerström</h3>
-                    <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:13px;">
-                        <!-- Título das colunas -->
-                        <tr>
-                            <th style="border:1px solid #000;">Responda as questões</th>
-                            <th style="border:1px solid #000; text-align:center;" colspan="4">Pontuações</th>
-                        </tr>
-                        <!-- Números das pontuações -->
-                        <tr>
-                            <th style="border:1px solid #000;"></th>
-                            <th style="border:1px solid #000; text-align:center;">3</th>
-                            <th style="border:1px solid #000; text-align:center;">2</th>
-                            <th style="border:1px solid #000; text-align:center;">1</th>
-                            <th style="border:1px solid #000; text-align:center;">0</th>
-                        </tr>
-                        <!-- Linha "Não fumo" abaixo da célula vazia -->
-                        <tr>
-                            <td style="border:1px solid #000; text-align:center;">Não fumo</td>
-                            <td style="border:1px solid #000;"></td>
-                            <td style="border:1px solid #000;"></td>
-                            <td style="border:1px solid #000;"></td>
-                            <td style="border:1px solid #000;"></td>
-                        </tr>
-
-                        <!-- Pergunta 1 -->
-                        <tr>
-                            <td style="border:1px solid #000;">1. Depois de quanto tempo, após acordar, você acende o primeiro cigarro do dia?</td>
-                            <td style="border:1px solid #000; text-align:center;">Menos de 5 min</td>
-                            <td style="border:1px solid #000; text-align:center;">De 6 a 30 min</td>
-                            <td style="border:1px solid #000; text-align:center;">De 31 a 60 min</td>
-                            <td style="border:1px solid #000; text-align:center;">Mais de 60 min</td>
-                        </tr>
-
-                        <!-- Pergunta 2 -->
-                        <tr>
-                            <td style="border:1px solid #000;">2. Atualmente quantos cigarros você fuma por dia?</td>
-                            <td style="border:1px solid #000; text-align:center;">Mais de 31</td>
-                            <td style="border:1px solid #000; text-align:center;">De 21 a 30</td>
-                            <td style="border:1px solid #000; text-align:center;">De 11 a 20</td>
-                            <td style="border:1px solid #000; text-align:center;">Menos de 10</td>
-                        </tr>
-
-                        <!-- Pergunta 3 -->
-                        <tr>
-                            <td style="border:1px solid #000;">3. Qual o cigarro do dia que você acha que será mais difícil de largar?</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">O primeiro da manhã</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Qualquer outro</td>
-                        </tr>
-
-                        <!-- Pergunta 4 -->
-                        <tr>
-                            <td style="border:1px solid #000;">4. Você fuma mais frequentemente (ou mais) cigarros no período da manhã do que no resto do dia?</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Manhã</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Resto do dia</td>
-                        </tr>
-
-                        <!-- Pergunta 5 -->
-                        <tr>
-                            <td style="border:1px solid #000;">5. Você fumaria se estivesse doente a ponto de ficar de cama a maior parte do dia?</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
-                        </tr>
-
-                        <!-- Pergunta 6 -->
-                        <tr>
-                            <td style="border:1px solid #000;">6. É difícil ficar sem fumar em locais proibidos (igrejas, bibliotecas, cinemas, etc.)?</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Sim</td>
-                            <td style="border:1px solid #000; text-align:center;" colspan="2">Não</td>
-                        </tr>
-                    </table>
-
-                    <h3>08 - Assinatura</h3>
-                    <div class="assinatura"></div>
-                    <small>Assinatura do Avaliado</small>
-
-                    <div class="actions">
-                        <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
-                        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
-                        <button class="btn btn-print" onclick="window.print()">Salvar</button>
-                    </div>
-                </div>
-
-                <script>
-                function enviarClinica(){
-                    alert("Função de envio de email para clínica ainda não implementada.");
-                }
-                function enviarEmpresa(){
-                    let msg = encodeURIComponent("Segue o Questionário Psicossocial preenchido.");
-                    window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
-                }
-                </script>
-                ';
-            } else if ($toxicologico) {
-                echo
-                '<style>
-                    body { font-family: Arial, sans-serif; background:#f2f2f2; }
-                    .guia-container {
-                        width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                        background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                    }
-                    h2 { text-align:center; margin-bottom:20px; }
-                    h3 {
-                        margin-top:20px; margin-bottom:10px;
-                        background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
-                    }
-                    table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-                    th, td { border:1px solid #ccc; padding:6px; font-size:13px; text-align:left; }
-                    th { background:#f8f9fa; width:30%; }
-                    input, textarea {
-                        width:100%; border:none; background:transparent; font-size:13px;
-                    }
-                    input:disabled, textarea:disabled { color:#000; cursor:not-allowed; }
-                    .assinatura { height:40px; border-bottom:1px solid #000; margin-top:10px; }
-                    .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
-                    .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
-                    .btn {
-                        padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
-                        cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
-                    }
-                    .btn-email { background:#007bff; }
-                    .btn-whatsapp { background:#25d366; }
-                    .btn-print { background:#6c757d; }
-                    .btn:hover { opacity:.9; }
-                    @media print { .actions { display:none; } body { background:#fff; } }
-                </style>
-
-                <div class="guia-container">
-                    <div class="logo">
-                        <img src="logo.png" alt="Logo da Empresa">
-                    </div>
-
-                    <h2>GUIA DE ENCAMINHAMENTO - EXAME TOXICOLÓGICO</h2>
-
-                    <h3>01 - Encaminhado por</h3>
-                    <table>
-                        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                        <tr><th>CNPJ</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                        <tr><th>Endereço</th><td>' . htmlspecialchars(trim($resultado_clinica_selecionada['endereco'] ?? "")) . '</td></tr>
-                        <tr><th>Cidade / UF</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
-                        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_clinica_selecionada['telefone'] ?? "") . '</td></tr>
-                    </table>
-
-                    <h3>02 - Tipo de Exame</h3>
-                    <p>Exame Toxicológico ( X )</p>
-
-                    <h3>03 - Dados do Funcionário / Empresa</h3>
-                    <table>
-                        <tr><th>Empresa</th><td>' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td></tr>
-                        <tr><th>CNPJ / CAEPF</th><td>' . htmlspecialchars($resultado_empresa_selecionada['cnpj'] ?? "") . '</td></tr>
-                        <tr><th>Nome do Funcionário</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                        <tr><th>CPF</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td></tr>
-                        <tr><th>Data de Nascimento</th><td>' . htmlspecialchars($recebe_nascimento_colaborador ?? "") . '</td></tr>
-                        <tr><th>Idade</th><td>' . htmlspecialchars($idade) . ' anos</td></tr>
-                        <tr><th>RG</th><td><input type="text" value="2943351 - SSP/MT" disabled></td></tr>
-                        <tr><th>Telefone</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['telefone'] ?? "") . '</td></tr>
-                        <tr><th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td></tr>
-                        <tr><th>Cargo</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                        <tr><th>CBO</th><td>' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td></tr>
-                    </table>
-
-                    <h3>07 - Procedimentos / Exames Realizados</h3>
-                    <table>
-                        <tr><th>Exame</th><td><input type="text" value="Exame Toxicológico (AA999999999)" disabled></td></tr>
-                        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
-                    </table>
-
-                    <h3>09 - Conclusão</h3>
-                    <table>
-                        <tr><th>Cidade</th><td><input type="text" value="Alto Araguaia - MT" disabled></td></tr>
-                        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
-                        <tr>
-                            <th>Assinaturas</th>
-                            <td>
-                                <div class="assinatura"></div><small>Assinatura do Funcionário</small>
-                                <br><br>
-                                <div class="assinatura"></div><small>Carimbo / Responsável</small>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div class="actions">
-                        <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
-                        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
-                        <button class="btn btn-print" onclick="window.print()">Salvar</button>
-                    </div>
-                </div>
-
-                <script>
-                function enviarClinica(){
-                    alert("Função de envio de email para clínica ainda não implementada.");
-                }
-                function enviarEmpresa(){
-                    let msg = encodeURIComponent("Segue a guia de encaminhamento para Exame Toxicológico.");
-                    window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
-                }
-                </script>
-                ';
-            } else if ($resumo_laudo) {
-                echo '<style>
-                    body { font-family: Arial, sans-serif; background:#f2f2f2; }
-                    .guia-container {
-                        width: 210mm; min-height: 297mm; margin:20px auto; padding:20px;
-                        background:#fff; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,.1);
-                    }
-                    h2 { text-align:center; margin-bottom:20px; }
-                    h3 {
-                        margin-top:20px; margin-bottom:10px;
-                        background:#e9ecef; padding:6px 10px; border:1px solid #ccc; font-size:14px;
-                    }
-                    table { width:100%; border-collapse:collapse; margin-bottom:15px; }
-                    th, td { border:1px solid #ccc; padding:6px; font-size:13px; text-align:left; }
-                    th { background:#f8f9fa; width:30%; }
-                    input, textarea {
-                        width:100%; border:none; background:transparent; font-size:13px;
-                    }
-                    input:disabled, textarea:disabled {
-                        color:#000; cursor:not-allowed;
-                    }
-                    .assinatura { height:40px; border-bottom:1px solid #000; margin-top:10px; }
-                    .assinatura small { display:block; text-align:center; font-size:12px; color:#666; }
-                    .actions { margin-top:25px; display:flex; gap:15px; justify-content:center; }
-                    .btn {
-                        padding:10px 18px; font-size:14px; font-weight:bold; border:none; border-radius:5px;
-                        cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2);
-                    }
-                    .btn-email { background:#007bff; }
-                    .btn-whatsapp { background:#25d366; }
-                    .btn-print { background:#6c757d; }
-                    .btn:hover { opacity:.9; }
-                    @media print { .actions { display:none; } body { background:#fff; } }
-                </style>
-
-                <div class="guia-container">
-                    <h2>Laudo de Audiometria Tonal</h2>
-
-                    <h3>01 - Identificação</h3>
-                    <table>
-                        <tr><th>Paciente</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-                        <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
-                        <tr><th>Sexo</th><td>' . htmlspecialchars(ucfirst($resultado_pessoa_selecionada['sexo'] ?? "")) . '</td></tr>
-                        <tr><th>Profissão</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-                        <tr><th>Encaminhado por</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
-                    </table>
-
-                    <h3>02 - Audiometria Tonal Limiar</h3>
-                    <table>
-                        <tr>
-                            <th>Orelha Direita (OD)</th>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Orelha Esquerda (OE)</th>
-                            <td></td>
-                        </tr>
-                    </table>
-
-                    <h3>03 - Logoaudiometria</h3>
-                    <table>
-                        <tr><th>Lim. Reconhecimento de Fala (OD)</th><td><input type="text" value="" disabled></td></tr>
-                        <tr><th>Lim. Reconhecimento de Fala (OE)</th><td><input type="text" value="" disabled></td></tr>
-                        <tr><th>Índice de Reconhecimento de Fala</th><td></td></tr>
-                    </table>
-
-                    <h3>04 - Exames Complementares</h3>
-                    <table>
-                        <tr><th>Weber Audiométrico</th><td></td></tr>
-                        <tr><th>Tone Decay Técnica Rosenberg</th><td></td></tr>
-                    </table>
-
-                    <h3>05 - Parecer Fonoaudiólogo</h3>
-                    <textarea disabled></textarea>
-
-                    <h3>06 - Assinaturas</h3>
-                    <table>
-                        <tr>
-                            <th>Paciente</th>
-                            <td><div class="assinatura"></div><small>Assinatura do Paciente</small></td>
-                        </tr>
-                        <tr>
-                            <th>Médico Responsável</th>
-                            <td><div class="assinatura"></div><small>Assinatura e Carimbo do Médico</small></td>
-                        </tr>
-                    </table>
-
-                    <div class="actions">
-                        <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
-                        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
-                        <button class="btn btn-print" onclick="window.print()">Salvar</button>
-                    </div>
-                </div>
-
-                <script>
-                function enviarClinica(){
-                    alert("Função de envio de email para clínica ainda não implementada.");
-                }
-                function enviarEmpresa(){
-                    let msg = encodeURIComponent("Segue o laudo de audiometria.");
-                    window.open("https://wa.me/5599999999999?text=" + msg, "_blank");
-                }
-                </script>
-                ';
+            echo '
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background:#f2f2f2;
+                margin:0;
+                padding:0;
             }
+            .guia-container {
+                width: 210mm;
+                min-height: 297mm;
+                margin:5mm auto;
+                padding:10px;
+                background:#fff;
+                border:1px solid #000;
+            }
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;
+                height:22px;
+            }
+            .section-title {
+                background:#eaeaea;
+                border:1px solid #666;
+                font-weight:bold;
+                font-size:12px;
+                padding:3px 5px;
+                text-align:left;
+            }
+            .dados-hospital { font-size:12px; line-height:1.4; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+            .logo { text-align:center; }
+            .logo img { max-height:45px; }
+
+            /* QR Code */
+            .qrcode img {
+                display:block;
+                width:120px;
+                height:auto;
+                margin-top:5px;
+            }
+
+            /* Botões - Centralizados abaixo do formulário */
+            .actions {
+                margin-top: 15px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid #ccc; /* linha de separação opcional */
+            }
+            .btn {
+                padding:10px 18px;
+                font-size:14px;
+                font-weight:bold;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+                color:#fff;
+                box-shadow:0 2px 5px rgba(0,0,0,.2);
+                margin:0 5px;
+            }
+            .btn-email { background:#007bff; }
+            .btn-whatsapp { background:#25d366; }
+            .btn-print { background:#6c757d; }
+            .btn:hover { opacity:.9; }
+
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { background:#fff; }
+                .actions { display: none !important; }
+            }
+
+            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+        .table-riscos th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+        .table-riscos td {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .table-exames th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+
+        </style>
+
+        <div class="guia-container">
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE PRONTUARIO MÉDICO EXAME OCUPACIONAL ANAMNESE CLINICA E PROFISSIONAL</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+                        Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Mudança de Função</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Dados dos Médicos</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            ' . $riscosTabela . '
+
+            <table class="table-exames">
+                <tr>
+                    <td colspan="2" class="section-title">PROCEDIMENTOS / EXAMES REALIZADOS</td>
+                </tr>
+                <tr>
+                    <th>Exame</th>
+                    <td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th>Data</th>
+                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
+                </tr>
+            </table>
+
+            ' . $aptidoesTabela . '
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">CONCLUSÃO</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        Atesto que o trabalhador foi avaliado conforme NR-07: ( ) APTO ( ) INAPTO<br>
+                        Local: ALTO ARAGUAIA-MT — Data: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:50px;">
+                        <div class="assinatura"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="font-size:10px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
+
+
+            <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="window.print()">Salvar</button>
+            </div>
+        </div>
+';
+
+        }else if($prontuario_medico)
+        {
+            $informacoes_clinica;
+
+            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+                salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
+                salvarLog($_SESSION["exame_selecionado"]);
+
+                // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+
+                // echo $_SESSION["exame_selecionado"] . "<br>";
+
+                $recebe_exame = $_SESSION["exame_selecionado"];
+
+                $recebe_exame_exibicao;
+
+                if ($recebe_exame === "admissional") {
+                    $recebe_exame_exibicao = "Admissional";
+                } else if ($recebe_exame === "mudanca") {
+                    $recebe_exame_exibicao = "Mudança de função";
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                // Função helper para marcar
+                function marcar($valor, $tipoExame)
+                {
+                    return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+                }
+
+                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                $comando_busca_clinica->execute();
+                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                // print_r($resultado_clinica_selecionada);
+
+                // ----------------- BUSCA NA API DO IBGE -----------------
+                $cidadeNome = '';
+                $estadoSigla = '';
+
+                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                    $cidadeJson = @file_get_contents($urlCidade);
+                    if ($cidadeJson !== false) {
+                        $cidadeData = json_decode($cidadeJson, true);
+                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    }
+                }
+
+                if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                    $estadoJson = @file_get_contents($urlEstado);
+                    if ($estadoJson !== false) {
+                        $estadoData = json_decode($estadoJson, true);
+                        $estadoSigla = $estadoData['sigla'] ?? '';
+                    }
+                }
+
+                // Exemplo: "ALTO ARAGUAIA - MT"
+                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+
+                // Debug
+                // print_r($resultado_clinica_selecionada);
+                // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+
+                if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                    $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                    $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                    $comando_busca_empresa->execute();
+                    $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_empresa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_empresa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                    $recebe_nascimento_colaborador = '';
+
+                    $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                    if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                        try {
+                            $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                        } catch (Exception $e) {
+                            $recebe_nascimento_colaborador = '';
+                        }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
+                    }
+
+                    // var_dump($resultado_pessoa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_pessoa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_cargo_selecionado);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_cargo_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if ($recebe_exame === "mudanca") {
+                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                        ob_start();
+                        echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                        salvarLog(ob_get_clean());
+
+                        $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                        $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                        $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                        $comando_busca_mudanca_cargo->execute();
+                        $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_mudanca_cargo_selecionado);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_mudanca_cargo_selecionado);
+                        salvarLog(ob_get_clean());
+                    }
+                }
+
+                if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
+                    salvarLog(ob_get_clean());
+
+                    $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+                    $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+                    $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
+                    $comando_busca_medico_coordenador->execute();
+                    $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_coordenador_selecionado);
+
+                    ob_start();
+                    var_dump($resultado_medico_coordenador_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
+                    salvarLog(ob_get_clean());
+
+
+                    $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
+                    $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
+                    $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
+                    $comando_busca_medico_clinica->execute();
+                    $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+
+                    $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
+                    $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_medico_clinica_selecionado["medico_id"]);
+                    $comando_busca_medico_relacionado_clinica->execute();
+                    $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_relacionado_clinica);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_medico_relacionado_clinica);
+                    salvarLog(ob_get_clean());
+                }
+
+                // ===================== AJUSTE APENAS NOS RISCOS =====================
+                $riscosTabela = '';
+                $grupos = [
+                    "acidente"   => "Acidentes / Mecânicos",
+                    "ergonomico" => "Ergonômicos",
+                    "fisico"     => "Físicos",
+                    "quimico"    => "Químicos",
+                    "biologico"  => "Biológicos"
+                ];
+
+                // Prepara array vazio para armazenar riscos por grupo
+                $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
+
+                if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
+                    $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        for ($i = 0; $i < count($data); $i++) {
+                            $grupo     = strtolower($data[$i]['grupo']);
+                            $descricao = $data[$i]['descricao'] ?? "";
+
+                            if (isset($riscosPorGrupo[$grupo])) {
+                                $riscosPorGrupo[$grupo][] = $descricao;
+                            }
+                        }
+                    }
+                }
+
+                // Monta a tabela de riscos
+                $riscosTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                    </tr>';
+                foreach ($grupos as $chave => $titulo) {
+                    $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
+                    $riscosTabela .= "
+                    <tr>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
+                    </tr>";
+                }
+                $riscosTabela .= '</table>';
+
+
+                // =====================================================================
+
+                // ===================== AJUSTE NAS APTIDÕES =====================
+                $aptidoesTabela = '';
+
+                $listaAptidoes = [
+                    "trabalho em altura"            => "Trabalho em Altura",
+                    "manusear produtos alimentícios" => "Manusear Produtos Alimentícios",
+                    "eletricidade"                  => "Eletricidade",
+                    "operar máquinas"               => "Operar Máquinas",
+                    "conduzir veículos"             => "Conduzir Veículos",
+                    "trabalho a quente"             => "Trabalho a Quente",
+                    "inflamáveis"                   => "Inflamáveis",
+                    "radiações ionizantes"          => "Radiações Ionizantes",
+                    "espaço confinado"              => "Espaço Confinado",
+                    "inspeções e manutenções"       => "Inspeções e Manutenções"
+                ];
+
+                // transforma o JSON da sessão em array associativo
+                $aptidoesSelecionadas = [];
+                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                    var_dump($_SESSION["aptidao_selecionado"]);
+
+
+                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                        foreach ($dataApt as $apt) {
+                            if (isset($apt['nome'])) {
+                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                            }
+                        }
+                    }
+                }
+
+                // função para marcar sim/não
+                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nomeExibicao);
+                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                    $nao  = $sim === "X" ? " " : "X";
+                    return "( $sim ) Sim ( $nao ) Não";
+                }
+
+                // define os pares para exibição (duas colunas por linha)
+                $linhas = [
+                    ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
+                    ["Eletricidade", "Operar Máquinas"],
+                    ["Conduzir Veículos", "Trabalho a Quente"],
+                    ["Inflamáveis", "Radiações Ionizantes"],
+                    ["Espaço Confinado", "Inspeções e Manutenções"]
+                ];
+
+                $aptidoesTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    </tr>';
+                foreach ($linhas as $par) {
+                    $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+
+                    $aptidoesTabela .= '
+                    <tr>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    </tr>';
+                }
+                $aptidoesTabela .= '
+                </table>';
+
+                // =====================================================================
+
+
+                // Função helper para marcar Apto/Inapto
+                function marcarAptidao($nome, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nome);
+                    $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
+                    $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
+                    return "$nome ( $apto ) Apto ( $inapto ) Inapto";
+                }
+            }
+
+            echo '
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background:#f2f2f2;
+                margin:0;
+                padding:0;
+            }
+            .guia-container {
+                width: 210mm;
+                min-height: 297mm;
+                margin:5mm auto;
+                padding:10px;
+                background:#fff;
+                border:1px solid #000;
+            }
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;
+                height:22px;
+            }
+            .section-title {
+                background:#eaeaea;
+                border:1px solid #666;
+                font-weight:bold;
+                font-size:12px;
+                padding:3px 5px;
+                text-align:left;
+            }
+            .dados-hospital { font-size:12px; line-height:1.4; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+            .logo { text-align:center; }
+            .logo img { max-height:45px; }
+
+            /* QR Code */
+            .qrcode img {
+                display:block;
+                width:120px;
+                height:auto;
+                margin-top:5px;
+            }
+
+            /* Botões - Centralizados abaixo do formulário */
+            .actions {
+                margin-top: 15px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid #ccc; /* linha de separação opcional */
+            }
+            .btn {
+                padding:10px 18px;
+                font-size:14px;
+                font-weight:bold;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+                color:#fff;
+                box-shadow:0 2px 5px rgba(0,0,0,.2);
+                margin:0 5px;
+            }
+            .btn-email { background:#007bff; }
+            .btn-whatsapp { background:#25d366; }
+            .btn-print { background:#6c757d; }
+            .btn:hover { opacity:.9; }
+
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { background:#fff; }
+                .actions { display: none !important; }
+            }
+
+            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+        .table-riscos th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+        .table-riscos td {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .table-exames th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+
+        </style>
+
+        <div class="guia-container">
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">PRONTUARIO MÉDICO</th>
+                </tr>
+                
+                </tr>
+            </table>
+
+            
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE PRONTUARIO MÉDICO EXAME OCUPACIONAL ANAMNESE CLINICA E PROFISSIONAL</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+                        Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Mudança de Função</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">Dados dos Médicos</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
+                </tr>
+                <tr>
+                    <th style="font-size:12px; text-align:left;">CRM</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                </tr>
+            </table>
+
+
+            <!-- 🔹 06 - Informações Clínicas -->
+            <table>
+                <tr>
+                    <td colspan="8" class="section-title">INFORMAÇÕES CLÍNICAS</td>
+                </tr>
+                <tr>
+                    <th colspan="2">ANTECEDENTES FAMILIARES</th>
+                    <th>SIM</th>
+                    <th>NÃO</th>
+                    <th colspan="2">ANTECEDENTES PESSOAIS</th>
+                    <th>SIM</th>
+                    <th>NÃO</th>
+                </tr>
+                <tr>
+                    <td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
+                    <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
+                    <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
+                    <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
+                    <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">ALCOOLISMO</td><td></td><td></td>
+                    <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">REUMATISMO</td><td></td><td></td>
+                    <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
+                    <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
+                    <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">CÂNCER</td><td></td><td></td>
+                    <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">DERRAME</td><td></td><td></td>
+                    <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
+                    <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">TUBERCULOSE</td><td></td><td></td>
+                    <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td>
+                </tr>
+            </table>
+
+            <!-- 🔹 07 - Hábitos de Vida -->
+            <table>
+                <tr>
+                    <td colspan="8" class="section-title">HÁBITOS DE VIDA</td>
+                </tr>
+                <tr>
+                    <th colspan="2">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th>
+                    <th colspan="2"></th><th>SIM</th><th>NÃO</th>
+                </tr>
+                <tr><td colspan="2">FUMA?</td><td></td><td></td>
+                    <td colspan="2">TEM REUMATISMO?</td><td></td><td></td></tr>
+                <tr><td colspan="2">TOMA/TOMAVA BEBIDA ALCOÓLICA?</td><td></td><td></td>
+                    <td colspan="2">TEM HÉRNIA (SACO RENDIDO)?</td><td></td><td></td></tr>
+                <tr><td colspan="2">USA/USAVA DROGA?</td><td></td><td></td>
+                    <td colspan="2">TEVE DOENÇA DE CHAGAS?</td><td></td><td></td></tr>
+                <tr><td colspan="2">PRATICA ESPORTE?</td><td></td><td></td>
+                    <td colspan="2">SENTE CANSAÇO FACILMENTE?</td><td></td><td></td></tr>
+                <tr><td colspan="2">DORME BEM?</td><td></td><td></td>
+                    <td colspan="2">ESTÁ COM FEBRE OU PERDA DE PESO?</td><td></td><td></td></tr>
+            </table>
+
+            <!-- 🔹 08 - Antecedentes Ocupacionais -->
+            <table>
+                <tr>
+                    <td colspan="8" class="section-title">ANTECEDENTES OCUPACIONAIS</td>
+                </tr>
+                <tr>
+                    <th colspan="2">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th>
+                    <th colspan="2"></th><th>SIM</th><th>NÃO</th>
+                </tr>
+                <tr><td colspan="2">JÁ TEVE FRATURAS?</td><td></td><td></td>
+                    <td colspan="2">PODE EXECUTAR TAREFAS PESADAS?</td><td></td><td></td></tr>
+                <tr><td colspan="2">REALIZA TRABALHO FORA DA EMPRESA?</td><td></td><td></td>
+                    <td colspan="2">EXECUTOU TAREFAS INSALUBRES/PERIGOSAS?</td><td></td><td></td></tr>
+                <tr><td colspan="2">JÁ ESTEVE DOENTE DEVIDO AO SEU TRABALHO?</td><td></td><td></td>
+                    <td colspan="2">POSSUI DIFICULDADE MOTORA?</td><td></td><td></td></tr>
+                <tr><td colspan="2">JÁ FOI DEMITIDO POR MOTIVO DE DOENÇA?</td><td></td><td></td>
+                    <td colspan="2">JÁ ESTEVE AFASTADO PELO INSS?</td><td></td><td></td></tr>
+                <tr><td colspan="2">JÁ TEVE ACIDENTE DE TRABALHO?</td><td></td><td></td>
+                    <td colspan="2">PARA MULHERES — DATA DA ÚLTIMA MENSTRUAÇÃO ___/___/____ &nbsp;&nbsp; DATA DO ÚLTIMO PREVENTIVO ___/___/____</td><td></td><td></td></tr>
+            </table>
+
+            <!-- 🔹 Declaração -->
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">DECLARAÇÃO</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:4px;">
+                        Declaro como verdade os dados preenchidos neste prontuário.<br>
+                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:11px; padding:4px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT
+                        <br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+            <br>
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">APTIDÃO FÍSICA E MENTAL</th>
+                </tr>
+            </table>
+
+                        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
+                <tr>
+                    <th style="text-align:left; padding:4px;">Altura</th>
+                    <th style="text-align:left; padding:4px;">Peso</th>
+                    <th style="text-align:left; padding:4px;">Temperatura</th>
+                    <th style="text-align:left; padding:4px;">Pulso</th>
+                    <th style="text-align:left; padding:4px;">Pressão Arterial</th>
+                </tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
+                <tr>
+                    <th style="text-align:left; padding:4px;">Normal</th>
+                    <th style="text-align:left; padding:4px;">Anormal</th>
+                    <th style="text-align:left; padding:4px;">Observação</th>
+                </tr>
+                <tr><td colspan="3" style="padding:4px;">Aspecto Geral</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Olhos</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Otoscopia</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Nariz</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Boca - Amígdalas - Dentes</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Pescoço - Gânglios</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Pulmão</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Coração</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Abdome</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Coluna</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Membros Superiores</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Membros Inferiores</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Pele e Faneros</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Psiquismo</td></tr>
+                <tr><td colspan="3" style="padding:4px;">Exames Complementares</td></tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">Preenchimento Obrigatório em Caso de Exame Demissional</th>
+                </tr>
+
+                <tr><th colspan="6" style="text-align:left; padding:4px;" class="titulo-guia">Demissional</th></tr>
+                <tr><td colspan="6" style="padding:4px;">Adquiriu alguma doença em virtude da função?</td></tr>
+                <tr><td colspan="6" style="padding:4px;">Sofreu acidente de trabalho na empresa?</td></tr>
+                <tr><td colspan="6" style="padding:4px;">Recebeu EPI da empresa?</td></tr>
+                <tr>
+                    <td colspan="6" style="padding:4px;">
+                        PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th colspan="4" class="titulo-guia" style="text-align:left;">Para Mulheres</th>
+                </tr>
+                <tr>
+                    <th style="text-align:left; padding:4px;width: 160px;">Data da Última Menstruação</th>
+                    <td style="padding:4px;width:200px"></td>
+                    <th style="text-align:left; padding:4px;width: 160px;">Data do Último Preventivo</th>
+                    <td style="padding:4px;width:200px"></td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">EXAMES COMPLEMENTARES</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        ___________________________________________________________________________________
+                    </td>
+                </tr>
+            </table>
+
+
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">EVOLUÇÃO CLÍNICA</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        ___________________________________________________________________________________
+                    </td>
+                </tr>
+            </table>
+
+
+            <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia" style="text-align:left;">CONCLUSÃO</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                        Atesto que o trabalhador acima identificado se submeteu aos exames médicos ocupacionais em cumprimento à NR-07, itens 7.5.19.1 e 7.5.19.2.<br>
+                        Resultado: ( ) APTO  ( ) INAPTO
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital">
+                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="height:50px;">
+                        <div class="assinatura"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="dados-hospital" style="font-size:10px;">
+                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
+                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
+            
+
+            <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="window.print()">Salvar</button>
+            </div>
+        </div>
+';
         } else if ($exames_procedimentos === true || $treinamentos === true || $epi_epc === true || $faturamento === true) {
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -1925,14 +3651,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             var_dump($resultado_busca_exames_kit);
             salvarLog(ob_get_clean());
 
+            $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario from kits where id = :recebe_id_kit";
+            $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
+            $comando_busca_dados_bancarios->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+            $comando_busca_dados_bancarios->execute();
+            $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
 
-            $chave = '(64) 99606-5577';
+            // var_dump($resultado_busca_dados_bancarios);
 
-            // Gera QR em memória e captura como base64
-            ob_start();
-            QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-            $imageString = base64_encode(ob_get_contents());
-            ob_end_clean();
+            if ($resultado_busca_dados_bancarios && !empty($resultado_busca_dados_bancarios[0]['tipo_dado_bancario'])) 
+            {
+                $tipo_dado = strtolower(trim($resultado_busca_dados_bancarios[0]['tipo_dado_bancario']));
+
+                if($tipo_dado === "qrcode")
+                {
+                    $chave = '(64) 99606-5577';
+
+                    // Gera QR em memória e captura como base64
+                    ob_start();
+                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
+                    $imageString = base64_encode(ob_get_contents());
+                    ob_end_clean();
+                }else if($tipo_dado === "pix")
+                {
+                    $chave = $resultado_busca_dados_bancarios[0]["dado_bancario"];
+                }else if($tipo_dado === "agencia-conta")
+                {
+                    $chave = $resultado_busca_dados_bancarios[0]["dado_bancario"];   
+                }
+            }
 
             echo '
         <style>
@@ -2096,9 +3843,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
             ';
 
-            
 
-            if ($exames_procedimentos === true && $treinamentos === true && $epi_epc === true) {
+            if($exames_procedimentos === true && $treinamentos === true && $epi_epc === true && $faturamento === true)
+            {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -2343,15 +4090,1275 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
                 <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+    echo '
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            }else if($exames_procedimentos === true && $treinamentos === true && $faturamento === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 10px;"></div>';
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
 
                 <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
 
-                </div>
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+        echo '
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            }else if($exames_procedimentos === true && $epi_epc === true && $faturamento === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 10px;"></div>';
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+
+        echo '</div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+                echo '</div>';
+            }else if($treinamentos === true && $epi_epc === true && $faturamento === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div style="margin-top:10px;"></div>';
+
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+echo '
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            }else if($exames_procedimentos === true && $faturamento === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+               if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+
+            echo '</div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+                echo '</div>';
+            }else if($treinamentos === true && $faturamento === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+            
+            echo '    </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+
+                echo '</div>';
+            }else if($epi_epc === true && $faturamento === true)
+            {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+         echo '       
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
+                echo '</div>';
+            }else if ($exames_procedimentos === true && $treinamentos === true && $epi_epc === true) {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 10px;"></div>';
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div style="margin-top:10px;"></div>';
+
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+        03 - EPIs / EPCs
+    </h4>';
+
+                $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+                echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+        <!-- Produtos / Serviços -->
+        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+                            $quantidade = $item["quantidade"] ?? 1;
+                            $valorUnitario = $item["valor"] ?? 0;
+                            $totalItem = $quantidade * $valorUnitario;
+
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '<tr style="border:1px solid #000;">
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+                                <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+                echo '
+            </table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+    echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -2523,15 +5530,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
                 <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-                <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
 
-                </div>
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+        echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -2706,16 +5729,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
                 <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-                <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
 
-                </div>
-            </div>
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+
+        echo '</div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -2896,15 +5935,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
                 <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-                <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
 
-                </div>
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -2995,16 +6050,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
             <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-                <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+               if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
 
-                </div>
-            </div>
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+
+            echo '</div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -3101,16 +6172,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
                 <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-                <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
 
-                </div>
-            </div>
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+            
+            echo '    </div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -3211,15 +6298,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     '</p>
 
                 <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-                <!-- Rodapé -->
-                <div style="text-align:left; margin-top:20px;">
-                    <p style="font-size:12px;">Chave PIX: ' . htmlspecialchars($chave) . '</p>
-                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
 
-                </div>
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+         echo '       
             </div>
 
         <!-- 🔹 Botões -->
@@ -3228,6 +6331,202 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
             <button class="btn btn-print" onclick="window.print()">Salvar</button>
         </div>';
+
+                echo '</div>';
+            } else if ($exames_procedimentos === true && $treinamentos === true) {
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+                $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+                <!-- Produtos / Serviços -->
+    
+
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+                <tr>
+                    <th style="padding:3px;">Código</th>
+                    <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                    <th style="padding:3px;">Und</th>
+                    <th style="padding:3px;">Pço.Unt.</th>
+                    <th style="padding:3px;">Quant.</th>
+                    <th style="padding:3px;">Total do item</th>
+                </tr>
+        ';
+
+                // Total geral e número de itens
+                $totalGeral = 0;
+                $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+                foreach ($exames_count as $item) {
+                    $quantidade = 1; // Cada linha representa 1 item
+                    $totalItem = $quantidade * $item['valor'];
+                    $totalGeral += $totalItem;
+
+                    echo '<tr>
+                    <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+                    <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                    <td style="padding:3px; text-align:right;">un</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                    <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+                    <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                </tr>';
+                }
+
+
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                echo '</table>
+
+            <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                <tr>
+                    <td style="padding:3px;">' . $dataAtual . '</td>
+                    <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding:3px;">Formas de Pagamento:</td>
+                    <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                </tr>
+            </table>
+
+
+            <!-- Rodapé -->
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+            <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+            <div class="top-bar"></div>
+            <div class="top-bar" style="margin-top: 10px;"></div>';
+
+                echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+                echo '<div class="top-bar"></div>
+            <!-- Produtos / Serviços -->
+
+                <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+            <tr>
+                <th style="padding:3px;">Código</th>
+                <th style="padding:3px;">Descrição dos produtos/serviços</th>
+                <th style="padding:3px;">Und</th>
+                <th style="padding:3px;">Pço.Unt.</th>
+                <th style="padding:3px;">Quant.</th>
+                <th style="padding:3px;">Total do item</th>
+            </tr>';
+
+                $totalGeral = 0;
+                $numeroItens = 0;
+
+                if (!empty($valores_pedidos)) {
+                    foreach ($valores_pedidos as $item) {
+                        // Só exibe se for treinamento
+                        if (($item["tipo"] ?? "") === "treinamento") {
+
+                            $totalItem = $item["quantidade"] * $item["valor"];
+                            $totalGeral += $totalItem;
+                            $numeroItens++;
+
+                            echo '
+                            <tr>
+                                <td style="padding:3px;">' . $item["codigo"] . '</td>
+                                <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+                                <td style="padding:3px;">un</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+                                <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+                                <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+                            </tr>';
+                        }
+                    }
+                }
+
+
+
+                echo '</table>
+
+                <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:3px;">' . $dataAtual . '</td>
+                        <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px;">Formas de Pagamento:</td>
+                        <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+                    </tr>
+                </table>
+
+                <!-- Rodapé -->
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+                    (!empty($prazo_entrega)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+                        : '<span style="font-size:11px;">A combinar</span>') .
+                    '</p>
+
+                <p style="margin:4px 0;">
+                    <strong style="font-size:11px;">Observações:</strong> ' .
+                    (!empty($observacoes)
+                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+                        : '<span style="font-size:11px;">Nenhuma</span>') .
+                    '</p>
+
+                <div class="top-bar"></div>
+                <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+                if(!empty($resultado_busca_dados_bancarios))
+                {
+                    $tipo_dado = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"];
+                }
+
+                if ($tipo_dado === 'qrcode') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Chave PIX:</strong> ' . htmlspecialchars($chave) . '</p>
+                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:120px;">';
+                } elseif ($tipo_dado === 'pix') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } elseif ($tipo_dado === 'agencia-conta') {
+                    echo '
+                        <p style="font-size:12px;"><strong>Dados para Transferência:</strong></p>
+                        <p style="font-size:12px; margin:0;">'.$chave.'</p>';
+                } else {
+                    echo '
+                        <p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                }
+        echo '
+            </div>
+
+        <!-- 🔹 Botões -->
+        <div class="actions">
+            <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+            <button class="btn btn-print" onclick="window.print()">Salvar</button>
+        </div>';
+
 
                 echo '</div>';
             }
