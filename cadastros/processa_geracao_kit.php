@@ -292,12 +292,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         {
             $recebe_agencia_conta = $_POST["valor_agencia_conta"];
 
-            if(!isset($_SESSION["dado_bancario"]) || $_SESSION["dado_bancario"] !== $recebe_agencia_conta)
+            if(!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta)
             {
-                $_SESSION["dado_bancario"] = $recebe_agencia_conta;
+                $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
             }
         }
-        $valor_dado_bancario_bind = isset($_SESSION["dado_bancario"]) ? $_SESSION["dado_bancario"] : null;
+        $valor_dado_bancario_agencia_conta_bind = isset($_SESSION["dado_bancario_agencia_conta"]) ? $_SESSION["dado_bancario_agencia_conta"] : null;
+
+        if(isset($_POST["valor_pix"]) && $_POST["valor_pix"])
+        {
+            $recebe_pix = $_POST["valor_pix"];
+
+            if(!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix)
+            {
+                $_SESSION["dado_bancario_pix"] = $recebe_pix;
+            }
+        }
+        $valor_dado_bancario_pix_bind = isset($_SESSION["dado_bancario_pix"]) ? $_SESSION["dado_bancario_pix"] : null;
 
         //DOCUMENTO
         if (isset($_POST["valor_documento"]) && $_POST["valor_documento"]) {
@@ -388,7 +399,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         aptidoes_selecionadas = :recebe_aptidao_selecionado,
         exames_selecionados = :recebe_exames_selecionado,
         tipo_dado_bancario = :recebe_tipo_dado_bancario_selecionado,
-        dado_bancario = :recebe_dado_bancario_selecionado,
+        dado_bancario_agencia_conta = :recebe_dado_bancario_agencia_conta_selecionado,
+        dado_bancario_pix = :recebe_dado_bancario_pix_selecionado,
         tipo_orcamento = :recebe_tipo_orcamento_selecionado,
         modelos_selecionados = :recebe_documentos_selecionado,
         valor_total = :recebe_total,
@@ -417,7 +429,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado",    $valor_aptidao_selecionado_bind,  $valor_aptidao_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_exames_selecionado",    $valor_exames_selecionado_bind,  $valor_exames_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado",    $valor_tipo_dado_bancario_bind,  $valor_tipo_dado_bancario_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-        $comando_atualizar_kit->bindValue(":recebe_dado_bancario_selecionado",    $valor_dado_bancario_bind,  $valor_dado_bancario_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_selecionado",    $valor_dado_bancario_agencia_conta_bind,  $valor_dado_bancario_agencia_conta_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_selecionado",    $valor_dado_bancario_pix_bind,  $valor_dado_bancario_pix_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado",    $valor_tipo_orcamento_bind,  $valor_tipo_orcamento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado",    $valor_documento_bind,  $valor_documento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_total",    $valor_total_bind,  $valor_total_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);

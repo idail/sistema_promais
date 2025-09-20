@@ -2796,9 +2796,15 @@ function renderResultadoProfissional(tipo) {
                 console.groupEnd();
               } catch (e) { /* noop */ }
               atualizarVisibilidadePix();
-              // Grava imediatamente quando o usuário clica/troca a opção (etapa 5)
+              // Monta array com todas as opções selecionadas e grava (etapa 5)
+              const selecionados = Array.from(tipoContaInputs)
+                .filter(i => i.checked)
+                .map(i => i.value);
+              try {
+                console.log('Tipos de conta selecionados (array):', selecionados);
+              } catch (e) { /* noop */ }
               if (typeof gravar_tipo_dado_bancario === 'function') {
-                gravar_tipo_dado_bancario(this.value);
+                gravar_tipo_dado_bancario(JSON.stringify(selecionados));
               }
             });
           });
@@ -2958,7 +2964,7 @@ function renderResultadoProfissional(tipo) {
           async: false,
           data: {
              processo_geracao_kit: "incluir_valores_kit",
-             valor_agencia_conta: recebe_pix_kit,
+             valor_pix: recebe_pix_kit,
           },
           success: function(retorno_exame_geracao_kit) {
             debugger;
@@ -3094,7 +3100,7 @@ function renderResultadoProfissional(tipo) {
                 async: false,
                 data: {
                   processo_geracao_kit: "incluir_valores_kit",
-                  valor_agencia_conta: pix,
+                  valor_pix: pix,
                 },
                 success: function(retorno_exame_geracao_kit) {
                   debugger;
@@ -9401,7 +9407,7 @@ console.log(total); // Exemplo: "180.10"
               <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                 <!-- QR Code -->
                 <label class="conta-bancaria-label">
-                  <input type="radio" name="tipo-conta" class="conta-bancaria" value="qrcode">
+                  <input type="checkbox" name="tipo-conta" class="conta-bancaria" value="qrcode">
                   <div class="conta-bancaria-card">
                     <i class="fas fa-qrcode"></i>
                     <span>QR Code</span>
@@ -9410,7 +9416,7 @@ console.log(total); // Exemplo: "180.10"
                 
                 <!-- Agência e Conta -->
                 <label class="conta-bancaria-label">
-                  <input type="radio" name="tipo-conta" class="conta-bancaria" value="agencia-conta">
+                  <input type="checkbox" name="tipo-conta" class="conta-bancaria" value="agencia-conta">
                   <div class="conta-bancaria-card">
                     <i class="fas fa-university"></i>
                     <span>Agência e Conta</span>
@@ -9419,7 +9425,7 @@ console.log(total); // Exemplo: "180.10"
                 
                 <!-- PIX -->
                 <label class="conta-bancaria-label">
-                  <input type="radio" name="tipo-conta" class="conta-bancaria" value="pix">
+                  <input type="checkbox" name="tipo-conta" class="conta-bancaria" value="pix">
                   <div class="conta-bancaria-card">
                     <i class="fas fa-mobile-alt"></i>
                     <span>PIX</span>
@@ -10000,10 +10006,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
   tipoContaInputs.forEach(input => {
     input.addEventListener('change', function() {
-      if (this.value === 'pix' && pixSelectorContainer) {
-        pixSelectorContainer.style.display = 'block';
-      } else if (pixSelectorContainer) {
-        pixSelectorContainer.style.display = 'none';
+      // Verifica se algum checkbox de PIX está marcado
+      if (pixSelectorContainer) {
+        const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
+        pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
       }
       try {
         console.group('Conta Bancária > tipo-conta change');
@@ -10011,8 +10017,11 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Valor selecionado:', this.value);
         console.groupEnd();
       } catch (e) { /* noop */ }
-      // Grava imediatamente quando o usuário clica/troca a opção
-      gravar_tipo_dado_bancario(this.value);
+      // Grava imediatamente todas as opções selecionadas como array JSON
+      const selecionados = Array.from(tipoContaInputs)
+        .filter(i => i.checked)
+        .map(i => i.value);
+      gravar_tipo_dado_bancario(JSON.stringify(selecionados));
     });
   });
   
