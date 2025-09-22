@@ -4093,67 +4093,68 @@ function printSection(button) {
                 <div class="top-bar" style="margin-top:20px;"></div>';
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
     echo '
             </div>
@@ -4574,67 +4575,68 @@ function printSection(button) {
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
 
         echo '</div>
@@ -4979,67 +4981,68 @@ echo '
 
 
                if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
 
             echo '</div>
@@ -5143,67 +5146,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
             
             echo '    </div>
@@ -5311,67 +5315,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
          echo '       
             </div>
@@ -5632,67 +5637,68 @@ echo '
                 <div class="top-bar" style="margin-top:20px;"></div>';
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
     echo '
             </div>
@@ -5870,67 +5876,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
         echo '
             </div>
@@ -6111,67 +6118,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
 
         echo '</div>
@@ -6359,67 +6367,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
 echo '
             </div>
@@ -6516,67 +6525,72 @@ echo '
 
 
                if (!empty($resultado_busca_dados_bancarios)) {
-    $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
+                    $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
-    if (!is_array($tipos)) {
-        $tipos = [];
-    }
+                    if (!is_array($tipos)) {
+                        $tipos = [];
+                    }
 
-    if (empty($tipos)) {
-        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
-                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
-              </p>';
-    } else {
-        $temQrCode = in_array('qrcode', $tipos);
-        $temPix = in_array('pix', $tipos);
-        $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if (empty($tipos)) {
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
+                    } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-        if ($temQrCode || $temPix || $temAgenciaConta) {
-            // Container → todos itens lado a lado (mais próximos)
-            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-            // Bloco QR Code
-            if ($temQrCode) {
-                $chave = '(64) 99606-5577'; // ou busca no banco
-                ob_start();
-                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                $imageString = base64_encode(ob_get_contents());
-                ob_end_clean();
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                echo '
-                    <div style="text-align:center; min-width:100px;">
-                        <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; display:block; margin:0 auto;">
-                        <p style="margin-top:4px; font-size:10px; line-height:1.3;">
-                            <strong>Chave:</strong><br>' . htmlspecialchars($chave) . '
-                        </p>
-                    </div>
-                ';
-            }
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
+                        }
 
-            // Bloco PIX
-            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                echo '
-                    <div style="min-width:160px; margin-top:20px;">
-                        <p style="margin:0 0 4px 0; font-weight:bold;">Chave PIX:</p>
-                        <p style="margin:0; line-height:1.4;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                    </div>';
-            }
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
 
-            // Bloco Agência e Conta
-            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                echo '<div style="min-width:200px; margin-top:20px;">
-                        <p style="margin:0 0 4px 0; font-weight:bold;">Dados para Transferência:</p>';
-                foreach ($dados as $dado) {
-                    echo '<p style="margin:2px 0; line-height:1.4;">' . htmlspecialchars($dado) . '</p>';
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-                echo '</div>';
-            }
-
-            echo '</div>'; // fecha flex container
         }
-    }
-}
+
+
+
 
 
 
@@ -6685,68 +6699,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 3, 2); // diminui o tamanho (6 -> 3)
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:100px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
             
             echo '    </div>
@@ -6854,67 +6868,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
          echo '       
             </div>
@@ -7091,67 +7106,68 @@ echo '
 
 
                 if (!empty($resultado_busca_dados_bancarios)) {
-                    // Converte string JSON em array
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
-                        $tipos = []; // garante que $tipos seja sempre array
+                        $tipos = [];
                     }
 
                     if (empty($tipos)) {
-                        echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
+                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+                            </p>';
                     } else {
+                    $temQrCode = in_array('qrcode', $tipos);
+                    $temPix = in_array('pix', $tipos);
+                    $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                        // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                    if ($temQrCode || $temPix || $temAgenciaConta) {
+                        // Container principal
+                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        // Bloco QR Code (imagem + texto ao lado)
+                        if ($temQrCode) {
+                            $chave = '(64) 99606-5577'; // ou busca no banco
+                            ob_start();
+                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                            $imageString = base64_encode(ob_get_contents());
+                            ob_end_clean();
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
-
-                    echo '
-                        <div style="text-align:center;">
-                            <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-                            <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-                        </div>
-                    ';
-                }
-
-
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
-                            <div>
-                                <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-                                <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                            </div>';
-                    }
-
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
-                                <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+                                    <div>
+                                        <p style="margin:0; font-weight:bold;">Chave:</p>
+                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+                                    </div>
+                                </div>
+                            ';
                         }
-                        echo '</div>';
-                    }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                        // Bloco PIX
+                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                            echo '
+                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+                                </div>';
+                        }
+
+                        // Bloco Agência e Conta
+                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                                    <div>';
+                            foreach ($dados as $dado) {
+                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                            }
+                            echo '</div></div>';
+                        }
+
+                        echo '</div>'; // fecha container principal
+                    }
                 }
-            }
         }
         echo '
             </div>
