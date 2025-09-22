@@ -35,6 +35,15 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_cadastra_produto->execute();
         $recebe_ultimo_codigo_cadastrado_produto = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_cadastrado_produto);
+    }else if($recebe_processo_produto === "deletar_produto")
+    {
+        $recebe_codigo_produto = $_POST["valor_codigo_produto"];
+
+        $instrucao_deleta_produto = "delete from produto where id = :recebe_id_produto";
+        $comando_deleta_produto = $pdo->prepare($instrucao_deleta_produto);
+        $comando_deleta_produto->bindValue(":recebe_id_produto",$recebe_codigo_produto);
+        $resultado_deleta_produto = $comando_deleta_produto->execute();
+        echo json_encode($resultado_deleta_produto);
     }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {

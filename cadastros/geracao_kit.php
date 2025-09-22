@@ -11815,7 +11815,16 @@ function updateSelectedList() {
       recebe_valor_produto = valorUnit;
       recebe_quantidade_produto = quantidade;
 
-      await grava_produto();
+      // Aguarda a gravação do produto e captura o retorno
+      const retorno = await grava_produto();
+
+      // Aqui assumo que o PHP retorna algo como { codigo_produto: 123, ... }
+      const codigoProduto = retorno?.codigo_produto ?? null;
+
+      if (!codigoProduto) {
+        alert('Não foi possível obter o código do produto cadastrado.');
+        return;
+      }
   
       const valorTotal = quantidade * valorUnit;
       
@@ -11903,7 +11912,7 @@ function updateSelectedList() {
         `<div class="fat-produto-valor-unit">${fatFormatter.format(valorUnit)}</div>`,
         `<div class="fat-produto-total">${fatFormatter.format(valorTotal)}</div>`,
         '<div class="fat-produto-acoes">',
-        `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${valorTotal})">`,
+        `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${codigoProduto},${valorTotal})">`,
         '    <i class="fas fa-trash-alt"></i> Remover',
         '  </button>',
         '</div>'
@@ -11923,6 +11932,74 @@ function updateSelectedList() {
       if (typeof window.fatAtualizarTotais === 'function') {
         window.fatAtualizarTotais();
       }
+    };
+
+    // Função para remover produto
+    window.fatRemoverProduto = async function(botao, codigo,valorTotal) {
+      debugger;
+      // Cria um elemento de confirmação estilizado
+      const linha = botao.closest('.fat-produto-item');
+      
+      // Adiciona animação de destaque antes de remover
+      linha.style.backgroundColor = '#fff5f5';
+      linha.style.borderLeft = '3px solid #e53e3e';
+      
+      // Usa o SweetAlert2 para confirmar a remoção
+      Swal.fire({
+        title: 'Remover item',
+        text: 'Deseja realmente remover este item?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53e3e',
+        cancelButtonColor: '#718096',
+        confirmButtonText: 'Sim, remover',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          debugger;
+
+          await exclui_produto();
+
+          // Adiciona animação de saída
+          linha.style.transition = 'all 0.3s ease';
+          linha.style.opacity = '0';
+          linha.style.transform = 'translateX(100%)';
+          
+          // Remove o item após a animação
+          setTimeout(() => {
+            linha.remove();
+            
+            // Atualiza o total global de EPI/EPC
+            window.fatTotalEPI = Math.max(0, (window.fatTotalEPI || 0) - valorTotal);
+            console.log('Produto removido. Novo total EPI/EPC:', window.fatTotalEPI);
+            
+            // Atualiza os totais exibidos
+            if (typeof window.fatAtualizarTotais === 'function') {
+              window.fatAtualizarTotais();
+            }
+            
+            // Mostra feedback visual
+            const toast = document.createElement('div');
+            toast.className = 'fat-toast';
+            toast.textContent = 'Item removido com sucesso';
+            document.body.appendChild(toast);
+            
+            // Remove o toast após 3 segundos
+            setTimeout(() => {
+              toast.classList.add('show');
+              setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+              }, 2000);
+            }, 100);
+          }, 300);
+        } else {
+          // Remove os estilos de destaque se o usuário cancelar
+          linha.style.backgroundColor = '';
+          linha.style.borderLeft = '';
+        }
+      });
     };
 
     function grava_produto()
@@ -11964,6 +12041,56 @@ function updateSelectedList() {
                   $(this).remove();
                 });
               }, 5000);
+
+            // Resolve a Promise para permitir a continuação do fluxo
+            try { resolve(retorno_produto); } catch(e) { resolve(); }
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao inserir produto:" + error);
+            // Rejeita a Promise para que o chamador possa tratar
+            reject(error || status || 'erro_desconhecido');
+          },
+        });
+      });
+    }
+
+    function exclui_produto()
+    {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_produto.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+           processo_produto: "deletar_produto",
+           valor_codigo_produto: codigoProduto,
+          },
+          success: function(retorno_produto) {
+            debugger;
+            console.log(retorno_produto);
+
+            // const mensagemSucesso = `
+            //     <div id="produto-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+            //       <div style="display: flex; align-items: center; justify-content: center;">
+            //         <div>
+            //           <div>Produto cadastrado com sucesso.</div>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   `;
+
+            //   // Remove mensagem anterior se existir
+            //   $("#produto-gravado").remove();
+
+            //   // Adiciona a nova mensagem acima das abas
+            //   $(".tabs-container").before(mensagemSucesso);
+
+            //   // Configura o fade out após 5 segundos
+            //   setTimeout(function () {
+            //     $("#produto-gravado").fadeOut(500, function () {
+            //       $(this).remove();
+            //     });
+            //   }, 5000);
 
             // Resolve a Promise para permitir a continuação do fluxo
             try { resolve(retorno_produto); } catch(e) { resolve(); }
@@ -12157,7 +12284,7 @@ function initFatDescricaoLiveSearch(){
   $input.data('lsBound', true);
   return true;
 }
-  
+  let codigoProduto;
   // Função para adicionar produto (assíncrona, com gravação)
   window.fatAdicionarProduto = async function() {
     debugger;
@@ -12178,7 +12305,11 @@ function initFatDescricaoLiveSearch(){
       recebe_valor_produto = valorUnit;
       recebe_quantidade_produto = quantidade;
 
-      await grava_produto();
+      // Aguarda a gravação do produto e captura o retorno
+      const retorno = await grava_produto();
+
+      // Aqui assumo que o PHP retorna algo como { codigo_produto: 123, ... }
+      codigoProduto = retorno ?? null;
   
       const valorTotal = quantidade * valorUnit;
       
@@ -12266,7 +12397,7 @@ function initFatDescricaoLiveSearch(){
         `<div class="fat-produto-valor-unit">${fatFormatter.format(valorUnit)}</div>`,
         `<div class="fat-produto-total">${fatFormatter.format(valorTotal)}</div>`,
         '<div class="fat-produto-acoes">',
-        `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${valorTotal})">`,
+        `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${codigoProduto},${valorTotal})">`,
         '    <i class="fas fa-trash-alt"></i> Remover',
         '  </button>',
         '</div>'
@@ -12297,6 +12428,74 @@ function initFatDescricaoLiveSearch(){
       window._fatSaving = false;
     }
   };
+
+  // Função para remover produto
+    window.fatRemoverProduto = async function(botao, codigo,valorTotal) {
+      debugger;
+      // Cria um elemento de confirmação estilizado
+      const linha = botao.closest('.fat-produto-item');
+      
+      // Adiciona animação de destaque antes de remover
+      linha.style.backgroundColor = '#fff5f5';
+      linha.style.borderLeft = '3px solid #e53e3e';
+      
+      // Usa o SweetAlert2 para confirmar a remoção
+      Swal.fire({
+        title: 'Remover item',
+        text: 'Deseja realmente remover este item?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53e3e',
+        cancelButtonColor: '#718096',
+        confirmButtonText: 'Sim, remover',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          debugger;
+
+          await exclui_produto();
+
+          // Adiciona animação de saída
+          linha.style.transition = 'all 0.3s ease';
+          linha.style.opacity = '0';
+          linha.style.transform = 'translateX(100%)';
+          
+          // Remove o item após a animação
+          setTimeout(() => {
+            linha.remove();
+            
+            // Atualiza o total global de EPI/EPC
+            window.fatTotalEPI = Math.max(0, (window.fatTotalEPI || 0) - valorTotal);
+            console.log('Produto removido. Novo total EPI/EPC:', window.fatTotalEPI);
+            
+            // Atualiza os totais exibidos
+            if (typeof window.fatAtualizarTotais === 'function') {
+              window.fatAtualizarTotais();
+            }
+            
+            // Mostra feedback visual
+            const toast = document.createElement('div');
+            toast.className = 'fat-toast';
+            toast.textContent = 'Item removido com sucesso';
+            document.body.appendChild(toast);
+            
+            // Remove o toast após 3 segundos
+            setTimeout(() => {
+              toast.classList.add('show');
+              setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+              }, 2000);
+            }, 100);
+          }, 300);
+        } else {
+          // Remove os estilos de destaque se o usuário cancelar
+          linha.style.backgroundColor = '';
+          linha.style.borderLeft = '';
+        }
+      });
+    };
   
         // Função para atualizar totais
         function fatAtualizarTotais() {
