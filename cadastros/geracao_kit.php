@@ -10237,7 +10237,20 @@ function updateSelectedList() {
       const icon = card ? card.querySelector('i') : null;
 
       if (checkbox && checkbox.checked && card) {
-        // Cria o item selecionado
+        // Sempre armazena o nome no array global
+        const text = card.querySelector('span')?.textContent || '';
+        try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
+
+        // Identifica se é um item de orçamento
+        const isOrcamento = label.classList.contains('tipo-orcamento-label')
+          || (card && card.classList.contains('tipo-orcamento-card'));
+
+        // Se for orçamento, não renderiza no sm-selected-list (apenas armazena)
+        if (isOrcamento) {
+          return;
+        }
+
+        // Renderização visual apenas para itens que não são orçamento
         const selectedItem = document.createElement('div');
         selectedItem.className = 'sm-selected-item';
 
@@ -10281,10 +10294,8 @@ function updateSelectedList() {
         }
 
         // Texto
-        const text = card.querySelector('span')?.textContent || '';
         const textNode = document.createTextNode(text);
-        try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
-        
+
         // Botão remover
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-document';
