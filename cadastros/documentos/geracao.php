@@ -1579,70 +1579,66 @@ function printSection(button) {
                 // ===================== AJUSTE NAS APTIDÕES =====================
                 $aptidoesTabela = '';
 
-                $listaAptidoes = [
-                    "trabalho em altura"            => "Trabalho em Altura",
-                    "manusear produtos alimentícios" => "Manusear Produtos Alimentícios",
-                    "eletricidade"                  => "Eletricidade",
-                    "operar máquinas"               => "Operar Máquinas",
-                    "conduzir veículos"             => "Conduzir Veículos",
-                    "trabalho a quente"             => "Trabalho a Quente",
-                    "inflamáveis"                   => "Inflamáveis",
-                    "radiações ionizantes"          => "Radiações Ionizantes",
-                    "espaço confinado"              => "Espaço Confinado",
-                    "inspeções e manutenções"       => "Inspeções e Manutenções"
-                ];
+// busca aptidões do banco
+$instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
+$comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
+$comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
+$comando_busca_aptidoes->execute();
+$resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
 
-                // transforma o JSON da sessão em array associativo
-                $aptidoesSelecionadas = [];
-                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
-                    var_dump($_SESSION["aptidao_selecionado"]);
+// cria lista de aptidões a partir do banco (id => nome)
+$listaAptidoes = [];
+foreach ($resultado_busca_aptidoes as $apt) {
+    $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
+}
 
+// transforma o JSON da sessão em array associativo
+$aptidoesSelecionadas = [];
+if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+        foreach ($dataApt as $apt) {
+            if (isset($apt['nome'])) {
+                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+            }
+        }
+    }
+}
 
-                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
-                        foreach ($dataApt as $apt) {
-                            if (isset($apt['nome'])) {
-                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
-                            }
-                        }
-                    }
-                }
+// função para marcar sim/não
+function marcarApt($nomeExibicao, $aptidoesSelecionadas)
+{
+    $nomeLower = strtolower(trim($nomeExibicao));
+    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+    $nao  = $sim === "X" ? " " : "X";
+    return "( $sim ) Sim ( $nao ) Não";
+}
 
-                // função para marcar sim/não
-                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
-                {
-                    $nomeLower = strtolower($nomeExibicao);
-                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-                    $nao  = $sim === "X" ? " " : "X";
-                    return "( $sim ) Sim ( $nao ) Não";
-                }
+// gerar tabela dinâmica com 2 colunas por linha
+$aptidoesTabela .= '
+<table>
+    <tr>
+        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+    </tr>';
 
-                // define os pares para exibição (duas colunas por linha)
-                $linhas = [
-                    ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
-                    ["Eletricidade", "Operar Máquinas"],
-                    ["Conduzir Veículos", "Trabalho a Quente"],
-                    ["Inflamáveis", "Radiações Ionizantes"],
-                    ["Espaço Confinado", "Inspeções e Manutenções"]
-                ];
+$aptidoes = array_values($listaAptidoes); // pega só os nomes
+for ($i = 0; $i < count($aptidoes); $i += 2) {
+    $esq = $aptidoes[$i] . " " . marcarApt($aptidoes[$i], $aptidoesSelecionadas);
 
-                $aptidoesTabela .= '
-                <table>
-                    <tr>
-                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-                    </tr>';
-                foreach ($linhas as $par) {
-                    $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
-                    $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+    $dir = "";
+    if (isset($aptidoes[$i + 1])) {
+        $dir = $aptidoes[$i + 1] . " " . marcarApt($aptidoes[$i + 1], $aptidoesSelecionadas);
+    }
 
-                    $aptidoesTabela .= '
-                    <tr>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                    </tr>';
-                }
-                $aptidoesTabela .= '
-                </table>';
+    $aptidoesTabela .= '
+    <tr>
+        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+    </tr>';
+}
+
+$aptidoesTabela .= '
+</table>';
 
                 // =====================================================================
 
@@ -1838,21 +1834,36 @@ function printSection(button) {
                         Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
                     </td>
                 </tr>
-            </table>
+            </table>';
 
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">Mudança de Função</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
-                </tr>
-            </table>
+            if (
+                isset($resultado_mudanca_cargo_selecionado) 
+                && !empty($resultado_mudanca_cargo_selecionado)
+            ) {
+                echo '
+                    <table> 
+                        <tr>
+                            <td colspan="2" class="section-title">Mudança de Função</td>
+                        </tr>
+                        <tr>
+                            <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
+                                htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . 
+                            '</td>
+                        </tr>
+                        <tr>
+                            <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
+                                htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . 
+                            '</td>
+                        </tr>
+                    </table>
+                ';
+            }
+
+            echo '
+
+            
 
             <table>
                 <tr>
