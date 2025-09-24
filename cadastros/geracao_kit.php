@@ -7185,7 +7185,7 @@ function renderResultadoProfissional(tipo) {
         return;
       }
 
-      await grava_assinatura_medico(assinaturaSelecionadaNome,id);
+      await grava_assinatura_medico(file,id);
 
       // Criar uma URL para visualização da imagem
       const reader = new FileReader();
@@ -7205,20 +7205,26 @@ function renderResultadoProfissional(tipo) {
       reader.readAsDataURL(file);
     }
 
-    async function grava_assinatura_medico(nome_imagem, id_medico) {
+    async function grava_assinatura_medico(arquivo, id_medico) {
       debugger;
+
+      var dados_assinatura_medico = new FormData();
+      dados_assinatura_medico.append("processo_medico", "alterar_medico");
+      dados_assinatura_medico.append("valor_arquivo_assinatura_medico", arquivo); // se "arquivo" for File ou Blob
+      dados_assinatura_medico.append("valor_id_medico", id_medico);
+      dados_assinatura_medico.append("valor_acao_alteracao_medico", "selecao_medico_examinador_kit");
 
       return new Promise((resolve, reject) => {
         $.ajax({
-          url: "cadastros/processa_medico.php",
           type: "POST",
+          enctype: "multipart/form-data",
           dataType: "json",
-          data: {
-            processo_medico: "alterar_medico",
-            valor_assinatura_medico: nome_imagem,
-            valor_id_medico: id_medico,
-            valor_acao_alteracao_medico:"selecao_medico_examinador_kit"
-          },
+          // url: "http://localhost/software-medicos/api/ProtocolosAPI.php",
+          url: "cadastros/processa_medico.php",
+          cache: false,
+          processData: false,
+          contentType: false,
+          data: dados_assinatura_medico,
           success: function(retorno_grava_medico_assinatura) {
             debugger;
 
