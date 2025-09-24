@@ -1598,78 +1598,74 @@ function printSection(button) {
                 // ===================== AJUSTE NAS APTIDÕES =====================
                 $aptidoesTabela = '';
 
-                // busca aptidões do banco
-                $instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
-                $comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
-                $comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
-                $comando_busca_aptidoes->execute();
-                $resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
+// busca aptidões do banco
+$instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
+$comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
+$comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
+$comando_busca_aptidoes->execute();
+$resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
 
-                // cria lista de aptidões a partir do banco (id => nome)
-                $listaAptidoes = [];
-                foreach ($resultado_busca_aptidoes as $apt) {
-                    $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
-                }
+// cria lista de aptidões a partir do banco (id => nome)
+$listaAptidoes = [];
+foreach ($resultado_busca_aptidoes as $apt) {
+    $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
+}
 
-                // transforma o JSON da sessão em array associativo
-                $aptidoesSelecionadas = [];
-                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
-                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
-                        foreach ($dataApt as $apt) {
-                            if (isset($apt['nome'])) {
-                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
-                            }
-                        }
-                    }
-                }
+// transforma o JSON da sessão em array associativo
+$aptidoesSelecionadas = [];
+if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+        foreach ($dataApt as $apt) {
+            if (isset($apt['nome'])) {
+                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+            }
+        }
+    }
+}
 
-                // função para marcar sim/não
-                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
-                {
-                    $nomeLower = strtolower(trim($nomeExibicao));
-                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-                    $nao  = $sim === "X" ? " " : "X";
-                    return "( $sim ) Sim ( $nao ) Não";
-                }
+// função para marcar Sim/Não
+function marcarAptidao($nome, $aptidoesSelecionadas)
+{
+    $nomeLower = strtolower(trim($nome));
+    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+    $nao  = $sim === "X" ? " " : "X";
+    return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+}
 
-                // gerar tabela dinâmica com 2 colunas por linha
-                $aptidoesTabela .= '
-                <table>
-                    <tr>
-                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-                    </tr>';
+// gerar tabela apenas com as selecionadas
+$aptidoesTabela .= '
+<table>
+    <tr>
+        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+    </tr>';
 
-                $aptidoes = array_values($listaAptidoes); // pega só os nomes
-                for ($i = 0; $i < count($aptidoes); $i += 2) {
-                    $esq = $aptidoes[$i] . " " . marcarApt($aptidoes[$i], $aptidoesSelecionadas);
+$aptidoesFiltradas = [];
+foreach ($listaAptidoes as $nome) {
+    if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
+        $aptidoesFiltradas[] = $nome;
+    }
+}
 
-                    $dir = "";
-                    if (isset($aptidoes[$i + 1])) {
-                        $dir = $aptidoes[$i + 1] . " " . marcarApt($aptidoes[$i + 1], $aptidoesSelecionadas);
-                    }
+// gerar com 2 colunas por linha
+for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
+    $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
 
-                    $aptidoesTabela .= '
-                    <tr>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                    </tr>';
-                }
+    $dir = "&nbsp;";
+    if (isset($aptidoesFiltradas[$i + 1])) {
+        $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
+    }
 
-                $aptidoesTabela .= '
-                </table>';
+    $aptidoesTabela .= '
+    <tr>
+        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+    </tr>';
+}
 
-                // =====================================================================
+$aptidoesTabela .= '
+</table>';
 
-
-                // Função helper para marcar Apto/Inapto
-                function marcarAptidao($nome, $aptidoesSelecionadas)
-                {
-                    $nomeLower = strtolower($nome);
-                    $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
-                    $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
-                    return "$nome ( $apto ) Apto ( $inapto ) Inapto";
-                }
 
                 }
             }
