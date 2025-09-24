@@ -333,6 +333,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_status_kit_bind = "RASCUNHO";
         //FINALIZACAO
 
+        if(isset($_POST["requer_assinatura"]) && $_POST["requer_assinatura"])
+        {
+            $recebe_requer_assinatura = isset($_POST["requer_assinatura"]) ? $_POST["requer_assinatura"] : null;
+
+            // Converte para booleano de forma segura
+            $recebe_bool_requer_assinatura = filter_var($recebe_requer_assinatura, FILTER_VALIDATE_BOOLEAN);
+
+            // Agora trata como Sim / Nao
+            $recebe_final_requer_assinatura = $recebe_bool_requer_assinatura ? "Sim" : "Nao";
+
+            // Atualiza sessão somente se não existir ainda ou se já existir
+            if (!isset($_SESSION["assinatura"]) || $_SESSION["assinatura"]) {
+                $_SESSION["assinatura"] = $recebe_final_requer_assinatura;
+            }
+
+        }
+
+        $valor_assinatura_bind = isset($_SESSION["assinatura"]) ? $_SESSION["assinatura"] : null;
+
         if (isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]) {
             $recebe_status_kit_bind = "FINALIZADO";
         }
@@ -401,6 +420,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         tipo_dado_bancario = :recebe_tipo_dado_bancario_selecionado,
         dado_bancario_agencia_conta = :recebe_dado_bancario_agencia_conta_selecionado,
         dado_bancario_pix = :recebe_dado_bancario_pix_selecionado,
+        assinatura_digital = :recebe_assinatura_digital_selecionada,
         tipo_orcamento = :recebe_tipo_orcamento_selecionado,
         modelos_selecionados = :recebe_documentos_selecionado,
         valor_total = :recebe_total,
@@ -431,6 +451,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado",    $valor_tipo_dado_bancario_bind,  $valor_tipo_dado_bancario_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_selecionado",    $valor_dado_bancario_agencia_conta_bind,  $valor_dado_bancario_agencia_conta_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_selecionado",    $valor_dado_bancario_pix_bind,  $valor_dado_bancario_pix_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando_atualizar_kit->bindValue(":recebe_assinatura_digital_selecionada",    $valor_assinatura_bind,  $valor_assinatura_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado",    $valor_tipo_orcamento_bind,  $valor_tipo_orcamento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado",    $valor_documento_bind,  $valor_documento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_total",    $valor_total_bind,  $valor_total_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);

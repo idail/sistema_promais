@@ -8237,9 +8237,10 @@ function buscar_riscos() {
             data: {
               processo_geracao_kit: "incluir_valores_kit",
               valor_tipo_orcamento: window.tiposOrcamentoSelecionadosJSON,
-              valor_documento:window.smDocumentosSelecionadosJSON,
-              valor_total:window.total_final,
-              valor_finalizamento:"finalizando kit"
+              valor_documento: window.smDocumentosSelecionadosJSON,
+              valor_total: window.total_final,
+              valor_finalizamento: "finalizando kit",
+              requer_assinatura: (function(){ var el = document.getElementById('requer-assinatura'); return !!(el && el.checked); })()
             },
             success: function (retorno_final_kit) {
               debugger;
@@ -8276,13 +8277,6 @@ function buscar_riscos() {
                   input.name = "processo_geracao";
                   input.value = window.smDocumentosSelecionadosNomes;
                   form.appendChild(input);
-
-
-                  // let input_2 = document.createElement("input");
-                  // input_2.type = "hidden";
-                  // input_2.name = "acao";
-                  // input_2.value = "gerar_pdf";
-                  // form.appendChild(input_2);
 
                   // Adiciona o form ao body e envia
                   document.body.appendChild(form);
