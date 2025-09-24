@@ -1527,6 +1527,25 @@ function printSection(button) {
                     ob_start();
                     var_dump($resultado_medico_relacionado_clinica);
                     salvarLog(ob_get_clean());
+
+                    //var_dump($resultado_medico_relacionado_clinica);
+
+                    $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                    $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->execute();
+                    $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                    //var_dump($resultado_verifica_marcacao_assinatura_digital);
+
+                    if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                                        $html_assinatura = "<img src='assinaturas/" 
+                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
+                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                    } else {
+                        $html_assinatura = "_______________________________";
+                    }
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -1579,66 +1598,66 @@ function printSection(button) {
                 // ===================== AJUSTE NAS APTIDÕES =====================
                 $aptidoesTabela = '';
 
-// busca aptidões do banco
-$instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
-$comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
-$comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
-$comando_busca_aptidoes->execute();
-$resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
+                // busca aptidões do banco
+                $instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
+                $comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
+                $comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
+                $comando_busca_aptidoes->execute();
+                $resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
 
-// cria lista de aptidões a partir do banco (id => nome)
-$listaAptidoes = [];
-foreach ($resultado_busca_aptidoes as $apt) {
-    $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
-}
+                // cria lista de aptidões a partir do banco (id => nome)
+                $listaAptidoes = [];
+                foreach ($resultado_busca_aptidoes as $apt) {
+                    $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
+                }
 
-// transforma o JSON da sessão em array associativo
-$aptidoesSelecionadas = [];
-if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
-    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
-    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
-        foreach ($dataApt as $apt) {
-            if (isset($apt['nome'])) {
-                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
-            }
-        }
-    }
-}
+                // transforma o JSON da sessão em array associativo
+                $aptidoesSelecionadas = [];
+                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                        foreach ($dataApt as $apt) {
+                            if (isset($apt['nome'])) {
+                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                            }
+                        }
+                    }
+                }
 
-// função para marcar sim/não
-function marcarApt($nomeExibicao, $aptidoesSelecionadas)
-{
-    $nomeLower = strtolower(trim($nomeExibicao));
-    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-    $nao  = $sim === "X" ? " " : "X";
-    return "( $sim ) Sim ( $nao ) Não";
-}
+                // função para marcar sim/não
+                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower(trim($nomeExibicao));
+                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                    $nao  = $sim === "X" ? " " : "X";
+                    return "( $sim ) Sim ( $nao ) Não";
+                }
 
-// gerar tabela dinâmica com 2 colunas por linha
-$aptidoesTabela .= '
-<table>
-    <tr>
-        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-    </tr>';
+                // gerar tabela dinâmica com 2 colunas por linha
+                $aptidoesTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    </tr>';
 
-$aptidoes = array_values($listaAptidoes); // pega só os nomes
-for ($i = 0; $i < count($aptidoes); $i += 2) {
-    $esq = $aptidoes[$i] . " " . marcarApt($aptidoes[$i], $aptidoesSelecionadas);
+                $aptidoes = array_values($listaAptidoes); // pega só os nomes
+                for ($i = 0; $i < count($aptidoes); $i += 2) {
+                    $esq = $aptidoes[$i] . " " . marcarApt($aptidoes[$i], $aptidoesSelecionadas);
 
-    $dir = "";
-    if (isset($aptidoes[$i + 1])) {
-        $dir = $aptidoes[$i + 1] . " " . marcarApt($aptidoes[$i + 1], $aptidoesSelecionadas);
-    }
+                    $dir = "";
+                    if (isset($aptidoes[$i + 1])) {
+                        $dir = $aptidoes[$i + 1] . " " . marcarApt($aptidoes[$i + 1], $aptidoesSelecionadas);
+                    }
 
-    $aptidoesTabela .= '
-    <tr>
-        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-    </tr>';
-}
+                    $aptidoesTabela .= '
+                    <tr>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    </tr>';
+                }
 
-$aptidoesTabela .= '
-</table>';
+                $aptidoesTabela .= '
+                </table>';
 
                 // =====================================================================
 
@@ -1758,6 +1777,19 @@ $aptidoesTabela .= '
             font-weight: bold;
             font-size: 12px;
             padding: 4px;
+        }
+
+        .assinatura {
+                width: 150px;
+    height: 60px;
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 40px auto 5px auto;
+        }
+
+        .legenda {
+            text-align: center;
+            font-size: 14px;
         }
 
 
@@ -1906,27 +1938,39 @@ $aptidoesTabela .= '
             ' . $aptidoesTabela . '
             
             <table>
-                <tr>
-                    <td colspan="2" class="section-title">09 - CONCLUSÃO</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:4px;">
-                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:4px;">
-                        Resultado: ( ) APTO &nbsp;&nbsp; ( ) INAPTO
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:11px; padding:4px;">
-                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT
-                        <br>
-                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                    </td>
-                </tr>
-            </table>
+    <tr>
+        <td colspan="2" style="background:#eaeaea; border:1px solid #666; font-weight:bold; font-size:12px; padding:3px 8px; text-align:left;">
+            CONCLUSÃO DO EXAME
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="font-size:12px; padding:6px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="font-size:12px; padding:6px;">
+            Resultado: ( ) APTO &nbsp;&nbsp; ( ) INAPTO
+        </td>
+    </tr>
+    <tr>
+        <!-- Espaço para assinatura -->
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            
+            ' . $html_assinatura . ' <br>
+            Médico emitente/ Examinador
+            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+        </td>
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            Funcionário<br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+            <br>
+            _______________________________<br>
+            Assinatura do Funcionário
+        </td>
+    </tr>
+</table>
+
             
             
         </div>';
