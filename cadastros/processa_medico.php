@@ -171,41 +171,91 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         echo json_encode($recebe_ultimo_codigo_registrado_cadastra_medico);
     }else if($recebe_processo_medico === "alterar_medico")
     {
-        $recebe_data_cadastro_medico_alterar = $_POST["valor_data_cadastro_medico"];
-        $recebe_nome_medico_alterar = $_POST["valor_nome_medico"];
-        $recebe_cpf_medico_alterar = $_POST["valor_cpf_medico"];
-        $recebe_crm_medico_alterar = $_POST["valor_crm_medico"];
-        $recebe_uf_crm_medico_alterar = !empty($_POST["valor_uf_crm_medico"]) ? $_POST["valor_uf_crm_medico"] : null;
+        $recebe_data_cadastro_medico_alterar = !empty($_POST["valor_data_cadastro_medico"]) ? $_POST["valor_data_cadastro_medico"] : null;
+        $recebe_nome_medico_alterar          = !empty($_POST["valor_nome_medico"]) ? $_POST["valor_nome_medico"] : null;
+        $recebe_cpf_medico_alterar           = !empty($_POST["valor_cpf_medico"]) ? $_POST["valor_cpf_medico"] : null;
+        $recebe_crm_medico_alterar           = !empty($_POST["valor_crm_medico"]) ? $_POST["valor_crm_medico"] : null;
+        $recebe_uf_crm_medico_alterar        = !empty($_POST["valor_uf_crm_medico"]) ? $_POST["valor_uf_crm_medico"] : null;
         $recebe_especialidade_medico_alterar = !empty($_POST["valor_especialidade_medico"]) ? $_POST["valor_especialidade_medico"] : null;
-        $recebe_rqe_medico_alterar = !empty($_POST["valor_rqe_medico"]) ? $_POST["valor_rqe_medico"] : null;
-        $recebe_uf_rqe_medico_alterar = !empty($_POST["valor_uf_rqe_medico"]) ? $_POST["valor_uf_rqe_medico"] : null;
-        $recebe_nascimento_medico_alterar = !empty($_POST["valor_nascimento_medico"]) ? $_POST["valor_nascimento_medico"] : null;
-        $recebe_sexo_medico_alterar = !empty($_POST["valor_sexo_medico"]) ? $_POST["valor_sexo_medico"] : null;
-        $recebe_contato_medico_alterar = !empty($_POST["valor_contato_medico"]) ? $_POST["valor_contato_medico"] : null;
-        $recebe_empresa_id_medico_alterar = $_POST["valor_empresa_id_medico"];
-        $recebe_id_medico_alterar = $_POST["valor_id_medico"];
+        $recebe_rqe_medico_alterar           = !empty($_POST["valor_rqe_medico"]) ? $_POST["valor_rqe_medico"] : null;
+        $recebe_uf_rqe_medico_alterar        = !empty($_POST["valor_uf_rqe_medico"]) ? $_POST["valor_uf_rqe_medico"] : null;
+        $recebe_nascimento_medico_alterar    = !empty($_POST["valor_nascimento_medico"]) ? $_POST["valor_nascimento_medico"] : null;
+        $recebe_sexo_medico_alterar          = !empty($_POST["valor_sexo_medico"]) ? $_POST["valor_sexo_medico"] : null;
+        $recebe_contato_medico_alterar       = !empty($_POST["valor_contato_medico"]) ? $_POST["valor_contato_medico"] : null;
+        $recebe_assinatura_medico_alterar    = !empty($_POST["valor_assinatura_medico"]) ? $_POST["valor_assinatura_medico"] : null;
+        $recebe_empresa_id_medico_alterar    = !empty($_POST["valor_empresa_id_medico"]) ? $_POST["valor_empresa_id_medico"] : null;
+        $recebe_id_medico_alterar            = $_POST["valor_id_medico"];
 
-        $instrucao_altera_medico = 
-        "update medicos set nome = :recebe_nome,cpf = :recebe_cpf,nascimento = :recebe_nascimento,sexo = :recebe_sexo,especialidade = :recebe_especialidade,
-        crm = :recebe_crm,uf_crm = :recebe_uf_crm,rqe = :recebe_rqe,uf_rqe = :recebe_uf_rqe,contato = :recebe_contato,created_at = :recebe_created_at,
-        updated_at = :recebe_updated_at where id = :recebe_id and empresa_id = :recebe_empresa_id";
-        $comando_altera_medico = $pdo->prepare($instrucao_altera_medico);
-        $comando_altera_medico->bindValue(":recebe_nome",$recebe_nome_medico_alterar).
-        $comando_altera_medico->bindValue(":recebe_cpf",$recebe_cpf_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_nascimento",$recebe_nascimento_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_sexo",$recebe_sexo_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_especialidade",$recebe_especialidade_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_crm",$recebe_crm_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_uf_crm",$recebe_uf_crm_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_rqe",$recebe_rqe_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_uf_rqe",$recebe_uf_rqe_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_contato",$recebe_contato_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_created_at",$recebe_data_cadastro_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_updated_at",$recebe_data_cadastro_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_id",$recebe_id_medico_alterar);
-        $comando_altera_medico->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico_alterar);
-        $resultado_altera_medico = $comando_altera_medico->execute();
-        echo json_encode($resultado_altera_medico);
+        $recebe_selecao_medico_examinador_kit = !empty($_POST["valor_acao_alteracao_medico"]) ? $_POST["valor_acao_alteracao_medico"] : null;
+
+        if (!empty($recebe_selecao_medico_examinador_kit)) {
+
+            $instrucao_busca_empresa_id_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
+            $comando_busca_empresa_id_medico_clinica = $pdo->prepare($instrucao_busca_empresa_id_medico_clinica);
+            $comando_busca_empresa_id_medico_clinica->bindValue(":recebe_id_medico_clinica",$recebe_id_medico_alterar);
+            $comando_busca_empresa_id_medico_clinica->execute();
+            $resultado_busca_empresa_id_medico_clinica = $comando_busca_empresa_id_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+            $instrucao_busca_empresa_id_medico_examinador_kit = "SELECT id,empresa_id FROM medicos WHERE id = :recebe_id_medico";
+            $comando_busca_empresa_id_medico_examinador_kit = $pdo->prepare($instrucao_busca_empresa_id_medico_examinador_kit);
+            $comando_busca_empresa_id_medico_examinador_kit->bindValue(":recebe_id_medico", $resultado_busca_empresa_id_medico_clinica["medico_id"]);
+            $comando_busca_empresa_id_medico_examinador_kit->execute();
+            $resultado_busca_empresa_id_medico_examinador_kit = $comando_busca_empresa_id_medico_examinador_kit->fetch(PDO::FETCH_ASSOC);
+        }
+
+        // Se veio empresa_id da busca, sobrescreve o que veio do POST
+        if (!empty($resultado_busca_empresa_id_medico_examinador_kit) && !empty($resultado_busca_empresa_id_medico_examinador_kit["empresa_id"])) {
+            $recebe_empresa_id_medico_alterar = $resultado_busca_empresa_id_medico_examinador_kit["empresa_id"];
+            $recebe_id_medico_alterar = $resultado_busca_empresa_id_medico_examinador_kit["id"];
+
+            $instrucao_atualiza_assinatura_medico_examinador = "update medicos set imagem_assinatura = :recebe_imagem_assinatura where id = :recebe_id and empresa_id = :recebe_empresa_id";
+            $comando_atualiza_assinatura_medico_examinador = $pdo->prepare($instrucao_atualiza_assinatura_medico_examinador);
+            $comando_atualiza_assinatura_medico_examinador->bindValue(":recebe_imagem_assinatura",$recebe_assinatura_medico_alterar);
+            $comando_atualiza_assinatura_medico_examinador->bindValue(":recebe_id",$recebe_id_medico_alterar);
+            $comando_atualiza_assinatura_medico_examinador->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico_alterar);
+            $resultado_atualiza_assinatura_medico_examinador = $comando_atualiza_assinatura_medico_examinador->execute();
+            echo json_encode($resultado_atualiza_assinatura_medico_examinador);
+        }else{
+            $instrucao_altera_medico = "
+            UPDATE medicos 
+            SET nome = :recebe_nome,
+                cpf = :recebe_cpf,
+                nascimento = :recebe_nascimento,
+                sexo = :recebe_sexo,
+                especialidade = :recebe_especialidade,
+                crm = :recebe_crm,
+                uf_crm = :recebe_uf_crm,
+                rqe = :recebe_rqe,
+                uf_rqe = :recebe_uf_rqe,
+                contato = :recebe_contato,
+                imagem_assinatura = :recebe_imagem_assinatura,
+                created_at = :recebe_created_at, 
+                updated_at = :recebe_updated_at 
+            WHERE id = :recebe_id 
+            AND empresa_id = :recebe_empresa_id
+        ";
+
+            $comando_altera_medico = $pdo->prepare($instrucao_altera_medico);
+            $comando_altera_medico->bindValue(":recebe_nome", $recebe_nome_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_cpf", $recebe_cpf_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_nascimento", $recebe_nascimento_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_sexo", $recebe_sexo_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_especialidade", $recebe_especialidade_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_crm", $recebe_crm_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_uf_crm", $recebe_uf_crm_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_rqe", $recebe_rqe_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_uf_rqe", $recebe_uf_rqe_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_contato", $recebe_contato_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_imagem_assinatura", $recebe_assinatura_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_created_at", $recebe_data_cadastro_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_updated_at", $recebe_data_cadastro_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_id", $recebe_id_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_empresa_id", $recebe_empresa_id_medico_alterar);
+
+            $resultado_altera_medico = $comando_altera_medico->execute();
+            echo json_encode($resultado_altera_medico);
+        }
+
     }else if($recebe_processo_medico === "excluir_medico")
     {
         $recebe_codigo_excluir_medico = $_POST["valor_id_medico"];

@@ -1559,8 +1559,8 @@
         <h3>Mudança de Função</h3>
         <p>Quando há alteração nas atividades do funcionário</p>
       </div>
-      <div class="exam-card" data-exam="exame_laudo">
-        <img src="./img/svg/exame_laudo.svg" alt="Exame com Laudo" width="60" height="60" style="margin-bottom: 10px;">
+      <div class="exam-card" data-exam="exame_laudo" style="margin-bottom: 10px;">
+        <img src="./img/svg/exame_laudo.svg" alt="Exame com Laudo" width="60" height="60">
         <h3>Exame com Laudo</h3>
         <p>Exames que requerem análise detalhada</p>
       </div>
@@ -7115,14 +7115,9 @@ function renderResultadoProfissional(tipo) {
     }
 
     function renderAssinatura(pessoa) {
-      if (pessoa.assinatura) {
-        return `
-          <div class="mt-2">
-            <img src="${pessoa.assinatura}" alt="Assinatura" style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
-          </div>
-        `;
-      }
-      return `
+      debugger;
+
+      let html = `
         <div class="mt-2">
           <label class="ecp-label">Enviar Assinatura</label>
           <input 
@@ -7132,40 +7127,74 @@ function renderResultadoProfissional(tipo) {
             accept="image/*" 
             onchange="handleAssinaturaUpload(this, '${pessoa.cpf}')"
           >
+          <div class="ecp-questionario-note">
+            Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB
+          </div>
+        </div>
+        <div class="mt-2">
+            <label class="ecp-label">Assinatura atual</label>
+              <img src="${pessoa.assinatura}" alt="Assinatura" 
+              style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+        <div id="preview-assinatura-${pessoa.cpf}" class="mt-2"></div>
+      `;
+
+      if (pessoa.assinatura) {
+        return html;
+      }
+      return `
+        <div class="mt-2">
+          <label class="ecp-label">Enviar Assinatura</label>
+          <input 
+            type="file" 
+            id="assinatura-${pessoa.cpf}" 
+            class="ecp-input" 
+            accept="image/*" 
+            onchange="handleAssinaturaUpload(this, '${pessoa.id}','${pessoa.cpf}')"
+          >
           <div class="ecp-questionario-note">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</div>
         </div>
       `;
     }
     
-    function handleAssinaturaUpload(input, cpf) {
+    // Variável global para armazenar o nome da última assinatura selecionada
+    let assinaturaSelecionadaNome = null;
+
+    async function handleAssinaturaUpload(input, id,cpf) {
+      debugger;
       const file = input.files[0];
       if (!file) return;
-      
+
+      // Guardar o nome do arquivo em variável global
+      assinaturaSelecionadaNome = file.name;
+
       // Validar o tipo do arquivo
       const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
       if (!validTypes.includes(file.type)) {
         alert('Por favor, selecione um arquivo de imagem válido (JPG, PNG ou GIF)');
         input.value = '';
+        assinaturaSelecionadaNome = null; // limpa a variável caso inválido
         return;
       }
-      
+
       // Validar o tamanho do arquivo (2MB)
       if (file.size > 2 * 1024 * 1024) {
         alert('O arquivo é muito grande. O tamanho máximo permitido é 2MB.');
         input.value = '';
+        assinaturaSelecionadaNome = null; // limpa a variável caso inválido
         return;
       }
-      
+
+      await grava_assinatura_medico(assinaturaSelecionadaNome,id);
+
       // Criar uma URL para visualização da imagem
       const reader = new FileReader();
       reader.onload = function(e) {
         // Encontrar o médico correspondente e atualizar a assinatura
         const medico = profissionaisMedicinaData.medicos.find(m => m.cpf === cpf);
         if (medico) {
-          // Em um ambiente real, aqui você faria o upload do arquivo para o servidor
-          // e salvaria o caminho/URL da imagem
           medico.assinatura = e.target.result; // URL temporária para visualização
-          
+
           // Atualizar a exibição
           const resultadoMedico = document.getElementById('resultadoMedico');
           if (resultadoMedico) {
@@ -7175,6 +7204,58 @@ function renderResultadoProfissional(tipo) {
       };
       reader.readAsDataURL(file);
     }
+
+    async function grava_assinatura_medico(nome_imagem, id_medico) {
+      debugger;
+
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_medico.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_medico: "alterar_medico",
+            valor_assinatura_medico: nome_imagem,
+            valor_id_medico: id_medico,
+            valor_acao_alteracao_medico:"selecao_medico_examinador_kit"
+          },
+          success: function(retorno_grava_medico_assinatura) {
+            debugger;
+
+            const mensagemSucesso = `
+              <div id="medico-assinatura-gravado" class="alert alert-success" 
+                  style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                  <div>
+                    <div>Assinatura gravada com sucesso.</div>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#medico-assinatura-gravado").remove();
+
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#medico-assinatura-gravado").fadeOut(500, function() {
+                $(this).remove();
+              });
+            }, 5000);
+
+            resolve(retorno_grava_medico_assinatura);
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            reject(error);
+          },
+        });
+      });
+    }
+
 
     function removerPessoa(id) {
       document.getElementById(id).innerHTML = '';
