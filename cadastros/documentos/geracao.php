@@ -2212,13 +2212,18 @@ function printSection(button) {
                 if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
                     $data = json_decode($_SESSION["medico_risco_selecionado"], true);
 
+                    // var_dump($data);
+
                     if (json_last_error() === JSON_ERROR_NONE) {
                         for ($i = 0; $i < count($data); $i++) {
                             $grupo     = strtolower($data[$i]['grupo']);
+                            $codigo    = $data[$i]['codigo'] ?? "";       // <-- Novo
                             $descricao = $data[$i]['descricao'] ?? "";
 
                             if (isset($riscosPorGrupo[$grupo])) {
-                                $riscosPorGrupo[$grupo][] = $descricao;
+                                // Exibir código + descrição
+                                $texto = trim($codigo . " - " . $descricao);
+                                $riscosPorGrupo[$grupo][] = $texto;
                             }
                         }
                     }
@@ -2228,7 +2233,7 @@ function printSection(button) {
                 $riscosTabela .= '
                 <table>
                     <tr>
-                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                        <td colspan="2" class="section-title">DESCRIÇÃO DE FATOR DE RISCOS DE ACORDO PGR/PCMSO</td>
                     </tr>';
                 foreach ($grupos as $chave => $titulo) {
                     $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
