@@ -1580,7 +1580,7 @@ function printSection(button) {
                 $riscosTabela .= '
                 <table>
                     <tr>
-                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                        <td colspan="2" class="section-title">DESCRIÇÃO DE FATOR DE RISCOS DE ACORDO PGR/PCMSO</td>
                     </tr>';
                 foreach ($grupos as $chave => $titulo) {
                     $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
@@ -1637,7 +1637,7 @@ function printSection(button) {
                 $aptidoesTabela .= '
                 <table>
                     <tr>
-                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                        <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
                     </tr>';
 
                 $aptidoesFiltradas = [];
@@ -1780,7 +1780,7 @@ function printSection(button) {
     height: 60px;
     border-bottom: 1px solid #000;
     display: block;
-    margin: 40px auto 5px auto;
+    margin: 0px auto 5px auto;
         }
 
         .legenda {
@@ -1918,55 +1918,42 @@ function printSection(button) {
             ' . $riscosTabela . '
 
             <table class="table-exames">
-                <tr>
-                    <td colspan="2" class="section-title">PROCEDIMENTOS / EXAMES REALIZADOS</td>
-                </tr>
-                <tr>
-                    <th>Exame</th>
-                    <td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th>Data</th>
-                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
-                </tr>
-            </table>
-
-            ' . $aptidoesTabela . '
-            
-            <table>
+    
     <tr>
-        <td colspan="2" style="background:#eaeaea; border:1px solid #666; font-weight:bold; font-size:12px; padding:3px 8px; text-align:left;">
-            CONCLUSÃO DO EXAME
+        <td class="section-title" style="width:70%; text-align:left; font-size:12px; font-weight:bold;">
+            Procedimentos e Exames a realizar
+        </td>
+        <td class="section-title" style="width:30%; text-align:center; font-size:12px; font-weight:bold;">
+            Data de Realização dos Exames
         </td>
     </tr>
     <tr>
-        <td colspan="2" style="font-size:12px; padding:6px;">
-            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        <td style="font-size:12px; line-height:1.4;">
+            ' . htmlspecialchars($recebe_exame_exibicao ?? "") . '
+        </td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">
+            ' . htmlspecialchars($dataAtual ?? "") . '
         </td>
     </tr>
     <tr>
-        <td colspan="2" style="font-size:12px; padding:6px;">
-            Resultado: ( ) APTO &nbsp;&nbsp; ( ) INAPTO
-        </td>
+        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
     </tr>
     <tr>
-        <!-- Espaço para assinatura -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            
-            ' . $html_assinatura . ' <br>
-            Médico emitente/ Examinador
-            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
-        </td>
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            Funcionário<br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            <br>
-            _______________________________<br>
-            Assinatura do Funcionário
-        </td>
+        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
     </tr>
 </table>
 
+
+
+
+
+            ' . $aptidoesTabela . '
             
             
         </div>';
@@ -2567,18 +2554,36 @@ function printSection(button) {
             ' . $riscosTabela . '
 
             <table class="table-exames">
-                <tr>
-                    <td colspan="2" class="section-title">PROCEDIMENTOS / EXAMES REALIZADOS</td>
-                </tr>
-                <tr>
-                    <th>Exame</th>
-                    <td>' . htmlspecialchars($recebe_exame_exibicao ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th>Data</th>
-                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
-                </tr>
-            </table>
+    
+    <tr>
+        <td class="section-title" style="width:70%; text-align:left; font-size:12px; font-weight:bold;">
+            Procedimentos e Exames realizados
+        </td>
+        <td class="section-title" style="width:30%; text-align:center; font-size:12px; font-weight:bold;">
+            Data de Realização dos Exames
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; line-height:1.4;">
+            ' . htmlspecialchars($recebe_exame_exibicao ?? "") . '
+        </td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">
+            ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
+        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
+    </tr>
+</table>
 
             ' . $aptidoesTabela . '
 
