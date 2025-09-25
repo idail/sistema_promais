@@ -6984,7 +6984,7 @@ function renderResultadoProfissional(tipo) {
         <div class="font-medium">${titulo}</div>
         <div class="text-sm text-gray-500">${linhaCpf}</div>
         ${tipo === 'medico' ? renderAssinatura(pessoa) : ''}
-        <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('${area.id}')">✖ Remover</button>
+        <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('assinatura-${pessoa.cpf}')">✖ Remover</button>
       `;
     }
 
@@ -7262,10 +7262,52 @@ function renderResultadoProfissional(tipo) {
       });
     }
 
+    // function removerPessoa(id) {
+    //   debugger;
+    //   const inputFile = document.getElementById(id);
+    //   if (inputFile) {
+    //       inputFile.value = '';
+    //   }
+    // }
 
     function removerPessoa(id) {
-      document.getElementById(id).innerHTML = '';
+      debugger;
+      // Limpa o input file
+      // const inputFile = document.getElementById(id);
+      // if (inputFile) {
+      //     inputFile.value = '';
+      // }
+
+    // Encontra e remove a prévia da assinatura
+    // O ID do input é algo como "assinatura-123.456.789-00"
+    // const cpf = id.replace('assinatura-', '');
+    // const previewImg = document.querySelector(`img[alt="Assinatura"]`);
+    // if (previewImg) {
+    //     previewImg.src = ''; // Remove a imagem
+    //     previewImg.style.display = 'none'; // Esconde o elemento
+    // }
     }
+
+    // function removerPessoa(id) {
+    //   debugger;
+    //   // document.getElementById(id).innerHTML = '';
+
+    //   const el = document.getElementById(id);
+    //   el.value = '';
+    //   // if (!el) return;
+
+    //   // Se o elemento for um input[type=file], apenas limpa o arquivo selecionado
+    //   // if (el.tagName === 'INPUT' && el.type === 'file') {
+    //   //   el.value = '';
+    //   //   return;
+    //   // }
+
+    //   // Caso contrário, procura um input[type=file] dentro do elemento e limpa
+    //   // const fileInput = el.querySelector ? el.querySelector('input[type="file"]') : null;
+    //   // if (fileInput) {
+    //   //   fileInput.value = '';
+    //   // }
+    // }
 
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
