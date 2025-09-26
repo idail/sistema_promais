@@ -1344,6 +1344,54 @@ function printSection(button) {
                     $recebe_exame_exibicao = "Mudança de função";
                 }
 
+                $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->execute();
+                $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                //var_dump($resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"]);
+
+                // Pega os exames do resultado
+                $examesJson = $resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"] ?? "";
+                $linhasExames = "";
+
+                if (!empty($examesJson)) {
+                    $exames = json_decode($examesJson, true);
+                    if (is_array($exames)) {
+                        $coluna = 0;
+                        $linhasExames .= "<tr>";
+                        
+                        foreach ($exames as $exame) {
+                            $codigo = $exame['codigo'] ?? '';
+                            $nome   = $exame['nome'] ?? '';
+                            $dataExame = $dataAtual ?? "__/__/2025";
+
+                            $linhasExames .= "
+                                <td style='font-size:12px; line-height:1.4; width:50%;'>
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) ."
+                                </td>
+                            ";
+
+                            $coluna++;
+
+                            // quando preencher 2 colunas, fecha a linha
+                            if ($coluna % 2 == 0) {
+                                $linhasExames .= "</tr><tr>";
+                            }
+                        }
+
+                        // Se terminou com uma coluna só, fecha linha corretamente
+                        if ($coluna % 2 != 0) {
+                            $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                        } else {
+                            $linhasExames .= "</tr>";
+                        }
+                    }
+                }
+
+
+
                 // Define o fuso horário do Brasil (evita diferenças)
                 date_default_timezone_set('America/Sao_Paulo');
 
@@ -1445,21 +1493,27 @@ function printSection(button) {
                     var_dump($resultado_pessoa_selecionada);
                     salvarLog(ob_get_clean());
 
+                    $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
+                    $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->execute();
+                    $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
+
                     if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
-                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
-                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
-                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
-                    $comando_busca_cargo->execute();
-                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+                        $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                        $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                        $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                        $comando_busca_cargo->execute();
+                        $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
 
-                    // var_dump($resultado_cargo_selecionado);
+                        // var_dump($resultado_cargo_selecionado);
 
-                    // echo "<br>";
+                        // echo "<br>";
 
-                    ob_start();
-                    var_dump($resultado_cargo_selecionado);
-                    salvarLog(ob_get_clean());
-                }
+                        ob_start();
+                        var_dump($resultado_cargo_selecionado);
+                        salvarLog(ob_get_clean());
+                    }
 
                 if ($recebe_exame === "mudanca") {
                     if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
@@ -1591,7 +1645,7 @@ function printSection(button) {
                     $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
                     $riscosTabela .= "
                     <tr>
-                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;width: 80px;'>{$titulo}</th>
                         <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
                     </tr>";
                 }
@@ -1849,8 +1903,8 @@ function printSection(button) {
                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
-                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
-                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
                     </td>
                 </tr>
             </table>
@@ -1904,7 +1958,7 @@ function printSection(button) {
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <th style="font-size:12px; text-align:left;width: 120px;">Médico Coordenador</th>
                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
                 </tr>
                 <tr>
@@ -1923,41 +1977,14 @@ function printSection(button) {
 
             ' . $riscosTabela . '
 
-            <table class="table-exames">
-    
-    <tr>
-        <td class="section-title" style="width:70%; text-align:left; font-size:12px; font-weight:bold;">
-            Procedimentos e Exames a realizar
-        </td>
-        <td class="section-title" style="width:30%; text-align:center; font-size:12px; font-weight:bold;">
-            Data de Realização dos Exames
-        </td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">
-            ' . htmlspecialchars($recebe_exame_exibicao ?? "") . '
-        </td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">
-            ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
-    </tr>
-</table>
-
-
-
-
+            <table class="table-exames" style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td colspan="2" class="section-title" style="text-align:left; font-size:12px; font-weight:bold;">
+                        Procedimentos e Exames a realizar
+                    </td>
+                </tr>
+                    ' . $linhasExames .'
+            </table>
 
             ' . $aptidoesTabela . '
             
@@ -1992,6 +2019,52 @@ function printSection(button) {
                 } else if ($recebe_exame === "mudanca") {
                     $recebe_exame_exibicao = "Mudança de função";
                 }
+
+                $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->execute();
+                $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                //var_dump($resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"]);
+
+                // Pega os exames do resultado
+                $examesJson = $resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"] ?? "";
+                $linhasExames = "";
+
+                if (!empty($examesJson)) {
+                    $exames = json_decode($examesJson, true);
+                    if (is_array($exames)) {
+                    $coluna = 0;
+                    $linhasExames .= "<tr>";
+                    
+                    foreach ($exames as $exame) {
+                        $codigo = $exame['codigo'] ?? '';
+                        $nome   = $exame['nome'] ?? '';
+                        $dataExame = $dataAtual ?? "__/__/2025";
+
+                        $linhasExames .= "
+                            <td style='font-size:12px; line-height:1.4; width:50%;'>
+                                (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . " " . htmlspecialchars($dataExame) . "
+                            </td>
+                        ";
+
+                        $coluna++;
+
+                        // quando preencher 2 colunas, fecha a linha
+                        if ($coluna % 2 == 0) {
+                            $linhasExames .= "</tr><tr>";
+                        }
+                    }
+
+                    // Se terminou com uma coluna só, fecha linha corretamente
+                    if ($coluna % 2 != 0) {
+                        $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                    } else {
+                        $linhasExames .= "</tr>";
+                    }
+                }
+            }
 
                 // Define o fuso horário do Brasil (evita diferenças)
                 date_default_timezone_set('America/Sao_Paulo');
@@ -2093,6 +2166,12 @@ function printSection(button) {
                     ob_start();
                     var_dump($resultado_pessoa_selecionada);
                     salvarLog(ob_get_clean());
+
+                    $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
+                    $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->execute();
+                    $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
 
                 if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
@@ -2239,7 +2318,7 @@ function printSection(button) {
                     $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
                     $riscosTabela .= "
                     <tr>
-                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;width: 80px;'>{$titulo}</th>
                         <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
                     </tr>";
                 }
@@ -2493,8 +2572,8 @@ function printSection(button) {
                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
-                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
-                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
                     </td>
                 </tr>
             </table>            
@@ -2545,7 +2624,7 @@ function printSection(button) {
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
+                    <th style="font-size:12px; text-align:left;width: 120px;">Médico Coordenador</th>
                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
                 </tr>
                 <tr>
@@ -2564,37 +2643,14 @@ function printSection(button) {
 
             ' . $riscosTabela . '
 
-            <table class="table-exames">
-    
-    <tr>
-        <td class="section-title" style="width:70%; text-align:left; font-size:12px; font-weight:bold;">
-            Procedimentos e Exames realizados
-        </td>
-        <td class="section-title" style="width:30%; text-align:center; font-size:12px; font-weight:bold;">
-            Data de Realização dos Exames
-        </td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">
-            ' . htmlspecialchars($recebe_exame_exibicao ?? "") . '
-        </td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">
-            ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
-    </tr>
-    <tr>
-        <td style="font-size:12px; line-height:1.4;">&nbsp;</td>
-        <td style="font-size:12px; line-height:1.4; text-align:center;">__/__/2025</td>
-    </tr>
-</table>
+            <table class="table-exames" style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td colspan="2" class="section-title" style="text-align:left; font-size:12px; font-weight:bold;">
+                       Procedimentos e Exames realizados
+                    </td>
+                </tr>
+                    ' . $linhasExames .'
+            </table>
 
             ' . $aptidoesTabela . '
 
