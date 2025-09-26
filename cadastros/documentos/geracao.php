@@ -1949,29 +1949,27 @@ function printSection(button) {
                 ';
             }
 
+            $nomeCoord = htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "");
+            $crmCoord  = htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "");
+            $textoCoord = $nomeCoord . (!empty($nomeCoord) && !empty($crmCoord) ? " / " : "") . $crmCoord;
+
+            $nomeExam = htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "");
+            $crmExam  = htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "");
+            $textoExam = $nomeExam . (!empty($nomeExam) && !empty($crmExam) ? " / " : "") . $crmExam;
+
             echo '
-
-            
-
             <table>
                 <tr>
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;width: 120px;">Médico Coordenador</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                    <th style="font-size:12px; text-align:left;width: 120px;">Médico coordenador do PCMSO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
                 </tr>
+                
                 <tr>
-                    <th style="font-size:12px; text-align:left;">CRM</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">CRM</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                    <th style="font-size:12px; text-align:left;">Médico emitente/examinador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoExam . '</td>
                 </tr>
             </table>
 
@@ -2618,26 +2616,27 @@ function printSection(button) {
                 ';
             }
 
+            $nomeCoord = htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "");
+            $crmCoord  = htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "");
+            $textoCoord = $nomeCoord . (!empty($nomeCoord) && !empty($crmCoord) ? " / " : "") . $crmCoord;
+
+            $nomeExam = htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "");
+            $crmExam  = htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "");
+            $textoExam = $nomeExam . (!empty($nomeExam) && !empty($crmExam) ? " / " : "") . $crmExam;
+
             echo '
             <table>
                 <tr>
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;width: 120px;">Médico Coordenador</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                    <th style="font-size:12px; text-align:left;width: 120px;">Médico coordenador do PCMSO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
                 </tr>
+                
                 <tr>
-                    <th style="font-size:12px; text-align:left;">CRM</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">CRM</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                    <th style="font-size:12px; text-align:left;">Médico emitente/examinador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoExam . '</td>
                 </tr>
             </table>
 
