@@ -3186,6 +3186,11 @@ function printSection(button) {
     margin: 0px auto 5px auto;
         }
 
+        @media print {
+  table {
+    page-break-inside: avoid;
+  }
+}
 
         </style>
 
@@ -3393,7 +3398,7 @@ function printSection(button) {
 
             <table>
                 <tr>
-                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
+                    <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
                 </tr>
                 <tr>
                     <td class="dados-hospital">
@@ -3448,40 +3453,42 @@ function printSection(button) {
                 </tr>
             </table>
 
-                        <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
-                <tr>
-                    <th style="text-align:left; padding:4px;width: 19%;">Altura</th>
-                    <th style="text-align:left; padding:4px;">Peso</th>
-                    <th style="text-align:left; padding:4px;">Temperatura</th>
-                    <th style="text-align:left; padding:4px;">Pulso</th>
-                    <th style="text-align:left; padding:4px;">Pressão Arterial</th>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
+               <!-- Linha com dados clínicos -->
+               <tr>
+                  <th style="text-align:left; padding:4px; width: 15%;">ALTURA:</th>
+                  <th style="text-align:left; padding:4px; width: 15%;">PESO:</th>
+                  <th style="text-align:left; padding:4px; width: 15%;">TEMPERATURA:</th>
+                  <th style="text-align:left; padding:4px; width: 15%;">PULSO:</th>
+                  <th style="text-align:left; padding:4px; width: 15%;">PRESSÃO ARTERIAL:</th>
                 </tr>
-                <tr>
-                    <th style="text-align:left; padding-left: 37px;"> </th>
-                    <th style="text-align:center; padding:4px;">Normal</th>
-                    <th style="text-align:center; padding:4px;">Anormal</th>
-                    <th style="text-align:left; padding:4px;" colspan="2">Observação</th>
-                </tr>
-
-                <tr><td style="padding:4px;">Aspecto Geral</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Olhos</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Otoscopia</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Nariz</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Boca - Amígdalas - Dentes</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Pescoço - Gânglios</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Pulmão</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Coração</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Abdome</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Coluna</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Membros Superiores</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Membros Inferiores</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Pele e Fâneros</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Psiquismo</td><td></td><td></td><td colspan="2"></td></tr>
-                <tr><td style="padding:4px;">Exames Complementares</td><td></td><td></td><td colspan="2"></td></tr>
             </table>
 
-            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
-                
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:0px;">
+                <!-- Cabeçalho das colunas de avaliação -->
+                <tr>
+                    <td style="padding:4px;"></td>
+                    <th style="text-align:center; padding:4px; width:6%;">NORMAL</th>
+                    <th style="text-align:center; padding:4px; width:6%;">ANORMAL</th>
+                    <th colspan="2" style="text-align:center; padding:4px; width:64%;">OBSERVAÇÃO</th>
+                </tr>
+
+                <!-- Linhas dos exames físicos -->
+                <tr><td style="padding:4px; width:24%;">ASPECTO GERAL</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">OLHOS</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">OTOSCOPIA</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">NARIZ</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">BOCA - AMÍGDALAS - DENTES</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">PESCOÇO - GÂNGLIOS</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">PULMÃO</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">CORAÇÃO</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">ABDOMÊ</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">COLUNA</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">MEMBROS SUPERIORES</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">MEMBROS INFERIORES</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">PELE E FÂNEROS</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">PSIQUISMO</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">EXAMES COMPLEMENTARES</td><td></td><td></td><td colspan="2"></td></tr>
             </table>
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
