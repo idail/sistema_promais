@@ -1963,7 +1963,7 @@ function printSection(button) {
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;width: 120px;">Médico coordenador do PCMSO</th>
+                    <th style="font-size:12px; text-align:left;width: 185px;">Médico coordenador do PCMSO</th>
                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
                 </tr>
                 
@@ -2515,6 +2515,14 @@ function printSection(button) {
             font-size: 14px;
         }
 
+        .assinatura {
+                width: 150px;
+    height: 60px;
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 0px auto 5px auto;
+        }
+
 
         </style>
 
@@ -2630,7 +2638,7 @@ function printSection(button) {
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;width: 120px;">Médico coordenador do PCMSO</th>
+                    <th style="font-size:12px; text-align:left;width: 185px;">Médico coordenador do PCMSO</th>
                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
                 </tr>
                 
@@ -2823,6 +2831,12 @@ function printSection(button) {
                     ob_start();
                     var_dump($resultado_pessoa_selecionada);
                     salvarLog(ob_get_clean());
+
+                    $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
+                    $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->execute();
+                    $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
 
                 if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
@@ -2907,6 +2921,23 @@ function printSection(button) {
                     ob_start();
                     var_dump($resultado_medico_relacionado_clinica);
                     salvarLog(ob_get_clean());
+
+                    $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                    $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->execute();
+                    $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                    //var_dump($resultado_verifica_marcacao_assinatura_digital);
+
+                    if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                                        $html_assinatura = "<img src='assinaturas/" 
+                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
+                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                    } else {
+                        $html_assinatura = "_______________________________";
+                    }
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -3142,13 +3173,26 @@ function printSection(button) {
             padding: 4px;
         }
 
+        .legenda {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .assinatura {
+                width: 150px;
+    height: 60px;
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 0px auto 5px auto;
+        }
+
 
         </style>
 
         <div class="guia-container">
             <table>
                 <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
                 </tr>
                 <tr>
                     <td class="dados-hospital">
@@ -3197,21 +3241,11 @@ function printSection(button) {
                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
-                        ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
-                        ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
                     </td>
                 </tr>
             </table>
-
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PRONTUARIO MÉDICO</th>
-                </tr>
-                
-                </tr>
-            </table>
-
-            
 
             <table>
                 <tr>
@@ -3226,116 +3260,102 @@ function printSection(button) {
                         Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
                     </td>
                 </tr>
-            </table>
+            </table>';
 
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">Mudança de Função</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Novo Cargo</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Novo CBO</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_cargo_selecionado['codigo_cargo'] ?? "") . '</td>
-                </tr>
-            </table>
+            if (
+                isset($resultado_mudanca_cargo_selecionado) 
+                && !empty($resultado_mudanca_cargo_selecionado)
+            ) {
+                echo '
+                    <table> 
+                        <tr>
+                            <td colspan="2" class="section-title">Mudança de Função</td>
+                        </tr>
+                        <tr>
+                            <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
+                                htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . 
+                            '</td>
+                        </tr>
+                        <tr>
+                            <th style="font-size:12px; text-align:left;">Novo CBO</th>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
+                                htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . 
+                            '</td>
+                        </tr>
+                    </table>
+                ';
+            }
 
+            $nomeCoord = htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "");
+            $crmCoord  = htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "");
+            $textoCoord = $nomeCoord . (!empty($nomeCoord) && !empty($crmCoord) ? " / " : "") . $crmCoord;
+
+            $nomeExam = htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "");
+            $crmExam  = htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "");
+            $textoExam = $nomeExam . (!empty($nomeExam) && !empty($crmExam) ? " / " : "") . $crmExam;
+
+            echo '
             <table>
                 <tr>
                     <td colspan="2" class="section-title">Dados dos Médicos</td>
                 </tr>
                 <tr>
-                    <th style="font-size:12px; text-align:left;">Médico Coordenador</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . '</td>
+                    <th style="font-size:12px; text-align:left;width: 185px;">Médico coordenador do PCMSO</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
                 </tr>
+                
                 <tr>
-                    <th style="font-size:12px; text-align:left;">CRM</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">Médico Emitente</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th style="font-size:12px; text-align:left;">CRM</th>
-                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '</td>
+                    <th style="font-size:12px; text-align:left;">Médico emitente/examinador</th>
+                    <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoExam . '</td>
                 </tr>
             </table>
 
 
-            <!-- 🔹 06 - Informações Clínicas -->
-            <table>
+            <!-- INFORMAÇÕES CLÍNICAS -->
+            <table style="width:100%; border-collapse:collapse;">
                 <tr>
                     <td colspan="8" class="section-title">INFORMAÇÕES CLÍNICAS</td>
                 </tr>
-                <tr>
-                    <th colspan="2">ANTECEDENTES FAMILIARES</th>
-                    <th>SIM</th>
-                    <th>NÃO</th>
-                    <th colspan="2">ANTECEDENTES PESSOAIS</th>
-                    <th>SIM</th>
-                    <th>NÃO</th>
-                </tr>
-                <tr>
-                    <td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
-                    <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
-                    <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
-                    <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
-                    <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">ALCOOLISMO</td><td></td><td></td>
-                    <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">REUMATISMO</td><td></td><td></td>
-                    <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
-                    <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
-                    <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">CÂNCER</td><td></td><td></td>
-                    <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">DERRAME</td><td></td><td></td>
-                    <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
-                    <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">TUBERCULOSE</td><td></td><td></td>
-                    <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td>
-                </tr>
-            </table>
 
-            <!-- 🔹 07 - Hábitos de Vida -->
-            <table>
+                <!-- Cabeçalho -->
                 <tr>
-                    <td colspan="8" class="section-title">HÁBITOS DE VIDA</td>
+                    <th colspan="2" class="section-title">ANTECEDENTES FAMILIARES</th>
+                    <th>SIM</th><th>NÃO</th>
+                    <th colspan="2" class="section-title">ANTECEDENTES PESSOAIS</th>
+                    <th>SIM</th><th>NÃO</th>
                 </tr>
+
+                <!-- Familiares x Pessoais -->
+                <tr><td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
+                    <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td></tr>
+                <tr><td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
+                    <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td></tr>
+                <tr><td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
+                    <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td></tr>
+                <tr><td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
+                    <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td></tr>
+                <tr><td colspan="2">ALCOOLISMO</td><td></td><td></td>
+                    <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td></tr>
+                <tr><td colspan="2">REUMATISMO</td><td></td><td></td>
+                    <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td></tr>
+                <tr><td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
+                    <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td></tr>
+                <tr><td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
+                    <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td></tr>
+                <tr><td colspan="2">CÂNCER</td><td></td><td></td>
+                    <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td></tr>
+                <tr><td colspan="2">DERRAME</td><td></td><td></td>
+                    <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td></tr>
+                <tr><td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
+                    <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td></tr>
+                <tr><td colspan="2">TUBERCULOSE</td><td></td><td></td>
+                    <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td></tr>
+
+                <!-- Habitos de Vida alinhado com Coluna -->
                 <tr>
-                    <th colspan="2">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th>
-                    <th colspan="2"></th><th>SIM</th><th>NÃO</th>
+                    <th colspan="2" class="section-title">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th>
+                    <td colspan="2">TEM ALGUM PROBLEMA DE COLUNA?</td><td></td><td></td>
                 </tr>
                 <tr><td colspan="2">FUMA?</td><td></td><td></td>
                     <td colspan="2">TEM REUMATISMO?</td><td></td><td></td></tr>
@@ -3347,91 +3367,121 @@ function printSection(button) {
                     <td colspan="2">SENTE CANSAÇO FACILMENTE?</td><td></td><td></td></tr>
                 <tr><td colspan="2">DORME BEM?</td><td></td><td></td>
                     <td colspan="2">ESTÁ COM FEBRE OU PERDA DE PESO?</td><td></td><td></td></tr>
-            </table>
 
-            <!-- 🔹 08 - Antecedentes Ocupacionais -->
-            <table>
+                <!-- Ocupacionais alinhado -->
                 <tr>
-                    <td colspan="8" class="section-title">ANTECEDENTES OCUPACIONAIS</td>
+                    <th colspan="2" class="section-title">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th>
+                    <td colspan="2">JÁ TEVE FRATURAS?</td><td></td><td></td>
                 </tr>
-                <tr>
-                    <th colspan="2">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th>
-                    <th colspan="2"></th><th>SIM</th><th>NÃO</th>
-                </tr>
-                <tr><td colspan="2">JÁ TEVE FRATURAS?</td><td></td><td></td>
-                    <td colspan="2">PODE EXECUTAR TAREFAS PESADAS?</td><td></td><td></td></tr>
-                <tr><td colspan="2">REALIZA TRABALHO FORA DA EMPRESA?</td><td></td><td></td>
-                    <td colspan="2">EXECUTOU TAREFAS INSALUBRES/PERIGOSAS?</td><td></td><td></td></tr>
+                <tr><td colspan="2">PODE EXECUTAR TAREFAS PESADAS?</td><td></td><td></td>
+                    <td colspan="2">REALIZA TRABALHO FORA DA EMPRESA?</td><td></td><td></td></tr>
+                <tr><td colspan="2">EXECUTOU TAREFAS INSALUBRES PERIGOSAS?</td><td></td><td></td>
+                    <td colspan="2">CONSIDERA TER SUA SAÚDE?</td><td></td><td></td></tr>
                 <tr><td colspan="2">JÁ ESTEVE DOENTE DEVIDO AO SEU TRABALHO?</td><td></td><td></td>
                     <td colspan="2">POSSUI DIFICULDADE MOTORA?</td><td></td><td></td></tr>
-                <tr><td colspan="2">JÁ FOI DEMITIDO POR MOTIVO DE DOENÇA?</td><td></td><td></td>
-                    <td colspan="2">JÁ ESTEVE AFASTADO PELO INSS?</td><td></td><td></td></tr>
+
+                <!-- Para Mulheres alinhado -->
+                <tr>
+                    <td colspan="2">JÁ FOI DEMITIDO POR MOTIVO DE DOENÇA?</td><td></td><td></td>
+                    <th colspan="4" class="section-title">PARA MULHERES</th>
+                </tr>
+                <tr><td colspan="2">JÁ ESTEVE AFASTADO PELO INSS?</td><td></td><td></td>
+                    <td colspan="4">DATA DA ÚLTIMA MENSTRUAÇÃO: ___/___/____</td></tr>
                 <tr><td colspan="2">JÁ TEVE ACIDENTE DE TRABALHO?</td><td></td><td></td>
-                    <td colspan="2">PARA MULHERES — DATA DA ÚLTIMA MENSTRUAÇÃO ___/___/____ &nbsp;&nbsp; DATA DO ÚLTIMO PREVENTIVO ___/___/____</td><td></td><td></td></tr>
+                    <td colspan="4">DATA DO ÚLTIMO PREVENTIVO: ___/___/____</td></tr>
             </table>
-
-            <!-- 🔹 Declaração -->
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">DECLARAÇÃO</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:4px;">
-                        Declaro como verdade os dados preenchidos neste prontuário.<br>
-                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                <tr>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:11px; padding:4px;">
-                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT
-                        <br>
-                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                    </td>
-                </tr>
-            </table>
-
-            <br>
-            <br>
 
             <table>
                 <tr>
-                    <th colspan="2" class="titulo-guia">APTIDÃO FÍSICA E MENTAL</th>
+                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+                    </td>
                 </tr>
             </table>
 
                         <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
                 <tr>
-                    <th style="text-align:left; padding:4px;">Altura</th>
+                    <th style="text-align:left; padding:4px;width: 19%;">Altura</th>
                     <th style="text-align:left; padding:4px;">Peso</th>
                     <th style="text-align:left; padding:4px;">Temperatura</th>
                     <th style="text-align:left; padding:4px;">Pulso</th>
                     <th style="text-align:left; padding:4px;">Pressão Arterial</th>
                 </tr>
+                <tr>
+                    <th style="text-align:left; padding-left: 37px;"> </th>
+                    <th style="text-align:center; padding:4px;">Normal</th>
+                    <th style="text-align:center; padding:4px;">Anormal</th>
+                    <th style="text-align:left; padding:4px;" colspan="2">Observação</th>
+                </tr>
+
+                <tr><td style="padding:4px;">Aspecto Geral</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Olhos</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Otoscopia</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Nariz</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Boca - Amígdalas - Dentes</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Pescoço - Gânglios</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Pulmão</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Coração</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Abdome</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Coluna</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Membros Superiores</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Membros Inferiores</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Pele e Fâneros</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Psiquismo</td><td></td><td></td><td colspan="2"></td></tr>
+                <tr><td style="padding:4px;">Exames Complementares</td><td></td><td></td><td colspan="2"></td></tr>
             </table>
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
-                <tr>
-                    <th style="text-align:left; padding:4px;">Normal</th>
-                    <th style="text-align:left; padding:4px;">Anormal</th>
-                    <th style="text-align:left; padding:4px;">Observação</th>
-                </tr>
-                <tr><td colspan="3" style="padding:4px;">Aspecto Geral</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Olhos</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Otoscopia</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Nariz</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Boca - Amígdalas - Dentes</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Pescoço - Gânglios</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Pulmão</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Coração</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Abdome</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Coluna</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Membros Superiores</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Membros Inferiores</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Pele e Faneros</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Psiquismo</td></tr>
-                <tr><td colspan="3" style="padding:4px;">Exames Complementares</td></tr>
+                
             </table>
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
@@ -3490,32 +3540,29 @@ function printSection(button) {
 
 
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia" style="text-align:left;">CONCLUSÃO</th>
-                </tr>
-                <tr>
-                    <td colspan="2" class="dados-hospital" style="height:60px;">
-                        Atesto que o trabalhador acima identificado se submeteu aos exames médicos ocupacionais em cumprimento à NR-07, itens 7.5.19.1 e 7.5.19.2.<br>
-                        Resultado: ( ) APTO  ( ) INAPTO
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="dados-hospital">
-                        ALTO ARAGUAIA - MT, DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="dados-hospital" style="height:50px;">
-                        <div class="assinatura"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="dados-hospital" style="font-size:10px;">
-                        Médico Responsável - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "") . '/MT<br>
-                        Funcionário: ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                    </td>
-                </tr>
-            </table>
+    
+    <tr>
+        <td colspan="2" class="dados-hospital">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <!-- Espaço para assinatura -->
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            ' . $html_assinatura . ' <br>
+            Médico emitente/ Examinador<br>
+            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+        </td>
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            Funcionário<br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+            <br>
+            _______________________________<br>
+            Assinatura do Funcionário
+        </td>
+    </tr>
+</table>
+
             
 
             <div class="actions">
