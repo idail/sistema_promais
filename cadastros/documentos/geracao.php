@@ -4197,8 +4197,8 @@ function printSection(button) {
     <table>
         <tr><td colspan="2" class="section-title">TESTE DE ISHIHARA</td></tr>
         <tr>
-            <td><input type="checkbox"> Normal</td>
-            <td><input type="checkbox"> Alterado</td>
+            <td> Normal</td>
+            <td> Alterado</td>
         </tr>
     </table>
 
