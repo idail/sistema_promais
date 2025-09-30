@@ -4189,9 +4189,9 @@ function printSection(button) {
 
 
     <table>
-        <tr><td colspan="6" class="section-title">CARTA DE JEAGER (VISÃO DE PERTO)</td></tr>
+        <tr><td colspan="6" class="section-title">CARTA DE JEAGER (TESTE PARA PERTO)</td></tr>
         <tr><th>J6</th><th>J5</th><th>J4</th><th>J3</th><th>J2</th><th>J1</th></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td></tr>
     </table>
 
     <table>
