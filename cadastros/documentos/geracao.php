@@ -3456,6 +3456,9 @@ function printSection(button) {
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
                <!-- Linha com dados clínicos -->
                <tr>
+                    <th colspan="5" class="titulo-guia">APTIDÃO FÍSICA E METAL</th>
+                </tr>
+               <tr>
                   <th style="text-align:left; padding:4px; width: 15%;">ALTURA:</th>
                   <th style="text-align:left; padding:4px; width: 15%;">PESO:</th>
                   <th style="text-align:left; padding:4px; width: 15%;">TEMPERATURA:</th>
@@ -3502,9 +3505,9 @@ function printSection(button) {
                 <tr><td colspan="6" style="padding:4px;">Recebeu EPI da empresa?</td></tr>
                 <tr>
                     <td colspan="6" style="padding:4px;">
-                        PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
-                        PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
-                        TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </td>
                 </tr>
             </table>
