@@ -4202,11 +4202,52 @@ function printSection(button) {
         </tr>
     </table>
 
+    <!-- Tabela de Snellen -->
     <table>
-        <tr><td colspan="2" class="section-title">CONCLUSÃO</td></tr>
-        <tr><th>Tabela de Snellen</th><td></td></tr>
-        <tr><th>Carta de Jeager</th><td></td></tr>
+        <tr>
+            <td colspan="2" class="section-title">Tabela de Snellen</td>
+        </tr>
+        <tr>
+            <th>Normal</th>
+            <th>Alterado</th>
+        </tr>
+        <tr>
+            <td style="text-align:center;height:25px;"></td>
+            <td style="text-align:center;height:25px;"></td>
+        </tr>
     </table>
+
+    <!-- Carta de Jeager -->
+    <table>
+        <tr>
+            <td colspan="2" class="section-title">Carta de Jeager</td>
+        </tr>
+        <tr>
+            <th>Normal</th>
+            <th>Alterado</th>
+        </tr>
+        <tr>
+            <td style="text-align:center;height:25px;"></td>
+            <td style="text-align:center;height:25px;"></td>
+        </tr>
+    </table>
+
+    <!-- Apresenta Acuidade Visual -->
+<table>
+    <tr>
+        <td rowspan="2" style="text-align:center; font-weight:bold; width:70%;">
+            APRESENTA ACUIDADE VISUAL
+        </td>
+        <td style="width:15%;">Satisfatória:</td>
+        <td style="width:15%;"></td>
+    </tr>
+    <tr>
+        <td>Insatisfatória:</td>
+        <td></td>
+    </tr>
+</table>
+
+
 
    <table>
     <tr>
