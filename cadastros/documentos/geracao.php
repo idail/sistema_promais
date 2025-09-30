@@ -3582,6 +3582,637 @@ function printSection(button) {
             </div>
         </div>
 ';
+        }else if($acuidade_visual)
+        {
+
+            $informacoes_clinica;
+
+            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+                salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
+                salvarLog($_SESSION["exame_selecionado"]);
+
+                // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+
+                // echo $_SESSION["exame_selecionado"] . "<br>";
+
+                $recebe_exame = $_SESSION["exame_selecionado"];
+
+                $recebe_exame_exibicao;
+
+                if ($recebe_exame === "admissional") {
+                    $recebe_exame_exibicao = "Admissional";
+                } else if ($recebe_exame === "mudanca") {
+                    $recebe_exame_exibicao = "Mudança de função";
+                }
+
+                // Define o fuso horário do Brasil (evita diferenças)
+                date_default_timezone_set('America/Sao_Paulo');
+
+                // Data atual no formato brasileiro
+                $dataAtual = date('d/m/Y');
+
+                // Função helper para marcar
+                function marcar($valor, $tipoExame)
+                {
+                    return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+                }
+
+                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                $comando_busca_clinica->execute();
+                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                // print_r($resultado_clinica_selecionada);
+
+                // ----------------- BUSCA NA API DO IBGE -----------------
+                $cidadeNome = '';
+                $estadoSigla = '';
+
+                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                    $cidadeJson = @file_get_contents($urlCidade);
+                    if ($cidadeJson !== false) {
+                        $cidadeData = json_decode($cidadeJson, true);
+                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    }
+                }
+
+                if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                    $estadoJson = @file_get_contents($urlEstado);
+                    if ($estadoJson !== false) {
+                        $estadoData = json_decode($estadoJson, true);
+                        $estadoSigla = $estadoData['sigla'] ?? '';
+                    }
+                }
+
+                // Exemplo: "ALTO ARAGUAIA - MT"
+                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+
+                // Debug
+                // print_r($resultado_clinica_selecionada);
+                // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+
+                if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                    $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                    $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                    $comando_busca_empresa->execute();
+                    $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_empresa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_empresa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                    $recebe_nascimento_colaborador = '';
+
+                    $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                    if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                        try {
+                            $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                        } catch (Exception $e) {
+                            $recebe_nascimento_colaborador = '';
+                        }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
+                    }
+
+                    // var_dump($resultado_pessoa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_pessoa_selecionada);
+                    salvarLog(ob_get_clean());
+
+                    $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
+                    $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->execute();
+                    $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
+                }
+
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_cargo_selecionado);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_cargo_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if ($recebe_exame === "mudanca") {
+                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                        ob_start();
+                        echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                        salvarLog(ob_get_clean());
+
+                        $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                        $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                        $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                        $comando_busca_mudanca_cargo->execute();
+                        $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_mudanca_cargo_selecionado);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_mudanca_cargo_selecionado);
+                        salvarLog(ob_get_clean());
+                    }
+                }
+
+                if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
+                    salvarLog(ob_get_clean());
+
+                    $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+                    $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+                    $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
+                    $comando_busca_medico_coordenador->execute();
+                    $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_coordenador_selecionado);
+
+                    ob_start();
+                    var_dump($resultado_medico_coordenador_selecionado);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                    ob_start();
+                    echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
+                    salvarLog(ob_get_clean());
+
+
+                    $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
+                    $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
+                    $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
+                    $comando_busca_medico_clinica->execute();
+                    $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+
+                    $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
+                    $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_medico_clinica_selecionado["medico_id"]);
+                    $comando_busca_medico_relacionado_clinica->execute();
+                    $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_medico_relacionado_clinica);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_medico_relacionado_clinica);
+                    salvarLog(ob_get_clean());
+
+                    $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                    $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->execute();
+                    $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                    //var_dump($resultado_verifica_marcacao_assinatura_digital);
+
+                    if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                                        $html_assinatura = "<img src='assinaturas/" 
+                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
+                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                    } else {
+                        $html_assinatura = "_______________________________";
+                    }
+                }
+
+                // ===================== AJUSTE APENAS NOS RISCOS =====================
+                $riscosTabela = '';
+                $grupos = [
+                    "acidente"   => "Acidentes / Mecânicos",
+                    "ergonomico" => "Ergonômicos",
+                    "fisico"     => "Físicos",
+                    "quimico"    => "Químicos",
+                    "biologico"  => "Biológicos"
+                ];
+
+                // Prepara array vazio para armazenar riscos por grupo
+                $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
+
+                if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
+                    $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        for ($i = 0; $i < count($data); $i++) {
+                            $grupo     = strtolower($data[$i]['grupo']);
+                            $descricao = $data[$i]['descricao'] ?? "";
+
+                            if (isset($riscosPorGrupo[$grupo])) {
+                                $riscosPorGrupo[$grupo][] = $descricao;
+                            }
+                        }
+                    }
+                }
+
+                // Monta a tabela de riscos
+                $riscosTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">FATORES DE RISCO</td>
+                    </tr>';
+                foreach ($grupos as $chave => $titulo) {
+                    $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
+                    $riscosTabela .= "
+                    <tr>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$titulo}</th>
+                        <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
+                    </tr>";
+                }
+                $riscosTabela .= '</table>';
+
+
+                // =====================================================================
+
+                // ===================== AJUSTE NAS APTIDÕES =====================
+                $aptidoesTabela = '';
+
+                $listaAptidoes = [
+                    "trabalho em altura"            => "Trabalho em Altura",
+                    "manusear produtos alimentícios" => "Manusear Produtos Alimentícios",
+                    "eletricidade"                  => "Eletricidade",
+                    "operar máquinas"               => "Operar Máquinas",
+                    "conduzir veículos"             => "Conduzir Veículos",
+                    "trabalho a quente"             => "Trabalho a Quente",
+                    "inflamáveis"                   => "Inflamáveis",
+                    "radiações ionizantes"          => "Radiações Ionizantes",
+                    "espaço confinado"              => "Espaço Confinado",
+                    "inspeções e manutenções"       => "Inspeções e Manutenções"
+                ];
+
+                // transforma o JSON da sessão em array associativo
+                $aptidoesSelecionadas = [];
+                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                    var_dump($_SESSION["aptidao_selecionado"]);
+
+
+                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                        foreach ($dataApt as $apt) {
+                            if (isset($apt['nome'])) {
+                                $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                            }
+                        }
+                    }
+                }
+
+                // função para marcar sim/não
+                function marcarApt($nomeExibicao, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nomeExibicao);
+                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                    $nao  = $sim === "X" ? " " : "X";
+                    return "( $sim ) Sim ( $nao ) Não";
+                }
+
+                // define os pares para exibição (duas colunas por linha)
+                $linhas = [
+                    ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
+                    ["Eletricidade", "Operar Máquinas"],
+                    ["Conduzir Veículos", "Trabalho a Quente"],
+                    ["Inflamáveis", "Radiações Ionizantes"],
+                    ["Espaço Confinado", "Inspeções e Manutenções"]
+                ];
+
+                $aptidoesTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    </tr>';
+                foreach ($linhas as $par) {
+                    $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+
+                    $aptidoesTabela .= '
+                    <tr>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    </tr>';
+                }
+                $aptidoesTabela .= '
+                </table>';
+
+                // =====================================================================
+
+
+                // Função helper para marcar Apto/Inapto
+                function marcarAptidao($nome, $aptidoesSelecionadas)
+                {
+                    $nomeLower = strtolower($nome);
+                    $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
+                    $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
+                    return "$nome ( $apto ) Apto ( $inapto ) Inapto";
+                }
+            }
+            echo '
+<style>
+    body {
+                font-family: Arial, sans-serif;
+                background:#f2f2f2;
+                margin:0;
+                padding:0;
+            }
+            .guia-container {
+                width: 210mm;
+                min-height: 297mm;
+                margin:5mm auto;
+                padding:10px;
+                background:#fff;
+                border:1px solid #000;
+            }
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;
+                height:22px;
+            }
+            .section-title {
+                background:#eaeaea;
+                border:1px solid #666;
+                font-weight:bold;
+                font-size:12px;
+                padding:3px 5px;
+                text-align:left;
+            }
+            .dados-hospital { font-size:12px; line-height:1.4; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+            .logo { text-align:center; }
+            .logo img { max-height:45px; }
+
+            /* QR Code */
+            .qrcode img {
+                display:block;
+                width:120px;
+                height:auto;
+                margin-top:5px;
+            }
+
+            /* Botões - Centralizados abaixo do formulário */
+            .actions {
+                margin-top: 15px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid #ccc; /* linha de separação opcional */
+            }
+            .btn {
+                padding:10px 18px;
+                font-size:14px;
+                font-weight:bold;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+                color:#fff;
+                box-shadow:0 2px 5px rgba(0,0,0,.2);
+                margin:0 5px;
+            }
+            .btn-email { background:#007bff; }
+            .btn-whatsapp { background:#25d366; }
+            .btn-print { background:#6c757d; }
+            .btn:hover { opacity:.9; }
+
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { background:#fff; }
+                .actions { display: none !important; }
+            }
+
+            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+        .table-riscos th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+        .table-riscos td {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .table-exames th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+        .legenda {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .assinatura {
+                width: 150px;
+    height: 60px;
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 0px auto 5px auto;
+        }
+
+        @media print {
+  table {
+    page-break-inside: avoid;
+  }
+}
+</style>
+
+<div class="guia-container">
+
+    <!-- Cabeçalho Clínica -->
+    <table>
+                <tr>
+                    <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+                    <td class="dados-hospital" colspan="2">
+                        ' . (!empty($resultado_empresa_selecionada['nome'])
+                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                            : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+                    </td>
+                </tr>
+            </table>
+
+    <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
+            </table>
+
+    <!-- Acuidade Visual -->
+    <table>
+        <tr><td colspan="4" class="section-title">IDENTIFICAÇÃO</td></tr>
+        <tr>
+            <th>Nome</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td>
+            <th>Código</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td>
+        </tr>
+        <tr>
+            <th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td>
+            <th>Função</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+        </tr>
+        <tr>
+            <th>Empresa</th><td colspan="3">' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td colspan="2" class="section-title">QUESTIONÁRIO</td></tr>
+        <tr><th>1) Usa óculos / lentes de contato?</th><td></td></tr>
+        <tr><th>2) Já teve algum problema com os olhos?</th><td></td></tr>
+        <tr><th>3) Exame será realizado com óculos/lentes?</th><td></td></tr>
+    </table>
+
+    <table>
+        <tr><td colspan="11" class="section-title">TABELA DE SNELLEN</td></tr>
+        <tr>
+            <th></th>
+            <th>20/200</th><th>20/100</th><th>20/50</th><th>20/40</th><th>20/30</th>
+            <th>20/25</th><th>20/20</th><th>20/15</th><th>20/13</th><th>20/10</th>
+        </tr>
+        <tr><th>OD</th><td colspan="10"></td></tr>
+        <tr><th>OE</th><td colspan="10"></td></tr>
+        <tr><th>AO</th><td colspan="10"></td></tr>
+    </table>
+
+    <table>
+        <tr><td colspan="6" class="section-title">CARTA DE JEAGER (VISÃO DE PERTO)</td></tr>
+        <tr><th>J6</th><th>J5</th><th>J4</th><th>J3</th><th>J2</th><th>J1</th></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <table>
+        <tr><td colspan="2" class="section-title">TESTE DE ISHIHARA</td></tr>
+        <tr>
+            <td><input type="checkbox"> Normal</td>
+            <td><input type="checkbox"> Alterado</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td colspan="2" class="section-title">CONCLUSÃO</td></tr>
+        <tr><th>Tabela de Snellen</th><td></td></tr>
+        <tr><th>Carta de Jeager</th><td></td></tr>
+    </table>
+
+   <table>
+    <tr>
+                    <th colspan="2" class="section-title" style="text-align:left;">ASSINATURAS</th>
+                </tr>
+    <tr>
+        <td colspan="2" class="dados-hospital">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <!-- Espaço para assinatura -->
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            ' . $html_assinatura . ' <br>
+            Médico emitente/ Examinador<br>
+            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+        </td>
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            Funcionário<br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+            <br>
+            _______________________________<br>
+            Assinatura do Funcionário
+        </td>
+    </tr>
+</table>
+        </div>
+        
+        <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="window.print()">Salvar</button>
+            </div>';
         } else if ($exames_procedimentos === true || $treinamentos === true || $epi_epc === true || $faturamento === true) {
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
