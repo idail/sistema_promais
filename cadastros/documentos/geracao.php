@@ -4135,7 +4135,7 @@ function printSection(button) {
         </tr>
         <tr>
             <th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td>
-            <th>Função</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td>
+            <th>Função</th><td>' . htmlspecialchars($resultado_busca_cargo_pessoa['titulo_cargo'] ?? "") . '</td>
         </tr>
         <tr>
             <th>Empresa</th><td colspan="3">' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td>
@@ -4143,23 +4143,50 @@ function printSection(button) {
     </table>
 
     <table>
-        <tr><td colspan="2" class="section-title">QUESTIONÁRIO</td></tr>
-        <tr><th>1) Usa óculos / lentes de contato?</th><td></td></tr>
-        <tr><th>2) Já teve algum problema com os olhos?</th><td></td></tr>
-        <tr><th>3) Exame será realizado com óculos/lentes?</th><td></td></tr>
-    </table>
+    <tr><td colspan="3" class="section-title">QUESTIONÁRIO</td></tr>
+    <tr>
+        <th>Pergunta</th>
+        <th>Sim</th>
+        <th>Não</th>
+    </tr>
+    <tr>
+        <td>1) Usa óculos / lentes de contato?</td>
+        <td style="text-align:center;"></td>
+        <td style="text-align:center;"></td>
+    </tr>
+    <tr>
+        <td>2) Já teve algum problema com os olhos?</td>
+        <td style="text-align:center;"></td>
+        <td style="text-align:center;"></td>
+    </tr>
+    <tr>
+        <td>3) Exame será realizado com óculos/lentes?</td>
+        <td style="text-align:center;"></td>
+        <td style="text-align:center;"></td>
+    </tr>
+</table>
+
 
     <table>
-        <tr><td colspan="11" class="section-title">TABELA DE SNELLEN</td></tr>
-        <tr>
-            <th></th>
-            <th>20/200</th><th>20/100</th><th>20/50</th><th>20/40</th><th>20/30</th>
-            <th>20/25</th><th>20/20</th><th>20/15</th><th>20/13</th><th>20/10</th>
-        </tr>
-        <tr><th>OD</th><td colspan="10"></td></tr>
-        <tr><th>OE</th><td colspan="10"></td></tr>
-        <tr><th>AO</th><td colspan="10"></td></tr>
-    </table>
+    <tr><td colspan="11" class="section-title">TABELA DE SNELLEN</td></tr>
+    <tr>
+        <th></th>
+        <th>20/200<br>(1)</th>
+        <th>20/100<br>(2)</th>
+        <th>20/50<br>(3)</th>
+        <th>20/40<br>(4)</th>
+        <th>20/30<br>(5)</th>
+        <th>20/25<br>(6)</th>
+        <th>20/20<br>(7)</th>
+        <th>20/15<br>(8)</th>
+        <th>20/13<br>(9)</th>
+        <th>20/10<br>(10)</th>
+    </tr>
+    <tr><th>OD</th><td colspan="10"></td></tr>
+    <tr><th>OE</th><td colspan="10"></td></tr>
+    <tr><th>AO</th><td colspan="10"></td></tr>
+</table>
+
 
     <table>
         <tr><td colspan="6" class="section-title">CARTA DE JEAGER (VISÃO DE PERTO)</td></tr>
