@@ -5114,6 +5114,52 @@ function printSection(button) {
                     $recebe_exame_exibicao = "Mudança de função";
                 }
 
+                $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->execute();
+                $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                //var_dump($resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"]);
+
+                // Pega os exames do resultado
+                $examesJson = $resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"] ?? "";
+                $linhasExames = "";
+
+                if (!empty($examesJson)) {
+                    $exames = json_decode($examesJson, true);
+                    if (is_array($exames)) {
+                        $coluna = 0;
+                        $linhasExames .= "<tr>";
+                        
+                        foreach ($exames as $exame) {
+                            $codigo = $exame['codigo'] ?? '';
+                            $nome   = $exame['nome'] ?? '';
+                            $dataExame = $dataAtual ?? "__/__/2025";
+
+                            $linhasExames .= "
+                                <td style='font-size:12px; line-height:1.4; width:50%;'>
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) ."
+                                </td>
+                            ";
+
+                            $coluna++;
+
+                            // quando preencher 2 colunas, fecha a linha
+                            if ($coluna % 2 == 0) {
+                                $linhasExames .= "</tr><tr>";
+                            }
+                        }
+
+                        // Se terminou com uma coluna só, fecha linha corretamente
+                        if ($coluna % 2 != 0) {
+                            $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                        } else {
+                            $linhasExames .= "</tr>";
+                        }
+                    }
+                }
+
                 // Define o fuso horário do Brasil (evita diferenças)
                 date_default_timezone_set('America/Sao_Paulo');
 
@@ -5580,7 +5626,7 @@ function printSection(button) {
         <div class="guia-container">
             <table>
                 <tr>
-                    <th colspan="2" class="titulo-guia">TOXICOLOGICO</th>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
                 </tr>
                 <tr>
                     <td class="dados-hospital">
@@ -5637,41 +5683,53 @@ function printSection(button) {
 
             <table>
                 <tr>
-                    <td colspan="2" class="section-title">07 - PROCEDIMENTOS / EXAMES REALIZADOS:</td>
+                    <td colspan="2" class="section-title">Procedimento a realizar</td>
+                </tr>
+                ' . $linhasExames .'
+                
+            </table>
+
+            <!-- 🔹 Informações importantes -->
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">INFORMAÇÕES IMPORTANTES:</td>
                 </tr>
                 <tr>
-                    <th style="width:25%;">Exame</th>
-                    <td><input type="text" value="Exame Toxicológico (AA999999999)" disabled style="width:38%;"></td>
+                    <td colspan="2" style="font-size:12px; padding:6px; line-height:1.5;">
+                        <b>• Comunique o uso de medicamentos:</b> Se você estiver usando medicamentos controlados 
+                        (como ansiolíticos ou estimulantes), é fundamental informar o laboratório e apresentar a 
+                        prescrição médica, para que isso seja considerado no laudo.
+                    </td>
                 </tr>
                 <tr>
-                    <th>Data</th>
-                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
+                    <td colspan="2" style="font-size:12px; padding:6px; line-height:1.5;">
+                        <b>• Consulte a legislação e o Senatran:</b> É possível consultar a situação do seu exame 
+                        toxicológico no portal do Senatran, inserindo o CPF, data de nascimento e a data de expiração 
+                        da sua CNH, para verificar a necessidade de fazer a renovação.
+                    </td>
                 </tr>
             </table>
 
             <table>
                 <tr>
-                    <td colspan="2" class="section-title">09 - CONCLUSÃO:</td>
+                    <td colspan="2" class="section-title">Assinatura</td>
                 </tr>
                 <tr>
-                    <th style="width:25%;">Cidade</th>
-                    <td><input type="text" value="Alto Araguaia - MT" disabled></td>
+                    <td colspan="2" style="font-size:12px; padding:6px;">
+                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
                 </tr>
                 <tr>
-                    <th>Data</th>
-                    <td>' . htmlspecialchars($dataAtual ?? "") . '</td>
-                </tr>
-                <tr>
-                    <th>Assinaturas</th>
-                    <td>
-                        <div class="assinatura"></div>
-                        <small>Assinatura do Funcionário</small>
-                        <br><br>
-                        <div class="assinatura"></div>
-                        <small>Carimbo / Responsável</small>
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                        Funcionário<br>
+                        ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                        <br>
+                        _______________________________<br>
+                        Assinatura do Funcionário
                     </td>
                 </tr>
             </table>
+
 
 
         </div>
