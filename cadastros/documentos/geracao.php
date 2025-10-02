@@ -5029,8 +5029,6 @@ function printSection(button) {
     </tr>
     <tr>
         <td colspan="4">Colaborador apto ou inapto a realizar as atividades abaixo</td>
-        <td colspan="4">Apto()</td>
-        <td colspan="4">Inapto()</td>
     </tr>
 </table>
 
@@ -5051,7 +5049,7 @@ function printSection(button) {
     <tr>
         <td>5. Encaminhado para avaliação médica complementar</td>
         <td style="text-align:center;">Sim ( ) Não ( )</td>
-        <td colspan="2"></td>
+        <td colspan="2">Colaborador:Apto()   Inapto()</td>
     </tr>
 </table>
 
