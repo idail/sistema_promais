@@ -6099,6 +6099,70 @@ function printSection(button) {
                     $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
                     return "$nome ( $apto ) Apto ( $inapto ) Inapto";
                 }
+
+
+                function gerarGraficoAudiometriaBase64($titulo) {
+                    $largura = 420;
+                    $altura = 340;
+                    $img = imagecreatetruecolor($largura, $altura);
+
+                    // Cores
+                    $branco = imagecolorallocate($img, 255, 255, 255);
+                    $preto  = imagecolorallocate($img, 0, 0, 0);
+                    $cinza  = imagecolorallocate($img, 200, 200, 200);
+
+                    // Fundo branco
+                    imagefilledrectangle($img, 0, 0, $largura, $altura, $branco);
+
+                    // Margens
+                    $margemEsq = 60;
+                    $margemSup = 30;
+                    $margemDir = 20;
+                    $margemInf = 40;
+
+                    $graficoLarg = $largura - $margemEsq - $margemDir;
+                    $graficoAlt  = $altura - $margemSup - $margemInf;
+
+                    // Frequências (Hz)
+                    $freqs = [125, 250, 500, 1000, 2000, 4000, 6000, 8000];
+                    $colunas = count($freqs) - 1;
+
+                    // Grade vertical (tracejada)
+                    for ($i = 0; $i < count($freqs); $i++) {
+                        $x = $margemEsq + ($graficoLarg / $colunas) * $i;
+                        for ($y = $margemSup; $y < $altura - $margemInf; $y += 6) {
+                            imageline($img, $x, $y, $x, $y+3, $cinza);
+                        }
+                        // Texto em cima
+                        imagestring($img, 2, $x-10, 10, $freqs[$i], $preto);
+                    }
+
+                    // Grade horizontal (0 a 120 dB)
+                    for ($i = 0; $i <= 12; $i++) {
+                        $y = $margemSup + ($graficoAlt / 12) * $i;
+                        for ($x = $margemEsq; $x < $largura - $margemDir; $x += 6) {
+                            imageline($img, $x, $y, $x+3, $y, $cinza);
+                        }
+                        imagestring($img, 2, 35, $y-7, $i*10, $preto);
+                    }
+
+                    // Texto lateral (vertical) → precisa de fonte TTF
+                    $fonte = __DIR__ . "/arial.ttf"; // coloque arial.ttf no mesmo diretório
+                    if (file_exists($fonte)) {
+                        imagettftext($img, 10, 90, 20, $altura/2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
+                    }
+
+                    // Exporta em Base64
+                    ob_start();
+                    imagepng($img);
+                    $conteudo = ob_get_clean();
+                    imagedestroy($img);
+
+                    return 'data:image/png;base64,' . base64_encode($conteudo);
+                }
+
+                            $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
+                $graficoOE = gerarGraficoAudiometriaBase64("Orelha Esquerda", "blue");
             }
 
             echo '
@@ -6285,70 +6349,103 @@ function printSection(button) {
                 </tr>
             </table>
 
-            <h3 style="display:none;"></h3> <!-- apenas para garantir que não quebre nada -->
-<table>
-    <tr>
-        <td colspan="2" class="section-title">01 - IDENTIFICAÇÃO</td>
-    </tr>
-    <tr><th>Paciente</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td></tr>
-    <tr><th>Data</th><td>' . htmlspecialchars($dataAtual ?? "") . '</td></tr>
-    <tr><th>Sexo</th><td>' . htmlspecialchars(ucfirst($resultado_pessoa_selecionada['sexo'] ?? "")) . '</td></tr>
-    <tr><th>Profissão</th><td>' . htmlspecialchars($resultado_cargo_selecionado['titulo_cargo'] ?? "") . '</td></tr>
-    <tr><th>Encaminhado por</th><td>' . htmlspecialchars($resultado_clinica_selecionada['nome_fantasia'] ?? "") . '</td></tr>
-</table>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <!-- Orelha Direita -->
+                    <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:5px; color:red;">Orelha Direita (OD)</div>
+                        <img src="audiograma.jpg" alt="Audiograma OD" style="width:95%; height:auto; max-width:380px;">
+                        <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
+                            <tr><td style="border:1px solid #000; padding:4px;">MASK VA</td></tr>
+                            <tr><td style="border:1px solid #000; padding:4px;">MASK VO</td></tr>
+                        </table>
+                    </td>
+                    <!-- Orelha Esquerda -->
+                    <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:5px; color:blue;">Orelha Esquerda (OE)</div>
+                        <img src="audiograma.jpg" alt="Audiograma OE" style="width:95%; height:auto; max-width:380px;">
+                        <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
+                            <tr><td style="border:1px solid #000; padding:4px;">MASK VA</td></tr>
+                            <tr><td style="border:1px solid #000; padding:4px;">MASK VO</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
 
-<table>
-    <tr>
-        <td colspan="2" class="section-title">02 - AUDIOMETRIA TONAL LIMIAR</td>
-    </tr>
-    <tr><th>Orelha Direita (OD)</th><td></td></tr>
-    <tr><th>Orelha Esquerda (OE)</th><td></td></tr>
-</table>
 
-<table>
-    <tr>
-        <td colspan="2" class="section-title">03 - LOGOAUDIOMETRIA</td>
-    </tr>
-    <tr><th>Lim. Reconhecimento de Fala (OD)</th><td></td></tr>
-    <tr><th>Lim. Reconhecimento de Fala (OE)</th><td></td></tr>
-    <tr><th>Índice de Reconhecimento de Fala</th><td></td></tr>
-</table>
+        <table style="width:100%; margin-top:5px; border-collapse:collapse; font-size:12px; text-align:center;">
+            <tr>
+                <th colspan="2" style="border:1px solid #000; background:#f9f9f9;">Discriminação Vocal</th>
+                <th colspan="2" style="border:1px solid #000; background:#f9f9f9;">SRT</th>
+            </tr>
+            <tr>
+                <td style="border:1px solid #000;">Monossílabo</td>
+                <td style="border:1px solid #000;">
+                    <span style="color:red;">D:</span> ____ % a ____ dB <br>
+                    <span style="color:blue;">E:</span> ____ % a ____ dB
+                </td>
+                <td style="border:1px solid #000;" colspan="2">
+                    <span style="color:red;">SRT-OD:</span> ____ dB <br>
+                    <span style="color:blue;">SRT-OE:</span> ____ dB
+                </td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #000;">Dissílabo</td>
+                <td style="border:1px solid #000;">
+                    <span style="color:red;">D:</span> ____ % a ____ dB <br>
+                    <span style="color:blue;">E:</span> ____ % a ____ dB
+                </td>
+                <td style="border:1px solid #000;" colspan="2"></td>
+            </tr>
+        </table>
 
-<table>
-    <tr>
-        <td colspan="2" class="section-title">04 - EXAMES COMPLEMENTARES</td>
-    </tr>
-    <tr><th>Weber Audiométrico</th><td></td></tr>
-    <tr><th>Tone Decay Técnica Rosenberg</th><td></td></tr>
-</table>
+                <!-- Laudo -->
+        <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
+            <tr>
+                <td colspan="1" style="border:1px solid #000; font-weight:bold; padding:4px;">Laudo:</td>
+            </tr>
+            <tr><td style="border:1px solid #000; height:20px;"></td></tr>
+            <tr><td style="border:1px solid #000; height:20px;"></td></tr>
+            <tr><td style="border:1px solid #000; height:20px;"></td></tr>
+        </table>
 
-<table>
-    <tr>
-        <td colspan="2" class="section-title">05 - PARECER FONOAUDIÓLOGO</td>
-    </tr>
-    <tr>
-        <td colspan="2"><textarea disabled style="width:100%; height:80px; border:1px solid #000;"></textarea></td>
-    </tr>
-</table>
 
-<table>
-    <tr>
-        <td colspan="2" class="section-title">06 - ASSINATURAS</td>
-    </tr>
-    <tr>
-        <th>Paciente</th>
-        <td><div class="assinatura"></div><small>Assinatura do Paciente</small></td>
-    </tr>
-    <tr>
-        <th>Médico Responsável</th>
-        <td><div class="assinatura"></div><small>Assinatura e Carimbo do Médico</small></td>
-    </tr>
-</table>
+        <table>
+                <tr>
+                    <td colspan="2" style="background:#eaeaea; border:1px solid #666; font-weight:bold; font-size:12px; padding:3px 8px; text-align:left;">
+                        CONCLUSÃO
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:6px;">
+                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <!-- Espaço para assinatura -->
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                        
+                        ' . $html_assinatura . ' <br>
+                        Médico emitente/ Examinador
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+                    </td>
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                        Funcionário<br>
+                        ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                        <br>
+                        _______________________________<br>
+                        Assinatura do Funcionário
+                    </td>
+                </tr>
+            </table>
 
         </div>
-        
-        
-        
+         
+        <div class="actions">
+                <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
+                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
+                <button class="btn btn-print" onclick="window.print()">Salvar</button>
+            </div>
         ';
         } else if ($exames_procedimentos === true || $treinamentos === true || $epi_epc === true || $faturamento === true) {
 
