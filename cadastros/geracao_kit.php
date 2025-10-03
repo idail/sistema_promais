@@ -6529,6 +6529,42 @@ function renderResultadoProfissional(tipo) {
       });
     }
 
+    $.ajax({
+        url: "cadastros/processa_geracao_kit.php", // Endpoint da API
+        method: "GET",
+        dataType: "json",
+        data: { processo_geracao_kit: "buscar_kits_empresa" },
+        success: async function(resposta_kits) {
+          console.log('Clínicas retornadas:', resposta_clinicas);
+
+          // const listaClinicas = resposta_clinicas && resposta_clinicas.data && Array.isArray(resposta_clinicas.data.clinicas)
+          //   ? resposta_clinicas.data.clinicas
+          //   : [];
+
+          // if (listaClinicas.length > 0) {
+          //   for (let c = 0; c < listaClinicas.length; c++) {
+          //     clinicas.push({
+          //       id:listaClinicas[c].id,
+          //       nome: listaClinicas[c].nome_fantasia,
+          //       cnpj: listaClinicas[c].cnpj,
+          //     });
+          //   }
+
+          //   if (typeof ecpData !== 'undefined') {
+          //     ecpData.clinicas = clinicas;
+          //   }
+
+          //   console.log('Clínicas carregadas:', clinicas);
+          // } else {
+          //   console.warn('Nenhuma clínica encontrada na resposta.');
+          // }
+        },
+        error:function(xhr,status,error)
+        {
+
+        },
+      });
+
     // Dados dos Kits relacionados aos colaboradores
     const kitsColaboradores = {
       '02763134106': [

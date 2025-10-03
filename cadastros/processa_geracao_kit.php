@@ -469,5 +469,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo json_encode("KIT não foi atualizado com sucesso");
         }
     }
+}else if($_SERVER["REQUEST_METHOD"] === "GET")
+{
+    $recebe_processo_geracao_kit = $_GET["processo_geracao_kit"];
+
+    if($recebe_processo_geracao_kit === "buscar_kits_empresa")
+    {
+        $instrucao_busca_kits_empresa = "select * from kits where empresa_id = :recebe_empresa_id";
+        $comando_busca_kits_empresa = $pdo->prepare($instrucao_busca_kits_empresa);
+        $comando_busca_kits_empresa->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_kits_empresa->execute();
+        $resultado_busca_kits_empresa = $comando_busca_kits_empresa->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_kits_empresa);
+    }
 }
 ?>
