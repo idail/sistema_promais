@@ -79,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // $treinamentos         = getBooleanCampo($dados_lower, 'treinamentos');
         // $epi_epc              = getBooleanCampo($dados_lower, 'epi/epc'); // ou 'epi,epc'
         $faturamento           = strpos($dados_lower, strtolower('Faturamento')) !== false;
+        $audiometria           = strpos($dados_lower, strtolower('Audiometria')) !== false;
 
         // Debug
         // var_dump([
@@ -5741,7 +5742,7 @@ function printSection(button) {
             </div>
         
         ';
-        }else if($resumo_laudo)
+        }else if($audiometria)
         {
             $informacoes_clinica;
 
