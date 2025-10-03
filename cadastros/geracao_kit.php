@@ -9802,6 +9802,16 @@ console.log(total); // Exemplo: "180.10"
                 <span>Toxicológico</span>
               </div>
             </label>
+
+            <!-- Audiometria -->
+            <label class="sm-label">
+              <input type="checkbox" class="sm-checkbox">
+              <div class="sm-card">
+                <i class="fas fa-assistive-listening-systems"></i>
+                <span>Audiometria</span>
+              </div>
+            </label>
+
             
             <!-- Resumo de Laudo -->
             <label class="sm-label">
