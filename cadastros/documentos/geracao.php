@@ -3552,27 +3552,27 @@ function printSection(button) {
 
             <table>
     
-    <tr>
-        <td colspan="2" class="dados-hospital">
-            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
-    </tr>
-    <tr>
-        <!-- Espaço para assinatura -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
-            Médico emitente/ Examinador<br>
-            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
-        </td>
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            Funcionário<br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            <br>
-            _______________________________<br>
-            Assinatura do Funcionário
-        </td>
-    </tr>
-</table>
+                <tr>
+                    <td colspan="2" class="dados-hospital">
+                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+                <tr>
+                    <!-- Espaço para assinatura -->
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                        ' . $html_assinatura . ' <br>
+                        Médico emitente/ Examinador<br>
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+                    </td>
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                                    <br>
+                                    
+                                    <br>
+                                    _______________________________<br>
+                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                    </td>
+                </tr>
+            </table>
 
             
 
@@ -4267,11 +4267,11 @@ function printSection(button) {
             ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
         </td>
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            Funcionário<br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            <br>
-            _______________________________<br>
-            Assinatura do Funcionário
+                                    <br>
+                                    
+                                    <br>
+                                    _______________________________<br>
+                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
         </td>
     </tr>
 </table>
@@ -5071,12 +5071,13 @@ function printSection(button) {
             Médico emitente/ Examinador<br>
             ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
         </td>
+
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            Funcionário<br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-            <br>
-            _______________________________<br>
-            Assinatura do Funcionário
+                                    <br>
+                                    
+                                    <br>
+                                    _______________________________<br>
+                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
         </td>
     </tr>
 </table>
@@ -5720,15 +5721,15 @@ function printSection(button) {
                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
                     </td>
                 </tr>
-                <tr>
-                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        Funcionário<br>
-                        ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                        <br>
-                        _______________________________<br>
-                        Assinatura do Funcionário
-                    </td>
-                </tr>
+                
+
+                <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                                    <br>
+                                    
+                                    <br>
+                                    _______________________________<br>
+                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+                </td>
             </table>
 
 
