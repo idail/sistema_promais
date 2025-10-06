@@ -5405,7 +5405,7 @@ function renderResultadoProfissional(tipo) {
                     'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
                   };
                   
-                  const status = kit.status || 'Pendente';
+                  const status = kit.status || 'RASCUNHO';
                   const config = statusConfig[status] || statusConfig.default;
                   
                   return `
@@ -5431,7 +5431,7 @@ function renderResultadoProfissional(tipo) {
                         </div>
                         <div style="display: flex; align-items: center; margin-left: 0.5rem; color: #9ca3af; font-size: 0.875rem; white-space: nowrap;">
                           <i class="far fa-calendar-alt mr-1"></i>
-                          ${kit.data}
+                          ${new Date(kit.data).toLocaleDateString('pt-BR')}
                         </div>
                       </div>
                     </div>
@@ -5918,13 +5918,20 @@ function renderResultadoProfissional(tipo) {
     }
     
     function abrirDetalhesKit(kit, nomeColaborador) {
+      debugger;
       // Configurações de status
+      // const statusConfig = {
+      //   'Concluído': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
+      //   'Pendente': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+      //   'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
+      // };
+
       const statusConfig = {
-        'Concluído': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
-        'Pendente': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+        'FINALIZADO': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
+        'RASCUNHO': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
         'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
       };
-      const status = kit.status || 'Pendente';
+      const status = kit.status || 'RASCUNHO';
       const statusInfo = statusConfig[status] || statusConfig.default;
       
       // Criar o modal
@@ -6014,7 +6021,7 @@ function renderResultadoProfissional(tipo) {
                   background-color: ${statusInfo.bg};
                   color: ${statusInfo.text};
                 ">
-                  <i class="fas ${statusInfo.icon} mr-1.5"></i>
+                  <i class="fas ${statusInfo.icon} mr-1.5" style="margin-inline-end: 5px;"></i>
                   ${status}
                 </div>
               </div>
@@ -6050,7 +6057,12 @@ function renderResultadoProfissional(tipo) {
                 </div>
                 <div>
                   <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Data</div>
-                  <div style="font-size: 0.9375rem; color: #111827;">${kit.data || 'Não informada'}</div>
+                  <div style="font-size: 0.9375rem; color: #111827;">
+                    <div style="font-size: 0.9375rem; color: #111827;">
+  ${kit.data ? new Date(kit.data.replace(' ', 'T')).toLocaleDateString('pt-BR') : 'Não informada'}
+</div>
+
+                  </div>
                 </div>
               </div>
             </div>
