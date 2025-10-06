@@ -6351,54 +6351,147 @@ function printSection(button) {
             </table>
 
             <table style="width:100%; border-collapse:collapse;">
+    <tr>
+        <!-- Orelha Direita -->
+        <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:5px; color:red;">Orelha Direita (OD)</div>
+            <img src="audiograma_final.png" alt="Audiograma OD" style="width:95%; height:auto; max-width:380px;">
+            <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
-                    <!-- Orelha Direita -->
-                    <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
-                        <div style="font-weight:bold; margin-bottom:5px; color:red;">Orelha Direita (OD)</div>
-                        <img src="audiograma.jpg" alt="Audiograma OD" style="width:95%; height:auto; max-width:380px;">
-                        <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
-                            <tr><td style="border:1px solid #000; padding:4px;">MASK VA</td></tr>
-                            <tr><td style="border:1px solid #000; padding:4px;">MASK VO</td></tr>
-                        </table>
+                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                        Média: __________________________________ dB
                     </td>
-                    <!-- Orelha Esquerda -->
-                    <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
-                        <div style="font-weight:bold; margin-bottom:5px; color:blue;">Orelha Esquerda (OE)</div>
-                        <img src="audiograma.jpg" alt="Audiograma OE" style="width:95%; height:auto; max-width:380px;">
-                        <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
-                            <tr><td style="border:1px solid #000; padding:4px;">MASK VA</td></tr>
-                            <tr><td style="border:1px solid #000; padding:4px;">MASK VO</td></tr>
-                        </table>
+                </tr>
+                <tr>
+                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                        Masc. VO: Tipo: __________________________________
                     </td>
                 </tr>
             </table>
+            <div style="margin-top:6px; font-size:12px; text-align:center;">
+                <label><input type="checkbox"> OD</label>
+                <label style="margin-left:15px;"><input type="checkbox"> OE</label>
+            </div>
+        </td>
+
+        <!-- Orelha Esquerda -->
+        <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:5px; color:blue;">Orelha Esquerda (OE)</div>
+            <img src="audiograma_final.png" alt="Audiograma OE" style="width:95%; height:auto; max-width:380px;">
+            <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
+                <tr>
+                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                        Média: __________________________________ dB
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                        Masc. VA: Tipo: __________________________________
+                    </td>
+                </tr>
+            </table>
+            <div style="margin-top:6px; font-size:12px; text-align:center;">
+                <label><input type="checkbox"> OD</label>
+                <label style="margin-left:15px;"><input type="checkbox"> OE</label>
+            </div>
+        </td>
+    </tr>
+</table>
 
 
-        <table style="width:100%; margin-top:5px; border-collapse:collapse; font-size:12px; text-align:center;">
-            <tr>
-                <th colspan="2" style="border:1px solid #000; background:#f9f9f9;">Discriminação Vocal</th>
-                <th colspan="2" style="border:1px solid #000; background:#f9f9f9;">SRT</th>
-            </tr>
-            <tr>
-                <td style="border:1px solid #000;">Monossílabo</td>
-                <td style="border:1px solid #000;">
-                    <span style="color:red;">D:</span> ____ % a ____ dB <br>
-                    <span style="color:blue;">E:</span> ____ % a ____ dB
-                </td>
-                <td style="border:1px solid #000;" colspan="2">
-                    <span style="color:red;">SRT-OD:</span> ____ dB <br>
-                    <span style="color:blue;">SRT-OE:</span> ____ dB
-                </td>
-            </tr>
-            <tr>
-                <td style="border:1px solid #000;">Dissílabo</td>
-                <td style="border:1px solid #000;">
-                    <span style="color:red;">D:</span> ____ % a ____ dB <br>
-                    <span style="color:blue;">E:</span> ____ % a ____ dB
-                </td>
-                <td style="border:1px solid #000;" colspan="2"></td>
-            </tr>
-        </table>
+
+        <table style="width:100%; margin-top:10px; border-collapse:collapse; font-size:12px; text-align:center;">
+    <tr>
+        <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OD (Direito)</th>
+        <th></th>
+        <th colspan="9" style="border:1px solid #000; background:#f9f9f9;">Limiar OE (Esquerdo)</th>
+    </tr>
+    <tr>
+        <td></td>
+        <td style="border:1px solid #000;">250</td>
+        <td style="border:1px solid #000;">500</td>
+        <td style="border:1px solid #000;">1k</td>
+        <td style="border:1px solid #000;">2k</td>
+        <td style="border:1px solid #000;">3k</td>
+        <td style="border:1px solid #000;">4k</td>
+        <td style="border:1px solid #000;">6k</td>
+        <td style="border:1px solid #000;">8k</td>
+        <td style="border:1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border:1px solid #000;">VA</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">15</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">15</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">dB</td>
+    </tr>
+    <tr>
+        <!-- OD valores -->
+        <td style="border:1px solid #000;">VO</td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;">dB</td>
+        <!-- OE valores -->
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">5</td>
+        <td style="border:1px solid #000;">5</td>
+        <td style="border:1px solid #000;">10</td>
+        <td style="border:1px solid #000;">5</td>
+        <td style="border:1px solid #000;">5</td>
+        <td style="border:1px solid #000;">5</td>
+        <td style="border:1px solid #000;">5</td>
+        <td style="border:1px solid #000;">VA</td>
+    </tr>
+</table>
+
+<br>
+
+<table style="width:100%; border-collapse:collapse; font-size:12px; text-align:center; margin-top:15px;">
+    <tr>
+        <th colspan="2" style="border:1px solid #000; background:#f9f9f9;">IRF</th>
+        <th colspan="4" style="border:1px solid #000; background:#f9f9f9;">Rinne</th>
+        <th colspan="5" style="border:1px solid #000; background:#f9f9f9;">Weber</th>
+    </tr>
+    <tr>
+        <td style="border:1px solid #000;">Monos</td>
+        <td style="border:1px solid #000;">Dissil</td>
+        <td style="border:1px solid #000;">500</td>
+        <td style="border:1px solid #000;">1k</td>
+        <td style="border:1px solid #000;">2k</td>
+        <td style="border:1px solid #000;">4k</td>
+        <td style="border:1px solid #000;">250</td>
+        <td style="border:1px solid #000;">500</td>
+        <td style="border:1px solid #000;">1k</td>
+        <td style="border:1px solid #000;">2k</td>
+        <td style="border:1px solid #000;">4k</td>
+    </tr>
+    <tr>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">OD</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">OD</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">&nbsp;</td>
+        <td style="border:1px solid #000;">OE</td>
+    </tr>
+</table>
+
+
 
                 <!-- Laudo -->
         <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
@@ -6431,12 +6524,12 @@ function printSection(button) {
                         ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
                     </td>
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        Funcionário<br>
-                        ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                        <br>
-                        _______________________________<br>
-                        Assinatura do Funcionário
-                    </td>
+                                    <br>
+                                    
+                                    <br>
+                                    _______________________________<br>
+                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+        </td>
                 </tr>
             </table>
 
