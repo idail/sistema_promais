@@ -6492,52 +6492,85 @@ function printSection(button) {
 
 <br>
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; text-align:center; margin-top:15px;">
-    <tr>
-        <th colspan="2" style="border:1px solid #000; background:#f9f9f9;">IRF</th>
-        <th colspan="4" style="border:1px solid #000; background:#f9f9f9;">Rinne</th>
-        <th colspan="5" style="border:1px solid #000; background:#f9f9f9;">Weber</th>
-    </tr>
-    <tr>
-        <td style="border:1px solid #000;">Monos</td>
-        <td style="border:1px solid #000;">Dissil</td>
-        <td style="border:1px solid #000;">500</td>
-        <td style="border:1px solid #000;">1k</td>
-        <td style="border:1px solid #000;">2k</td>
-        <td style="border:1px solid #000;">4k</td>
-        <td style="border:1px solid #000;">250</td>
-        <td style="border:1px solid #000;">500</td>
-        <td style="border:1px solid #000;">1k</td>
-        <td style="border:1px solid #000;">2k</td>
-        <td style="border:1px solid #000;">4k</td>
-    </tr>
-    <tr>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">OD</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">OD</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">&nbsp;</td>
-        <td style="border:1px solid #000;">OE</td>
-    </tr>
-</table>
+<div style="display:flex; justify-content:space-between; gap:30px; margin-top:15px; font-size:12px; text-align:center;">
+    <!-- IRF -->
+    <table style="border-collapse:collapse; width:25%;">
+        <tr>
+            <th colspan="4" style="border:1px solid #000; background:#f9f9f9;">IRF</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="border:1px solid #000;">Monos</td>
+            <td style="border:1px solid #000;">Dissil</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">OD</td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">OE</td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+        </tr>
+    </table>
 
+    <!-- Rinne -->
+    <table style="border-collapse:collapse; width:35%;">
+        <tr>
+            <th colspan="5" style="border:1px solid #000; background:#f9f9f9;">Rinne</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border:1px solid #000;">500</td>
+            <td style="border:1px solid #000;">1k</td>
+            <td style="border:1px solid #000;">2k</td>
+            <td style="border:1px solid #000;">4k</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">OD</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">OE</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+        </tr>
+    </table>
 
-
-                <!-- Laudo -->
-        <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px;">
-            <tr>
-                <td colspan="1" style="border:1px solid #000; font-weight:bold; padding:4px;">Laudo:</td>
-            </tr>
-            <tr><td style="border:1px solid #000; height:20px;"></td></tr>
-            <tr><td style="border:1px solid #000; height:20px;"></td></tr>
-            <tr><td style="border:1px solid #000; height:20px;"></td></tr>
-        </table>
-
+    <!-- Weber -->
+    <table style="border-collapse:collapse; width:35%;">
+        <tr>
+            <th colspan="7" style="border:1px solid #000; background:#f9f9f9;">Weber</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border:1px solid #000;">250</td>
+            <td style="border:1px solid #000;">500</td>
+            <td style="border:1px solid #000;">1k</td>
+            <td style="border:1px solid #000;">2k</td>
+            <td style="border:1px solid #000;">4k</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">OD</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">&nbsp;</td>
+            <td style="border:1px solid #000;">OE</td>
+        </tr>
+    </table>
+</div>
 
         <table>
                 <tr>
