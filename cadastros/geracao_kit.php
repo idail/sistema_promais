@@ -4804,6 +4804,43 @@ function renderResultadoProfissional(tipo) {
 
           },
       });
+
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php", // Endpoint da API
+        method: "GET",
+        dataType: "json",
+        data: { processo_geracao_kit: "buscar_kits_empresa" },
+        success: async function(resposta_kits) {
+          debugger;
+          console.log('KITs retornados:', resposta_kits);
+
+          // const listaClinicas = resposta_clinicas && resposta_clinicas.data && Array.isArray(resposta_clinicas.data.clinicas)
+          //   ? resposta_clinicas.data.clinicas
+          //   : [];
+
+          // if (listaClinicas.length > 0) {
+          //   for (let c = 0; c < listaClinicas.length; c++) {
+          //     clinicas.push({
+          //       id:listaClinicas[c].id,
+          //       nome: listaClinicas[c].nome_fantasia,
+          //       cnpj: listaClinicas[c].cnpj,
+          //     });
+          //   }
+
+          //   if (typeof ecpData !== 'undefined') {
+          //     ecpData.clinicas = clinicas;
+          //   }
+
+          //   console.log('Clínicas carregadas:', clinicas);
+          // } else {
+          //   console.warn('Nenhuma clínica encontrada na resposta.');
+          // }
+        },
+        error:function(xhr,status,error)
+        {
+
+        },
+      });
     });
 
     // Funções do ECP
@@ -5077,8 +5114,127 @@ function renderResultadoProfissional(tipo) {
 
     let recebe_nome_clinica_selecionado;
 
+    function requisitarKits(codigo_pessoa) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_kits_empresa",valor_pessoa_id: codigo_pessoa},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarEmpresaPessoa(codigo_empresa) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_empresa_pessoa",valor_id_empresa: codigo_empresa},
+          success: function(resposta) {
+            console.log("Empresa retornada:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    const kitsColaboradores = {};
+
     async function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
+
+
+      let recebe_codigo_empresa_pessoa;
+  let resposta_empresa_pessoa;
+  let resposta_kits;
+
+  if (inputId === "inputColaborador") {
+    // 🔹 requisita kits da pessoa
+    resposta_kits = await requisitarKits(item.id);
+
+    // Se retornou kits, pega a empresa_id do primeiro
+    if (resposta_kits && resposta_kits.length > 0) {
+      recebe_codigo_empresa_pessoa = resposta_kits[0]["empresa_id"];
+    }
+
+    // 🔹 requisita dados da empresa (se existir empresa_id)
+    if (recebe_codigo_empresa_pessoa) {
+      resposta_empresa_pessoa = await requisitarEmpresaPessoa(recebe_codigo_empresa_pessoa);
+    }
+
+    console.log("Resposta final de kits:", resposta_kits);
+    console.log("Empresa:", resposta_empresa_pessoa?.nome);
+  }
+
+  // 🔹 Monta no formato do exemplo
+  if (item?.cpf && resposta_kits && resposta_kits.length > 0) {
+    // 🔹 Remove pontos e traços do CPF
+    const cpfLimpo = item.cpf.replace(/[.\-]/g, "");
+
+    // Se não existir entrada para o CPF, cria array vazio
+    if (!kitsColaboradores[cpfLimpo]) {
+      kitsColaboradores[cpfLimpo] = [];
+    }
+
+    // Adiciona cada kit ao array do CPF
+    resposta_kits.forEach(kit => {
+      kitsColaboradores[cpfLimpo].push({
+        id: kit.codigo || "",                                     // código do kit
+        data: kit.data_geracao || "",                             // data de geração
+        empresa: resposta_empresa_pessoa?.nome || "Não informado", // nome da empresa
+        cargo: item.cargo || "Não informado",                     // cargo da pessoa
+        status: kit.status || "Não informado"                     // status do kit
+      });
+    });
+}
+
+
+  console.log("kitsColaboradores:", kitsColaboradores);
+
+
+    //   const kitsColaboradores = {
+    //   '02763134106': [
+    //     { id: 'KIT001', data: '15/10/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
+    //     { id: 'KIT002', data: '20/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Pendente' },
+    //     { id: 'KIT003', data: '10/08/2023', empresa: 'Comércio XYZ S/A', cargo: 'Técnico de Segurança', status: 'Concluído' },
+    //     { id: 'KIT010', data: '05/07/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
+    //     { id: 'KIT011', data: '22/06/2023', empresa: 'Serviços Gama', cargo: 'Analista de Segurança', status: 'Cancelado' }
+    //   ],
+    //   '99867702115': [
+    //     { id: 'KIT004', data: '05/11/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
+    //     { id: 'KIT005', data: '28/10/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Cancelado' },
+    //     { id: 'KIT012', data: '15/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
+    //   ],
+    //   '45612378911': [
+    //     { id: 'KIT006', data: '12/11/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
+    //     { id: 'KIT007', data: '30/10/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
+    //     { id: 'KIT013', data: '18/09/2023', empresa: 'Comércio XYZ S/A', cargo: 'Engenheiro de Segurança', status: 'Pendente' },
+    //     { id: 'KIT014', data: '05/08/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
+    //   ],
+    //   '78912345622': [
+    //     { id: 'KIT008', data: '08/11/2023', empresa: 'Saúde Total', cargo: 'Enfermeira do Trabalho', status: 'Concluído' },
+    //     { id: 'KIT015', data: '22/10/2023', empresa: 'Saúde Total', cargo: 'Enfermeira do Trabalho', status: 'Concluído' },
+    //     { id: 'KIT016', data: '14/09/2023', empresa: 'Clínica Vida', cargo: 'Enfermeira do Trabalho', status: 'Concluído' }
+    //   ],
+    //   '32165498733': [
+    //     { id: 'KIT009', data: '03/11/2023', empresa: 'Hospital Esperança', cargo: 'Técnico em Enfermagem', status: 'Pendente' },
+    //     { id: 'KIT017', data: '19/10/2023', empresa: 'Hospital Esperança', cargo: 'Técnico em Enfermagem', status: 'Concluído' },
+    //     { id: 'KIT018', data: '07/09/2023', empresa: 'Clínica Saúde', cargo: 'Técnico em Enfermagem', status: 'Concluído' }
+    //   ]
+    // };
+
       // Se o item for uma string, faz o parse do JSON
       const itemObj = typeof item === 'string' ? JSON.parse(item) : item;
     
@@ -6566,36 +6722,36 @@ function renderResultadoProfissional(tipo) {
       });
 
     // Dados dos Kits relacionados aos colaboradores
-    const kitsColaboradores = {
-      '02763134106': [
-        { id: 'KIT001', data: '15/10/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
-        { id: 'KIT002', data: '20/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Pendente' },
-        { id: 'KIT003', data: '10/08/2023', empresa: 'Comércio XYZ S/A', cargo: 'Técnico de Segurança', status: 'Concluído' },
-        { id: 'KIT010', data: '05/07/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
-        { id: 'KIT011', data: '22/06/2023', empresa: 'Serviços Gama', cargo: 'Analista de Segurança', status: 'Cancelado' }
-      ],
-      '99867702115': [
-        { id: 'KIT004', data: '05/11/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
-        { id: 'KIT005', data: '28/10/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Cancelado' },
-        { id: 'KIT012', data: '15/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
-      ],
-      '45612378911': [
-        { id: 'KIT006', data: '12/11/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
-        { id: 'KIT007', data: '30/10/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
-        { id: 'KIT013', data: '18/09/2023', empresa: 'Comércio XYZ S/A', cargo: 'Engenheiro de Segurança', status: 'Pendente' },
-        { id: 'KIT014', data: '05/08/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
-      ],
-      '78912345622': [
-        { id: 'KIT008', data: '08/11/2023', empresa: 'Saúde Total', cargo: 'Enfermeira do Trabalho', status: 'Concluído' },
-        { id: 'KIT015', data: '22/10/2023', empresa: 'Saúde Total', cargo: 'Enfermeira do Trabalho', status: 'Concluído' },
-        { id: 'KIT016', data: '14/09/2023', empresa: 'Clínica Vida', cargo: 'Enfermeira do Trabalho', status: 'Concluído' }
-      ],
-      '32165498733': [
-        { id: 'KIT009', data: '03/11/2023', empresa: 'Hospital Esperança', cargo: 'Técnico em Enfermagem', status: 'Pendente' },
-        { id: 'KIT017', data: '19/10/2023', empresa: 'Hospital Esperança', cargo: 'Técnico em Enfermagem', status: 'Concluído' },
-        { id: 'KIT018', data: '07/09/2023', empresa: 'Clínica Saúde', cargo: 'Técnico em Enfermagem', status: 'Concluído' }
-      ]
-    };
+    // const kitsColaboradores = {
+    //   '02763134106': [
+    //     { id: 'KIT001', data: '15/10/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
+    //     { id: 'KIT002', data: '20/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Pendente' },
+    //     { id: 'KIT003', data: '10/08/2023', empresa: 'Comércio XYZ S/A', cargo: 'Técnico de Segurança', status: 'Concluído' },
+    //     { id: 'KIT010', data: '05/07/2023', empresa: 'Indústria ABC Ltda', cargo: 'Analista de Segurança', status: 'Concluído' },
+    //     { id: 'KIT011', data: '22/06/2023', empresa: 'Serviços Gama', cargo: 'Analista de Segurança', status: 'Cancelado' }
+    //   ],
+    //   '99867702115': [
+    //     { id: 'KIT004', data: '05/11/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
+    //     { id: 'KIT005', data: '28/10/2023', empresa: 'Construtora Delta', cargo: 'Engenheiro de Segurança', status: 'Cancelado' },
+    //     { id: 'KIT012', data: '15/09/2023', empresa: 'Indústria ABC Ltda', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
+    //   ],
+    //   '45612378911': [
+    //     { id: 'KIT006', data: '12/11/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
+    //     { id: 'KIT007', data: '30/10/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' },
+    //     { id: 'KIT013', data: '18/09/2023', empresa: 'Comércio XYZ S/A', cargo: 'Engenheiro de Segurança', status: 'Pendente' },
+    //     { id: 'KIT014', data: '05/08/2023', empresa: 'Tecnologia Inova', cargo: 'Engenheiro de Segurança', status: 'Concluído' }
+    //   ],
+    //   '78912345622': [
+    //     { id: 'KIT008', data: '08/11/2023', empresa: 'Saúde Total', cargo: 'Enfermeira do Trabalho', status: 'Concluído' },
+    //     { id: 'KIT015', data: '22/10/2023', empresa: 'Saúde Total', cargo: 'Enfermeira do Trabalho', status: 'Concluído' },
+    //     { id: 'KIT016', data: '14/09/2023', empresa: 'Clínica Vida', cargo: 'Enfermeira do Trabalho', status: 'Concluído' }
+    //   ],
+    //   '32165498733': [
+    //     { id: 'KIT009', data: '03/11/2023', empresa: 'Hospital Esperança', cargo: 'Técnico em Enfermagem', status: 'Pendente' },
+    //     { id: 'KIT017', data: '19/10/2023', empresa: 'Hospital Esperança', cargo: 'Técnico em Enfermagem', status: 'Concluído' },
+    //     { id: 'KIT018', data: '07/09/2023', empresa: 'Clínica Saúde', cargo: 'Técnico em Enfermagem', status: 'Concluído' }
+    //   ]
+    // };
 
     function busca_medicos_relacionados_empresa()
     {

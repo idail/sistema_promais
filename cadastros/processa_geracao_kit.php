@@ -475,12 +475,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if($recebe_processo_geracao_kit === "buscar_kits_empresa")
     {
-        $instrucao_busca_kits_empresa = "select * from kits where empresa_id = :recebe_empresa_id";
+        $instrucao_busca_kits_empresa = "select * from kits where empresa_id_principal = :recebe_empresa_id and pessoa_id = :recebe_pessoa_id";
         $comando_busca_kits_empresa = $pdo->prepare($instrucao_busca_kits_empresa);
         $comando_busca_kits_empresa->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_kits_empresa->bindValue(":recebe_pessoa_id",$_GET["valor_pessoa_id"]);
         $comando_busca_kits_empresa->execute();
         $resultado_busca_kits_empresa = $comando_busca_kits_empresa->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_kits_empresa);
+    }else if($recebe_processo_geracao_kit === "buscar_empresa_pessoa")
+    {
+        $instrucao_busca_empresa_pessoa = "select * from empresas_novas where id = :recebe_id_empresa";
+        $comando_busca_empresa_pessoa = $pdo->prepare($instrucao_busca_empresa_pessoa);
+        $comando_busca_empresa_pessoa->bindValue(":recebe_id_empresa",$_GET["valor_id_empresa"]);
+        $comando_busca_empresa_pessoa->execute();
+        $resultado_busca_empresa_pessoa = $comando_busca_empresa_pessoa->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_empresa_pessoa);
     }
 }
 ?>
