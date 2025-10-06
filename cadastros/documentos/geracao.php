@@ -6400,60 +6400,95 @@ function printSection(button) {
 
 
 
-        <table style="width:100%; margin-top:10px; border-collapse:collapse; font-size:12px; text-align:center;">
-    <tr>
-        <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OD (Direito)</th>
-        <th></th>
-        <th colspan="9" style="border:1px solid #000; background:#f9f9f9;">Limiar OE (Esquerdo)</th>
-    </tr>
-    <tr>
-        <td></td>
-        <td style="border:1px solid #000;">250</td>
-        <td style="border:1px solid #000;">500</td>
-        <td style="border:1px solid #000;">1k</td>
-        <td style="border:1px solid #000;">2k</td>
-        <td style="border:1px solid #000;">3k</td>
-        <td style="border:1px solid #000;">4k</td>
-        <td style="border:1px solid #000;">6k</td>
-        <td style="border:1px solid #000;">8k</td>
-        <td style="border:1px solid #000;"></td>
-    </tr>
-    <tr>
-        <td style="border:1px solid #000;">VA</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">15</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">15</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">dB</td>
-    </tr>
-    <tr>
-        <!-- OD valores -->
-        <td style="border:1px solid #000;">VO</td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;"></td>
-        <td style="border:1px solid #000;">dB</td>
-        <!-- OE valores -->
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">5</td>
-        <td style="border:1px solid #000;">5</td>
-        <td style="border:1px solid #000;">10</td>
-        <td style="border:1px solid #000;">5</td>
-        <td style="border:1px solid #000;">5</td>
-        <td style="border:1px solid #000;">5</td>
-        <td style="border:1px solid #000;">5</td>
-        <td style="border:1px solid #000;">VA</td>
-    </tr>
-</table>
+        <div style="display:flex; justify-content:space-between; gap:40px; margin-top:10px; font-size:12px; text-align:center;">
+    <!-- Limiar OD -->
+    <table style="border-collapse:collapse; width:48%;">
+        <tr>
+            <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OD (Direito)</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border:1px solid #000;">250</td>
+            <td style="border:1px solid #000;">500</td>
+            <td style="border:1px solid #000;">1k</td>
+            <td style="border:1px solid #000;">2k</td>
+            <td style="border:1px solid #000;">3k</td>
+            <td style="border:1px solid #000;">4k</td>
+            <td style="border:1px solid #000;">6k</td>
+            <td style="border:1px solid #000;">8k</td>
+            <td style="border:1px solid #000;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">VA</td>
+            <td style="border:1px solid #000;">10</td>
+            <td style="border:1px solid #000;">10</td>
+            <td style="border:1px solid #000;">15</td>
+            <td style="border:1px solid #000;">10</td>
+            <td style="border:1px solid #000;">10</td>
+            <td style="border:1px solid #000;">15</td>
+            <td style="border:1px solid #000;">10</td>
+            <td style="border:1px solid #000;">10</td>
+            <td style="border:1px solid #000;">dB</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000;">VO</td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;">dB</td>
+        </tr>
+    </table>
+
+    <!-- Limiar OE -->
+    <table style="border-collapse:collapse; width:48%;">
+        <tr>
+            <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OE (Esquerdo)</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="border:1px solid:#000;">250</td>
+            <td style="border:1px solid:#000;">500</td>
+            <td style="border:1px solid:#000;">1k</td>
+            <td style="border:1px solid:#000;">2k</td>
+            <td style="border:1px solid:#000;">3k</td>
+            <td style="border:1px solid:#000;">4k</td>
+            <td style="border:1px solid:#000;">6k</td>
+            <td style="border:1px solid:#000;">8k</td>
+            <td style="border:1px solid:#000;"></td>
+        </tr>
+        <tr>
+            <td style="border:1px solid:#000;">VA</td>
+            <td style="border:1px solid:#000;">10</td>
+            <td style="border:1px solid:#000;">5</td>
+            <td style="border:1px solid:#000;">5</td>
+            <td style="border:1px solid:#000;">10</td>
+            <td style="border:1px solid:#000;">5</td>
+            <td style="border:1px solid:#000;">5</td>
+            <td style="border:1px solid:#000;">5</td>
+            <td style="border:1px solid:#000;">5</td>
+            <td style="border:1px solid:#000;">dB</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid:#000;">VO</td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;"></td>
+            <td style="border:1px solid:#000;">dB</td>
+        </tr>
+    </table>
+</div>
+
+
 
 <br>
 
