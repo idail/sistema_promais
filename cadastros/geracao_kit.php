@@ -5400,8 +5400,8 @@ function renderResultadoProfissional(tipo) {
               <div style="display: grid; gap: 0.75rem;">
                 ${kitsParaExibir.map(kit => {
                   const statusConfig = {
-                    'Concluído': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
-                    'Pendente': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+                    'FINALIZADO': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
+                    'RASCUNHO': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
                     'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
                   };
                   
@@ -5420,7 +5420,7 @@ function renderResultadoProfissional(tipo) {
                             </span>
                             <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
                                       font-size: 0.75rem; font-weight: 500; background-color: ${config.bg}; color: ${config.text};">
-                              <i class="fas ${config.icon} mr-1"></i>
+                              <i class="fas ${config.icon} mr-1" style="margin-inline: 5px;"> </i>
                               ${status}
                             </span>
                           </div>
