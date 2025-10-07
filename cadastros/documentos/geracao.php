@@ -6290,6 +6290,36 @@ function printSection(button) {
   }
 }
 
+@media print {
+    /* Impede quebra dentro do bloco */
+    .no-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        display: block !important;
+    }
+
+    /* Evita quebras dentro das tabelas */
+    table, tr, td {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Garante que a assinatura fique junto */
+    .assinatura-bloco {
+        page-break-before: auto !important;
+        page-break-after: avoid !important;
+        margin-top: 10px !important;
+        display: table !important;
+        width: 100% !important;
+    }
+
+    /* Remove margens que possam forçar quebra */
+    body, html {
+        margin: 0;
+        padding: 0;
+    }
+}
+
         </style>
 
         <div class="guia-container">
@@ -6350,39 +6380,38 @@ function printSection(button) {
                 </tr>
             </table>
 
-            <table style="width:100%; border-collapse:collapse;">
+            <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
     <tr>
         <!-- Orelha Direita -->
-        <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
-            <div style="font-weight:bold; margin-bottom:5px; color:red;">Orelha Direita (OD)</div>
-            <img src="audiograma_final.png" alt="Audiograma OD" style="width:95%; height:auto; max-width:380px;">
-            <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
+        <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
+            <img src="audiograma_final.png" alt="Audiograma OD" style="width:75%; height:auto; max-width:380px; margin-top:-4px; margin-bottom:0;">
+            <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:left;">
+                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
                         Média: __________________________________ dB
                     </td>
                 </tr>
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:left;">
+                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
                         Masc. VO: Tipo: __________________________________
                     </td>
                 </tr>
             </table>
-            
         </td>
 
         <!-- Orelha Esquerda -->
-        <td style="width:50%; text-align:center; padding:10px; vertical-align:top;">
-            <div style="font-weight:bold; margin-bottom:5px; color:blue;">Orelha Esquerda (OE)</div>
-            <img src="audiograma_final.png" alt="Audiograma OE" style="width:95%; height:auto; max-width:380px;">
-            <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
+        <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
+            <img src="audiograma_final.png" alt="Audiograma OE" style="width:75%; height:auto; max-width:380px; margin-top:-4px; margin-bottom:0;">
+            <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:left;">
+                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
                         Média: __________________________________ dB
                     </td>
                 </tr>
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:left;">
+                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
                         Masc. VA: Tipo: __________________________________
                     </td>
                 </tr>
@@ -6393,9 +6422,11 @@ function printSection(button) {
 
 
 
-        <div style="display:flex; justify-content:space-between; gap:40px; margin-top:10px; font-size:12px; text-align:center;">
+
+
+        <div style="display:flex; justify-content:space-between; gap:40px; margin-top:10px; font-size:10px; text-align:center;">
     <!-- Limiar OD -->
-    <table style="border-collapse:collapse; width:48%;">
+    <table style="border-collapse:collapse; width:48%; font-size:10px;">
         <tr>
             <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OD (Direito)</th>
         </tr>
@@ -6438,7 +6469,7 @@ function printSection(button) {
     </table>
 
     <!-- Limiar OE -->
-    <table style="border-collapse:collapse; width:48%;">
+    <table style="border-collapse:collapse; width:48%; font-size:10px;">
         <tr>
             <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OE (Esquerdo)</th>
         </tr>
@@ -6481,13 +6512,11 @@ function printSection(button) {
     </table>
 </div>
 
-
-
 <br>
 
-<div style="display:flex; justify-content:space-between; gap:30px; margin-top:-13px; font-size:12px; text-align:center;">
+<div style="display:flex; justify-content:space-between; gap:30px; margin-top:-10px; font-size:9px; text-align:center;">
     <!-- IRF -->
-    <table style="border-collapse:collapse; width:25%;">
+    <table style="border-collapse:collapse; width:25%; font-size:9px;">
         <tr>
             <th colspan="4" style="border:1px solid #000; background:#f9f9f9;">IRF</th>
         </tr>
@@ -6512,7 +6541,7 @@ function printSection(button) {
     </table>
 
     <!-- Rinne -->
-    <table style="border-collapse:collapse; width:35%;">
+    <table style="border-collapse:collapse; width:35%; font-size:9px;">
         <tr>
             <th colspan="5" style="border:1px solid #000; background:#f9f9f9;">Rinne</th>
         </tr>
@@ -6540,7 +6569,7 @@ function printSection(button) {
     </table>
 
     <!-- Weber -->
-    <table style="border-collapse:collapse; width:35%;">
+    <table style="border-collapse:collapse; width:35%; font-size:9px;">
         <tr>
             <th colspan="7" style="border:1px solid #000; background:#f9f9f9;">Weber</th>
         </tr>
@@ -6564,6 +6593,7 @@ function printSection(button) {
         </tr>
     </table>
 </div>
+
 
 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:5px;">
     <tr>
@@ -6606,30 +6636,31 @@ function printSection(button) {
 
 
 
-        <table>
-                
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:6px;">
-                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                <tr>
-                    <!-- Espaço para assinatura -->
-                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        
-                        ' . $html_assinatura . ' <br>
-                        Médico emitente/ Examinador
-                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
-                    </td>
-                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                                    <br>
-                                    
-                                    <br>
-                                    _______________________________<br>
-                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </td>
-                </tr>
-            </table>
+        <table class="assinatura-bloco no-break" style="width:100%; border-collapse:collapse; font-size:12px;">
+    <tbody>
+        <tr>
+            <td colspan="2" style="padding:6px; text-align:left;">
+                ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+            </td>
+        </tr>
+        <tr>
+            <!-- Espaço para assinatura -->
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                ' . $html_assinatura . ' <br>
+                Médico emitente / Examinador<br>
+                ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - 
+                ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+            </td>
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                <br><br>_______________________________<br>
+                Assinatura do Funcionário<br>
+                ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — 
+                CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+            </td>
+        </tr>
+    </tbody>
+</table>
+
 
         </div>
          
