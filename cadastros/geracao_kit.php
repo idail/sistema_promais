@@ -6209,7 +6209,7 @@ modal.innerHTML = `
     {
       debugger;
 
-      console.log("clicado");
+      console.log(kitsColaboradores);
     }
     
     function editarKit(kitId) {
