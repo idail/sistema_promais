@@ -5191,7 +5191,7 @@ function renderResultadoProfissional(tipo) {
     // Adiciona cada kit ao array do CPF
     resposta_kits.forEach(kit => {
       kitsColaboradores[cpfLimpo].push({
-        id: kit.codigo || "",                                     // código do kit
+        id: kit.id || "",                                     // código do kit
         data: kit.data_geracao || "",                             // data de geração
         empresa: resposta_empresa_pessoa?.nome || "Não informado", // nome da empresa
         cargo: item.cargo || "Não informado",                     // cargo da pessoa
@@ -5415,9 +5415,7 @@ function renderResultadoProfissional(tipo) {
                       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="flex: 1; min-width: 0;">
                           <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                            <span style="font-weight: 500; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 0.5rem;">
-                              ${kit.id}
-                            </span>
+                            
                             <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
                                       font-size: 0.75rem; font-weight: 500; background-color: ${config.bg}; color: ${config.text};">
                               <i class="fas ${config.icon} mr-1" style="margin-inline: 5px;"> </i>
@@ -6183,6 +6181,13 @@ function renderResultadoProfissional(tipo) {
       
       // Salvar referência ao último elemento focado para retornar o foco ao fechar
       window.lastFocusedElement = document.activeElement;
+    }
+
+    function duplicarKit(id)
+    {
+      debugger;
+
+      console.log("clicado");
     }
     
     function editarKit(kitId) {
