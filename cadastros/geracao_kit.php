@@ -5195,7 +5195,8 @@ function renderResultadoProfissional(tipo) {
         data: kit.data_geracao || "",                             // data de geração
         empresa: resposta_empresa_pessoa?.nome || "Não informado", // nome da empresa
         cargo: item.cargo || "Não informado",                     // cargo da pessoa
-        status: kit.status || "Não informado"                     // status do kit
+        status: kit.status || "Não informado",                 // status do kit
+        tipo_exame:kit.tipo_exame
       });
     });
 }
@@ -5409,31 +5410,43 @@ function renderResultadoProfissional(tipo) {
                   const config = statusConfig[status] || statusConfig.default;
                   
                   return `
-                    <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; 
-                                cursor: pointer; transition: all 0.2s ease;"
-                         onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${itemObj.nome ? itemObj.nome.replace(/'/g, "\\'") : 'Colaborador'}')">
-                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div style="flex: 1; min-width: 0;">
-                          <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                            
-                            <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
-                                      font-size: 0.75rem; font-weight: 500; background-color: ${config.bg}; color: ${config.text};">
-                              <i class="fas ${config.icon} mr-1" style="margin-inline: 5px;"> </i>
-                              ${status}
-                            </span>
-                          </div>
-                          <div style="font-size: 0.875rem; color: #4b5563; margin-bottom: 0.25rem;">
-                            <span style="font-weight: 500;">${kit.empresa || 'Sem empresa'}</span>
-                            ${kit.cargo ? `<span style="margin: 0 0.25rem; color: #d1d5db;">•</span><span>${kit.cargo}</span>` : ''}
-                          </div>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-left: 0.5rem; color: #9ca3af; font-size: 0.875rem; white-space: nowrap;">
-                          <i class="far fa-calendar-alt mr-1"></i>
-                          ${new Date(kit.data).toLocaleDateString('pt-BR')}
-                        </div>
-                      </div>
-                    </div>
-                  `;
+  <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; 
+              cursor: pointer; transition: all 0.2s ease;"
+       onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${itemObj.nome ? itemObj.nome.replace(/'/g, "\\'") : 'Colaborador'}')">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div style="flex: 1; min-width: 0;">
+        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+          <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
+                        font-size: 0.75rem; font-weight: 500; background-color: ${config.bg}; color: ${config.text};">
+            <i class="fas ${config.icon} mr-1" style="margin-inline: 5px;"></i>
+            ${status}
+          </span>
+        </div>
+
+        <!-- Empresa e Cargo -->
+        <div style="font-size: 0.875rem; color: #4b5563; margin-bottom: 0.25rem;">
+          <span style="font-weight: 500;">${kit.empresa || 'Sem empresa'}</span>
+          ${kit.cargo ? `<span style="margin: 0 0.25rem; color: #d1d5db;">•</span><span>${kit.cargo}</span>` : ''}
+        </div>
+
+        <!-- Tipo de Exame -->
+        ${kit.tipo_exame ? `
+          <div style="font-size: 0.813rem; color: #374151; font-weight: 500; margin-top: 0.15rem;">
+            🧾 ${kit.tipo_exame}
+          </div>
+        ` : ''}
+
+      </div>
+
+      <!-- Data -->
+      <div style="display: flex; align-items: center; margin-left: 0.5rem; color: #9ca3af; font-size: 0.875rem; white-space: nowrap;">
+        <i class="far fa-calendar-alt mr-1"></i>
+        ${new Date(kit.data).toLocaleDateString('pt-BR')}
+      </div>
+    </div>
+  </div>
+`;
+
                 }).join('')}
               </div>
             `;
