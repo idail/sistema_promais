@@ -6358,20 +6358,17 @@ function printSection(button) {
             <img src="audiograma_final.png" alt="Audiograma OD" style="width:95%; height:auto; max-width:380px;">
             <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                    <td style="border:0px solid #000; padding:6px; text-align:left;">
                         Média: __________________________________ dB
                     </td>
                 </tr>
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                    <td style="border:0px solid #000; padding:6px; text-align:left;">
                         Masc. VO: Tipo: __________________________________
                     </td>
                 </tr>
             </table>
-            <div style="margin-top:6px; font-size:12px; text-align:center;">
-                <label><input type="checkbox"> OD</label>
-                <label style="margin-left:15px;"><input type="checkbox"> OE</label>
-            </div>
+            
         </td>
 
         <!-- Orelha Esquerda -->
@@ -6380,20 +6377,16 @@ function printSection(button) {
             <img src="audiograma_final.png" alt="Audiograma OE" style="width:95%; height:auto; max-width:380px;">
             <table style="width:95%; margin:8px auto 0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                    <td style="border:0px solid #000; padding:6px; text-align:left;">
                         Média: __________________________________ dB
                     </td>
                 </tr>
                 <tr>
-                    <td style="border:0px solid #000; padding:6px; text-align:center;">
+                    <td style="border:0px solid #000; padding:6px; text-align:left;">
                         Masc. VA: Tipo: __________________________________
                     </td>
                 </tr>
             </table>
-            <div style="margin-top:6px; font-size:12px; text-align:center;">
-                <label><input type="checkbox"> OD</label>
-                <label style="margin-left:15px;"><input type="checkbox"> OE</label>
-            </div>
         </td>
     </tr>
 </table>
@@ -6492,7 +6485,7 @@ function printSection(button) {
 
 <br>
 
-<div style="display:flex; justify-content:space-between; gap:30px; margin-top:15px; font-size:12px; text-align:center;">
+<div style="display:flex; justify-content:space-between; gap:30px; margin-top:-13px; font-size:12px; text-align:center;">
     <!-- IRF -->
     <table style="border-collapse:collapse; width:25%;">
         <tr>
@@ -6572,18 +6565,18 @@ function printSection(button) {
     </table>
 </div>
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:15px;">
+<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:5px;">
     <tr>
         <th style="width:15%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
-        <td style="width:45%; border:1px solid #000; padding:8px;"></td>
+        <td style="width:45%; border:1px solid #000; padding:8px;">Marca:_____________________ Modelo:________________________</td>
         <th style="width:10%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">R.A.:</th>
         <td style="width:30%; border:1px solid #000; padding:8px;"></td>
     </tr>
     <tr>
         <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Diagnóstico:</th>
-        <td style="border:1px solid #000; padding:8px;">OD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td style="border:1px solid #000; padding:8px;">OD:_________________________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OE:_________________________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Meatoscopia:</th>
-        <td style="border:1px solid #000; padding:8px;">OD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td style="border:1px solid #000; padding:8px;">OD:_________________________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OE:_________________________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     </tr>
     <tr>
         <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Conclusão:</th>
@@ -6614,11 +6607,7 @@ function printSection(button) {
 
 
         <table>
-                <tr>
-                    <td colspan="2" style="background:#eaeaea; border:1px solid #666; font-weight:bold; font-size:12px; padding:3px 8px; text-align:left;">
-                        CONCLUSÃO
-                    </td>
-                </tr>
+                
                 <tr>
                     <td colspan="2" style="font-size:12px; padding:6px;">
                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
