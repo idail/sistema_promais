@@ -6572,6 +6572,47 @@ function printSection(button) {
     </table>
 </div>
 
+<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:15px;">
+    <tr>
+        <th style="width:15%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
+        <td style="width:45%; border:1px solid #000; padding:8px;"></td>
+        <th style="width:10%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">R.A.:</th>
+        <td style="width:30%; border:1px solid #000; padding:8px;"></td>
+    </tr>
+    <tr>
+        <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Diagnóstico:</th>
+        <td style="border:1px solid #000; padding:8px;">OD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Meatoscopia:</th>
+        <td style="border:1px solid #000; padding:8px;">OD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+    <tr>
+        <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Conclusão:</th>
+        <td colspan="3" style="border:1px solid #000; padding:10px;"></td>
+    </tr>
+</table>
+
+<!-- Campos de marcação -->
+<table style="width:100%; border-collapse:collapse; font-size:12px; text-align:center; margin-top:10px;">
+    <tr>
+        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
+            <input type="checkbox"> Normal
+        </td>
+        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
+            <input type="checkbox"> Estável
+        </td>
+        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
+            <input type="checkbox"> Alterado
+        </td>
+        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
+            <input type="checkbox"> Agravamento
+        </td>
+    </tr>
+</table>
+
+
+
+
+
         <table>
                 <tr>
                     <td colspan="2" style="background:#eaeaea; border:1px solid #666; font-weight:bold; font-size:12px; padding:3px 8px; text-align:left;">
