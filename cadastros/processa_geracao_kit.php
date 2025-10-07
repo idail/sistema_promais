@@ -490,6 +490,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_empresa_pessoa->execute();
         $resultado_busca_empresa_pessoa = $comando_busca_empresa_pessoa->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_empresa_pessoa);
+    }else if($recebe_processo_geracao_kit === "busca_clinica_pessoa")
+    {
+        $instrucao_busca_clinica_pessoa = "select * from clinicas where id = :recebe_id_clinica";
+        $comando_busca_clinica_pessoa = $pdo->prepare($instrucao_busca_clinica_pessoa);
+        $comando_busca_clinica_pessoa->bindValue(":recebe_id_clinica",$_GET["valor_id_clinica"]);
+        $comando_busca_clinica_pessoa->execute();
+        $resultado_busca_clinica_pessoa = $comando_busca_clinica_pessoa->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_clinica_pessoa);
+    }else if($recebe_processo_geracao_kit === "busca_pessoa")
+    {
+        $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+        $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+        $comando_busca_pessoa->bindValue(":recebe_id_pessoa",$_GET["valor_id_pessoa"]);
+        $comando_busca_pessoa->execute();
+        $resultado_busca_pessoa = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_pessoa);
     }
 }
 ?>
