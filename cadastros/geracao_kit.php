@@ -6139,7 +6139,7 @@ modal.innerHTML = `
           " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
             onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
             <i class="far fa-eye" style="font-size: 1.25rem; color: #10b981; margin-bottom: 6px;"></i>
-            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualizar</span>
+            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualização Rapida</span>
           </button>
         </div>
       </div>
@@ -6219,15 +6219,89 @@ modal.innerHTML = `
     }
     
     function visualizarKit(kitId) {
-      try {
-        // Implementar lógica de visualização
-        showToast(`Visualizando kit ${kitId}...`, 'success');
-      } catch (error) {
-        showToast(`Erro ao visualizar kit ${kitId}: ${error.message}`, 'error');
-      } finally {
-        fecharModal('modalDetalhesKit');
-      }
-    }
+      debugger;
+  try {
+    // Busca as informações do kit (simulação ou requisição real)
+    // Exemplo: futuramente pode ser substituído por fetch(`/api/kit/${kitId}`)
+    const kitInfo = {
+      tipoExame: 'Exame de Sangue',
+      status: 'Em andamento',
+      empresa: 'Laboratório Vida',
+      clinica: 'Clínica Central',
+      colaborador: 'João Silva'
+    };
+
+    // Cria o HTML da modal
+    const modal = document.createElement('div');
+    modal.id = 'modalDadosRapidosKit';
+    modal.style = `
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+    `;
+
+    modal.innerHTML = `
+      <div style="
+        background: #fff;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        padding: 20px 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        font-family: Arial, sans-serif;
+      ">
+        <h2 style="margin-top:0; text-align:center;">Detalhes do Kit ${kitId}</h2>
+        <table style="width:100%; margin-top:15px; border-collapse:collapse;">
+          <tr>
+            <td style="font-weight:bold; padding:6px;">Tipo do Exame:</td>
+            <td style="padding:6px;">${kitInfo.tipoExame}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:6px;">Status do Kit:</td>
+            <td style="padding:6px;">${kitInfo.status}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:6px;">Empresa:</td>
+            <td style="padding:6px;">${kitInfo.empresa}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:6px;">Clínica:</td>
+            <td style="padding:6px;">${kitInfo.clinica}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:6px;">Colaborador:</td>
+            <td style="padding:6px;">${kitInfo.colaborador}</td>
+          </tr>
+        </table>
+        <div style="text-align:center; margin-top:20px;">
+          <button onclick="fecharModal('modalDadosRapidosKit')" style="
+            background:#fd9203;
+            color:white;
+            border:none;
+            padding:10px 25px;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:14px;
+          ">Fechar</button>
+        </div>
+      </div>
+    `;
+
+    // Remove modal anterior (se existir)
+    // const existente = document.getElementById('modalDetalhesKit');
+    // if (existente) existente.remove();
+
+    // Adiciona a nova modal
+    document.body.appendChild(modal);
+
+  } catch (error) {
+    showToast(`Erro ao visualizar kit ${kitId}: ${error.message}`, 'error');
+  }
+}
+
 
     function fecharModal(modalId) {
       const modal = document.getElementById(modalId);
