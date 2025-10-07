@@ -5964,222 +5964,231 @@ function renderResultadoProfissional(tipo) {
       `;
       
       // Conteúdo do modal
-      modal.innerHTML = `
-        <div style="
-          background: white;
-          border-radius: 12px;
-          width: 90%;
-          max-width: 520px;
-          max-height: 90vh;
-          overflow-y: auto;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-          position: relative;
-        ">
-          <!-- Cabeçalho do Modal -->
+modal.innerHTML = `
+  <div style="
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    position: relative;
+  ">
+    <!-- Cabeçalho do Modal -->
+    <div style="
+      padding: 18px 24px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    ">
+      <h3 style="
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      ">
+        <i class="fas fa-box-open" style="color: #3b82f6;"></i>
+        Detalhes do Kit
+      </h3>
+      <button onclick="fecharModal('modalDetalhesKit')" style="
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #9ca3af;
+        line-height: 1;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s;
+      " onmouseover="this.style.color='#6b7280'; this.style.backgroundColor='#f3f4f6'" 
+        onmouseout="this.style.color='#9ca3af'; this.style.backgroundColor='transparent'"
+        aria-label="Fechar">
+        &times;
+      </button>
+    </div>
+    
+    <!-- Corpo do Modal -->
+    <div style="padding: 24px;">
+      <!-- Cabeçalho com ID e Status -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 0.875rem; color: #6b7280; margin-bottom: 4px;">Código</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: #111827;">${kit.id}</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.875rem; color: #6b7280; margin-bottom: 4px;">Status</div>
           <div style="
-            padding: 18px 24px;
-            border-bottom: 1px solid #f3f4f6;
-            display: flex;
-            justify-content: space-between;
+            display: inline-flex;
             align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            background-color: ${statusInfo.bg};
+            color: ${statusInfo.text};
           ">
-            <h3 style="
-              font-size: 1.25rem;
-              font-weight: 600;
-              color: #111827;
-              margin: 0;
-              display: flex;
-              align-items: center;
-              gap: 10px;
-            ">
-              <i class="fas fa-box-open" style="color: #3b82f6;"></i>
-              Detalhes do Kit
-            </h3>
-            <button onclick="fecharModal('modalDetalhesKit')" style="
-              background: none;
-              border: none;
-              font-size: 1.5rem;
-              cursor: pointer;
-              color: #9ca3af;
-              line-height: 1;
-              padding: 4px;
-              border-radius: 4px;
-              transition: all 0.2s;
-            " onmouseover="this.style.color='#6b7280'; this.style.backgroundColor='#f3f4f6'" 
-              onmouseout="this.style.color='#9ca3af'; this.style.backgroundColor='transparent'"
-              aria-label="Fechar">
-              &times;
-            </button>
-          </div>
-          
-          <!-- Corpo do Modal -->
-          <div style="padding: 24px;">
-            <!-- Cabeçalho com ID e Status -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-              <div>
-                <div style="font-size: 0.875rem; color: #6b7280; margin-bottom: 4px;">Código</div>
-                <div style="font-size: 1.25rem; font-weight: 600; color: #111827;">${kit.id}</div>
-              </div>
-              <div style="text-align: right;">
-                <div style="font-size: 0.875rem; color: #6b7280; margin-bottom: 4px;">Status</div>
-                <div style="
-                  display: inline-flex;
-                  align-items: center;
-                  padding: 0.35rem 0.75rem;
-                  border-radius: 6px;
-                  font-size: 0.8125rem;
-                  font-weight: 500;
-                  background-color: ${statusInfo.bg};
-                  color: ${statusInfo.text};
-                ">
-                  <i class="fas ${statusInfo.icon} mr-1.5" style="margin-inline-end: 5px;"></i>
-                  ${status}
-                </div>
-              </div>
-            </div>
-            
-            <!-- Informações do Colaborador -->
-            <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-              <div style="display: flex; align-items: center; margin-bottom: 12px;">
-                <div style="
-                  width: 40px;
-                  height: 40px;
-                  border-radius: 8px;
-                  background: #e0e7ff;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  margin-right: 12px;
-                  flex-shrink: 0;
-                ">
-                  <i class="fas fa-user" style="color: #4f46e5; font-size: 1.1rem;"></i>
-                </div>
-                <div>
-                  <div style="font-weight: 600; color: #111827; margin-bottom: 2px;">${nomeColaborador || 'Nome não informado'}</div>
-                  <div style="font-size: 0.8125rem; color: #6b7280;">
-                    ${kit.cargo || 'Cargo não informado'}
-                  </div>
-                </div>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-                <div>
-                  <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Empresa</div>
-                  <div style="font-size: 0.9375rem; color: #111827;">${kit.empresa || 'Não informada'}</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Data</div>
-                  <div style="font-size: 0.9375rem; color: #111827;">
-                    <div style="font-size: 0.9375rem; color: #111827;">
-  ${kit.data ? new Date(kit.data.replace(' ', 'T')).toLocaleDateString('pt-BR') : 'Não informada'}
-</div>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Seção de Ações Rápidas -->
-            <div style="margin-top: 24px;">
-              <h4 style="font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 12px; display: flex; align-items: center;">
-                <i class="fas fa-bolt mr-2" style="color: #f59e0b;"></i>
-                Ações Rápidas
-              </h4>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                <button onclick="duplicarKit('${kit.id}')" style="
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                  padding: 12px 8px;
-                  background: white;
-                  border: 1px solid #e5e7eb;
-                  border-radius: 8px;
-                  cursor: pointer;
-                  transition: all 0.2s;
-                " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
-                  onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
-                  <i class="far fa-copy" style="font-size: 1.25rem; color: #3b82f6; margin-bottom: 6px;"></i>
-                  <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Duplicar</span>
-                </button>
-                <button onclick="editarKit('${kit.id}')" style="
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                  padding: 12px 8px;
-                  background: white;
-                  border: 1px solid #e5e7eb;
-                  border-radius: 8px;
-                  cursor: pointer;
-                  transition: all 0.2s;
-                " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
-                  onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
-                  <i class="far fa-edit" style="font-size: 1.25rem; color: #3b82f6; margin-bottom: 6px;"></i>
-                  <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Editar</span>
-                </button>
-                <button onclick="visualizarKit('${kit.id}')" style="
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                  padding: 12px 8px;
-                  background: white;
-                  border: 1px solid #e5e7eb;
-                  border-radius: 8px;
-                  cursor: pointer;
-                  transition: all 0.2s;
-                " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
-                  onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
-                  <i class="far fa-eye" style="font-size: 1.25rem; color: #10b981; margin-bottom: 6px;"></i>
-                  <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualizar</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Rodapé do Modal -->
-          <div style="
-            padding: 16px 24px;
-            border-top: 1px solid #f3f4f6;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-          ">
-            <button onclick="fecharModal('modalDetalhesKit')" style="
-              padding: 0.5rem 1rem;
-              background: white;
-              border: 1px solid #e5e7eb;
-              border-radius: 6px;
-              font-size: 0.875rem;
-              font-weight: 500;
-              color: #4b5563;
-              cursor: pointer;
-              transition: all 0.2s;
-            " onmouseover="this.style.backgroundColor='#f9fafb'" 
-              onmouseout="this.style.backgroundColor='white'">
-              Fechar
-            </button>
-            <button onclick="visualizarKit('${kit.id}')" style="
-              padding: 0.5rem 1rem;
-              background: #3b82f6;
-              border: 1px solid #3b82f6;
-              border-radius: 6px;
-              font-size: 0.875rem;
-              font-weight: 500;
-              color: white;
-              cursor: pointer;
-              transition: all 0.2s;
-              display: flex;
-              align-items: center;
-              gap: 6px;
-            " onmouseover="this.style.backgroundColor='#2563eb'; this.style.borderColor='#2563eb'" 
-              onmouseout="this.style.backgroundColor='#3b82f6'; this.style.borderColor='#3b82f6'">
-              <i class="far fa-eye"></i>
-              Visualizar KIT Completo
-            </button>
+            <i class="fas ${statusInfo.icon} mr-1.5" style="margin-inline-end: 5px;"></i>
+            ${status}
           </div>
         </div>
-      `;
+      </div>
+      
+      <!-- Informações do Colaborador -->
+      <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; margin-bottom: 12px;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #e0e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+          ">
+            <i class="fas fa-user" style="color: #4f46e5; font-size: 1.1rem;"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: #111827; margin-bottom: 2px;">${nomeColaborador || 'Nome não informado'}</div>
+            <div style="font-size: 0.8125rem; color: #6b7280;">
+              ${kit.cargo || 'Cargo não informado'}
+            </div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+          <div>
+            <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Empresa</div>
+            <div style="font-size: 0.9375rem; color: #111827;">${kit.empresa || 'Não informada'}</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Data</div>
+            <div style="font-size: 0.9375rem; color: #111827;">
+              ${kit.data ? new Date(kit.data.replace(' ', 'T')).toLocaleDateString('pt-BR') : 'Não informada'}
+            </div>
+          </div>
+        </div>
+
+        <!-- Tipo de Exame -->
+        ${kit.tipo_exame ? `
+          <div style="margin-top: 16px;">
+            <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Tipo de Exame</div>
+            <div style="font-size: 0.9375rem; color: #1f2937; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+              <i class="fas fa-stethoscope" style="color: #2563eb;"></i>
+              ${kit.tipo_exame}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+      
+      <!-- Seção de Ações Rápidas -->
+      <div style="margin-top: 24px;">
+        <h4 style="font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 12px; display: flex; align-items: center;">
+          <i class="fas fa-bolt mr-2" style="color: #f59e0b;"></i>
+          Ações Rápidas
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <button onclick="duplicarKit('${kit.id}')" style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+          " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
+            onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+            <i class="far fa-copy" style="font-size: 1.25rem; color: #3b82f6; margin-bottom: 6px;"></i>
+            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Duplicar</span>
+          </button>
+          <button onclick="editarKit('${kit.id}')" style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+          " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
+            onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+            <i class="far fa-edit" style="font-size: 1.25rem; color: #3b82f6; margin-bottom: 6px;"></i>
+            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Editar</span>
+          </button>
+          <button onclick="visualizarKit('${kit.id}')" style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+          " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
+            onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+            <i class="far fa-eye" style="font-size: 1.25rem; color: #10b981; margin-bottom: 6px;"></i>
+            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualizar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Rodapé do Modal -->
+    <div style="
+      padding: 16px 24px;
+      border-top: 1px solid #f3f4f6;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    ">
+      <button onclick="fecharModal('modalDetalhesKit')" style="
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #4b5563;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onmouseover="this.style.backgroundColor='#f9fafb'" 
+        onmouseout="this.style.backgroundColor='white'">
+        Fechar
+      </button>
+      <button onclick="visualizarKit('${kit.id}')" style="
+        padding: 0.5rem 1rem;
+        background: #3b82f6;
+        border: 1px solid #3b82f6;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      " onmouseover="this.style.backgroundColor='#2563eb'; this.style.borderColor='#2563eb'" 
+        onmouseout="this.style.backgroundColor='#3b82f6'; this.style.borderColor='#3b82f6'">
+        <i class="far fa-eye"></i>
+        Visualizar KIT Completo
+      </button>
+    </div>
+  </div>
+`;
+
       
       // Adicionar o modal ao body
       document.body.appendChild(modal);
