@@ -6339,103 +6339,119 @@ modal.innerHTML = `
       });
     }
     
-    async function visualizarKit(id,tipo_exame,status,empresa,clinica,colaborador,data) {
-      debugger;
-      try {
+    async function visualizarKit(id, tipo_exame, status, empresa, clinica, colaborador, data) {
+  try {
+    let recebe_kit = await requisitarDadosKITEspecifico(id);
+    let recebe_cargo = await requisitarDadosCargo(resposta_pessoa.id);
+    let recebe_medico_coordenador = await requisitarMedicoCoordenador(recebe_kit.medico_coordenador_id);
+    let recebe_medico_examinador = await requisitarMedicoExaminador(recebe_kit.medico_clinica_id);
 
-        let recebe_kit = await requisitarDadosKITEspecifico(id);
+    // Define as informações do kit
+    const kitInfo = {
+      tipoExame: tipo_exame ?? "Não informado",
+      status: status ?? "Não informado",
+      empresa: empresa ?? "Não informada",
+      clinica: clinica ?? "Não informada",
+      colaborador: colaborador ?? "Não informado",
+      data: data ?? "Não informada",
+      cargo: recebe_cargo.titulo_cargo ?? "Não informada",
+      motorista: recebe_kit.motorista ?? "Não informado",
+      medico_coordenador: recebe_medico_coordenador.nome ?? "Não informado",
+      medico_examinador: recebe_medico_examinador.nome ?? "Não informado",
+    };
 
-        let recebe_cargo = await requisitarDadosCargo(resposta_pessoa.id);
+    // Remove modal anterior se existir
+    const existente = document.getElementById("modalDadosRapidosKit");
+    if (existente) existente.remove();
 
-        let recebe_medico_coordenador = await requisitarMedicoCoordenador(recebe_kit.medico_coordenador_id);
+    // Travar rolagem da página de fundo
+    document.body.style.overflow = "hidden";
 
-        let recebe_medico_examinador = await requisitarMedicoExaminador(recebe_kit.medico_clinica_id);
-        
+    const modal = document.createElement("div");
+    modal.id = "modalDadosRapidosKit";
+    modal.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 20px;
+      box-sizing: border-box;
+    `;
 
-        // Define as informações do kit com fallback (caso algum campo esteja null)
-        const kitInfo = {
-          tipoExame: tipo_exame ?? "Não informado",
-          status: status ?? "Não informado",
-          empresa: empresa ?? "Não informada",
-          clinica: clinica ?? "Não informada",
-          colaborador: colaborador ?? "Não informado",
-          data: data ?? "Não informada",
-          cargo:recebe_cargo.titulo_cargo ?? "Não informada",
-          motorista:recebe_kit.motorista ?? "Não informado",
-          medico_coordenador:recebe_medico_coordenador.nome ?? "Não informado",
-          medico_examinador:recebe_medico_examinador.nome ?? "Não informado"
-        };
+    modal.innerHTML = `
+      <div style="
+        background: #fff;
+        border-radius: 18px;
+        width: 95%;
+        max-width: 1400px;
+        padding: 50px 60px;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+        font-family: Arial, sans-serif;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto; /* ROLAGEM INTERNA */
+        box-sizing: border-box;
+      ">
+        <h2 style="margin-top:0; text-align:center; font-size:30px; color:#333;">
+          Detalhes do Kit ${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}
+        </h2>
 
-        const modal = document.createElement("div");
-        modal.id = "modalDadosRapidosKit";
-        modal.style = `
-          position: fixed;
-          top: 0; left: 0;
-          width: 100%; height: 100%;
-          background: rgba(0,0,0,0.5);
-          display: flex; justify-content: center; align-items: center;
-          z-index: 9999;
-        `;
+        <table style="width:100%; margin-top:30px; border-collapse:collapse; font-size:18px;">
+          <tr>
+            <td style="font-weight:bold; padding:12px; width:155px;">Tipo do Exame:</td>
+            <td>${kitInfo.tipoExame}</td>
+            <td style="font-weight:bold; padding:12px; width:16%;">Empresa:</td>
+            <td>${kitInfo.empresa}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:12px;">Clínica:</td><td>${kitInfo.clinica}</td>
+            <td style="font-weight:bold; padding:12px;">Colaborador:</td><td>${kitInfo.colaborador}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:12px;">Cargo:</td><td>${kitInfo.cargo}</td>
+            <td style="font-weight:bold; padding:12px;">Motorista:</td><td>${kitInfo.motorista}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; padding:12px;">Médico Coordenador:</td><td>${kitInfo.medico_coordenador}</td>
+            <td style="font-weight:bold; padding:12px;">Médico Examinador:</td><td>${kitInfo.medico_examinador}</td>
+          </tr>
 
-        modal.innerHTML = `
-          <div style="
-            background: #fff;
-            border-radius: 18px;
-            width: 95%;
-            max-width: 1400px;  /* Extra grande */
-            padding: 50px 60px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.4);
-            font-family: Arial, sans-serif;
-            max-height: 90vh;
-            overflow-y: auto;
-          ">
-            <h2 style="margin-top:0; text-align:center; font-size:30px; color:#333;">
-              Detalhes do Kit ${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}
-            </h2>
+          <tr>
+              <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
+              <td>${kitInfo.status.charAt(0).toUpperCase() + kitInfo.status.slice(1).toLowerCase()}</td>
+              <td style="font-weight:bold; padding:12px;">Data:</td>
+              <td>${kitInfo.data ? kitInfo.data.split(' ')[0].split('-').reverse().join('/') : 'Não informada'}</td>
+          </tr>
+        </table>
 
-            <table style="width:100%; margin-top:30px; border-collapse:collapse; font-size:18px;">
-              <tr><td style="font-weight:bold; padding:12px; width:155px;">Tipo do Exame:</td><td>${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}</td><td style="font-weight:bold; padding:12px;width: 16%;">Empresa:</td><td>${kitInfo.empresa}</td></tr>
-              <tr><td style="font-weight:bold; padding:12px;">Clínica:</td><td>${kitInfo.clinica}</td><td style="font-weight:bold; padding:12px;">Colaborador:</td><td>${kitInfo.colaborador}</td></tr>
-              <tr><td style="font-weight:bold; padding:12px;">Cargo:</td><td>${kitInfo.cargo}</td><td style="font-weight:bold; padding:12px;">Motorista:</td><td>${kitInfo.motorista}</td></tr>
-              <tr><td style="font-weight:bold; padding:12px;">Médico Coordenador:</td><td>${kitInfo.medico_coordenador}</td><td style="font-weight:bold; padding:12px;">Médico Examinador:</td><td>${kitInfo.medico_examinador}</td></tr>
-              
-              <td style="font-weight:bold; padding:12px;">Status do Kit:</td><td>${kitInfo.status.charAt(0).toUpperCase() + kitInfo.status.slice(1).toLowerCase()}</td>
-              
-              <tr><td style="font-weight:bold; padding:12px;">Data:</td><td>${kitInfo.data ? kitInfo.data.split(' ')[0].split('-').reverse().join('/') : 'Não informada'}</td></tr>
-            </table>
+        <div style="text-align:center; margin-top:40px;">
+          <button onclick="fecharModal('modalDadosRapidosKit')" style="
+            background:#fd9203;
+            color:white;
+            border:none;
+            padding:14px 45px;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:18px;
+            transition: background 0.3s;
+          "
+          onmouseover="this.style.background='#e68100'"
+          onmouseout="this.style.background='#fd9203'">
+            Fechar
+          </button>
+        </div>
+      </div>
+    `;
 
-            <div style="text-align:center; margin-top:40px;">
-              <button onclick="fecharModal('modalDadosRapidosKit')" style="
-                background:#fd9203;
-                color:white;
-                border:none;
-                padding:14px 45px;
-                border-radius:10px;
-                cursor:pointer;
-                font-size:18px;
-                transition: background 0.3s;
-              "
-              onmouseover="this.style.background='#e68100'"
-              onmouseout="this.style.background='#fd9203'">
-                Fechar
-              </button>
-            </div>
-          </div>
-        `;
+    // Adiciona a modal ao corpo
+    document.body.appendChild(modal);
 
-
-
-        // Remove modal anterior, se existir
-        const existente = document.getElementById("modalDadosRapidosKit");
-        if (existente) existente.remove();
-
-        // Adiciona nova modal
-        document.body.appendChild(modal);
-
-      } catch (error) {
-        console.log(`Erro ao visualizar kit: ${error.message}`, "error");
-      }
+  } catch (error) {
+    console.log(`Erro ao visualizar kit: ${error.message}`, "error");
   }
+}
 
 
 
