@@ -6358,6 +6358,8 @@ modal.innerHTML = `
       motorista: recebe_kit.motorista ?? "Não informado",
       medico_coordenador: recebe_medico_coordenador.nome ?? "Não informado",
       medico_examinador: recebe_medico_examinador.nome ?? "Não informado",
+      riscos:recebe_kit.riscos_selecionados ?? "Não informado",
+      treinamentos:recebe_kit.treinamentos_selecionados ?? "Não informado"
     };
 
     // Remove modal anterior se existir
@@ -6403,7 +6405,7 @@ modal.innerHTML = `
             <td style="font-weight:bold; padding:12px; width:155px;">Tipo do Exame:</td>
             <td>${kitInfo.tipoExame}</td>
             <td style="font-weight:bold; padding:12px; width:16%;">Empresa:</td>
-            <td>${kitInfo.empresa}</td>
+            <td style="width: 30%;">${kitInfo.empresa}</td>
           </tr>
           <tr>
             <td style="font-weight:bold; padding:12px;">Clínica:</td><td>${kitInfo.clinica}</td>
@@ -6417,6 +6419,121 @@ modal.innerHTML = `
             <td style="font-weight:bold; padding:12px;">Médico Coordenador:</td><td>${kitInfo.medico_coordenador}</td>
             <td style="font-weight:bold; padding:12px;">Médico Examinador:</td><td>${kitInfo.medico_examinador}</td>
           </tr>
+
+          <tr>
+              <td colspan="4" style="padding:12px; vertical-align:top;">
+                <div style="font-weight:bold; margin-bottom:6px;">Riscos:</div>
+                ${(() => {
+                  let riscos = kitInfo.riscos;
+
+                  // Se vier como string, converte para array
+                  if (typeof riscos === 'string') {
+                    try {
+                      riscos = JSON.parse(riscos);
+                    } catch (e) {
+                      riscos = [];
+                    }
+                  }
+
+                  // Se for array, monta tabela
+                  if (Array.isArray(riscos) && riscos.length > 0) {
+                    let html = `
+                      <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                        <tr style="background:#f2f2f2; font-weight:bold;">
+                          <td style="padding:6px; border:1px solid #ccc;">Código</td>
+                          <td style="padding:6px; border:1px solid #ccc;">Descrição</td>
+                          <td style="padding:6px; border:1px solid #ccc;">Grupo</td>
+                        </tr>
+                    `;
+
+                    for (const r of riscos) {
+                      html += `
+                        <tr>
+                          <td style="padding:6px; border:1px solid #ccc;">${r.codigo || '-'}</td>
+                          <td style="padding:6px; border:1px solid #ccc;">${r.descricao || '-'}</td>
+                          <td style="padding:6px; border:1px solid #ccc;">${r.grupo || '-'}</td>
+                        </tr>
+                      `;
+                    }
+
+                    html += '</table>';
+                    return html;
+                  }
+
+                  return '<span style="color:#888;">Nenhum risco informado.</span>';
+                })()}
+              </td>
+          </tr>
+
+          <tr>
+            <td colspan="4" style="padding:12px; vertical-align:top;">
+              <div style="font-weight:bold; margin-bottom:6px;">Treinamentos:</div>
+              ${(() => {
+                let treinamentos = kitInfo.treinamentos; // ou substitua por kitInfo.treinamentos se houver
+
+                // Se vier como string, converte para array
+                if (typeof treinamentos === 'string') {
+                  try {
+                    treinamentos = JSON.parse(treinamentos);
+                  } catch (e) {
+                    treinamentos = [];
+                  }
+                }
+
+                // Função para formatar valor em padrão brasileiro
+                function formatarValor(valor) {
+                  if (valor === null || valor === undefined || valor === '') {
+                    return '-';
+                  }
+
+                  // Se for número direto
+                  if (typeof valor === 'number') {
+                    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                  }
+
+                  // Se for string, tenta converter para número
+                  if (typeof valor === 'string') {
+                    // Remove possíveis separadores e converte
+                    const num = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+                    if (!isNaN(num)) {
+                      return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    }
+                  }
+
+                  return '-';
+                }
+
+
+                // Se for array, monta tabela
+                if (Array.isArray(treinamentos) && treinamentos.length > 0) {
+                  let html = `
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                      <tr style="background:#f2f2f2; font-weight:bold;">
+                        <td style="padding:6px; border:1px solid #ccc;">Código</td>
+                        <td style="padding:6px; border:1px solid #ccc;">Descrição</td>
+                        <td style="padding:6px; border:1px solid #ccc;">Valor</td>
+                      </tr>
+                  `;
+
+                  for (const t of treinamentos) {
+                    html += `
+                      <tr>
+                        <td style="padding:6px; border:1px solid #ccc;">${t.codigo || '-'}</td>
+                        <td style="padding:6px; border:1px solid #ccc;">${t.descricao || '-'}</td>
+                        <td style="padding:6px; border:1px solid #ccc;">${formatarValor(t.valor)}</td>
+                      </tr>
+                    `;
+                  }
+
+                  html += '</table>';
+                  return html;
+                }
+
+                return '<span style="color:#888;">Nenhum treinamento informado.</span>';
+              })()}
+            </td>
+          </tr>
+
 
           <tr>
               <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
