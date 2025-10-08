@@ -6394,7 +6394,8 @@ modal.innerHTML = `
       tipo_orcamento:recebe_kit.tipo_orcamento ?? "Não informado",
       tipo_dado_bancario:recebe_kit.tipo_dado_bancario ?? "Não informado",
       dado_bancario_agencia_conta:recebe_kit.dado_bancario_agencia_conta ?? "Não informado",
-      dado_bancario_pix:recebe_kit.dado_bancario_pix ?? "Não informado"
+      dado_bancario_pix:recebe_kit.dado_bancario_pix ?? "Não informado",
+      modelos_selecionados:recebe_kit.modelos_selecionados ?? "Não informado"
     };
 
     // Remove modal anterior se existir
@@ -6854,6 +6855,49 @@ modal.innerHTML = `
             })()}
           </td>
         </tr>
+
+
+        <tr>
+  <td colspan="4" style="padding:12px; vertical-align:top;">
+    <div style="font-weight:bold; margin-bottom:6px;">Modelos Selecionados:</div>
+    ${(() => {
+      let modelos = kitInfo.modelos_selecionados;
+
+      // Se vier como string, converte para array
+      if (typeof modelos === 'string') {
+        try {
+          modelos = JSON.parse(modelos);
+        } catch (e) {
+          modelos = [];
+        }
+      }
+
+      // Verifica se há modelos válidos
+      if (Array.isArray(modelos) && modelos.length > 0) {
+        let html = `
+          <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+            <tr style="background:#f2f2f2; font-weight:bold;">
+              <td style="padding:6px; border:1px solid #ccc;">Nome do Modelo</td>
+            </tr>
+        `;
+
+        for (const m of modelos) {
+          html += `
+            <tr>
+              <td style="padding:6px; border:1px solid #ccc;">${m}</td>
+            </tr>
+          `;
+        }
+
+        html += '</table>';
+        return html;
+      }
+
+      return '<span style="color:#888;">Nenhum modelo selecionado.</span>';
+    })()}
+  </td>
+</tr>
+
 
           <tr>
               <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
