@@ -549,6 +549,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }else{
             echo json_encode("");
         }
+    }else if($recebe_processo_geracao_kit === "busca_produtos")
+    {
+        $instrucao_busca_produto = "select * from produto where id_kit = :recebe_id_kit_produto";
+        $comando_busca_produto = $pdo->prepare($instrucao_busca_produto);
+        $comando_busca_produto->bindValue(":recebe_id_kit_produto",$_GET["valor_id_kit_produtos"]);
+        $comando_busca_produto->execute();
+        $resultado_busca_produto = $comando_busca_produto->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_produto);
     }
 }
 ?>

@@ -6338,13 +6338,35 @@ modal.innerHTML = `
         });
       });
     }
+
+    function requisitarProdutos(codigo_kit)
+    {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_produtos",valor_id_kit_produtos: codigo_kit},
+          success: function(resposta) {
+            console.log("Produtos retornado:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
     
     async function visualizarKit(id, tipo_exame, status, empresa, clinica, colaborador, data) {
+      debugger;
   try {
     let recebe_kit = await requisitarDadosKITEspecifico(id);
     let recebe_cargo = await requisitarDadosCargo(resposta_pessoa.id);
     let recebe_medico_coordenador = await requisitarMedicoCoordenador(recebe_kit.medico_coordenador_id);
     let recebe_medico_examinador = await requisitarMedicoExaminador(recebe_kit.medico_clinica_id);
+    let recebe_produto_kit = await requisitarProdutos(recebe_kit.id);
+
 
     // Define as informações do kit
     const kitInfo = {
@@ -6365,7 +6387,10 @@ modal.innerHTML = `
       periculosidade:recebe_kit.periculosidade ?? "Não informado",
       aposentado_especial:recebe_kit.aposentado_especial ?? "Não informado",
       agente_nocivo:recebe_kit.agente_nocivo ?? "Não informado",
-      ocorrencia_gfip:recebe_kit.ocorrencia_gfip ?? "Não informado"
+      ocorrencia_gfip:recebe_kit.ocorrencia_gfip ?? "Não informado",
+      aptidoes:recebe_kit.aptidoes_selecionadas ?? "Não informado",
+      exames:recebe_kit.exames_selecionados ?? "Não informado",
+      produtos:recebe_produto_kit ?? "Não informado",
     };
 
     // Remove modal anterior se existir
@@ -6565,6 +6590,229 @@ modal.innerHTML = `
             </table>
           </td>
         </tr>
+
+        <tr>
+          <td colspan="4" style="padding:12px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:6px;">Aptidões:</div>
+            ${(() => {
+              let aptidoes = kitInfo.aptidoes;
+
+              // Se vier como string, converte para array
+              if (typeof aptidoes === 'string') {
+                try {
+                  aptidoes = JSON.parse(aptidoes);
+                } catch (e) {
+                  aptidoes = [];
+                }
+              }
+
+              // Função para formatar valor em padrão brasileiro
+              function formatarValor(valor) {
+                if (valor === null || valor === undefined || valor === '') {
+                  return '-';
+                }
+
+                if (typeof valor === 'number') {
+                  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                }
+
+                if (typeof valor === 'string') {
+                  const num = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+                  if (!isNaN(num)) {
+                    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                  }
+                }
+
+                return '-';
+              }
+
+              // Se for array, monta tabela
+              if (Array.isArray(aptidoes) && aptidoes.length > 0) {
+                let html = `
+                  <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                    <tr style="background:#f2f2f2; font-weight:bold;">
+                      <td style="padding:6px; border:1px solid #ccc;">Código</td>
+                      <td style="padding:6px; border:1px solid #ccc;">Nome</td>
+                      <td style="padding:6px; border:1px solid #ccc;">Valor</td>
+                    </tr>
+                `;
+
+                for (const a of aptidoes) {
+                  html += `
+                    <tr>
+                      <td style="padding:6px; border:1px solid #ccc;">${a.codigo || '-'}</td>
+                      <td style="padding:6px; border:1px solid #ccc;">${a.nome || '-'}</td>
+                      <td style="padding:6px; border:1px solid #ccc;">${formatarValor(a.valor)}</td>
+                    </tr>
+                  `;
+                }
+
+                html += '</table>';
+                return html;
+              }
+
+              return '<span style="color:#888;">Nenhuma aptidão informada.</span>';
+            })()}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="4" style="padding:12px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:6px;">Exames:</div>
+            ${(() => {
+              let exames = kitInfo.exames;
+
+              // Se vier como string, converte para array
+              if (typeof exames === 'string') {
+                try {
+                  exames = JSON.parse(exames);
+                } catch (e) {
+                  exames = [];
+                }
+              }
+
+              // Função para formatar valor em padrão brasileiro
+              function formatarValor(valor) {
+                if (valor === null || valor === undefined || valor === '') {
+                  return '-';
+                }
+
+                if (typeof valor === 'number') {
+                  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                }
+
+                if (typeof valor === 'string') {
+                  const num = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+                  if (!isNaN(num)) {
+                    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                  }
+                }
+
+                return '-';
+              }
+
+              // Se for array, monta tabela
+              if (Array.isArray(exames) && exames.length > 0) {
+                let html = `
+                  <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                    <tr style="background:#f2f2f2; font-weight:bold;">
+                      <td style="padding:6px; border:1px solid #ccc;">Código</td>
+                      <td style="padding:6px; border:1px solid #ccc;">Nome</td>
+                      <td style="padding:6px; border:1px solid #ccc;">Valor</td>
+                    </tr>
+                `;
+
+                for (const a of exames) {
+                  html += `
+                    <tr>
+                      <td style="padding:6px; border:1px solid #ccc;">${a.codigo || '-'}</td>
+                      <td style="padding:6px; border:1px solid #ccc;">${a.nome || '-'}</td>
+                      <td style="padding:6px; border:1px solid #ccc;">${formatarValor(a.valor)}</td>
+                    </tr>
+                  `;
+                }
+
+                html += '</table>';
+                return html;
+              }
+
+              return '<span style="color:#888;">Nenhuma aptidão informada.</span>';
+            })()}
+          </td>
+        </tr>
+
+        <tr>
+  <td colspan="4" style="padding:12px; vertical-align:top;">
+    <div style="font-weight:bold; margin-bottom:6px;">Faturamento:</div>
+    ${(() => {
+      let produtos = kitInfo.produtos;
+      let aptidoes = kitInfo.aptidoes;
+      let exames = kitInfo.exames;
+
+      // Converte strings JSON para arrays, se necessário
+      function toArray(dado) {
+        if (typeof dado === 'string') {
+          try {
+            return JSON.parse(dado);
+          } catch {
+            return [];
+          }
+        }
+        return Array.isArray(dado) ? dado : [];
+      }
+
+      produtos = toArray(produtos);
+      aptidoes = toArray(aptidoes);
+      exames = toArray(exames);
+
+      // Função para formatar valor em R$
+      function formatarValor(valor) {
+        if (valor === null || valor === undefined || valor === '') return '-';
+        if (typeof valor === 'number') return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        if (typeof valor === 'string') {
+          const num = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+          if (!isNaN(num)) return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+        return '-';
+      }
+
+      // Soma total geral
+      let total = 0;
+      function somarValores(arr) {
+        for (const item of arr) {
+          const valor = parseFloat((item.valor || '0').toString().replace(/\./g, '').replace(',', '.'));
+          if (!isNaN(valor)) total += valor;
+        }
+      }
+
+      somarValores(produtos);
+      somarValores(aptidoes);
+      somarValores(exames);
+
+      // Monta tabela principal
+      let html = `
+        <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+          <tr style="background:#f2f2f2; font-weight:bold;">
+            <td style="padding:6px; border:1px solid #ccc;">Itens do Faturamento</td>
+          </tr>
+      `;
+
+      // Adiciona nomes dos produtos, aptidões e exames
+      function adicionarLinhas(arr, titulo) {
+        if (arr.length > 0) {
+          html += `
+            <tr style="background:#fafafa;">
+              <td style="padding:6px; border:1px solid #ccc; font-weight:bold;">${titulo}</td>
+            </tr>
+          `;
+          for (const item of arr) {
+            html += `
+              <tr>
+                <td style="padding:6px; border:1px solid #ccc;">${item.nome || '-'}</td>
+              </tr>
+            `;
+          }
+        }
+      }
+
+      adicionarLinhas(produtos, 'Produtos');
+      adicionarLinhas(aptidoes, 'Aptidões');
+      adicionarLinhas(exames, 'Exames');
+
+      // Linha final com total geral
+      html += `
+        <tr style="background:#f2f2f2; font-weight:bold;">
+          <td style="padding:6px; border:1px solid #ccc; text-align:right;">
+            Total Geral: ${formatarValor(total)}
+          </td>
+        </tr>
+      `;
+
+      html += '</table>';
+      return html;
+    })()}
+  </td>
+</tr>
 
 
 
