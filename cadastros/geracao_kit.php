@@ -2709,6 +2709,55 @@ function renderResultadoProfissional(tipo) {
             }
           }, 100);
         }
+
+        // Restaura os tipos de orçamento selecionados
+if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNomes.length > 0) || 
+    (window.smDocumentosSelecionadosBackup && window.smDocumentosSelecionadosBackup.length > 0)) {
+      debugger;
+  
+  const tiposParaRestaurar = window.smDocumentosSelecionadosNomes.length > 0 ? 
+    window.smDocumentosSelecionadosNomes : window.smDocumentosSelecionadosBackup;
+  
+  console.log('Restaurando tipos de orçamento selecionados:', tiposParaRestaurar);
+  
+  // Pequeno atraso para garantir que o DOM foi completamente renderizado
+  setTimeout(() => {
+    debugger;
+    const tipoOrcamentoLabels = document.querySelectorAll('.tipo-orcamento-label');
+    
+    tipoOrcamentoLabels.forEach(label => {
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      const card = label.querySelector('.tipo-orcamento-card');
+      
+      if (checkbox && card) {
+        const text = card.querySelector('span')?.textContent?.trim() || '';
+        
+        // Verifica se este tipo de orçamento está na lista de selecionados
+        const isSelected = tiposParaRestaurar.some(nome => 
+          nome.toLowerCase() === text.toLowerCase()
+        );
+        
+        // Atualiza o estado do checkbox
+        if (isSelected) {
+          checkbox.checked = true;
+          card.classList.add('selected');
+          // Garante que o nome está na lista global
+          if (!window.smDocumentosSelecionadosNomes.includes(text)) {
+            window.smDocumentosSelecionadosNomes.push(text);
+          }
+        } else {
+          checkbox.checked = false;
+          card.classList.remove('selected');
+        }
+      }
+    });
+    
+    // Atualiza a lista de selecionados
+    if (typeof updateSelectedList === 'function') {
+      updateSelectedList();
+    }
+  }, 300);
+}
         
         // Pequeno atraso para garantir que o DOM foi atualizado
         setTimeout(() => {
@@ -11335,8 +11384,31 @@ function updateSelectedList() {
     const selectedList = document.getElementById('sm-selected-list');
     if (!selectedList) return;
 
+    // Salva os tipos de orçamento selecionados antes de limpar
+    const tiposOrcamentoSelecionados = [];
+    document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
+      const card = label.querySelector('.tipo-orcamento-card');
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      if (card && checkbox && checkbox.checked) {
+        const text = card.querySelector('span')?.textContent?.trim();
+        if (text) {
+          tiposOrcamentoSelecionados.push(text);
+        }
+      }
+    });
+
     // Limpa a lista
     selectedList.innerHTML = '';
+
+    // Atualiza o backup com os tipos de orçamento atualmente selecionados
+    if (tiposOrcamentoSelecionados.length > 0) {
+      window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
+    } else {
+      window.smDocumentosSelecionadosBackup = [];
+    }
+
+    // Atualiza a lista global com os valores do backup
+    window.smDocumentosSelecionadosNomes = [...(window.smDocumentosSelecionadosBackup || [])];
     // Zera array global
     window.smDocumentosSelecionadosNomes = [];
 
