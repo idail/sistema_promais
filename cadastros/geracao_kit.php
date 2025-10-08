@@ -6391,7 +6391,10 @@ modal.innerHTML = `
       aptidoes:recebe_kit.aptidoes_selecionadas ?? "Não informado",
       exames:recebe_kit.exames_selecionados ?? "Não informado",
       produtos:recebe_produto_kit ?? "Não informado",
-      tipo_orcamento:recebe_kit.tipo_orcamento ?? "Não informado"
+      tipo_orcamento:recebe_kit.tipo_orcamento ?? "Não informado",
+      tipo_dado_bancario:recebe_kit.tipo_dado_bancario ?? "Não informado",
+      dado_bancario_agencia_conta:recebe_kit.dado_bancario_agencia_conta ?? "Não informado",
+      dado_bancario_pix:recebe_kit.dado_bancario_pix ?? "Não informado"
     };
 
     // Remove modal anterior se existir
@@ -6723,121 +6726,134 @@ modal.innerHTML = `
         </tr>
 
         <tr>
-  <td colspan="4" style="padding:12px; vertical-align:top;">
-    <div style="font-weight:bold; margin-bottom:6px;">Faturamento:</div>
-    ${(() => {
-      let produtos = kitInfo.produtos;
-      let aptidoes = kitInfo.aptidoes;
-      let exames = kitInfo.exames;
-      let tipo_orcamento = kitInfo.tipo_orcamento ?? "Não informado";
+          <td colspan="4" style="padding:12px; vertical-align:top;">
+            <div style="font-weight:bold; margin-bottom:6px;">Faturamento:</div>
+            ${(() => {
+              let produtos = kitInfo.produtos;
+              let aptidoes = kitInfo.aptidoes;
+              let exames = kitInfo.exames;
+              let tipo_orcamento = kitInfo.tipo_orcamento ?? "Não informado";
+              let tipo_dado_bancario = kitInfo.tipo_dado_bancario ?? "Não informado";
+              let dado_bancario_agencia_conta = kitInfo.dado_bancario_agencia_conta ?? "Não informado";
+              let dado_bancario_pix = kitInfo.dado_bancario_pix ?? "Não informado";
 
-      // Converte strings JSON para arrays, se necessário
-      function toArray(dado) {
-        if (typeof dado === 'string') {
-          try {
-            return JSON.parse(dado);
-          } catch {
-            return [];
-          }
-        }
-        return Array.isArray(dado) ? dado : [];
-      }
+              // Função para garantir conversão segura para array
+              function toArray(dado) {
+                if (typeof dado === 'string') {
+                  try {
+                    return JSON.parse(dado);
+                  } catch {
+                    return [];
+                  }
+                }
+                return Array.isArray(dado) ? dado : [];
+              }
 
-      produtos = toArray(produtos);
-      aptidoes = toArray(aptidoes);
-      exames = toArray(exames);
+              produtos = toArray(produtos);
+              aptidoes = toArray(aptidoes);
+              exames = toArray(exames);
+              tipo_dado_bancario = toArray(tipo_dado_bancario);
 
-      // Trata tipo de orçamento (pode ser array ou string)
-      if (typeof tipo_orcamento === 'string') {
-        try {
-          const parsed = JSON.parse(tipo_orcamento);
-          if (Array.isArray(parsed)) tipo_orcamento = parsed;
-          else tipo_orcamento = [tipo_orcamento];
-        } catch {
-          tipo_orcamento = [tipo_orcamento];
-        }
-      }
+              // Trata tipo de orçamento (pode vir como JSON ou string)
+              if (typeof tipo_orcamento === 'string') {
+                try {
+                  const parsed = JSON.parse(tipo_orcamento);
+                  tipo_orcamento = Array.isArray(parsed) ? parsed : [tipo_orcamento];
+                } catch {
+                  tipo_orcamento = [tipo_orcamento];
+                }
+              }
 
-      // Função para formatar valor em R$
-      function formatarValor(valor) {
-        if (valor === null || valor === undefined || valor === '') return '-';
-        if (typeof valor === 'number') return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        if (typeof valor === 'string') {
-          const num = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
-          if (!isNaN(num)) return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-        return '-';
-      }
+              // Função para formatar valor R$
+              function formatarValor(valor) {
+                if (valor === null || valor === undefined || valor === '') return '-';
+                if (typeof valor === 'number') return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                if (typeof valor === 'string') {
+                  const num = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+                  if (!isNaN(num)) return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                }
+                return '-';
+              }
 
-      // Soma total geral
-      let total = 0;
-      function somarValores(arr) {
-        for (const item of arr) {
-          const valor = parseFloat((item.valor || '0').toString().replace(/\./g, '').replace(',', '.'));
-          if (!isNaN(valor)) total += valor;
-        }
-      }
+              // Soma total geral
+              let total = 0;
+              function somarValores(arr) {
+                for (const item of arr) {
+                  const valor = parseFloat((item.valor || '0').toString().replace(/\./g, '').replace(',', '.'));
+                  if (!isNaN(valor)) total += valor;
+                }
+              }
 
-      somarValores(produtos);
-      somarValores(aptidoes);
-      somarValores(exames);
+              somarValores(produtos);
+              somarValores(aptidoes);
+              somarValores(exames);
 
-      // Monta tabela principal
-      let html = `
-        <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
-          <tr style="background:#f2f2f2; font-weight:bold;">
-            <td style="padding:6px; border:1px solid #ccc;">Itens do Faturamento</td>
-          </tr>
-      `;
+              // Monta tabela principal
+              let html = `
+                <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                  <tr style="background:#f2f2f2; font-weight:bold;">
+                    <td style="padding:6px; border:1px solid #ccc;">Itens do Faturamento</td>
+                  </tr>
+              `;
 
-      // Adiciona nomes dos produtos, aptidões e exames
-      function adicionarLinhas(arr, titulo) {
-        if (arr.length > 0) {
-          html += `
-            <tr style="background:#fafafa;">
-              <td style="padding:6px; border:1px solid #ccc; font-weight:bold;">${titulo}</td>
-            </tr>
-          `;
-          for (const item of arr) {
-            html += `
-              <tr>
-                <td style="padding:6px; border:1px solid #ccc;">${item.nome || '-'}</td>
-              </tr>
-            `;
-          }
-        }
-      }
+              // Adiciona seções de itens
+              function adicionarLinhas(arr, titulo) {
+                if (arr.length > 0) {
+                  html += `
+                    <tr style="background:#fafafa;">
+                      <td style="padding:6px; border:1px solid #ccc; font-weight:bold;">${titulo}</td>
+                    </tr>
+                  `;
+                  for (const item of arr) {
+                    html += `
+                      <tr>
+                        <td style="padding:6px; border:1px solid #ccc;">${item.nome || '-'}</td>
+                      </tr>
+                    `;
+                  }
+                }
+              }
 
-      adicionarLinhas(produtos, 'Produtos');
-      adicionarLinhas(aptidoes, 'Aptidões');
-      adicionarLinhas(exames, 'Exames');
+              adicionarLinhas(produtos, 'Produtos');
+              adicionarLinhas(aptidoes, 'Aptidões');
+              adicionarLinhas(exames, 'Exames');
 
-      // Linha antes do total com tipo de orçamento
-      html += `
-        <tr style="background:#fafafa;">
-          <td style="padding:6px; border:1px solid #ccc; font-weight:bold;">
-            Tipo de Orçamento: ${tipo_orcamento.join(', ') || 'Não informado'}
+              // Linha com tipo de orçamento
+              html += `
+                <tr style="background:#fafafa;">
+                  <td style="padding:6px; border:1px solid #ccc; font-weight:bold;">
+                    Tipo de Orçamento: ${tipo_orcamento.join(', ') || 'Não informado'}
+                  </td>
+                </tr>
+              `;
+
+              // Linha com dados bancários
+              html += `
+                <tr style="background:#fafafa;">
+                  <td style="padding:8px; border:1px solid #ccc;">
+                    <div style="font-weight:bold; margin-bottom:4px;">Dados Bancários:</div>
+                    ${tipo_dado_bancario.includes('agencia-conta') ? `<div>Agência/Conta: ${dado_bancario_agencia_conta}</div>` : ''}
+                    ${tipo_dado_bancario.includes('pix') ? `<div>PIX: ${dado_bancario_pix}</div>` : ''}
+                    ${tipo_dado_bancario.includes('qrcode') ? `<div>Chave QRCode disponível</div>` : ''}
+                    ${tipo_dado_bancario.length === 0 ? '<div>Não informado</div>' : ''}
+                  </td>
+                </tr>
+              `;
+
+              // Linha final com total geral
+              html += `
+                <tr style="background:#f2f2f2; font-weight:bold;">
+                  <td style="padding:6px; border:1px solid #ccc; text-align:right;">
+                    Total Geral: ${formatarValor(total)}
+                  </td>
+                </tr>
+              `;
+
+              html += '</table>';
+              return html;
+            })()}
           </td>
         </tr>
-      `;
-
-      // Linha final com total geral
-      html += `
-        <tr style="background:#f2f2f2; font-weight:bold;">
-          <td style="padding:6px; border:1px solid #ccc; text-align:right;">
-            Total Geral: ${formatarValor(total)}
-          </td>
-        </tr>
-      `;
-
-      html += '</table>';
-      return html;
-    })()}
-  </td>
-</tr>
-
-
-
 
           <tr>
               <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
