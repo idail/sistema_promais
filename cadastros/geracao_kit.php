@@ -5188,19 +5188,18 @@ function renderResultadoProfissional(tipo) {
       });
     }
 
-    const kitsColaboradores = {};
+    let kitsColaboradores = {};
+
+    let recebe_codigo_empresa_pessoa;
+    let recebe_codigo_clinica_pessoa;
+    let recebe_codigo_pessoa;
+    let resposta_empresa_pessoa;
+    let resposta_clinica_pessoa;
+    let resposta_pessoa;
+    let resposta_kits;
 
     async function selecionarECP(inputId, resultadoId, item, chave,situacao) {
       debugger;
-
-
-  let recebe_codigo_empresa_pessoa;
-  let recebe_codigo_clinica_pessoa;
-  let recebe_codigo_pessoa;
-  let resposta_empresa_pessoa;
-  let resposta_clinica_pessoa;
-  let resposta_pessoa;
-  let resposta_kits;
 
   if (inputId === "inputColaborador") {
     // 🔹 requisita kits da pessoa
@@ -5244,6 +5243,8 @@ function renderResultadoProfissional(tipo) {
   if (item?.cpf && resposta_kits && resposta_kits.length > 0) {
     // 🔹 Remove pontos e traços do CPF
     const cpfLimpo = item.cpf.replace(/[.\-]/g, "");
+
+    kitsColaboradores = [];
 
     // Se não existir entrada para o CPF, cria array vazio
     if (!kitsColaboradores[cpfLimpo]) {
@@ -6188,7 +6189,7 @@ modal.innerHTML = `
             <i class="far fa-edit" style="font-size: 1.25rem; color: #3b82f6; margin-bottom: 6px;"></i>
             <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Editar</span>
           </button>
-          <button onclick="visualizarKit('${kit.tipo_exame}','${kit.status}','${kit.empresa}','${kit.clinica}','${kit.colaborador}','${kit.data}')" style="
+          <button onclick="visualizarKit('${kit.id}','${kit.tipo_exame}','${kit.status}','${kit.empresa}','${kit.clinica}','${kit.colaborador}','${kit.data}')" style="
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -6202,7 +6203,7 @@ modal.innerHTML = `
           " onmouseover="this.style.borderColor='#bfdbfe'; this.style.boxShadow='0 1px 3px 0 rgba(0, 0, 0, 0.05)'"
             onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
             <i class="far fa-eye" style="font-size: 1.25rem; color: #10b981; margin-bottom: 6px;"></i>
-            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualização Rapida</span>
+            <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualizar KIT Completo</span>
           </button>
         </div>
       </div>
@@ -6229,24 +6230,6 @@ modal.innerHTML = `
       " onmouseover="this.style.backgroundColor='#f9fafb'" 
         onmouseout="this.style.backgroundColor='white'">
         Fechar
-      </button>
-      <button onclick="visualizarKit('${kit.id}','${kit.status}','${kit.empresa}','${kit.clinica}','${kit.cargo}')" style="
-        padding: 0.5rem 1rem;
-        background: #3b82f6;
-        border: 1px solid #3b82f6;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: white;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      " onmouseover="this.style.backgroundColor='#2563eb'; this.style.borderColor='#2563eb'" 
-        onmouseout="this.style.backgroundColor='#3b82f6'; this.style.borderColor='#3b82f6'">
-        <i class="far fa-eye"></i>
-        Visualizar KIT Completo
       </button>
     </div>
   </div>
@@ -6280,80 +6263,179 @@ modal.innerHTML = `
       alert(`Editando kit ${kitId}...`);
       fecharModal('modalDetalhesKit');
     }
+
+    function requisitarDadosKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_kit",valor_id_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KIT retornado:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarDadosCargo(codigo_cargo)
+    {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_cargo",valor_id_cargo: codigo_cargo},
+          success: function(resposta) {
+            console.log("Cargo retornado:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarMedicoCoordenador(codigo_medico_coordenador)
+    {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_medico_coordenador",valor_id_medico_coordenador: codigo_medico_coordenador},
+          success: function(resposta) {
+            console.log("Médico coordenador retornado:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarMedicoExaminador(codigo_medico_examinador)
+    {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_medico_examinador",valor_id_medico_examinador: codigo_medico_examinador},
+          success: function(resposta) {
+            console.log("Médico examinador retornado:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
     
-    function visualizarKit(tipo_exame,status,empresa,clinica,colaborador,data) {
+    async function visualizarKit(id,tipo_exame,status,empresa,clinica,colaborador,data) {
       debugger;
-  try {
-    
+      try {
 
-    // Define as informações do kit com fallback (caso algum campo esteja null)
-    const kitInfo = {
-      tipoExame: tipo_exame ?? "Não informado",
-      status: status ?? "Não informado",
-      empresa: empresa ?? "Não informada",
-      clinica: clinica ?? "Não informada",
-      colaborador: colaborador ?? "Não informado",
-      data: data ?? "Não informada"
-    };
+        let recebe_kit = await requisitarDadosKITEspecifico(id);
 
-    // Cria a modal
-    const modal = document.createElement("div");
-    modal.id = "modalDadosRapidosKit";
-    modal.style = `
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 9999;
-    `;
+        let recebe_cargo = await requisitarDadosCargo(resposta_pessoa.id);
 
-    modal.innerHTML = `
-      <div style="
-        background: #fff;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 500px;
-        padding: 20px 25px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        font-family: Arial, sans-serif;
-      ">
-        <h2 style="margin-top:0; text-align:center;">
-          Detalhes do Kit ${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}
-        </h2>
-        <table style="width:100%; margin-top:15px; border-collapse:collapse;">
-          <tr><td style="font-weight:bold; padding:6px;">Tipo do Exame:</td><td>${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}</td></tr>
-          <tr><td style="font-weight:bold; padding:6px;">Status do Kit:</td><td>${kitInfo.status.charAt(0).toUpperCase() + kitInfo.status.slice(1).toLowerCase()}</td></tr>
-          <tr><td style="font-weight:bold; padding:6px;">Empresa:</td><td>${kitInfo.empresa}</td></tr>
-          <tr><td style="font-weight:bold; padding:6px;">Clínica:</td><td>${kitInfo.clinica}</td></tr>
-          <tr><td style="font-weight:bold; padding:6px;">Colaborador:</td><td>${kitInfo.colaborador}</td></tr>
-          <tr><td style="font-weight:bold; padding:6px;">Data:</td><td>${kitInfo.data ? kitInfo.data.split(' ')[0].split('-').reverse().join('/') : 'Não informada'}</td></tr>
-        </table>
-        <div style="text-align:center; margin-top:20px;">
-          <button onclick="fecharModal('modalDadosRapidosKit')" style="
-            background:#fd9203;
-            color:white;
-            border:none;
-            padding:10px 25px;
-            border-radius:8px;
-            cursor:pointer;
-            font-size:14px;
-          ">Fechar</button>
-        </div>
-      </div>
-    `;
+        let recebe_medico_coordenador = await requisitarMedicoCoordenador(recebe_kit.medico_coordenador_id);
 
-    // Remove modal anterior, se existir
-    const existente = document.getElementById("modalDadosRapidosKit");
-    if (existente) existente.remove();
+        let recebe_medico_examinador = await requisitarMedicoExaminador(recebe_kit.medico_clinica_id);
+        
 
-    // Adiciona nova modal
-    document.body.appendChild(modal);
+        // Define as informações do kit com fallback (caso algum campo esteja null)
+        const kitInfo = {
+          tipoExame: tipo_exame ?? "Não informado",
+          status: status ?? "Não informado",
+          empresa: empresa ?? "Não informada",
+          clinica: clinica ?? "Não informada",
+          colaborador: colaborador ?? "Não informado",
+          data: data ?? "Não informada",
+          cargo:recebe_cargo.titulo_cargo ?? "Não informada",
+          motorista:recebe_kit.motorista ?? "Não informado",
+          medico_coordenador:recebe_medico_coordenador.nome ?? "Não informado",
+          medico_examinador:recebe_medico_examinador.nome ?? "Não informado"
+        };
 
-  } catch (error) {
-    console.log(`Erro ao visualizar kit: ${error.message}`, "error");
+        const modal = document.createElement("div");
+        modal.id = "modalDadosRapidosKit";
+        modal.style = `
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(0,0,0,0.5);
+          display: flex; justify-content: center; align-items: center;
+          z-index: 9999;
+        `;
+
+        modal.innerHTML = `
+          <div style="
+            background: #fff;
+            border-radius: 18px;
+            width: 95%;
+            max-width: 1400px;  /* Extra grande */
+            padding: 50px 60px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+            font-family: Arial, sans-serif;
+            max-height: 90vh;
+            overflow-y: auto;
+          ">
+            <h2 style="margin-top:0; text-align:center; font-size:30px; color:#333;">
+              Detalhes do Kit ${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}
+            </h2>
+
+            <table style="width:100%; margin-top:30px; border-collapse:collapse; font-size:18px;">
+              <tr><td style="font-weight:bold; padding:12px; width:155px;">Tipo do Exame:</td><td>${kitInfo.tipoExame.charAt(0).toUpperCase() + kitInfo.tipoExame.slice(1).toLowerCase()}</td><td style="font-weight:bold; padding:12px;width: 16%;">Empresa:</td><td>${kitInfo.empresa}</td></tr>
+              <tr><td style="font-weight:bold; padding:12px;">Clínica:</td><td>${kitInfo.clinica}</td><td style="font-weight:bold; padding:12px;">Colaborador:</td><td>${kitInfo.colaborador}</td></tr>
+              <tr><td style="font-weight:bold; padding:12px;">Cargo:</td><td>${kitInfo.cargo}</td><td style="font-weight:bold; padding:12px;">Motorista:</td><td>${kitInfo.motorista}</td></tr>
+              <tr><td style="font-weight:bold; padding:12px;">Médico Coordenador:</td><td>${kitInfo.medico_coordenador}</td><td style="font-weight:bold; padding:12px;">Médico Examinador:</td><td>${kitInfo.medico_examinador}</td></tr>
+              
+              <td style="font-weight:bold; padding:12px;">Status do Kit:</td><td>${kitInfo.status.charAt(0).toUpperCase() + kitInfo.status.slice(1).toLowerCase()}</td>
+              
+              <tr><td style="font-weight:bold; padding:12px;">Data:</td><td>${kitInfo.data ? kitInfo.data.split(' ')[0].split('-').reverse().join('/') : 'Não informada'}</td></tr>
+            </table>
+
+            <div style="text-align:center; margin-top:40px;">
+              <button onclick="fecharModal('modalDadosRapidosKit')" style="
+                background:#fd9203;
+                color:white;
+                border:none;
+                padding:14px 45px;
+                border-radius:10px;
+                cursor:pointer;
+                font-size:18px;
+                transition: background 0.3s;
+              "
+              onmouseover="this.style.background='#e68100'"
+              onmouseout="this.style.background='#fd9203'">
+                Fechar
+              </button>
+            </div>
+          </div>
+        `;
+
+
+
+        // Remove modal anterior, se existir
+        const existente = document.getElementById("modalDadosRapidosKit");
+        if (existente) existente.remove();
+
+        // Adiciona nova modal
+        document.body.appendChild(modal);
+
+      } catch (error) {
+        console.log(`Erro ao visualizar kit: ${error.message}`, "error");
+      }
   }
-}
 
 
 

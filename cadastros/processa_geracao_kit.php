@@ -506,6 +506,45 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_pessoa->execute();
         $resultado_busca_pessoa = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_pessoa);
+    }else if($recebe_processo_geracao_kit === "buscar_kit")
+    {
+        $instrucao_busca_kit_especifico = "select * from kits where id = :recebe_id_kit";
+        $comando_busca_kit_especifico = $pdo->prepare($instrucao_busca_kit_especifico);
+        $comando_busca_kit_especifico->bindValue(":recebe_id_kit",$_GET["valor_id_kit"]);
+        $comando_busca_kit_especifico->execute();
+        $resultado_busca_kit_especifico = $comando_busca_kit_especifico->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_kit_especifico);
+    }else if($recebe_processo_geracao_kit === "buscar_cargo")
+    {
+        $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+        $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+        $comando_busca_cargo->bindValue(":recebe_id_cargo",$_GET["valor_id_cargo"]);
+        $comando_busca_cargo->execute();
+        $resultado_busca_cargo = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cargo);
+    }else if($recebe_processo_geracao_kit === "buscar_medico_coordenador")
+    {
+        $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+        $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+        $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador",$_GET["valor_id_medico_coordenador"]);
+        $comando_busca_medico_coordenador->execute();
+        $resultado_busca_medico_coordenador = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_medico_coordenador);
+    }else if($recebe_processo_geracao_kit === "busca_medico_examinador")
+    {
+        $instrucao_busca_medico_examinador = "select medico_id from medicos_clinicas where id = :recebe_id_medico_examinador";
+        $comando_busca_medico_examinador = $pdo->prepare($instrucao_busca_medico_examinador);
+        $comando_busca_medico_examinador->bindValue(":recebe_id_medico_examinador",$_GET["valor_id_medico_examinador"]);
+        $comando_busca_medico_examinador->execute();
+        $resultado_busca_medico_examinador = $comando_busca_medico_examinador->fetch(PDO::FETCH_ASSOC);
+        
+
+        $instrucao_busca_medico_examinador_dados = "select * from medicos where id = :recebe_id_medico_examinador";
+        $comando_busca_medico_examinador_dados = $pdo->prepare($instrucao_busca_medico_examinador_dados);
+        $comando_busca_medico_examinador_dados->bindValue(":recebe_id_medico_examinador",$resultado_busca_medico_examinador["medico_id"]);
+        $comando_busca_medico_examinador_dados->execute();
+        $resultado_busca_medico_examinador_dados = $comando_busca_medico_examinador_dados->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_medico_examinador_dados);
     }
 }
 ?>
