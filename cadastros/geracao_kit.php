@@ -6359,7 +6359,13 @@ modal.innerHTML = `
       medico_coordenador: recebe_medico_coordenador.nome ?? "Não informado",
       medico_examinador: recebe_medico_examinador.nome ?? "Não informado",
       riscos:recebe_kit.riscos_selecionados ?? "Não informado",
-      treinamentos:recebe_kit.treinamentos_selecionados ?? "Não informado"
+      treinamentos:recebe_kit.treinamentos_selecionados ?? "Não informado",
+      insalubridade:recebe_kit.insalubridade ?? "Não informado",
+      porcentagem:recebe_kit.porcentagem ?? "Não informado",
+      periculosidade:recebe_kit.periculosidade ?? "Não informado",
+      aposentado_especial:recebe_kit.aposentado_especial ?? "Não informado",
+      agente_nocivo:recebe_kit.agente_nocivo ?? "Não informado",
+      ocorrencia_gfip:recebe_kit.ocorrencia_gfip ?? "Não informado"
     };
 
     // Remove modal anterior se existir
@@ -6533,6 +6539,33 @@ modal.innerHTML = `
               })()}
             </td>
           </tr>
+
+          <tr>
+          <td colspan="4" style="padding:12px;">
+            <table style="width:100%; border-collapse:collapse; font-size:16px;">
+              <tr>
+                <td style="font-weight:bold; padding:8px; width:8%; white-space:nowrap;">Insalubridade:</td>
+                <td style="width:8%;">${kitInfo.insalubridade}</td>
+
+                <td style="font-weight:bold; padding:8px; width:8%; white-space:nowrap;">Porcentagem:</td>
+                <td style="width:8%;">${kitInfo.porcentagem}</td>
+
+                <td style="font-weight:bold; padding:8px; width:8%; white-space:nowrap;">Periculosidade 30%:</td>
+                <td style="width:8%;">${kitInfo.periculosidade}</td>
+
+                <td style="font-weight:bold; padding:8px; width:8%; white-space:nowrap;">Aposent. Especial:</td>
+                <td style="width:8%;">${kitInfo.aposentado_especial}</td>
+
+                <td style="font-weight:bold; padding:8px; width:8%; white-space:nowrap;">Agente Nocivo:</td>
+                <td style="width:8%;">${kitInfo.agente_nocivo}</td>
+
+                <td style="font-weight:bold; padding:8px; width:8%; white-space:nowrap;">Ocorrência GFIP:</td>
+                <td style="width:8%;">${kitInfo.ocorrencia_gfip}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
 
 
           <tr>
