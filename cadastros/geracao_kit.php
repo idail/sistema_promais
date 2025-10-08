@@ -6391,6 +6391,7 @@ modal.innerHTML = `
       aptidoes:recebe_kit.aptidoes_selecionadas ?? "Não informado",
       exames:recebe_kit.exames_selecionados ?? "Não informado",
       produtos:recebe_produto_kit ?? "Não informado",
+      tipo_orcamento:recebe_kit.tipo_orcamento ?? "Não informado"
     };
 
     // Remove modal anterior se existir
@@ -6728,6 +6729,7 @@ modal.innerHTML = `
       let produtos = kitInfo.produtos;
       let aptidoes = kitInfo.aptidoes;
       let exames = kitInfo.exames;
+      let tipo_orcamento = kitInfo.tipo_orcamento ?? "Não informado";
 
       // Converte strings JSON para arrays, se necessário
       function toArray(dado) {
@@ -6744,6 +6746,17 @@ modal.innerHTML = `
       produtos = toArray(produtos);
       aptidoes = toArray(aptidoes);
       exames = toArray(exames);
+
+      // Trata tipo de orçamento (pode ser array ou string)
+      if (typeof tipo_orcamento === 'string') {
+        try {
+          const parsed = JSON.parse(tipo_orcamento);
+          if (Array.isArray(parsed)) tipo_orcamento = parsed;
+          else tipo_orcamento = [tipo_orcamento];
+        } catch {
+          tipo_orcamento = [tipo_orcamento];
+        }
+      }
 
       // Função para formatar valor em R$
       function formatarValor(valor) {
@@ -6799,6 +6812,15 @@ modal.innerHTML = `
       adicionarLinhas(aptidoes, 'Aptidões');
       adicionarLinhas(exames, 'Exames');
 
+      // Linha antes do total com tipo de orçamento
+      html += `
+        <tr style="background:#fafafa;">
+          <td style="padding:6px; border:1px solid #ccc; font-weight:bold;">
+            Tipo de Orçamento: ${tipo_orcamento.join(', ') || 'Não informado'}
+          </td>
+        </tr>
+      `;
+
       // Linha final com total geral
       html += `
         <tr style="background:#f2f2f2; font-weight:bold;">
@@ -6813,6 +6835,7 @@ modal.innerHTML = `
     })()}
   </td>
 </tr>
+
 
 
 
