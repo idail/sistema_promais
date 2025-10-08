@@ -2758,6 +2758,25 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
     }
   }, 300);
 }
+
+      setTimeout(() => {
+        debugger;
+    const checkbox = document.getElementById('requer-assinatura');
+    if (checkbox) {
+        // Verifica se existe um estado salvo
+        if (typeof window.assinaturaDigitalEstado !== 'undefined') {
+            // Define o estado do checkbox com o valor salvo
+            checkbox.checked = Boolean(window.assinaturaDigitalEstado);
+            console.log('Estado da assinatura restaurado:', window.assinaturaDigitalEstado);
+        }
+        
+        // Adiciona o event listener para futuras mudanças
+        $(document).off('change', '#requer-assinatura').on('change', '#requer-assinatura', function() {
+            window.assinaturaDigitalEstado = $(this).is(':checked');
+            console.log('Estado da assinatura atualizado para:', window.assinaturaDigitalEstado);
+        });
+    }
+}, 100);
         
         // Pequeno atraso para garantir que o DOM foi atualizado
         setTimeout(() => {
@@ -11373,6 +11392,44 @@ document.addEventListener('DOMContentLoaded', function() {
   // Carrega as chaves PIX ao carregar a página
   carregarChavesPix();
 });
+
+// // Adiciona o event listener para o checkbox de assinatura
+// function configurarEventoAssinatura() {
+//   const checkboxAssinatura = document.getElementById('requer-assinatura');
+  
+//   // Remove event listeners anteriores para evitar duplicação
+//   const novoCheckbox = checkboxAssinatura.cloneNode(true);
+//   checkboxAssinatura.parentNode.replaceChild(novoCheckbox, checkboxAssinatura);
+  
+//   // Adiciona o novo event listener
+//   novoCheckbox.addEventListener('change', function() {
+//     atualizarEstadoAssinatura(this.checked);
+//     console.log('Estado da assinatura alterado para:', this.checked);
+//   });
+  
+//   return novoCheckbox;
+// }
+
+// // Chame esta função quando o DOM estiver pronto e quando a aba for carregada
+// document.addEventListener('DOMContentLoaded', function() {
+//   // Configura o evento uma vez quando a página carregar
+//   if (document.getElementById('requer-assinatura')) {
+//     configurarEventoAssinatura();
+//   }
+// });
+
+function atualizarEstadoAssinatura(assinatura)
+{
+  debugger;
+  window.assinaturaDigitalEstado = assinatura;
+}
+
+$(document).on('change', '#requer-assinatura', function() {
+  debugger;
+    atualizarEstadoAssinatura($(this).is(':checked'));
+});
+
+
 
      // Função para atualizar a lista de selecionados
 function updateSelectedList() {
