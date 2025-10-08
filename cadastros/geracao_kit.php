@@ -2668,6 +2668,47 @@ function renderResultadoProfissional(tipo) {
       // Se for a aba de faturamento (etapa 5), atualiza os totais e inicializa a conta bancária
       if (step === 5) {
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
+
+        // Restaura os produtos da variável global
+        if (window.fatProdutosSelecionados && window.fatProdutosSelecionados.length > 0) {
+          console.log('Restaurando produtos da memória:', window.fatProdutosSelecionados);
+          
+          // Pequeno atraso para garantir que o DOM foi completamente renderizado
+          setTimeout(() => {
+            debugger;
+            const listaProdutos = document.getElementById('fat-lista-produtos');
+            if (listaProdutos) {
+              // Limpa a lista atual
+              listaProdutos.innerHTML = '';
+              
+              // Recria os itens da lista
+              window.fatProdutosSelecionados.forEach(produto => {
+                const linha = document.createElement('div');
+                linha.className = 'fat-produto-item';
+                
+                const html = [
+                  `<div class="fat-produto-descricao">${produto.descricao || ''}</div>`,
+                  `<div class="fat-produto-quantidade">${produto.quantidade || 0}</div>`,
+                  `<div class="fat-produto-valor-unit">${window.fatFormatter ? window.fatFormatter.format(produto.valorunit || 0) : (produto.valorunit || 0)}</div>`,
+                  `<div class="fat-produto-total">${window.fatFormatter ? window.fatFormatter.format((produto.valorunit || 0) * (produto.quantidade || 0)) : ((produto.valorunit || 0) * (produto.quantidade || 0))}</div>`,
+                  '<div class="fat-produto-acoes">',
+                  `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${produto.id || 0}, ${(produto.valorunit || 0) * (produto.quantidade || 0)})">`,
+                  '    <i class="fas fa-trash-alt"></i> Remover',
+                  '  </button>',
+                  '</div>'
+                ].join('');
+                
+                linha.innerHTML = html;
+                listaProdutos.appendChild(linha);
+              });
+              
+              // Atualiza os totais
+              if (typeof window.fatAtualizarTotais === 'function') {
+                window.fatAtualizarTotais();
+              }
+            }
+          }, 100);
+        }
         
         // Pequeno atraso para garantir que o DOM foi atualizado
         setTimeout(() => {
