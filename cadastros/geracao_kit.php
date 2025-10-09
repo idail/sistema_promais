@@ -2775,6 +2775,24 @@ function renderResultadoProfissional(tipo) {
             });
         }
 
+        restaurarModelosSelecionados();
+
+        function restaurarModelosSelecionados() {
+          debugger;
+  if (!window.smModelosDocumentosSelecionados || !window.smModelosDocumentosSelecionados.length) return;
+  
+  document.querySelectorAll('.sm-label').forEach(label => {
+    const card = label.querySelector('.sm-card');
+    const checkbox = label.querySelector('input[type="checkbox"]');
+    if (card && checkbox) {
+      const text = card.querySelector('span')?.textContent?.trim();
+      if (text && window.smModelosDocumentosSelecionados.includes(text)) {
+        checkbox.checked = true;
+      }
+    }
+  });
+}
+
         // const pixKeySelect = document.getElementById('pix-key-select');
         // if (!pixKeySelect) return;
 
@@ -11754,6 +11772,19 @@ function updateSelectedList() {
     const selectedList = document.getElementById('sm-selected-list');
     if (!selectedList) return;
 
+    // Salva os modelos de documentos selecionados
+    const modelosSelecionados = [];
+    document.querySelectorAll('.sm-label').forEach(label => {
+      const card = label.querySelector('.sm-card');
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      if (card && checkbox && checkbox.checked) {
+        const text = card.querySelector('span')?.textContent?.trim();
+        if (text) {
+          modelosSelecionados.push(text);
+        }
+      }
+    });
+
     // Salva os tipos de orçamento selecionados antes de limpar
     const tiposOrcamentoSelecionados = [];
     document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
@@ -11771,11 +11802,9 @@ function updateSelectedList() {
     selectedList.innerHTML = '';
 
     // Atualiza o backup com os tipos de orçamento atualmente selecionados
-    if (tiposOrcamentoSelecionados.length > 0) {
-      window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
-    } else {
-      window.smDocumentosSelecionadosBackup = [];
-    }
+    // Atualiza os backups
+    window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
+    window.smModelosDocumentosSelecionados = [...new Set(modelosSelecionados)];
 
     // Atualiza a lista global com os valores do backup
     window.smDocumentosSelecionadosNomes = [...(window.smDocumentosSelecionadosBackup || [])];
@@ -11802,6 +11831,18 @@ function updateSelectedList() {
         // Se for orçamento, não renderiza no sm-selected-list (apenas armazena)
         if (isOrcamento) {
           return;
+        }
+
+        // Armazena no array apropriado
+        if (isOrcamento) {
+          try { 
+            window.smDocumentosSelecionadosNomes = [...new Set([...window.smDocumentosSelecionadosNomes || [], text.trim()])];
+          } catch (e) { console.error(e); }
+          return;
+        } else {
+          try {
+            window.smModelosDocumentosSelecionados = [...new Set([...window.smModelosDocumentosSelecionados || [], text.trim()])];
+          } catch (e) { console.error(e); }
         }
 
         // Renderização visual apenas para itens que não são orçamento
