@@ -7332,7 +7332,6 @@ function printSection(button) {
     </tr>
 
     <table style="border-collapse: collapse; width: 100%; table-layout: fixed; font-family: Arial, sans-serif; font-size: 11px; margin-top:0px;">
-  <!-- Linha 1 - Cabeçalhos principais -->
   <tr style="background-color: #ffff00; font-weight: bold; text-align:center;">
     <td rowspan="2" style="border: 1px solid #000;width: 8%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       NOME DO FUNCIONÁRIO
@@ -7370,7 +7369,7 @@ function printSection(button) {
     </td>
 
     <!-- CÓDIGO -->
-    <td rowspan="2" style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+    <td style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       CÓDIGO DE FATOR PREVIDENCIÁRIO / OCORRÊNCIA SEFIP
     </td>
 
@@ -7380,62 +7379,57 @@ function printSection(button) {
     </td>
   </tr>
 
-  <!-- Linha 2 - Subcabeçalhos (SIM / NÃO) -->
+  <!-- LINHA 2 -->
   <tr style="background-color: #ffff00; font-weight: bold; text-align:center; height:32px;">
-    <!-- INSALUBRIDADE -->
     <td style="border: 1px solid #000; padding:4px;">SIM</td>
     <td style="border: 1px solid #000; padding:4px;">NÃO</td>
 
-    <!-- PORCENTAGEM -->
     <td style="border: 1px solid #000; padding:4px;">10%</td>
     <td style="border: 1px solid #000; padding:4px;">20%</td>
     <td style="border: 1px solid #000; padding:4px;">40%</td>
 
-    <!-- PERICULOSIDADE -->
-    <td style="border: 1px solid #000; padding:4px;">SIM</td>
-    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
-
-    <!-- APOSENTADORIA -->
-    <td style="border: 1px solid #000; padding:4px;">SIM</td>
-    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
+    <td>SIM</td>
+    <!-- SIM/NÃO ENTRE PERICULOSIDADE E APOSENTADORIA -->
+    <td colspan="2" style="border: 1px solid #000; padding:4px;">
+      <div style="display:flex; justify-content:space-between; text-align:center;">
+        <div style="flex:1;">NÃO</div>
+        <div style="flex:1;">SIM</div>
+      </div>
+    </td>
+    <td>NAO</td>
 
     <!-- EXPOSIÇÃO -->
     <td style="border: 1px solid #000; padding:4px;">SIM</td>
     <td style="border: 1px solid #000; padding:4px;">NÃO</td>
+    <td style="border: 1px solid #000; padding:4px;">GFIP: 00; 01; 02; 03; 04</td>
 
     <!-- TREINAMENTOS -->
     <td style="border: 1px solid #000; padding:4px;">NR 10<br>SIM ( )<br>NÃO ( X )</td>
     <td style="border: 1px solid #000; padding:4px;">NR 12<br>SIM ( )<br>NÃO ( )</td>
   </tr>
 
-  <!-- Linha de exemplo -->
-  <tr style="text-align:center; height:28px;">
-    <td style="border:1px solid #000; padding:5px;font-size:10px;">JOÃO DA SILVA</td>
-    <td style="border:1px solid #000; padding:5px;font-size:10px;">ELETRICISTA</td>
-    <td style="border:1px solid #000; padding:5px;font-size:10px;">1234-05</td>
-
-    <td style="border:1px solid #000; padding:5px;">X</td>
-    <td style="border:1px solid #000; padding:5px;"></td>
-
-    <td style="border:1px solid #000; padding:5px;"></td>
-    <td style="border:1px solid #000; padding:5px;">X</td>
-    <td style="border:1px solid #000; padding:5px;"></td>
-
-    <td style="border:1px solid #000; padding:5px;">X</td>
-    <td style="border:1px solid #000; padding:5px;"></td>
-
-    <td style="border:1px solid #000; padding:5px;">X</td>
-    <td style="border:1px solid #000; padding:5px;"></td>
-
-    <td style="border:1px solid #000; padding:5px;">X</td>
-    <td style="border:1px solid #000; padding:5px;"></td>
-
-    <td style="border:1px solid #000; padding:5px;font-size:10px;">GFIP: 00; 01; 02; 03; 04</td>
-
-    <td style="border:1px solid #000; padding:5px;font-size:10px;">SIM ( )<br>NÃO ( X )</td>
-    <td style="border:1px solid #000; padding:5px;font-size:10px;">SIM ( )<br>NÃO ( )</td>
+  <tr>
+    <td style="vertical-align:middle;text-align:center;">JOÃO DA SILVA</td>
+    <td style="vertical-align:middle;text-align:center;">ELETRICISTA</td>
+    <td style="vertical-align:middle;text-align:center;">1234-05</td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;"></td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;"></td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;">x</td>
+    <td style="vertical-align:middle;text-align:center;"></td>
+    <td style="vertical-align:middle;text-align:center;"></td>
+    <td style="vertical-align:middle;text-align:center;">4</td>
+    <td style="vertical-align:middle;text-align:center;">Data:</td>
+    <td style="vertical-align:middle;text-align:center;">Data:</td>
   </tr>
+  
 </table>
+
 
 
 
