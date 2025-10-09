@@ -7318,6 +7318,127 @@ function printSection(button) {
                     </td>
                 </tr>
             </table>
+
+            <table style="margin-top:10px; width:100%; table-layout:fixed;">
+    
+    <tr>
+        <td colspan="10" class="section-title">
+            NOME DA EMPRESA / CAEPF / CNPJ:
+            <span style="font-weight:normal;">
+                ' . (!empty($resultado_empresa_selecionada["nome"]) ? htmlspecialchars($resultado_empresa_selecionada["nome"]) : '') . '
+                ' . (!empty($resultado_empresa_selecionada["cnpj"]) ? " - CNPJ/CAEPF: " . htmlspecialchars($resultado_empresa_selecionada["cnpj"]) : '') . '
+            </span>
+        </td>
+    </tr>
+
+    <table style="border-collapse: collapse; width: 100%; table-layout: fixed; font-family: Arial, sans-serif; font-size: 11px; margin-top:0px;">
+  <tr style="background-color: #ffff00; font-weight: bold; text-align:center;">
+    <td rowspan="2" style="border: 1px solid #000;width: 6%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      NOME DO FUNCIONÁRIO
+    </td>
+    <td rowspan="2" style="border: 1px solid #000;width: 6%;padding: 8px 4px;vertical-align:middle;line-height: 1.3;white-space: normal;word-wrap: break-word;">
+      FUNÇÃO
+    </td>
+    <td rowspan="2" style="border: 1px solid #000;width: 4%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      CBO
+    </td>
+
+    <td colspan="2" style="border: 1px solid #000;width: 6%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      INSALUBRIDADE
+    </td>
+
+    <td colspan="3" style="border: 1px solid #000;width: 10%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      PORCENTAGEM
+    </td>
+
+    <td rowspan="2" style="border: 1px solid #000;width: 7%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      PERICULOSIDADE 30%
+    </td>
+
+    <td colspan="2" style="border: 1px solid #000;width: 8%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      APOSENTADORIA ESPECIAL
+    </td>
+
+    <td colspan="2" style="border: 1px solid #000;width: 8%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      EXPOSIÇÃO À AGENTE NOCIVO
+    </td>
+
+    <td rowspan="2" style="border: 1px solid #000;width: 7%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      CÓDIGO DE FATOR PREVIDENCIÁRIO / OCORRÊNCIA SEFIP
+    </td>
+
+    <td colspan="2" style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      COLABORADOR POSSUI TREINAMENTOS OBRIGATÓRIOS?
+    </td>
+  </tr>
+
+  <tr style="background-color: #ffff00; font-weight: bold; text-align:center; height:34px;">
+    <td style="border: 1px solid #000; padding:4px;">SIM</td>
+    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
+
+    <td style="border: 1px solid #000; padding:4px;">10%</td>
+    <td style="border: 1px solid #000; padding:4px;">20%</td>
+    <td style="border: 1px solid #000; padding:4px;">40%</td>
+
+    <td style="border: 1px solid #000; padding:4px;">SIM</td>
+    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
+
+    <td style="border: 1px solid #000; padding:4px;">SIM</td>
+    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
+
+    <td style="border: 1px solid #000; padding:4px;">NR 10<br>SIM ( )<br>NÃO ( X )</td>
+    <td style="border: 1px solid #000; padding:4px;">NR 12<br>SIM ( )<br>NÃO ( )</td>
+  </tr>
+
+  <tr style="text-align:center; height:28px;">
+    <td style="border:1px solid #000; padding:5px;font-size:10px;">JOÃO DA SILVA</td>
+    <td style="border:1px solid #000; padding:5px;font-size:10px;">ELETRICISTA</td>
+    <td style="border:1px solid #000; padding:5px;font-size:10px;">1234-05</td>
+
+    <td style="border:1px solid #000; padding:5px;">X</td>
+    <td style="border:1px solid #000; padding:5px;"></td>
+
+    <td style="border:1px solid #000; padding:5px;"></td>
+    <td style="border:1px solid #000; padding:5px;">X</td>
+    <td style="border:1px solid #000; padding:5px;"></td>
+
+    <td style="border:1px solid #000; padding:5px;">X</td>
+
+    <td style="border:1px solid #000; padding:5px;">X</td>
+    <td style="border:1px solid #000; padding:5px;"></td>
+
+    <td style="border:1px solid #000; padding:5px;">X</td>
+    <td style="border:1px solid #000; padding:5px;"></td>
+
+    <td style="border:1px solid #000; padding:5px;font-size:10px;">GFIP: 00; 01; 02; 03; 04</td>
+
+    <td style="border:1px solid #000; padding:5px;font-size:10px;">SIM ( )<br>NÃO ( X )</td>
+    <td style="border:1px solid #000; padding:5px;font-size:10px;">SIM ( )<br>NÃO ( )</td>
+  </tr>
+</table>
+
+
+
+    <!-- Linhas dinâmicas -->
+    ' . (isset($resultado_colaboradores) && is_array($resultado_colaboradores) && count($resultado_colaboradores) > 0
+        ? implode("", array_map(function($colab) {
+            return "
+            <tr style=\"text-align:center; font-size:12px;\">
+                <td>" . htmlspecialchars($colab["nome"] ?? "") . "</td>
+                <td>" . htmlspecialchars($colab["funcao"] ?? "") . "<br>" . htmlspecialchars($colab["cbo"] ?? "") . "</td>
+                <td>" . htmlspecialchars($colab["insalubridade"] ?? "NÃO") . "</td>
+                <td>" . htmlspecialchars($colab["porcentagem_insalubridade"] ?? "") . "</td>
+                <td>" . htmlspecialchars($colab["periculosidade"] ?? "NÃO") . "</td>
+                <td>" . htmlspecialchars($colab["aposentadoria_especial"] ?? "NÃO") . "</td>
+                <td>" . htmlspecialchars($colab["agente_nocivo"] ?? "NÃO") . "</td>
+                <td>" . htmlspecialchars($colab["codigo_fator_previdenciario"] ?? "") . "</td>
+                <td>" . htmlspecialchars($colab["ocorrencia_sefip"] ?? "") . "</td>
+                <td>" . htmlspecialchars($colab["treinamentos_obrigatorios"] ?? "") . "</td>
+            </tr>";
+        }, $resultado_colaboradores))
+        : "") . '
+</table>
+
         </div>
         
         <div class="actions">
