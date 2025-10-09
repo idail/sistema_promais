@@ -2679,6 +2679,109 @@ function renderResultadoProfissional(tipo) {
       if (step === 5) {
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
 
+        carregarAsChavesPIX();
+
+        function carregarAsChavesPIX()
+        {
+          const pixKeySelect = document.getElementById('pix-key-select');
+    if (!pixKeySelect) return;
+
+    // Limpa as opções exceto a primeira
+    while (pixKeySelect.options.length > 1) {
+        pixKeySelect.remove(1);
+    }
+
+    // Faz a requisição para buscar as chaves PIX
+    $.ajax({
+        url: 'cadastros/processa_conta_bancaria.php',
+        method: 'GET',
+        dataType: 'json',
+        data: { 
+            processo_conta_bancaria: 'buscar_contas_bancarias' 
+        },
+        success: function(res) {
+          debugger;
+            try {
+                if (Array.isArray(res) && res.length) {
+                    const vistos = new Set();
+                    res.forEach(item => {
+                        const tipo = String(item.tipo_pix || '').trim();
+                        const valor = String(item.valor_pix || '').trim();
+                        if (!tipo || !valor) return;
+                        
+                        const chave = `${tipo}|${valor}`;
+                        if (vistos.has(chave)) return;
+                        vistos.add(chave);
+                        
+                        const opt = document.createElement('option');
+                        opt.value = valor;
+                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                        pixKeySelect.appendChild(opt);
+                    });
+                }
+            } catch(e) {
+                console.error('Erro ao processar chaves PIX:', e);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao carregar chaves PIX:', error);
+        }
+    });
+        }
+
+        // const pixKeySelect = document.getElementById('pix-key-select');
+        // if (!pixKeySelect) return;
+
+        // let chavesExemplo = [];
+
+        // // Adiciona as chaves ao select
+        // chavesExemplo.forEach(chave => {
+        //   const option = document.createElement('option');
+        //   option.value = chave.chave;
+        //   option.textContent = `${chave.tipo}: ${chave.chave} (${chave.banco} - Ag ${chave.agencia} C/C ${chave.conta})`;
+        //   pixKeySelect.appendChild(option);
+        // });
+
+
+        // $.ajax({
+        //       url: 'cadastros/processa_conta_bancaria.php',
+        //       method: 'GET',
+        //       dataType: 'json',
+        //       data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+        //       success: function(res){
+        //         debugger;
+        //         try {
+        //           const pixKeySelect = document.getElementById('pix-key-select');
+        //           if (!pixKeySelect) return;
+        //           // Limpa as opções exceto a primeira (placeholder)
+        //           while (pixKeySelect.options.length > 1) {
+        //             pixKeySelect.remove(1);
+        //           }
+        //           if (Array.isArray(res) && res.length) {
+        //             const vistos = new Set();
+        //             res.forEach(item => {
+        //               const tipo = String(item.tipo_pix || '').trim();
+        //               const valor = String(item.valor_pix || '').trim();
+        //               if (!tipo || !valor) return;
+        //               const chave = `${tipo}|${valor}`;
+        //               if (vistos.has(chave)) return;
+        //               vistos.add(chave);
+        //               const opt = document.createElement('option');
+        //               opt.value = valor;
+        //               opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+        //               pixKeySelect.appendChild(opt);
+        //             });
+        //           }
+        //         } catch(e) {
+        //           console.warn('Falha ao popular chaves PIX:', e);
+        //         }
+        //       },
+        //       error:function(xhr,status,error)
+        //       {
+
+        //       },
+        //     });
+
         // Restaura os produtos da variável global
         if (window.fatProdutosSelecionados && window.fatProdutosSelecionados.length > 0) {
           console.log('Restaurando produtos da memória:', window.fatProdutosSelecionados);
@@ -3279,52 +3382,52 @@ tipoContaInputs.forEach(input => {
           // Carregar chaves PIX existentes (exemplo)
           function carregarChavesPix() {
 
-            $.ajax({
-              url: 'cadastros/processa_conta_bancaria.php',
-              method: 'GET',
-              dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
-              success: function(res){
-                debugger;
-                try {
-                  const pixKeySelect = document.getElementById('pix-key-select');
-                  if (!pixKeySelect) return;
-                  // Limpa as opções exceto a primeira (placeholder)
-                  while (pixKeySelect.options.length > 1) {
-                    pixKeySelect.remove(1);
-                  }
-                  if (Array.isArray(res) && res.length) {
-                    const vistos = new Set();
-                    res.forEach(item => {
-                      const tipo = String(item.tipo_pix || '').trim();
-                      const valor = String(item.valor_pix || '').trim();
-                      if (!tipo || !valor) return;
-                      const chave = `${tipo}|${valor}`;
-                      if (vistos.has(chave)) return;
-                      vistos.add(chave);
-                      const opt = document.createElement('option');
-                      opt.value = valor;
-                      opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
-                      pixKeySelect.appendChild(opt);
-                    });
-                  }
-                } catch(e) {
-                  console.warn('Falha ao popular chaves PIX:', e);
-                }
-              },
-              error:function(xhr,status,error)
-              {
+            // $.ajax({
+            //   url: 'cadastros/processa_conta_bancaria.php',
+            //   method: 'GET',
+            //   dataType: 'json',
+            //   data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+            //   success: function(res){
+            //     debugger;
+            //     try {
+            //       const pixKeySelect = document.getElementById('pix-key-select');
+            //       if (!pixKeySelect) return;
+            //       // Limpa as opções exceto a primeira (placeholder)
+            //       while (pixKeySelect.options.length > 1) {
+            //         pixKeySelect.remove(1);
+            //       }
+            //       if (Array.isArray(res) && res.length) {
+            //         const vistos = new Set();
+            //         res.forEach(item => {
+            //           const tipo = String(item.tipo_pix || '').trim();
+            //           const valor = String(item.valor_pix || '').trim();
+            //           if (!tipo || !valor) return;
+            //           const chave = `${tipo}|${valor}`;
+            //           if (vistos.has(chave)) return;
+            //           vistos.add(chave);
+            //           const opt = document.createElement('option');
+            //           opt.value = valor;
+            //           opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+            //           pixKeySelect.appendChild(opt);
+            //         });
+            //       }
+            //     } catch(e) {
+            //       console.warn('Falha ao popular chaves PIX:', e);
+            //     }
+            //   },
+            //   error:function(xhr,status,error)
+            //   {
 
-              },
-            });
+            //   },
+            // });
 
             const pixKeySelect = document.getElementById('pix-key-select');
-            if (!pixKeySelect) return;
+            // if (!pixKeySelect) return;
             
-            // Limpa as opções exceto a primeira
-            while (pixKeySelect.options.length > 1) {
-              pixKeySelect.remove(1);
-            }
+            // // Limpa as opções exceto a primeira
+            // while (pixKeySelect.options.length > 1) {
+            //   pixKeySelect.remove(1);
+            // }
 
             function gravar_pix(pix) {
               debugger;
