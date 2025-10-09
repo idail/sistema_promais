@@ -2458,6 +2458,16 @@ function renderResultadoProfissional(tipo) {
 
     let etapas = [];
 
+//     // Estrutura global para armazenar o estado dos dados bancários
+// window.dadosBancariosEstado = {
+//     tipoSelecionado: null,      // 'pix', 'agencia-conta', 'qrcode'
+//     chavePix: null,             // Valor da chave PIX selecionada
+//     textoPix: null,             // Texto exibido da chave PIX
+//     agenciaConta: null,         // Valor da agência/conta
+//     textoAgenciaConta: null,    // Texto exibido da agência/conta
+//     qrcodeSelecionado: false    // Se o QR Code está selecionado
+// };
+
     function updateTab(step) {
       debugger;
       console.log('Atualizando para a aba:', step, 'Conteúdo:', etapas[step] ? 'disponível' : 'indisponível');
@@ -2777,6 +2787,62 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
         });
     }
 }, 100);
+
+setTimeout(restaurarEstadoBancario, 200);
+
+function restaurarEstadoBancario() {
+    debugger;
+    const estado = window.dadosBancariosEstado;
+    if (!estado) return;
+
+    console.log('Restaurando estado bancário:', estado);
+
+    // Função auxiliar para marcar um checkbox
+    const marcarCheckbox = (valor, tipo) => {
+        const input = document.querySelector(`input[value="${tipo}"]`);
+        if (input) {
+            input.checked = valor;
+            input.dispatchEvent(new Event('change'));
+        }
+    };
+
+    // Restaura os checkboxes
+    marcarCheckbox(estado.pixSelecionado, 'pix');
+    marcarCheckbox(estado.agenciaContaSelecionado, 'agencia-conta');
+    marcarCheckbox(estado.qrcodeSelecionado, 'qrcode');
+
+    // Restaura os valores dos selects
+    setTimeout(() => {
+        // Restaura PIX
+        if (estado.chavePix) {
+            const pixSelect = document.getElementById('pix-key-select');
+            const pixContainer = document.getElementById('pix-selector-container');
+            
+            if (pixSelect && pixContainer) {
+                pixSelect.value = estado.chavePix;
+                pixContainer.style.display = 'block';
+                pixSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Restaura Agência/Conta
+        if (estado.agenciaConta) {
+            const acSelect = document.getElementById('agencia-conta-select');
+            const acContainer = document.getElementById('agencia-selector-container');
+            
+            if (acSelect && acContainer) {
+                acSelect.value = estado.agenciaConta;
+                acContainer.style.display = 'block';
+                acSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Força a atualização da UI
+        if (typeof atualizarVisibilidadePix === 'function') {
+            atualizarVisibilidadePix();
+        }
+    }, 100);
+}
         
         // Pequeno atraso para garantir que o DOM foi atualizado
         setTimeout(() => {
@@ -2894,29 +2960,94 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
             
             pixSelectorContainer.style.display = pixSelecionado ? 'block' : 'none';
           }
+
+          // Função para atualizar o estado global dos dados bancários
+function atualizarEstadoBancario(tipo, valor, texto) {
+    debugger;
+    // Inicializa o objeto se não existir
+    window.dadosBancariosEstado = window.dadosBancariosEstado || {
+        pixSelecionado: false,
+        agenciaContaSelecionado: false,
+        qrcodeSelecionado: false,
+        chavePix: null,
+        textoPix: null,
+        agenciaConta: null,
+        textoAgenciaConta: null
+    };
+
+    console.log('Atualizando estado bancário:', { tipo, valor, texto });
+    
+    // Atualiza o estado do tipo específico
+    if (tipo === 'pix') {
+        window.dadosBancariosEstado.pixSelecionado = valor !== null;
+        if (valor !== null) {
+            window.dadosBancariosEstado.chavePix = valor;
+            window.dadosBancariosEstado.textoPix = texto;
+        }
+    } 
+    else if (tipo === 'agencia-conta') {
+        window.dadosBancariosEstado.agenciaContaSelecionado = valor !== null;
+        if (valor !== null) {
+            window.dadosBancariosEstado.agenciaConta = valor;
+            window.dadosBancariosEstado.textoAgenciaConta = texto;
+        }
+    } 
+    else if (tipo === 'qrcode') {
+        window.dadosBancariosEstado.qrcodeSelecionado = valor;
+    }
+    
+    console.log('Estado bancário atualizado:', window.dadosBancariosEstado);
+}
           
-          tipoContaInputs.forEach(input => {
-            input.addEventListener('change', function() {
-              debugger;
-              try {
-                console.group('Conta Bancária (Etapa 5) > tipo-conta change');
-                console.log('Input clicado:', this);
-                console.log('Valor selecionado:', this.value);
-                console.groupEnd();
-              } catch (e) { /* noop */ }
-              atualizarVisibilidadePix();
-              // Monta array com todas as opções selecionadas e grava (etapa 5)
-              const selecionados = Array.from(tipoContaInputs)
-                .filter(i => i.checked)
-                .map(i => i.value);
-              try {
-                console.log('Tipos de conta selecionados (array):', selecionados);
-              } catch (e) { /* noop */ }
-              if (typeof gravar_tipo_dado_bancario === 'function') {
-                gravar_tipo_dado_bancario(JSON.stringify(selecionados));
-              }
-            });
-          });
+          // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
+  // Modifique o evento change dos inputs de tipo de conta
+tipoContaInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      debugger;
+        const tipo = this.value;
+        const estaMarcado = this.checked;
+        
+        // Atualiza o estado global
+        if (tipo === 'pix' && estaMarcado) {
+            atualizarEstadoBancario('pix', estaMarcado, null);
+        } else if (tipo === 'agencia-conta' && estaMarcado) {
+            atualizarEstadoBancario('agencia-conta', estaMarcado, null);
+        } else if (tipo === 'qrcode') {
+            atualizarEstadoBancario('qrcode', estaMarcado, null);
+        }
+
+        // Verifica se algum checkbox de PIX está marcado
+        if (pixSelectorContainer) {
+            const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
+            pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+        }
+
+        try {
+            console.group('Conta Bancária > tipo-conta change');
+            console.log('Input clicado:', this);
+            console.log('Valor selecionado:', this.value);
+            console.groupEnd();
+        } catch (e) { /* noop */ }
+
+        // Grava imediatamente todas as opções selecionadas como array JSON
+        const selecionados = Array.from(tipoContaInputs)
+            .filter(i => i.checked)
+            .map(i => i.value);
+        
+        // Atualiza o estado global com os tipos selecionados
+        if (selecionados.includes('pix')) {
+            atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
+        }
+        if (selecionados.includes('agencia-conta')) {
+            atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
+        }
+        if (selecionados.includes('qrcode')) {
+            atualizarEstadoBancario('qrcode', true, null);
+        }
+
+        gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+    });
+});
           
           // Função para abrir o modal de cadastro de chave PIX
           function abrirModalChavePix() {
@@ -3275,6 +3406,8 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
                   console.log('Valor selecionado:', val);
                   console.log('Texto selecionado:', text);
 
+                  atualizarEstadoBancario('pix', val, text);
+
                   gravar_pix(text);
                   console.groupEnd();
                 } catch (e) { /* noop */ }
@@ -3454,6 +3587,8 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
                     console.group('Agência/Conta > change');
                     console.log('Valor selecionado:', val);
                     console.log('Texto selecionado:', text);
+
+                    atualizarEstadoBancario('agencia-conta', val, text);
 
                     gravar_agencia_conta(text);
 
@@ -11086,6 +11221,7 @@ console.log(total); // Exemplo: "180.10"
           </div>
         </div>`]
 
+
 // Script para controle da seção de Conta Bancária
 document.addEventListener('DOMContentLoaded', function() {
   debugger;
@@ -11184,26 +11320,54 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
-  tipoContaInputs.forEach(input => {
+  // Modifique o evento change dos inputs de tipo de conta
+tipoContaInputs.forEach(input => {
     input.addEventListener('change', function() {
-      // Verifica se algum checkbox de PIX está marcado
-      if (pixSelectorContainer) {
-        const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
-        pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
-      }
-      try {
-        console.group('Conta Bancária > tipo-conta change');
-        console.log('Input clicado:', this);
-        console.log('Valor selecionado:', this.value);
-        console.groupEnd();
-      } catch (e) { /* noop */ }
-      // Grava imediatamente todas as opções selecionadas como array JSON
-      const selecionados = Array.from(tipoContaInputs)
-        .filter(i => i.checked)
-        .map(i => i.value);
-      gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+      debugger;
+        const tipo = this.value;
+        const estaMarcado = this.checked;
+        
+        // Atualiza o estado global
+        if (tipo === 'pix' && estaMarcado) {
+            atualizarEstadoBancario('pix', null, null);
+        } else if (tipo === 'agencia-conta' && estaMarcado) {
+            atualizarEstadoBancario('agencia-conta', null, null);
+        } else if (tipo === 'qrcode') {
+            atualizarEstadoBancario('qrcode', estaMarcado, null);
+        }
+
+        // Verifica se algum checkbox de PIX está marcado
+        if (pixSelectorContainer) {
+            const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
+            pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+        }
+
+        try {
+            console.group('Conta Bancária > tipo-conta change');
+            console.log('Input clicado:', this);
+            console.log('Valor selecionado:', this.value);
+            console.groupEnd();
+        } catch (e) { /* noop */ }
+
+        // Grava imediatamente todas as opções selecionadas como array JSON
+        const selecionados = Array.from(tipoContaInputs)
+            .filter(i => i.checked)
+            .map(i => i.value);
+        
+        // Atualiza o estado global com os tipos selecionados
+        if (selecionados.includes('pix')) {
+            atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
+        }
+        if (selecionados.includes('agencia-conta')) {
+            atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
+        }
+        if (selecionados.includes('qrcode')) {
+            atualizarEstadoBancario('qrcode', true, null);
+        }
+
+        gravar_tipo_dado_bancario(JSON.stringify(selecionados));
     });
-  });
+});
   
   // Função para abrir o modal de cadastro de chave PIX
   function abrirModalChavePix() {
