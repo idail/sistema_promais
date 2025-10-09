@@ -7319,120 +7319,93 @@ function printSection(button) {
                 </tr>
             </table>
 
-            <table style="margin-top:10px; width:100%; table-layout:fixed;">
-    
-    <tr>
-        <td colspan="10" class="section-title">
-            NOME DA EMPRESA / CAEPF / CNPJ:
-            <span style="font-weight:normal;">
-                ' . (!empty($resultado_empresa_selecionada["nome"]) ? htmlspecialchars($resultado_empresa_selecionada["nome"]) : '') . '
-                ' . (!empty($resultado_empresa_selecionada["cnpj"]) ? " - CNPJ/CAEPF: " . htmlspecialchars($resultado_empresa_selecionada["cnpj"]) : '') . '
-            </span>
-        </td>
-    </tr>
-
-    <table style="border-collapse: collapse; width: 100%; table-layout: fixed; font-family: Arial, sans-serif; font-size: 11px; margin-top:0px;">
-  <tr style="background-color: #ffff00; font-weight: bold; text-align:center;">
-    <td rowspan="2" style="border: 1px solid #000;width: 8%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      NOME DO FUNCIONÁRIO
-    </td>
-    <td rowspan="2" style="border: 1px solid #000;width: 8%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      FUNÇÃO
-    </td>
-    <td rowspan="2" style="border: 1px solid #000;width: 4%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      CBO
-    </td>
-
-    <!-- INSALUBRIDADE -->
-    <td colspan="2" style="border: 1px solid #000;width: 6%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      INSALUBRIDADE
-    </td>
-
-    <!-- PORCENTAGEM -->
-    <td colspan="3" style="border: 1px solid #000;width: 10%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      PORCENTAGEM
-    </td>
-
-    <!-- PERICULOSIDADE -->
-    <td colspan="2" style="border: 1px solid #000;width: 7%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      PERICULOSI<br>DADE 30%
-    </td>
-
-    <!-- APOSENTADORIA -->
-    <td colspan="2" style="border: 1px solid #000;width: 8%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      APOSENTAD<br>ORIA ESPECIAL
-    </td>
-
-    <!-- EXPOSIÇÃO -->
-    <td colspan="2" style="border: 1px solid #000;width: 8%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      EXPOSIÇÃO À<br>AGENTE NOCIVO
-    </td>
-
-    <!-- CÓDIGO -->
-    <td style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      CÓDIGO DE FATOR PREVIDENCIÁRIO / OCORRÊNCIA SEFIP
-    </td>
-
-    <!-- TREINAMENTOS -->
-    <td colspan="2" style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      COLABORADOR POSSUI TREINAMENTOS OBRIGATÓRIOS?
-    </td>
+            <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 12px;">
+  <tr>
+    <td style="border: 1px solid #000; padding: 6px; width: 20%;"><strong>Função:</strong></td>
+    <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '</td>
   </tr>
-
-  <!-- LINHA 2 -->
-  <tr style="background-color: #ffff00; font-weight: bold; text-align:center; height:32px;">
-    <td style="border: 1px solid #000; padding:4px;">SIM</td>
-    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
-
-    <td style="border: 1px solid #000; padding:4px;">10%</td>
-    <td style="border: 1px solid #000; padding:4px;">20%</td>
-    <td style="border: 1px solid #000; padding:4px;">40%</td>
-
-    <td>SIM</td>
-    <!-- SIM/NÃO ENTRE PERICULOSIDADE E APOSENTADORIA -->
-    <td colspan="2" style="border: 1px solid #000; padding:4px;">
-      <div style="display:flex; justify-content:space-between; text-align:center;">
-        <div style="flex:1;">NÃO</div>
-        <div style="flex:1;">SIM</div>
-      </div>
-    </td>
-    <td>NAO</td>
-
-    <!-- EXPOSIÇÃO -->
-    <td style="border: 1px solid #000; padding:4px;">SIM</td>
-    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
-    <td style="border: 1px solid #000; padding:4px;">GFIP: 00; 01; 02; 03; 04</td>
-
-    <!-- TREINAMENTOS -->
-    <td style="border: 1px solid #000; padding:4px;">NR 10<br>SIM ( )<br>NÃO ( X )</td>
-    <td style="border: 1px solid #000; padding:4px;">NR 12<br>SIM ( )<br>NÃO ( )</td>
+  <tr>
+    <td style="border: 1px solid #000; padding: 6px;"><strong>CBO:</strong></td>
+    <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '</td>
   </tr>
 
   <tr>
-    <td style="vertical-align:middle;text-align:center;">JOÃO DA SILVA</td>
-    <td style="vertical-align:middle;text-align:center;">ELETRICISTA</td>
-    <td style="vertical-align:middle;text-align:center;">1234-05</td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;"></td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;"></td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;">x</td>
-    <td style="vertical-align:middle;text-align:center;"></td>
-    <td style="vertical-align:middle;text-align:center;"></td>
-    <td style="vertical-align:middle;text-align:center;">4</td>
-    <td style="vertical-align:middle;text-align:center;">Data:</td>
-    <td style="vertical-align:middle;text-align:center;">Data:</td>
+    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+      O colaborador registrado nesta função terá direito de:
+    </td>
   </tr>
-  
+
+  <tr>
+    <td style="border: 1px solid #000; padding: 6px;"><strong>Insalubridade?</strong></td>
+    <td style="border: 1px solid #000; padding: 6px;">
+      <label><input type="checkbox"> Sim</label>
+      <label><input type="checkbox"> Não</label>
+    </td>
+    <td style="border: 1px solid #000; padding: 6px;"><strong>Qual porcentagem?</strong></td>
+    <td colspan="3" style="border: 1px solid #000; padding: 6px;">
+      <label><input type="checkbox"> 10%</label>
+      <label><input type="checkbox"> 20%</label>
+      <label><input type="checkbox"> 40%</label>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
+    <td style="border: 1px solid #000; padding: 6px;">
+      <label><input type="checkbox"> Sim</label>
+      <label><input type="checkbox"> Não</label>
+    </td>
+    <td style="border: 1px solid #000; padding: 6px;"><strong>Porcentagem:</strong></td>
+    <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%</td>
+  </tr>
+
+  <tr>
+    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+      <strong>OBS:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e/ou periculosidade,
+      deverá constar em seu laudo médico.
+    </td>
+  </tr>
+
+  <tr>
+    <td style="border: 1px solid #000; padding: 6px;"><strong>Aposentadoria especial:</strong></td>
+    <td colspan="2" style="border: 1px solid #000; padding: 6px;">
+      <label><input type="checkbox"> Sim</label>
+      <label><input type="checkbox"> Não</label>
+    </td>
+    <td colspan="3" style="border: 1px solid #000; padding: 6px;"><strong>Exposição a agente nocivo:</strong></td>
+  </tr>
+
+  <tr>
+    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+      <strong>Código a ser utilizado na contemplação de fator previdenciário:</strong>
+    </td>
+  </tr>
+
+  <tr style="text-align: center;">
+    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+      Ocorrência SEFIP GFIP: 
+      <label><input type="checkbox"> 00</label>
+      <label><input type="checkbox"> 01</label>
+      <label><input type="checkbox"> 02</label>
+      <label><input type="checkbox"> 03</label>
+      <label><input type="checkbox"> 04</label>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+      <strong>Observações:</strong> O colaborador terá obrigatoriedade de treinamentos específicos
+      para execução das atividades como:
+      &nbsp; NR10 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+      &nbsp;&nbsp; NR12 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+      &nbsp;&nbsp; DSN <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+    </td>
+  </tr>
 </table>
 
 
 
-
+            <table style="margin-top:10px; width:100%; table-layout:fixed;">
 
 
     <!-- Linhas dinâmicas -->
