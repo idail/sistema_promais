@@ -2680,6 +2680,7 @@ function renderResultadoProfissional(tipo) {
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
 
         carregarAsChavesPIX();
+        carregarAgenciasContas();
 
         function carregarAsChavesPIX()
         {
@@ -2727,6 +2728,51 @@ function renderResultadoProfissional(tipo) {
             console.error('Erro ao carregar chaves PIX:', error);
         }
     });
+        }
+
+        function carregarAgenciasContas()
+        {
+          // Carrega Agência/Conta do backend (apenas agência e conta)
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+              success: function(res){
+                debugger;
+                try {
+                  const sel = document.getElementById('agencia-conta-select');
+                  if (!sel) return;
+                  // Limpa mantendo o placeholder
+                  while (sel.options.length > 1) sel.remove(1);
+                  let adicionou = false;
+                  if (Array.isArray(res)) {
+                    const vistos = new Set();
+                    res.forEach(it => {
+                      const agencia = String(it.agencia || '').trim();
+                      const conta = String(it.conta || '').trim();
+                      if (!agencia || !conta) return;
+                      const value = `${agencia}|${conta}`;
+                      if (vistos.has(value)) return;
+                      vistos.add(value);
+                      const opt = document.createElement('option');
+                      opt.value = value;
+                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                      sel.appendChild(opt);
+                      adicionou = true;
+                    });
+                  }
+                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+                  if (!adicionou) {
+                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
+                  }
+                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+              },
+              error: function(xhr, status, error){
+                console.warn('Erro ao buscar contas bancárias:', status, error);
+                // Em caso de erro, o fallback de exemplos (abaixo) será usado
+              }
+            });
         }
 
         // const pixKeySelect = document.getElementById('pix-key-select');
@@ -3551,47 +3597,47 @@ tipoContaInputs.forEach(input => {
             window.addEventListener('click', (ev) => { if (ev.target === acModal) acModal.style.display = 'none'; });
             document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && acModal && acModal.style.display === 'block') acModal.style.display = 'none'; });
 
-            // Carrega Agência/Conta do backend (apenas agência e conta)
-            $.ajax({
-              url: 'cadastros/processa_conta_bancaria.php',
-              method: 'GET',
-              dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
-              success: function(res){
-                debugger;
-                try {
-                  const sel = document.getElementById('agencia-conta-select');
-                  if (!sel) return;
-                  // Limpa mantendo o placeholder
-                  while (sel.options.length > 1) sel.remove(1);
-                  let adicionou = false;
-                  if (Array.isArray(res)) {
-                    const vistos = new Set();
-                    res.forEach(it => {
-                      const agencia = String(it.agencia || '').trim();
-                      const conta = String(it.conta || '').trim();
-                      if (!agencia || !conta) return;
-                      const value = `${agencia}|${conta}`;
-                      if (vistos.has(value)) return;
-                      vistos.add(value);
-                      const opt = document.createElement('option');
-                      opt.value = value;
-                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
-                      sel.appendChild(opt);
-                      adicionou = true;
-                    });
-                  }
-                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
-                  if (!adicionou) {
-                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
-                  }
-                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
-              },
-              error: function(xhr, status, error){
-                console.warn('Erro ao buscar contas bancárias:', status, error);
-                // Em caso de erro, o fallback de exemplos (abaixo) será usado
-              }
-            });
+            // // Carrega Agência/Conta do backend (apenas agência e conta)
+            // $.ajax({
+            //   url: 'cadastros/processa_conta_bancaria.php',
+            //   method: 'GET',
+            //   dataType: 'json',
+            //   data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+            //   success: function(res){
+            //     debugger;
+            //     try {
+            //       const sel = document.getElementById('agencia-conta-select');
+            //       if (!sel) return;
+            //       // Limpa mantendo o placeholder
+            //       while (sel.options.length > 1) sel.remove(1);
+            //       let adicionou = false;
+            //       if (Array.isArray(res)) {
+            //         const vistos = new Set();
+            //         res.forEach(it => {
+            //           const agencia = String(it.agencia || '').trim();
+            //           const conta = String(it.conta || '').trim();
+            //           if (!agencia || !conta) return;
+            //           const value = `${agencia}|${conta}`;
+            //           if (vistos.has(value)) return;
+            //           vistos.add(value);
+            //           const opt = document.createElement('option');
+            //           opt.value = value;
+            //           opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+            //           sel.appendChild(opt);
+            //           adicionou = true;
+            //         });
+            //       }
+            //       // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+            //       if (!adicionou) {
+            //         // não faz nada aqui; o bloco acPopularExemplos() cuidará
+            //       }
+            //     } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+            //   },
+            //   error: function(xhr, status, error){
+            //     console.warn('Erro ao buscar contas bancárias:', status, error);
+            //     // Em caso de erro, o fallback de exemplos (abaixo) será usado
+            //   }
+            // });
 
             // Popular exemplos no select se ainda não existirem
             (function acPopularExemplos(){
