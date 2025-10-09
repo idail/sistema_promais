@@ -7332,64 +7332,83 @@ function printSection(button) {
     </tr>
 
     <table style="border-collapse: collapse; width: 100%; table-layout: fixed; font-family: Arial, sans-serif; font-size: 11px; margin-top:0px;">
+  <!-- Linha 1 - Cabeçalhos principais -->
   <tr style="background-color: #ffff00; font-weight: bold; text-align:center;">
-    <td rowspan="2" style="border: 1px solid #000;width: 6%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+    <td rowspan="2" style="border: 1px solid #000;width: 8%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       NOME DO FUNCIONÁRIO
     </td>
-    <td rowspan="2" style="border: 1px solid #000;width: 6%;padding: 8px 4px;vertical-align:middle;line-height: 1.3;white-space: normal;word-wrap: break-word;">
+    <td rowspan="2" style="border: 1px solid #000;width: 8%;padding: 8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       FUNÇÃO
     </td>
     <td rowspan="2" style="border: 1px solid #000;width: 4%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       CBO
     </td>
 
+    <!-- INSALUBRIDADE -->
     <td colspan="2" style="border: 1px solid #000;width: 6%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       INSALUBRIDADE
     </td>
 
+    <!-- PORCENTAGEM -->
     <td colspan="3" style="border: 1px solid #000;width: 10%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       PORCENTAGEM
     </td>
 
-    <td rowspan="2" style="border: 1px solid #000;width: 7%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      PERICULOSIDADE 30%
+    <!-- PERICULOSIDADE -->
+    <td colspan="2" style="border: 1px solid #000;width: 7%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+      PERICULOSI<br>DADE 30%
     </td>
 
+    <!-- APOSENTADORIA -->
     <td colspan="2" style="border: 1px solid #000;width: 8%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      APOSENTADORIA ESPECIAL
+      APOSENTAD<br>ORIA ESPECIAL
     </td>
 
+    <!-- EXPOSIÇÃO -->
     <td colspan="2" style="border: 1px solid #000;width: 8%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
-      EXPOSIÇÃO À AGENTE NOCIVO
+      EXPOSIÇÃO À<br>AGENTE NOCIVO
     </td>
 
-    <td rowspan="2" style="border: 1px solid #000;width: 7%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
+    <!-- CÓDIGO -->
+    <td rowspan="2" style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       CÓDIGO DE FATOR PREVIDENCIÁRIO / OCORRÊNCIA SEFIP
     </td>
 
+    <!-- TREINAMENTOS -->
     <td colspan="2" style="border: 1px solid #000;width: 9%;padding:8px 4px;vertical-align:middle;line-height:1.3;white-space: normal;word-wrap: break-word;">
       COLABORADOR POSSUI TREINAMENTOS OBRIGATÓRIOS?
     </td>
   </tr>
 
-  <tr style="background-color: #ffff00; font-weight: bold; text-align:center; height:34px;">
+  <!-- Linha 2 - Subcabeçalhos (SIM / NÃO) -->
+  <tr style="background-color: #ffff00; font-weight: bold; text-align:center; height:32px;">
+    <!-- INSALUBRIDADE -->
     <td style="border: 1px solid #000; padding:4px;">SIM</td>
     <td style="border: 1px solid #000; padding:4px;">NÃO</td>
 
+    <!-- PORCENTAGEM -->
     <td style="border: 1px solid #000; padding:4px;">10%</td>
     <td style="border: 1px solid #000; padding:4px;">20%</td>
     <td style="border: 1px solid #000; padding:4px;">40%</td>
 
+    <!-- PERICULOSIDADE -->
     <td style="border: 1px solid #000; padding:4px;">SIM</td>
     <td style="border: 1px solid #000; padding:4px;">NÃO</td>
 
+    <!-- APOSENTADORIA -->
     <td style="border: 1px solid #000; padding:4px;">SIM</td>
     <td style="border: 1px solid #000; padding:4px;">NÃO</td>
 
+    <!-- EXPOSIÇÃO -->
+    <td style="border: 1px solid #000; padding:4px;">SIM</td>
+    <td style="border: 1px solid #000; padding:4px;">NÃO</td>
+
+    <!-- TREINAMENTOS -->
     <td style="border: 1px solid #000; padding:4px;">NR 10<br>SIM ( )<br>NÃO ( X )</td>
     <td style="border: 1px solid #000; padding:4px;">NR 12<br>SIM ( )<br>NÃO ( )</td>
   </tr>
 
+  <!-- Linha de exemplo -->
   <tr style="text-align:center; height:28px;">
     <td style="border:1px solid #000; padding:5px;font-size:10px;">JOÃO DA SILVA</td>
     <td style="border:1px solid #000; padding:5px;font-size:10px;">ELETRICISTA</td>
@@ -7403,6 +7422,7 @@ function printSection(button) {
     <td style="border:1px solid #000; padding:5px;"></td>
 
     <td style="border:1px solid #000; padding:5px;">X</td>
+    <td style="border:1px solid #000; padding:5px;"></td>
 
     <td style="border:1px solid #000; padding:5px;">X</td>
     <td style="border:1px solid #000; padding:5px;"></td>
@@ -7416,6 +7436,8 @@ function printSection(button) {
     <td style="border:1px solid #000; padding:5px;font-size:10px;">SIM ( )<br>NÃO ( )</td>
   </tr>
 </table>
+
+
 
 
 
