@@ -5816,11 +5816,16 @@ function printSection(button) {
                 // Data atual no formato brasileiro
                 $dataAtual = date('d/m/Y');
 
-                // Função helper para marcar
+                // Função helper para marcar com espaçamento interno e visual aprimorado
                 function marcar($valor, $tipoExame)
                 {
-                    return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+                    if ($tipoExame === strtolower($valor)) {
+                        return '( &nbsp;X&nbsp; )';
+                    } else {
+                        return '( &nbsp;&nbsp; )';
+                    }
                 }
+
 
                 $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
                 $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
@@ -6213,151 +6218,131 @@ function printSection(button) {
 
             echo '
         <style>
-    body {
-    font-family: Arial, sans-serif;
-    background:#f2f2f2;
-    margin:0;
-    padding:0;
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
 }
 
 .guia-container {
-    width: 210mm;
-    min-height: 297mm;
-    margin:3mm auto;
-    padding:6px;
-    background:#fff;
-    border:1px solid #000;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 2mm auto;
+  padding: 4px 6px;
+  background: #fff;
+  border: 1px solid #000;
 }
 
-table { width:100%; border-collapse:collapse; font-size:11px; }
-th, td { border:1px solid #000; padding:3px; vertical-align:top; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px; /* 🔹 reduzido levemente */
+}
+th, td {
+  border: 1px solid #000;
+  padding: 2px 3px; /* 🔹 padding menor */
+  vertical-align: top;
+}
 
 .titulo-guia {
-    background:#eaeaea;
-    border:1px solid #000;
-    font-weight:bold;
-    text-align:center;
-    font-size:13px;
-    padding:4px;
-    height:18px;
+  background: #eaeaea;
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+  padding: 3px;
+  height: 16px;
 }
 
 .section-title {
-    background:#eaeaea;
-    border:1px solid #666;
-    font-weight:bold;
-    font-size:11px;
-    padding:2px 4px;
-    text-align:left;
+  background: #eaeaea;
+  border: 1px solid #666;
+  font-weight: bold;
+  font-size: 10.5px;
+  padding: 2px 3px;
+  text-align: left;
 }
 
-.dados-hospital { font-size:11px; line-height:1.3; }
+.dados-hospital {
+  font-size: 10.5px;
+  line-height: 1.25;
+}
 .hospital-nome {
-    font-weight:bold;
-    text-transform:uppercase;
-    text-decoration:underline;
-    display:block;
-    margin-bottom:2px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: underline;
+  display: block;
+  margin-bottom: 1px;
 }
 
-.logo { text-align:center; }
-.logo img { max-height:40px; }
-
-.qrcode img {
-    display:block;
-    width:100px;
-    height:auto;
-    margin-top:4px;
+.logo img {
+  max-height: 36px;
 }
 
-.actions {
-    margin-top: 10px;
-    padding-top: 8px;
-    text-align: center;
-    border-top: 1px solid #ccc;
-}
-.btn {
-    padding:8px 14px;
-    font-size:13px;
-    font-weight:bold;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-    color:#fff;
-    box-shadow:0 2px 5px rgba(0,0,0,.2);
-    margin:0 4px;
-}
-.btn-email { background:#007bff; }
-.btn-whatsapp { background:#25d366; }
-.btn-print { background:#6c757d; }
-.btn:hover { opacity:.9; }
-
-.table-riscos th {
-    text-align: left;
-    font-weight: bold;
-    font-size: 11px;
-    padding: 3px;
-    vertical-align: top;
-}
-.table-riscos td {
-    font-size: 11px;
-    padding: 3px;
-    vertical-align: top;
-}
-
-.table-exames th {
-    text-align: left;
-    font-weight: bold;
-    font-size: 11px;
-    padding: 3px;
+.table-riscos td,
+.table-exames td {
+  font-size: 10.5px;
+  padding: 2px 3px;
 }
 
 .legenda {
-    text-align: center;
-    font-size: 13px;
+  text-align: center;
+  font-size: 12px;
 }
 
 .assinatura {
-    width: 140px;
-    height: 50px;
-    border-bottom: 1px solid #000;
-    display: block;
-    margin: 0 auto 5px auto;
+  width: 120px;
+  height: 40px;
+  border-bottom: 1px solid #000;
+  display: block;
+  margin: 0 auto 4px auto;
 }
 
-/* 🔹 Ajustes de espaçamento entre seções */
+/* 🔹 Espaçamento mínimo entre blocos */
 table + table {
-    margin-top: 4px;
+  margin-top: 3px;
 }
 
-/* 🔹 Evita quebra de tabelas e blocos no meio */
+/* 🔹 Compacta imagens e gráficos */
+img {
+  max-width: 95%;
+  height: auto;
+}
+
+/* 🔹 Ajustes específicos para o bloco final (parecer) */
+table.no-break td {
+  padding: 3px !important;
+  line-height: 1.2;
+}
+table.no-break strong {
+  font-size: 10.5px;
+}
+
+/* 🔹 Impressão */
 @media print {
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-    body { background:#fff; }
-    .actions { display: none !important; }
-
-    table, tr, td, th, .no-break {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-
-    .assinatura-bloco {
-        page-break-before: auto !important;
-        page-break-after: avoid !important;
-        margin-top: 6px !important;
-        display: table !important;
-        width: 100% !important;
-    }
-
-    html, body {
-        margin: 0;
-        padding: 0;
-    }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body {
+    background: #fff;
+  }
+  .actions {
+    display: none !important;
+  }
+  table, tr, td, th, .no-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
 }
+
+.actions { margin-top: 10px; padding-top: 8px; text-align: center; border-top: 1px solid #ccc; } .btn { padding:8px 14px; font-size:13px; font-weight:bold; border:none; border-radius:5px; cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2); margin:0 4px; } .btn-email { background:#007bff; } .btn-whatsapp { background:#25d366; } .btn-print { background:#6c757d; } .btn:hover { opacity:.9; }
 </style>
+
 
 
         <div class="guia-container">
@@ -6610,26 +6595,26 @@ table + table {
         <tr>
             <td colspan="6" style="border:1px solid #000; padding:4px;">
                 <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong> &nbsp;&nbsp;
-                ( ) | OD | &nbsp;&nbsp; ( ) | OE |
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) | OE |
             </td>
         </tr>
         <tr>
             <td colspan="6" style="border:1px solid #000; padding:4px;">
                 <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
-                ( ) Condutiva | OD | &nbsp;&nbsp; ( ) OE &nbsp;&nbsp;
-                ( ) Mista | OD | &nbsp;&nbsp; ( ) OE &nbsp;&nbsp;
-                ( ) Neurosensorial | OD | &nbsp;&nbsp; ( ) OE
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Mista | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Neurosensorial | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
             </td>
         </tr>
         <tr>
             <td colspan="6" style="border:1px solid #000; padding:4px;">
                 <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
-                ( ) Normal | OD | ( ) OE &nbsp;&nbsp;
-                ( ) Leve | OD | ( ) OE &nbsp;&nbsp;
-                ( ) Moderada | OD | ( ) OE &nbsp;&nbsp;
-                ( ) Moderada Severa | OD | ( ) OE &nbsp;&nbsp;
-                ( ) Severa | OD | ( ) OE &nbsp;&nbsp;
-                ( ) Profunda | OD | ( ) OE
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada Severa | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Severa | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Profunda | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
             </td>
         </tr>
         <tr>
@@ -6638,17 +6623,22 @@ table + table {
             </td>
         </tr>
         <tr>
+                    <td colspan="2" class="dados-hospital">
+                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+                    </td>
+                </tr>
+        <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         ' . $html_assinatura . ' <br>
-                       Paciente<br>
+                       Assinatura<br>Fonoaudiologo/Médico Examinador <br> ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
                     </td>
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                                     <br>
                                     
                                     <br>
                                     _______________________________<br>
-                                    Fonoaudiologo/Médico Examinador <br> ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
+                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
                     </td>
                 </tr>
     </table>
