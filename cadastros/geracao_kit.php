@@ -4781,7 +4781,7 @@ tipoContaInputs.forEach(input => {
     let ajaxEmExecucao = false; // evita chamadas duplicadas
 
     function verifica_selecao_exame() {
-      // debugger;
+      debugger;
       const examCards = document.querySelectorAll('.exam-card');
 
       examCards.forEach(card => {
@@ -4951,7 +4951,76 @@ tipoContaInputs.forEach(input => {
     let pessoas = [];
     let cargos = [];
 
-    $(document).ready(function(e){
+    function requisitarExameKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_kit",valor_id_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    $(document).ready(async function(e){
+      debugger;
+
+      let parametros = new URLSearchParams(window.location.search);
+
+      // Obtém o valor do parâmetro "id"
+      window.recebe_id_kit = parametros.get("id");
+
+      // Confirma se veio o parâmetro
+      if (window.recebe_id_kit) {
+        console.log("ID recebido:", window.recebe_id_kit);
+
+        window.kit_tipo_exame = await requisitarExameKITEspecifico(window.recebe_id_kit);
+        repopular_tipo_exame();
+        if(window.kit_tipo_exame)
+        {
+
+        }
+      } else {
+        console.log("Nenhum parâmetro 'id' foi recebido.");
+      }
+
+      function repopular_tipo_exame() {
+        debugger;
+        const examCards = document.querySelectorAll('.exam-card');
+        const tipoExameSelecionado = window.kit_tipo_exame?.tipo_exame;
+
+        if (!examCards.length) {
+          console.warn('Nenhum card de exame encontrado.');
+          return;
+        }
+
+        if (!tipoExameSelecionado) {
+          console.warn('Nenhum tipo de exame encontrado em window.kit_tipo_exame.');
+          return;
+        }
+
+        // Marca apenas o tipo de exame que já foi salvo no kit
+        examCards.forEach(card => {
+          const tipo = card.dataset.exam;
+
+          if (tipo === tipoExameSelecionado) {
+            card.classList.add('active'); // Destaca visualmente o card
+            console.log('Exame repopulado (marcado):', tipo);
+          } else {
+            card.classList.remove('active');
+          }
+        });
+      }
+
+
+
       $("#exame-gravado").hide();
       
       // Adiciona evento de input para busca de empresas
@@ -6670,9 +6739,19 @@ modal.innerHTML = `
     }
     
     function editarKit(kitId) {
+      debugger;
       // Implementar lógica de edição
       alert(`Editando kit ${kitId}...`);
-      fecharModal('modalDetalhesKit');
+
+      let url = window.location.href;
+
+      // Verifica se já existe algum parâmetro na URL
+      if (url.includes("?")) {
+        window.location.href = `${url}&id=${kitId}`;
+      } else {
+        window.location.href = `${url}?id=${kitId}`;
+      }
+      //fecharModal('modalDetalhesKit');
     }
 
     function requisitarDadosKITEspecifico(codigo_kit) {

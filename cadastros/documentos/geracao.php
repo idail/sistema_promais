@@ -6597,31 +6597,8 @@ function printSection(button) {
 
 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:5px;">
     <tr>
-        <th style="width:15%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
-        <td style="width:45%; border:1px solid #000; padding:8px;">Marca:_____________________ Modelo:________________________</td>
-        <th style="width:10%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">R.A.:</th>
-        <td style="width:30%; border:1px solid #000; padding:8px;"></td>
-    </tr>
-    <tr>
-        <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Diagnóstico:</th>
-        <td style="border:1px solid #000; padding:8px;">
-            OD:_________________________________________ 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-            OE:_________________________________________
-        </td>
-        <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Meatoscopia:</th>
-        <td style="border:1px solid #000; padding:8px;">
-            OD:_________________________________________ 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-            OE:_________________________________________
-        </td>
-    </tr>
-    <tr>
-        <th style="border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Conclusão:</th>
-        <td colspan="3" style="border:1px solid #000; padding:20px;">
-            ___________________________________________________________________________________________<br><br>
-            ___________________________________________________________________________________________
-        </td>
+        <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
+        <td style="width:45%; border:1px solid #000; padding:8px;">Marca:_____________________ | Modelo:________________________ |Data de calibração:________________________ </td>
     </tr>
 </table>
 
