@@ -557,6 +557,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_produto->execute();
         $resultado_busca_produto = $comando_busca_produto->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_produto);
+    }else if($recebe_processo_geracao_kit === "buscar_empresa_kit")
+    {
+        $instrucao_busca_empresa_pessoa = "select * from empresas_novas where id = :recebe_id_empresa";
+        $comando_busca_empresa_pessoa = $pdo->prepare($instrucao_busca_empresa_pessoa);
+        $comando_busca_empresa_pessoa->bindValue(":recebe_id_empresa",$_GET["valor_id_empresa_kit"]);
+        $comando_busca_empresa_pessoa->execute();
+        $resultado_busca_empresa_pessoa = $comando_busca_empresa_pessoa->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_empresa_pessoa);
     }
 }
 ?>

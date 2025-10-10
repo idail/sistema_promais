@@ -1976,6 +1976,60 @@ function renderResultadoProfissional(tipo) {
       } catch (e) { /* noop */ }
     }
 
+    function repopular_empresa() {
+          debugger;
+
+          // Verifica se os dados da empresa foram carregados
+          const itemObj = window.kit_empresa;
+          const detalhes = document.getElementById('detalhesEmpresa');
+
+          if (!detalhes) {
+            console.warn("Elemento 'detalhesEmpresa' não encontrado na página.");
+            return;
+          }
+
+          if (!itemObj) {
+            console.warn("Nenhum dado de empresa encontrado em window.kit_empresa.");
+            detalhes.style.display = 'none';
+            return;
+          }
+
+          if (itemObj.nome || itemObj.cnpj) {
+            detalhes.className = 'ecp-details';
+            detalhes.style.display = 'block';
+            detalhes.innerHTML = `
+              <div class="ecp-empresa-dados">
+                <div><strong>${itemObj.nome || ''}</strong></div>
+                <div>${itemObj.cnpj || ''}</div>
+                ${itemObj.endereco ? `<div>${itemObj.endereco}${itemObj.complemento ? ', ' + itemObj.complemento : ''}</div>` : ''}
+                ${itemObj.bairro ? `<div>${itemObj.bairro}</div>` : ''}
+                ${itemObj.cidade ? `<div>${itemObj.cidade}${itemObj.estado ? '/' + itemObj.estado : ''} ${itemObj.cep || ''}</div>` : ''}
+              </div>
+              <div class="ecp-empresa-metadados">
+                <div class="ecp-info-item">
+                  <i class="fas ${itemObj.ativo ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                  <span class="ecp-status ${itemObj.ativo ? 'ativo' : 'inativo'}">
+                    ${itemObj.ativo ? 'Ativa' : 'Inativa'}
+                  </span>
+                </div>
+                <div class="ecp-info-item">
+                  <i class="fas fa-users"></i>
+                  <span>${itemObj.quantidadeVidas || 0} vidas</span>
+                </div>
+                <div class="ecp-info-item">
+                  <i class="fas fa-clinic-medical"></i>
+                  <span>${itemObj.quantidadeClinicas || 0} clínicas</span>
+                </div>
+              </div>
+            `;
+
+            console.log('Empresa repopulada (exibida):', itemObj.nome);
+          } else {
+            detalhes.style.display = 'none';
+            console.warn("Os dados da empresa não possuem nome ou CNPJ.");
+          }
+        }
+
     // Restaura UI ao trocar de aba e mantém cabeçalho dos Médicos sincronizado
     document.addEventListener('tabChanged', function(e) {
       const step = e && e.detail ? e.detail.step : undefined;
@@ -1983,6 +2037,8 @@ function renderResultadoProfissional(tipo) {
       if (step === 1) {
         try { bindEcpInputsOnce(); } catch (err) { /* noop */ }
         try { applyEcpStateToUI(); } catch (err) { /* noop */ }
+        // ✅ Repopula o tipo de exame gravado anteriormente
+        try { repopular_empresa(); } catch (err) { console.error(err); }
       }
       // Passo 3 (index 2): Profissionais da Medicina
       if (step === 2) {
@@ -4969,6 +5025,24 @@ tipoContaInputs.forEach(input => {
       });
     }
 
+    function requisitarEmpresaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_empresa_kit",valor_id_empresa_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     $(document).ready(async function(e){
       debugger;
 
@@ -4982,41 +5056,41 @@ tipoContaInputs.forEach(input => {
         console.log("ID recebido:", window.recebe_id_kit);
 
         window.kit_tipo_exame = await requisitarExameKITEspecifico(window.recebe_id_kit);
-        repopular_tipo_exame();
+        window.kit_empresa = await requisitarEmpresaKITEspecifico(window.kit_tipo_exame.empresa_id);
         if(window.kit_tipo_exame)
         {
+          repopular_tipo_exame();
+          function repopular_tipo_exame() {
+            debugger;
+            const examCards = document.querySelectorAll('.exam-card');
+            const tipoExameSelecionado = window.kit_tipo_exame?.tipo_exame;
+
+            if (!examCards.length) {
+              console.warn('Nenhum card de exame encontrado.');
+              return;
+            }
+
+            if (!tipoExameSelecionado) {
+              console.warn('Nenhum tipo de exame encontrado em window.kit_tipo_exame.');
+              return;
+            }
+
+            // Marca apenas o tipo de exame que já foi salvo no kit
+            examCards.forEach(card => {
+              const tipo = card.dataset.exam;
+
+              if (tipo === tipoExameSelecionado) {
+                card.classList.add('active'); // Destaca visualmente o card
+                console.log('Exame repopulado (marcado):', tipo);
+              } else {
+                card.classList.remove('active');
+              }
+        });
+          }
 
         }
       } else {
         console.log("Nenhum parâmetro 'id' foi recebido.");
-      }
-
-      function repopular_tipo_exame() {
-        debugger;
-        const examCards = document.querySelectorAll('.exam-card');
-        const tipoExameSelecionado = window.kit_tipo_exame?.tipo_exame;
-
-        if (!examCards.length) {
-          console.warn('Nenhum card de exame encontrado.');
-          return;
-        }
-
-        if (!tipoExameSelecionado) {
-          console.warn('Nenhum tipo de exame encontrado em window.kit_tipo_exame.');
-          return;
-        }
-
-        // Marca apenas o tipo de exame que já foi salvo no kit
-        examCards.forEach(card => {
-          const tipo = card.dataset.exam;
-
-          if (tipo === tipoExameSelecionado) {
-            card.classList.add('active'); // Destaca visualmente o card
-            console.log('Exame repopulado (marcado):', tipo);
-          } else {
-            card.classList.remove('active');
-          }
-        });
       }
 
 
@@ -5388,6 +5462,7 @@ tipoContaInputs.forEach(input => {
 }
 
   function buscarECP(tipo, inputId, resultadoId, chave) {
+    debugger;
     console.log('buscarECP chamada com parâmetros:', {tipo, inputId, resultadoId, chave});
     console.log('ecpData no início da busca:', ecpData);
     console.log('Dados disponíveis para busca:', ecpData[tipo]);
@@ -5683,7 +5758,10 @@ tipoContaInputs.forEach(input => {
 
   if (inputId === "inputColaborador") {
     // 🔹 requisita kits da pessoa
-    resposta_kits = await requisitarKits(item.id);
+    if(item.id && item.id !== "")
+    {
+      resposta_kits = await requisitarKits(item.id);
+    }
 
     // Se retornou kits, pega a empresa_id do primeiro
     if (resposta_kits && resposta_kits.length > 0) {
