@@ -6262,54 +6262,108 @@ tipoContaInputs.forEach(input => {
 
       if(tipo === "empresa")
       {
-          $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          type: "POST",
-          dataType: "json",
-          data: {
-            processo_geracao_kit: "incluir_valores_kit",
-            valor_empresa: valores,
-          },
-          success: function(retorno_exame_geracao_kit) {
-            debugger;
+          if(window.recebe_acao && window.recebe_acao === "editar")
+          {
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "atualizar_kit",
+                valor_empresa: valores,
+                valor_id_kit:window.recebe_id_kit
+              },
+              success: function(retorno_exame_geracao_kit) {
+                debugger;
 
-            const mensagemSucesso = `
-                  <div id="empresa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                      
-                      <div>
-                        
-                        <div>Empresa gravada com sucesso.</div>
+                const mensagemSucesso = `
+                      <div id="empresa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                          
+                          <div>
+                            
+                            <div>KIT atualizado com sucesso.</div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-            `;
+                `;
 
-            // Remove mensagem anterior se existir
-            $("#empresa-gravado").remove();
-                
-            // Adiciona a nova mensagem acima das abas
-            $(".tabs-container").before(mensagemSucesso);
+                // Remove mensagem anterior se existir
+                $("#empresa-gravado").remove();
+                    
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
 
-            // Configura o fade out após 5 segundos
-            setTimeout(function() {
-              $("#empresa-gravado").fadeOut(500, function() {
-              $(this).remove();
-              });
-            }, 5000);
+                // Configura o fade out após 5 segundos
+                setTimeout(function() {
+                  $("#empresa-gravado").fadeOut(500, function() {
+                  $(this).remove();
+                  });
+                }, 5000);
 
 
-            // $("#exame-gravado").html(retorno_exame_geracao_kit);
-            // $("#exame-gravado").show();
-            // $("#exame-gravado").fadeOut(4000);
-            console.log(retorno_exame_geracao_kit);
-            // ajaxEmExecucao = false; // libera para nova requisição
-          },
-          error: function(xhr, status, error) {
-            console.log("Falha ao incluir exame: " + error);
-            // ajaxEmExecucao = false; // libera para tentar de novo
-          },
-        });
+                // $("#exame-gravado").html(retorno_exame_geracao_kit);
+                // $("#exame-gravado").show();
+                // $("#exame-gravado").fadeOut(4000);
+                console.log(retorno_exame_geracao_kit);
+                // ajaxEmExecucao = false; // libera para nova requisição
+              },
+              error: function(xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                // ajaxEmExecucao = false; // libera para tentar de novo
+              },
+          });
+          }else
+          {
+              $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_empresa: valores,
+              },
+              success: function(retorno_exame_geracao_kit) {
+                debugger;
+
+                const mensagemSucesso = `
+                      <div id="empresa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                          
+                          <div>
+                            
+                            <div>KIT atualizado com sucesso.</div>
+                          </div>
+                        </div>
+                      </div>
+                `;
+
+                // Remove mensagem anterior se existir
+                $("#empresa-gravado").remove();
+                    
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
+
+                // Configura o fade out após 5 segundos
+                setTimeout(function() {
+                  $("#empresa-gravado").fadeOut(500, function() {
+                  $(this).remove();
+                  });
+                }, 5000);
+
+
+                // $("#exame-gravado").html(retorno_exame_geracao_kit);
+                // $("#exame-gravado").show();
+                // $("#exame-gravado").fadeOut(4000);
+                console.log(retorno_exame_geracao_kit);
+                // ajaxEmExecucao = false; // libera para nova requisição
+              },
+              error: function(xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                // ajaxEmExecucao = false; // libera para tentar de novo
+              },
+          });
+          }
       }else if(tipo === "clinica")
       {
         $.ajax({
