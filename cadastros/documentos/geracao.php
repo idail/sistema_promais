@@ -6638,15 +6638,19 @@ table + table {
             </td>
         </tr>
         <tr>
-            <td style="border:1px solid #000; padding:12px 4px; width:60%; text-align:center; vertical-align:bottom;">
-                _______________________________________<br>
-                <strong>Paciente</strong>
-            </td>
-            <td style="border:1px solid #000; padding:12px 4px; text-align:center; vertical-align:bottom;" colspan="5">
-                ___________________________<br>
-                <strong>Data do Exame</strong>
-            </td>
-        </tr>
+                    <!-- Espaço para assinatura -->
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                        ' . $html_assinatura . ' <br>
+                       Paciente<br>
+                    </td>
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                                    <br>
+                                    
+                                    <br>
+                                    _______________________________<br>
+                                    Fonoaudiologo/Médico Examinador <br> ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
+                    </td>
+                </tr>
     </table>
 
 
