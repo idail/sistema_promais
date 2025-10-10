@@ -1987,7 +1987,6 @@ function printSection(button) {
 
             ' . $aptidoesTabela . '
             
-            
         </div>';
 
         echo '
@@ -5765,6 +5764,52 @@ function printSection(button) {
                     $recebe_exame_exibicao = "Mudança de função";
                 }
 
+                $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->execute();
+                $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                //var_dump($resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"]);
+
+                // Pega os exames do resultado
+                $examesJson = $resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"] ?? "";
+                $linhasExames = "";
+
+                if (!empty($examesJson)) {
+                    $exames = json_decode($examesJson, true);
+                    if (is_array($exames)) {
+                        $coluna = 0;
+                        $linhasExames .= "<tr>";
+                        
+                        foreach ($exames as $exame) {
+                            $codigo = $exame['codigo'] ?? '';
+                            $nome   = $exame['nome'] ?? '';
+                            $dataExame = $dataAtual ?? "__/__/2025";
+
+                            $linhasExames .= "
+                                <td style='font-size:12px; line-height:1.4; width:50%;'>
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) ."
+                                </td>
+                            ";
+
+                            $coluna++;
+
+                            // quando preencher 2 colunas, fecha a linha
+                            if ($coluna % 2 == 0) {
+                                $linhasExames .= "</tr><tr>";
+                            }
+                        }
+
+                        // Se terminou com uma coluna só, fecha linha corretamente
+                        if ($coluna % 2 != 0) {
+                            $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                        } else {
+                            $linhasExames .= "</tr>";
+                        }
+                    }
+                }
+
                 // Define o fuso horário do Brasil (evita diferenças)
                 date_default_timezone_set('America/Sao_Paulo');
 
@@ -6378,6 +6423,15 @@ function printSection(button) {
                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
                     </td>
                 </tr>
+            </table>
+
+            <table class="table-exames" style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td colspan="2" class="section-title" style="text-align:left; font-size:12px; font-weight:bold;">
+                        Procedimentos e Exames a realizar
+                    </td>
+                </tr>
+                    ' . $linhasExames .'
             </table>
 
             <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
