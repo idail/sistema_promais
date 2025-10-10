@@ -7351,13 +7351,15 @@ function printSection(button) {
             </tr>
 
             <tr>
-                <td style="border: 1px solid #000; padding: 6px;"><strong>Aposentadoria especial:</strong></td>
-                <td colspan="2" style="border: 1px solid #000; padding: 6px;">
-                <label><input type="checkbox"> Sim</label>
-                <label><input type="checkbox"> Não</label>
-                </td>
-                <td colspan="3" style="border: 1px solid #000; padding: 6px;"><strong>Exposição a agente nocivo:</strong></td>
-            </tr>
+  <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+    <strong>Aposentadoria especial – exposição a agente nocivo:</strong>
+    &nbsp;&nbsp;
+    <label><input type="checkbox"> Sim</label>
+    &nbsp;&nbsp;
+    <label><input type="checkbox"> Não</label>
+  </td>
+</tr>
+
 
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
