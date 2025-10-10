@@ -7294,6 +7294,12 @@ function printSection(button) {
                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="2" class="section-title">MODALIDADE RESUMO DE LAUDO:</td>
+                </tr>
+                <tr>
+                    <td>Admissional:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Mudança de função:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                </tr>
             </table>
 
             <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 12px;">
@@ -7333,7 +7339,9 @@ function printSection(button) {
       <label><input type="checkbox"> Não</label>
     </td>
     <td style="border: 1px solid #000; padding: 6px;"><strong>Porcentagem:</strong></td>
-    <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%</td>
+    <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%
+        <label><input type="checkbox"></label>
+    </td>
   </tr>
 
   <tr>

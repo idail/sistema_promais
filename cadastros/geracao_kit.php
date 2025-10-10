@@ -5359,42 +5359,42 @@ tipoContaInputs.forEach(input => {
           },
       });
 
-      $.ajax({
-        url: "cadastros/processa_geracao_kit.php", // Endpoint da API
-        method: "GET",
-        dataType: "json",
-        data: { processo_geracao_kit: "buscar_kits_empresa" },
-        success: async function(resposta_kits) {
-          debugger;
-          console.log('KITs retornados:', resposta_kits);
+      // $.ajax({
+      //   url: "cadastros/processa_geracao_kit.php", // Endpoint da API
+      //   method: "GET",
+      //   dataType: "json",
+      //   data: { processo_geracao_kit: "buscar_kits_empresa" },
+      //   success: async function(resposta_kits) {
+      //     debugger;
+      //     console.log('KITs retornados:', resposta_kits);
 
-          // const listaClinicas = resposta_clinicas && resposta_clinicas.data && Array.isArray(resposta_clinicas.data.clinicas)
-          //   ? resposta_clinicas.data.clinicas
-          //   : [];
+      //     // const listaClinicas = resposta_clinicas && resposta_clinicas.data && Array.isArray(resposta_clinicas.data.clinicas)
+      //     //   ? resposta_clinicas.data.clinicas
+      //     //   : [];
 
-          // if (listaClinicas.length > 0) {
-          //   for (let c = 0; c < listaClinicas.length; c++) {
-          //     clinicas.push({
-          //       id:listaClinicas[c].id,
-          //       nome: listaClinicas[c].nome_fantasia,
-          //       cnpj: listaClinicas[c].cnpj,
-          //     });
-          //   }
+      //     // if (listaClinicas.length > 0) {
+      //     //   for (let c = 0; c < listaClinicas.length; c++) {
+      //     //     clinicas.push({
+      //     //       id:listaClinicas[c].id,
+      //     //       nome: listaClinicas[c].nome_fantasia,
+      //     //       cnpj: listaClinicas[c].cnpj,
+      //     //     });
+      //     //   }
 
-          //   if (typeof ecpData !== 'undefined') {
-          //     ecpData.clinicas = clinicas;
-          //   }
+      //     //   if (typeof ecpData !== 'undefined') {
+      //     //     ecpData.clinicas = clinicas;
+      //     //   }
 
-          //   console.log('Clínicas carregadas:', clinicas);
-          // } else {
-          //   console.warn('Nenhuma clínica encontrada na resposta.');
-          // }
-        },
-        error:function(xhr,status,error)
-        {
+      //     //   console.log('Clínicas carregadas:', clinicas);
+      //     // } else {
+      //     //   console.warn('Nenhuma clínica encontrada na resposta.');
+      //     // }
+      //   },
+      //   error:function(xhr,status,error)
+      //   {
 
-        },
-      });
+      //   },
+      // });
     });
 
     // Funções do ECP
@@ -5758,10 +5758,10 @@ tipoContaInputs.forEach(input => {
 
   if (inputId === "inputColaborador") {
     // 🔹 requisita kits da pessoa
-    if(item.id && item.id !== "")
-    {
-      resposta_kits = await requisitarKits(item.id);
-    }
+    if (item && item.id && item.id !== "") {
+  resposta_kits = await requisitarKits(item.id);
+}
+
 
     // Se retornou kits, pega a empresa_id do primeiro
     if (resposta_kits && resposta_kits.length > 0) {
