@@ -7346,8 +7346,7 @@ function printSection(button) {
 
   <tr>
     <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-      <strong>OBS:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e/ou periculosidade,
-      deverá constar em seu laudo médico.
+      <strong>OBS:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e periculosidade permanecer com o adicional de periculosidade pois é de valor maior.
     </td>
   </tr>
 
@@ -7366,7 +7365,7 @@ function printSection(button) {
     </td>
   </tr>
 
-  <tr style="text-align: center;">
+  <tr style="text-align: left;">
     <td colspan="6" style="border: 1px solid #000; padding: 6px;">
       Ocorrência SEFIP GFIP: 
       <label><input type="checkbox"> 00</label>
@@ -7383,7 +7382,6 @@ function printSection(button) {
       para execução das atividades como:
       &nbsp; NR10 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
       &nbsp;&nbsp; NR12 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
-      &nbsp;&nbsp; DSN <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
     </td>
   </tr>
 </table>
