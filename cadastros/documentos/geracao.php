@@ -6214,151 +6214,149 @@ function printSection(button) {
             echo '
         <style>
     body {
-        font-family: Arial, sans-serif;
-        background:#f2f2f2;
-        margin:0;
-        padding:0;
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    margin:0;
+    padding:0;
+}
+
+.guia-container {
+    width: 210mm;
+    min-height: 297mm;
+    margin:3mm auto;
+    padding:6px;
+    background:#fff;
+    border:1px solid #000;
+}
+
+table { width:100%; border-collapse:collapse; font-size:11px; }
+th, td { border:1px solid #000; padding:3px; vertical-align:top; }
+
+.titulo-guia {
+    background:#eaeaea;
+    border:1px solid #000;
+    font-weight:bold;
+    text-align:center;
+    font-size:13px;
+    padding:4px;
+    height:18px;
+}
+
+.section-title {
+    background:#eaeaea;
+    border:1px solid #666;
+    font-weight:bold;
+    font-size:11px;
+    padding:2px 4px;
+    text-align:left;
+}
+
+.dados-hospital { font-size:11px; line-height:1.3; }
+.hospital-nome {
+    font-weight:bold;
+    text-transform:uppercase;
+    text-decoration:underline;
+    display:block;
+    margin-bottom:2px;
+}
+
+.logo { text-align:center; }
+.logo img { max-height:40px; }
+
+.qrcode img {
+    display:block;
+    width:100px;
+    height:auto;
+    margin-top:4px;
+}
+
+.actions {
+    margin-top: 10px;
+    padding-top: 8px;
+    text-align: center;
+    border-top: 1px solid #ccc;
+}
+.btn {
+    padding:8px 14px;
+    font-size:13px;
+    font-weight:bold;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    color:#fff;
+    box-shadow:0 2px 5px rgba(0,0,0,.2);
+    margin:0 4px;
+}
+.btn-email { background:#007bff; }
+.btn-whatsapp { background:#25d366; }
+.btn-print { background:#6c757d; }
+.btn:hover { opacity:.9; }
+
+.table-riscos th {
+    text-align: left;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 3px;
+    vertical-align: top;
+}
+.table-riscos td {
+    font-size: 11px;
+    padding: 3px;
+    vertical-align: top;
+}
+
+.table-exames th {
+    text-align: left;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 3px;
+}
+
+.legenda {
+    text-align: center;
+    font-size: 13px;
+}
+
+.assinatura {
+    width: 140px;
+    height: 50px;
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 0 auto 5px auto;
+}
+
+/* 🔹 Ajustes de espaçamento entre seções */
+table + table {
+    margin-top: 4px;
+}
+
+/* 🔹 Evita quebra de tabelas e blocos no meio */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body { background:#fff; }
+    .actions { display: none !important; }
+
+    table, tr, td, th, .no-break {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
-    .guia-container {
-        width: 210mm;
-        min-height: 297mm;
-        margin:5mm auto;
-        padding:10px;
-        background:#fff;
-        border:1px solid #000;
+    .assinatura-bloco {
+        page-break-before: auto !important;
+        page-break-after: avoid !important;
+        margin-top: 6px !important;
+        display: table !important;
+        width: 100% !important;
     }
 
-    table { width:100%; border-collapse:collapse; font-size:12px; }
-    th, td { border:1px solid #000; padding:4px; vertical-align:top; }
-
-    .titulo-guia {
-        background:#eaeaea;
-        border:1px solid #000;
-        font-weight:bold;
-        text-align:center;
-        font-size:14px;
-        padding:5px;
-        height:22px;
+    html, body {
+        margin: 0;
+        padding: 0;
     }
-
-    .section-title {
-        background:#eaeaea;
-        border:1px solid #666;
-        font-weight:bold;
-        font-size:12px;
-        padding:3px 5px;
-        text-align:left;
-    }
-
-    .dados-hospital { font-size:12px; line-height:1.4; }
-    .hospital-nome {
-        font-weight:bold;
-        text-transform:uppercase;
-        text-decoration:underline;
-        display:block;
-        margin-bottom:3px;
-    }
-
-    .logo { text-align:center; }
-    .logo img { max-height:45px; }
-
-    /* QR Code */
-    .qrcode img {
-        display:block;
-        width:120px;
-        height:auto;
-        margin-top:5px;
-    }
-
-    /* Botões abaixo do formulário */
-    .actions {
-        margin-top: 15px;
-        padding-top: 10px;
-        text-align: center;
-        border-top: 1px solid #ccc;
-    }
-    .btn {
-        padding:10px 18px;
-        font-size:14px;
-        font-weight:bold;
-        border:none;
-        border-radius:5px;
-        cursor:pointer;
-        color:#fff;
-        box-shadow:0 2px 5px rgba(0,0,0,.2);
-        margin:0 5px;
-    }
-    .btn-email { background:#007bff; }
-    .btn-whatsapp { background:#25d366; }
-    .btn-print { background:#6c757d; }
-    .btn:hover { opacity:.9; }
-
-    /* 🔹 Estilo para tabelas de riscos e exames */
-    .table-riscos th {
-        text-align: left;
-        font-weight: bold;
-        font-size: 12px;
-        font-family: Arial, sans-serif;
-        padding: 4px;
-        vertical-align: top;
-    }
-    .table-riscos td {
-        font-size: 12px;
-        font-family: Arial, sans-serif;
-        padding: 4px;
-        vertical-align: top;
-    }
-
-    .table-exames th {
-        text-align: left;
-        font-weight: bold;
-        font-size: 12px;
-        padding: 4px;
-    }
-
-    .legenda {
-        text-align: center;
-        font-size: 14px;
-    }
-
-    /* 🔹 Linha de assinatura */
-    .assinatura {
-        width: 150px;
-        height: 60px;
-        border-bottom: 1px solid #000;
-        display: block;
-        margin: 0px auto 5px auto;
-    }
-
-    /* 🔹 Evita quebra de tabelas e blocos no meio */
-    @media print {
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-        body { background:#fff; }
-        .actions { display: none !important; }
-
-        table, tr, td, th, .no-break {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .assinatura-bloco {
-            page-break-before: auto !important;
-            page-break-after: avoid !important;
-            margin-top: 10px !important;
-            display: table !important;
-            width: 100% !important;
-        }
-
-        /* Remove margens que forçam quebra */
-        body, html {
-            margin: 0;
-            padding: 0;
-        }
-    }
+}
 </style>
 
 
