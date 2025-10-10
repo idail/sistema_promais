@@ -4868,7 +4868,12 @@ tipoContaInputs.forEach(input => {
 
     function gravar_selecao_exame(valorExame) {
       debugger;
-      $.ajax({
+
+      if(window.recebe_acao && window.recebe_acao !== "")
+      {
+
+      }else{
+        $.ajax({
         url: "cadastros/processa_geracao_kit.php",
         type: "POST",
         dataType: "json",
@@ -4916,6 +4921,7 @@ tipoContaInputs.forEach(input => {
           ajaxEmExecucao = false; // libera para tentar de novo
         },
       });
+      }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -5050,6 +5056,8 @@ tipoContaInputs.forEach(input => {
 
       // Obtém o valor do parâmetro "id"
       window.recebe_id_kit = parametros.get("id");
+
+      window.recebe_acao = parametros.get("acao");
 
       // Confirma se veio o parâmetro
       if (window.recebe_id_kit) {
@@ -6825,9 +6833,9 @@ modal.innerHTML = `
 
       // Verifica se já existe algum parâmetro na URL
       if (url.includes("?")) {
-        window.location.href = `${url}&id=${kitId}`;
+        window.location.href = `${url}&id=${kitId}&acao=editar`;
       } else {
-        window.location.href = `${url}?id=${kitId}`;
+        window.location.href = `${url}?id=${kitId}&acao=editar`;
       }
       //fecharModal('modalDetalhesKit');
     }

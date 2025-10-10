@@ -6213,159 +6213,154 @@ function printSection(button) {
 
             echo '
         <style>
-            body {
-                font-family: Arial, sans-serif;
-                background:#f2f2f2;
-                margin:0;
-                padding:0;
-            }
-            .guia-container {
-                width: 210mm;
-                min-height: 297mm;
-                margin:5mm auto;
-                padding:10px;
-                background:#fff;
-                border:1px solid #000;
-            }
-            table { width:100%; border-collapse:collapse; font-size:12px; }
-            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
-
-            .titulo-guia {
-                background:#eaeaea;
-                border:1px solid #000;
-                font-weight:bold;
-                text-align:center;
-                font-size:14px;
-                padding:5px;
-                height:22px;
-            }
-            .section-title {
-                background:#eaeaea;
-                border:1px solid #666;
-                font-weight:bold;
-                font-size:12px;
-                padding:3px 5px;
-                text-align:left;
-            }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
-
-            .logo { text-align:center; }
-            .logo img { max-height:45px; }
-
-            /* QR Code */
-            .qrcode img {
-                display:block;
-                width:120px;
-                height:auto;
-                margin-top:5px;
-            }
-
-            /* Botões - Centralizados abaixo do formulário */
-            .actions {
-                margin-top: 15px;
-                padding-top: 10px;
-                text-align: center;
-                border-top: 1px solid #ccc; /* linha de separação opcional */
-            }
-            .btn {
-                padding:10px 18px;
-                font-size:14px;
-                font-weight:bold;
-                border:none;
-                border-radius:5px;
-                cursor:pointer;
-                color:#fff;
-                box-shadow:0 2px 5px rgba(0,0,0,.2);
-                margin:0 5px;
-            }
-            .btn-email { background:#007bff; }
-            .btn-whatsapp { background:#25d366; }
-            .btn-print { background:#6c757d; }
-            .btn:hover { opacity:.9; }
-
-            @media print {
-                * {
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                }
-                body { background:#fff; }
-                .actions { display: none !important; }
-            }
-
-            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
-        .table-riscos th {
-            text-align: left;
-            font-weight: bold;
-            font-size: 12px;
-            font-family: Arial, sans-serif;
-            padding: 4px;
-            vertical-align: top;
-        }
-        .table-riscos td {
-            font-size: 12px;
-            font-family: Arial, sans-serif;
-            padding: 4px;
-            vertical-align: top;
-        }
-
-        .table-exames th {
-            text-align: left;
-            font-weight: bold;
-            font-size: 12px;
-            padding: 4px;
-        }
-
-        .legenda {
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .assinatura {
-                width: 150px;
-    height: 60px;
-    border-bottom: 1px solid #000;
-    display: block;
-    margin: 0px auto 5px auto;
-        }
-
-        @media print {
-  table {
-    page-break-inside: avoid;
-  }
-}
-
-@media print {
-    /* Impede quebra dentro do bloco */
-    .no-break {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        display: block !important;
+    body {
+        font-family: Arial, sans-serif;
+        background:#f2f2f2;
+        margin:0;
+        padding:0;
     }
 
-    /* Evita quebras dentro das tabelas */
-    table, tr, td {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+    .guia-container {
+        width: 210mm;
+        min-height: 297mm;
+        margin:5mm auto;
+        padding:10px;
+        background:#fff;
+        border:1px solid #000;
     }
 
-    /* Garante que a assinatura fique junto */
-    .assinatura-bloco {
-        page-break-before: auto !important;
-        page-break-after: avoid !important;
-        margin-top: 10px !important;
-        display: table !important;
-        width: 100% !important;
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+    .titulo-guia {
+        background:#eaeaea;
+        border:1px solid #000;
+        font-weight:bold;
+        text-align:center;
+        font-size:14px;
+        padding:5px;
+        height:22px;
     }
 
-    /* Remove margens que possam forçar quebra */
-    body, html {
-        margin: 0;
-        padding: 0;
+    .section-title {
+        background:#eaeaea;
+        border:1px solid #666;
+        font-weight:bold;
+        font-size:12px;
+        padding:3px 5px;
+        text-align:left;
     }
-}
 
-        </style>
+    .dados-hospital { font-size:12px; line-height:1.4; }
+    .hospital-nome {
+        font-weight:bold;
+        text-transform:uppercase;
+        text-decoration:underline;
+        display:block;
+        margin-bottom:3px;
+    }
+
+    .logo { text-align:center; }
+    .logo img { max-height:45px; }
+
+    /* QR Code */
+    .qrcode img {
+        display:block;
+        width:120px;
+        height:auto;
+        margin-top:5px;
+    }
+
+    /* Botões abaixo do formulário */
+    .actions {
+        margin-top: 15px;
+        padding-top: 10px;
+        text-align: center;
+        border-top: 1px solid #ccc;
+    }
+    .btn {
+        padding:10px 18px;
+        font-size:14px;
+        font-weight:bold;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        color:#fff;
+        box-shadow:0 2px 5px rgba(0,0,0,.2);
+        margin:0 5px;
+    }
+    .btn-email { background:#007bff; }
+    .btn-whatsapp { background:#25d366; }
+    .btn-print { background:#6c757d; }
+    .btn:hover { opacity:.9; }
+
+    /* 🔹 Estilo para tabelas de riscos e exames */
+    .table-riscos th {
+        text-align: left;
+        font-weight: bold;
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        padding: 4px;
+        vertical-align: top;
+    }
+    .table-riscos td {
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        padding: 4px;
+        vertical-align: top;
+    }
+
+    .table-exames th {
+        text-align: left;
+        font-weight: bold;
+        font-size: 12px;
+        padding: 4px;
+    }
+
+    .legenda {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    /* 🔹 Linha de assinatura */
+    .assinatura {
+        width: 150px;
+        height: 60px;
+        border-bottom: 1px solid #000;
+        display: block;
+        margin: 0px auto 5px auto;
+    }
+
+    /* 🔹 Evita quebra de tabelas e blocos no meio */
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body { background:#fff; }
+        .actions { display: none !important; }
+
+        table, tr, td, th, .no-break {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .assinatura-bloco {
+            page-break-before: auto !important;
+            page-break-after: avoid !important;
+            margin-top: 10px !important;
+            display: table !important;
+            width: 100% !important;
+        }
+
+        /* Remove margens que forçam quebra */
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+    }
+</style>
+
 
         <div class="guia-container">
             <table>
@@ -6425,21 +6420,48 @@ function printSection(button) {
                 </tr>
             </table>
 
-            <table class="table-exames" style="width:100%; border-collapse:collapse;">
+            <table>
                 <tr>
-                    <td colspan="2" class="section-title" style="text-align:left; font-size:12px; font-weight:bold;">
-                        Procedimentos e Exames a realizar
-                    </td>
+                    <td colspan="2" class="section-title">TIPO DE EXAME / PROCEDIMENTO: Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</td>
                 </tr>
-                    ' . $linhasExames .'
             </table>
+
+            <!-- Tabela de Meatoscopia -->
+<table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+  <tr style="font-weight:bold; background-color:#f2f2f2;">
+    <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
+  </tr>
+  <tr>
+    <!-- OD -->
+    <td style="width:50%; border:1px solid #000; padding:6px;">
+      <strong>OD</strong><br>
+      <label><input type="checkbox" name="od_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="od_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="od_total" /> Obstrução Total</label>
+    </td>
+
+    <!-- OE -->
+    <td style="width:50%; border:1px solid #000; padding:6px;">
+      <strong>OE</strong><br>
+      <label><input type="checkbox" name="oe_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="oe_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+      <label><input type="checkbox" name="oe_total" /> Obstrução Total</label>
+    </td>
+  </tr>
+</table>
 
             <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
     <tr>
         <!-- Orelha Direita -->
         <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
             <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-            <img src="audiograma_final.png" alt="Audiograma OD" style="width:75%; height:auto; max-width:380px; margin-top:-4px; margin-bottom:0;">
+            <!-- Ajuste nas imagens dos audiogramas -->
+            <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+    
             <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
                     <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
@@ -6457,7 +6479,9 @@ function printSection(button) {
         <!-- Orelha Esquerda -->
         <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
             <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
-            <img src="audiograma_final.png" alt="Audiograma OE" style="width:75%; height:auto; max-width:380px; margin-top:-4px; margin-bottom:0;">
+            <!-- Ajuste nas imagens dos audiogramas -->
+            <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+    
             <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                 <tr>
                     <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
@@ -6474,235 +6498,161 @@ function printSection(button) {
     </tr>
 </table>
 
+<!-- SEÇÃO LOGOAUDIOMETRIA -->
+<table style="width:100%; border-collapse:collapse; margin-top:8px;">
+    <tr>
+        <td colspan="3" class="section-title">LOGOAUDIOMETRIA</td>
+    </tr>
+    <tr>
+        <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
+        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table style="width:100%; border-collapse:collapse;height: 136px;">
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
+                        LIMIAR DE RECONHECIMENTO DE FALA
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OD:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dB
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OE:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dB
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+       <!-- Tabela: ÍNDICE DE RECONHECIMENTO DE FALA -->
+        <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
+                <tr>
+                    <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
+                        ÍNDICE DE RECONHECIMENTO DE FALA
+                    </td>
+                </tr>
+
+                <!-- OD -->
+                <tr>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; width:10%; text-align:center; vertical-align:middle;"><strong>OD</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; width:15%; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td style="border:1px solid #000; padding:6px; width:40%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px; width:35%;">Monossílabos</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
+                </tr>
+
+                <!-- OE -->
+                <tr>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
+                </tr>
+            </table>
+        </td>
 
 
 
 
-        <div style="display:flex; justify-content:space-between; gap:40px; margin-top:10px; font-size:10px; text-align:center;">
-    <!-- Limiar OD -->
-    <table style="border-collapse:collapse; width:48%; font-size:10px;">
-        <tr>
-            <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OD (Direito)</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="border:1px solid #000;">250</td>
-            <td style="border:1px solid #000;">500</td>
-            <td style="border:1px solid #000;">1k</td>
-            <td style="border:1px solid #000;">2k</td>
-            <td style="border:1px solid #000;">3k</td>
-            <td style="border:1px solid #000;">4k</td>
-            <td style="border:1px solid #000;">6k</td>
-            <td style="border:1px solid #000;">8k</td>
-            <td style="border:1px solid #000;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">VA</td>
-            <td style="border:1px solid #000;">10</td>
-            <td style="border:1px solid #000;">10</td>
-            <td style="border:1px solid #000;">15</td>
-            <td style="border:1px solid #000;">10</td>
-            <td style="border:1px solid #000;">10</td>
-            <td style="border:1px solid #000;">15</td>
-            <td style="border:1px solid #000;">10</td>
-            <td style="border:1px solid #000;">10</td>
-            <td style="border:1px solid #000;">dB</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">VO</td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;">dB</td>
-        </tr>
-    </table>
 
-    <!-- Limiar OE -->
-    <table style="border-collapse:collapse; width:48%; font-size:10px;">
-        <tr>
-            <th colspan="10" style="border:1px solid #000; background:#f9f9f9;">Limiar OE (Esquerdo)</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="border:1px solid:#000;">250</td>
-            <td style="border:1px solid:#000;">500</td>
-            <td style="border:1px solid:#000;">1k</td>
-            <td style="border:1px solid:#000;">2k</td>
-            <td style="border:1px solid:#000;">3k</td>
-            <td style="border:1px solid:#000;">4k</td>
-            <td style="border:1px solid:#000;">6k</td>
-            <td style="border:1px solid:#000;">8k</td>
-            <td style="border:1px solid:#000;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid:#000;">VA</td>
-            <td style="border:1px solid:#000;">10</td>
-            <td style="border:1px solid:#000;">5</td>
-            <td style="border:1px solid:#000;">5</td>
-            <td style="border:1px solid:#000;">10</td>
-            <td style="border:1px solid:#000;">5</td>
-            <td style="border:1px solid:#000;">5</td>
-            <td style="border:1px solid:#000;">5</td>
-            <td style="border:1px solid:#000;">5</td>
-            <td style="border:1px solid:#000;">dB</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid:#000;">VO</td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;"></td>
-            <td style="border:1px solid:#000;">dB</td>
-        </tr>
-    </table>
-</div>
+        <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
+        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table style="width:100%; border-collapse:collapse;height: 136px;">
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
+                        LIMIAR DE DETECTABILIDADE DE FALA
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OD:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dB
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OE:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dB
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 
-<br>
 
-<div style="display:flex; justify-content:space-between; gap:30px; margin-top:-10px; font-size:9px; text-align:center;">
-    <!-- IRF -->
-    <table style="border-collapse:collapse; width:25%; font-size:9px;">
-        <tr>
-            <th colspan="4" style="border:1px solid #000; background:#f9f9f9;">IRF</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td style="border:1px solid #000;">Monos</td>
-            <td style="border:1px solid #000;">Dissil</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">OD</td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">OE</td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-        </tr>
-    </table>
-
-    <!-- Rinne -->
-    <table style="border-collapse:collapse; width:35%; font-size:9px;">
-        <tr>
-            <th colspan="5" style="border:1px solid #000; background:#f9f9f9;">Rinne</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="border:1px solid #000;">500</td>
-            <td style="border:1px solid #000;">1k</td>
-            <td style="border:1px solid #000;">2k</td>
-            <td style="border:1px solid #000;">4k</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">OD</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">OE</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-        </tr>
-    </table>
-
-    <!-- Weber -->
-    <table style="border-collapse:collapse; width:35%; font-size:9px;">
-        <tr>
-            <th colspan="7" style="border:1px solid #000; background:#f9f9f9;">Weber</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="border:1px solid #000;">250</td>
-            <td style="border:1px solid #000;">500</td>
-            <td style="border:1px solid #000;">1k</td>
-            <td style="border:1px solid #000;">2k</td>
-            <td style="border:1px solid #000;">4k</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #000;">OD</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">&nbsp;</td>
-            <td style="border:1px solid #000;">OE</td>
-        </tr>
-    </table>
-</div>
 
 
 <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:5px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
-        <td style="width:45%; border:1px solid #000; padding:8px;">Marca:_____________________ | Modelo:________________________ |Data de calibração:________________________ </td>
+        <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 
+        Modelo: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+        Data de calibração: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     </tr>
 </table>
 
 
-<!-- Campos de marcação -->
-<table style="width:100%; border-collapse:collapse; font-size:12px; text-align:center; margin-top:10px;">
-    <tr>
-        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
-            <input type="checkbox"> Normal
-        </td>
-        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
-            <input type="checkbox"> Estável
-        </td>
-        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
-            <input type="checkbox"> Alterado
-        </td>
-        <td style="border:1px solid #000; padding:5px; width:25%; text-align:center;">
-            <input type="checkbox"> Agravamento
-        </td>
-    </tr>
-</table>
-
-
-
-
-
-        <table class="assinatura-bloco no-break" style="width:100%; border-collapse:collapse; font-size:12px;">
-    <tbody>
+<!-- Tabela: PARECER FONOAUDIOLÓGICO -->
+    <table class="no-break" style="width:100%; border-collapse:collapse; margin-top:5px;">
         <tr>
-            <td colspan="2" style="padding:6px; text-align:left;">
-                ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+            <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+                PARECER FONOAUDIOLÓGICO
             </td>
         </tr>
         <tr>
-            <!-- Espaço para assinatura -->
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                ' . $html_assinatura . ' <br>
-                Médico emitente / Examinador<br>
-                ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - 
-                ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
-            </td>
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                <br><br>_______________________________<br>
-                Assinatura do Funcionário<br>
-                ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — 
-                CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+            <td colspan="6" style="border:1px solid #000; padding:4px;">
+                <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong> &nbsp;&nbsp;
+                ( ) | OD | &nbsp;&nbsp; ( ) | OE |
             </td>
         </tr>
-    </tbody>
-</table>
+        <tr>
+            <td colspan="6" style="border:1px solid #000; padding:4px;">
+                <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
+                ( ) Condutiva | OD | &nbsp;&nbsp; ( ) OE &nbsp;&nbsp;
+                ( ) Mista | OD | &nbsp;&nbsp; ( ) OE &nbsp;&nbsp;
+                ( ) Neurosensorial | OD | &nbsp;&nbsp; ( ) OE
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" style="border:1px solid #000; padding:4px;">
+                <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
+                ( ) Normal | OD | ( ) OE &nbsp;&nbsp;
+                ( ) Leve | OD | ( ) OE &nbsp;&nbsp;
+                ( ) Moderada | OD | ( ) OE &nbsp;&nbsp;
+                ( ) Moderada Severa | OD | ( ) OE &nbsp;&nbsp;
+                ( ) Severa | OD | ( ) OE &nbsp;&nbsp;
+                ( ) Profunda | OD | ( ) OE
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
+                <strong>Obs:</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #000; padding:12px 4px; width:60%; text-align:center; vertical-align:bottom;">
+                _______________________________________<br>
+                <strong>Paciente</strong>
+            </td>
+            <td style="border:1px solid #000; padding:12px 4px; text-align:center; vertical-align:bottom;" colspan="5">
+                ___________________________<br>
+                <strong>Data do Exame</strong>
+            </td>
+        </tr>
+    </table>
+
+
+
 
 
         </div>
@@ -7349,10 +7299,7 @@ function printSection(button) {
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="section-title">MODALIDADE RESUMO DE LAUDO:</td>
-                </tr>
-                <tr>
-                    <td>Admissional:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Mudança de função:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td colspan="2" class="section-title">MODALIDADE RESUMO DE LAUDO:<label>Admissional<input type="checkbox"/></label><label>Mudança de função<input type="checkbox"/></label></td>
                 </tr>
             </table>
 
@@ -7400,7 +7347,7 @@ function printSection(button) {
 
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-                <strong>OBS:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e periculosidade permanecer com o adicional de periculosidade pois é de valor maior.
+                <strong>Observação:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e periculosidade permanecer com o adicional de periculosidade pois é de valor maior.
                 </td>
             </tr>
 
