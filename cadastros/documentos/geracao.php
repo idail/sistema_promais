@@ -7303,90 +7303,88 @@ function printSection(button) {
             </table>
 
             <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 12px;">
-  <tr>
-    <td style="border: 1px solid #000; padding: 6px; width: 20%;"><strong>Função:</strong></td>
-    <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid #000; padding: 6px;"><strong>CBO:</strong></td>
-    <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '</td>
-  </tr>
+            <tr>
+                <td style="border: 1px solid #000; padding: 6px; width: 20%;"><strong>Função:</strong></td>
+                <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>CBO:</strong></td>
+                <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '</td>
+            </tr>
 
-  <tr>
-    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-      O colaborador registrado nesta função terá direito de:
-    </td>
-  </tr>
+            <tr>
+                <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+                O colaborador registrado nesta função terá direito de:
+                </td>
+            </tr>
 
-  <tr>
-    <td style="border: 1px solid #000; padding: 6px;"><strong>Insalubridade?</strong></td>
-    <td style="border: 1px solid #000; padding: 6px;">
-      <label><input type="checkbox"> Sim</label>
-      <label><input type="checkbox"> Não</label>
-    </td>
-    <td style="border: 1px solid #000; padding: 6px;"><strong>Qual porcentagem?</strong></td>
-    <td colspan="3" style="border: 1px solid #000; padding: 6px;">
-      <label><input type="checkbox"> 10%</label>
-      <label><input type="checkbox"> 20%</label>
-      <label><input type="checkbox"> 40%</label>
-    </td>
-  </tr>
+            <tr>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>Insalubridade?</strong></td>
+                <td style="border: 1px solid #000; padding: 6px;">
+                <label><input type="checkbox"> Sim</label>
+                <label><input type="checkbox"> Não</label>
+                </td>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>Qual porcentagem?</strong></td>
+                <td colspan="3" style="border: 1px solid #000; padding: 6px;">
+                <label><input type="checkbox"> 10%</label>
+                <label><input type="checkbox"> 20%</label>
+                <label><input type="checkbox"> 40%</label>
+                </td>
+            </tr>
 
-  <tr>
-    <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
-    <td style="border: 1px solid #000; padding: 6px;">
-      <label><input type="checkbox"> Sim</label>
-      <label><input type="checkbox"> Não</label>
-    </td>
-    <td style="border: 1px solid #000; padding: 6px;"><strong>Porcentagem:</strong></td>
-    <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%
-        <label><input type="checkbox"></label>
-    </td>
-  </tr>
+            <tr>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
+                <td style="border: 1px solid #000; padding: 6px;">
+                <label><input type="checkbox"> Sim</label>
+                <label><input type="checkbox"> Não</label>
+                </td>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>Porcentagem:</strong></td>
+                <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%
+                    <label><input type="checkbox"></label>
+                </td>
+            </tr>
 
-  <tr>
-    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-      <strong>OBS:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e periculosidade permanecer com o adicional de periculosidade pois é de valor maior.
-    </td>
-  </tr>
+            <tr>
+                <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+                <strong>OBS:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e periculosidade permanecer com o adicional de periculosidade pois é de valor maior.
+                </td>
+            </tr>
 
-  <tr>
-    <td style="border: 1px solid #000; padding: 6px;"><strong>Aposentadoria especial:</strong></td>
-    <td colspan="2" style="border: 1px solid #000; padding: 6px;">
-      <label><input type="checkbox"> Sim</label>
-      <label><input type="checkbox"> Não</label>
-    </td>
-    <td colspan="3" style="border: 1px solid #000; padding: 6px;"><strong>Exposição a agente nocivo:</strong></td>
-  </tr>
+            <tr>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>Aposentadoria especial:</strong></td>
+                <td colspan="2" style="border: 1px solid #000; padding: 6px;">
+                <label><input type="checkbox"> Sim</label>
+                <label><input type="checkbox"> Não</label>
+                </td>
+                <td colspan="3" style="border: 1px solid #000; padding: 6px;"><strong>Exposição a agente nocivo:</strong></td>
+            </tr>
 
-  <tr>
-    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-      <strong>Código a ser utilizado na contemplação de fator previdenciário:</strong>
-    </td>
-  </tr>
+            <tr>
+                <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+                <strong>Código a ser utilizado na contemplação de fator previdenciário:</strong>
+                </td>
+            </tr>
 
-  <tr style="text-align: left;">
-    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-      Ocorrência SEFIP GFIP: 
-      <label><input type="checkbox"> 00</label>
-      <label><input type="checkbox"> 01</label>
-      <label><input type="checkbox"> 02</label>
-      <label><input type="checkbox"> 03</label>
-      <label><input type="checkbox"> 04</label>
-    </td>
-  </tr>
+            <tr style="text-align: left;">
+                <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+                Ocorrência SEFIP GFIP: 
+                <label><input type="checkbox"> 00</label>
+                <label><input type="checkbox"> 01</label>
+                <label><input type="checkbox"> 02</label>
+                <label><input type="checkbox"> 03</label>
+                <label><input type="checkbox"> 04</label>
+                </td>
+            </tr>
 
-  <tr>
-    <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-      <strong>Observações:</strong> O colaborador terá obrigatoriedade de treinamentos específicos
-      para execução das atividades como:
-      &nbsp; NR10 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
-      &nbsp;&nbsp; NR12 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
-    </td>
-  </tr>
-</table>
-
-
+            <tr>
+                <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+                <strong>Observações:</strong> O colaborador terá obrigatoriedade de treinamentos específicos
+                para execução das atividades como:
+                &nbsp; NR10 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+                &nbsp;&nbsp; NR12 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+                </td>
+            </tr>
+            </table>
 
             <table style="margin-top:10px; width:100%; table-layout:fixed;">
 
