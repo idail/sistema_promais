@@ -6358,7 +6358,7 @@ tipoContaInputs.forEach(input => {
                 ${resposta_cargo_pessoa.titulo_cargo ? `
                 <div style="display: flex; align-items: center; font-size: 0.875rem; color: #6b7280;">
                   <i class="fas fa-briefcase" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
-                  <span>${resposta_cargo_pessoa.titutlo_cargo}</span>
+                  <span>${resposta_cargo_pessoa.titulo_cargo}</span>
                 </div>
                 ` : ''}
               </div>
