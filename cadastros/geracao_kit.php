@@ -2329,6 +2329,50 @@ function repopular_dados_cargo() {
   }
 }
 
+function repopular_dados_motorista() {
+  debugger;
+  // Obtém o valor do motorista salvo em window.kit_tipo_exame
+  const motoristaValue = window.kit_tipo_exame?.motorista;
+
+  // Verifica se o valor é "SIM"
+  const isMotorista = motoristaValue === "SIM";
+
+  console.log("Repopulando dados do motorista:", motoristaValue);
+
+  // Atualiza o estado global do app (se existir)
+  if (typeof appState !== "undefined") {
+    appState.motorista = isMotorista;
+  }
+
+  // Exibe ou oculta o banner de motorista
+  const motoristaBanner = document.getElementById('motorista-banner');
+  if (motoristaBanner) {
+    motoristaBanner.style.display = isMotorista ? 'flex' : 'none';
+  }
+
+  // Atualiza o ícone do caminhão
+  const truckIcon = document.querySelector('input[name="motorista"][value="sim"] + span .fa-truck-moving');
+  if (truckIcon) {
+    truckIcon.style.display = isMotorista ? 'inline-block' : 'none';
+  }
+
+  // 🔹 Marca o rádio "Sim" ou "Não"
+  const radioSim = document.querySelector('input[name="motorista"][value="sim"]');
+  const radioNao = document.querySelector('input[name="motorista"][value="nao"]');
+
+  if (radioSim && radioNao) {
+    if (isMotorista) {
+      radioSim.checked = true;
+      radioNao.checked = false;
+    } else {
+      radioSim.checked = false;
+      radioNao.checked = true;
+    }
+  }
+}
+
+
+
 
 
 
@@ -2344,6 +2388,7 @@ function repopular_dados_cargo() {
         try { repopular_dados_clinica("clinicas","inputClinica","resultClinica","nome"); } catch (err) { console.error(err); }
         try { repopular_dados_pessoa(); } catch (err) { console.error(err); }
         try { repopular_dados_cargo(); } catch (err) { console.error(err); }
+        try { repopular_dados_motorista(); } catch (err) { console.error(err); }
       }
       // Passo 3 (index 2): Profissionais da Medicina
       if (step === 2) {
@@ -11349,13 +11394,16 @@ console.log(total); // Exemplo: "180.10"
 
     function grava_motorista_kit(valor)
     {
-      $.ajax({
+      if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          $.ajax({
           url: "cadastros/processa_geracao_kit.php",
           type: "POST",
           dataType: "json",
           data: {
-            processo_geracao_kit: "incluir_valores_kit",
+            processo_geracao_kit: "atualizar_kit",
             valor_motorista: valor,
+            valor_id_kit:window.recebe_id_kit
           },
           success: function(retorno_exame_geracao_kit) {
             debugger;
@@ -11366,7 +11414,7 @@ console.log(total); // Exemplo: "180.10"
                       
                       <div>
                         
-                        <div>Motorista gravada com sucesso.</div>
+                        <div>KIT atualizado com sucesso.</div>
                       </div>
                     </div>
                   </div>
@@ -11397,6 +11445,56 @@ console.log(total); // Exemplo: "180.10"
             // ajaxEmExecucao = false; // libera para tentar de novo
           },
         });
+        }else{
+          $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_motorista: valor,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            debugger;
+
+            const mensagemSucesso = `
+                  <div id="motorista-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#motorista-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#motorista-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+        }
     }
     
     // Adicionar banner de motorista no topo da página
