@@ -2293,6 +2293,43 @@ async function repopular_dados_pessoa() {
   }
 }
 
+function repopular_dados_cargo() {
+  debugger;
+  const detalhes = document.getElementById('detalhesCargo');
+  const itemObj = window.kit_cargo;
+
+  if (detalhes) {
+    if (itemObj && (itemObj.titulo_cargo || itemObj.codigo_cargo)) {
+      detalhes.className = 'ecp-details';
+      detalhes.style.display = 'block';
+      detalhes.innerHTML = `
+        <div style="background: white; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+            <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0; line-height: 1.2;">
+              ${itemObj.titulo_cargo || 'Cargo não especificado'}
+            </h3>
+            ${itemObj.codigo_cargo ? `
+              <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
+                        font-size: 0.75rem; font-weight: 500; background-color: #e0f2fe; color: #0369a1;">
+                CBO: ${itemObj.codigo_cargo}
+              </span>
+            ` : ''}
+          </div>
+          ${itemObj.descricao_cargo ? `
+            <div style="font-size: 0.875rem; color: #4b5563; line-height: 1.5; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f3f4f6;">
+              <h4 style="font-size: 0.875rem; font-weight: 600; color: #374151; margin: 0 0 0.5rem 0;">Descrição:</h4>
+              <p style="margin: 0;">${itemObj.descricao_cargo}</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    } else {
+      detalhes.style.display = 'none';
+    }
+  }
+}
+
+
 
 
     // Restaura UI ao trocar de aba e mantém cabeçalho dos Médicos sincronizado
@@ -2306,6 +2343,7 @@ async function repopular_dados_pessoa() {
         try { repopular_empresa(); } catch (err) { console.error(err); }
         try { repopular_dados_clinica("clinicas","inputClinica","resultClinica","nome"); } catch (err) { console.error(err); }
         try { repopular_dados_pessoa(); } catch (err) { console.error(err); }
+        try { repopular_dados_cargo(); } catch (err) { console.error(err); }
       }
       // Passo 3 (index 2): Profissionais da Medicina
       if (step === 2) {
@@ -5400,6 +5438,24 @@ tipoContaInputs.forEach(input => {
       });
     }
 
+    function requisitarCargoKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_cargo_kit",valor_id_cargo_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     $(document).ready(async function(e){
       debugger;
 
@@ -5418,6 +5474,7 @@ tipoContaInputs.forEach(input => {
         window.kit_empresa = await requisitarEmpresaKITEspecifico(window.kit_tipo_exame.empresa_id);
         window.kit_clinica = await requisitarClinicaKITEspecifico(window.kit_tipo_exame.clinica_id);
         window.kit_pessoa = await requisitarPessoaKITEspecifico(window.kit_tipo_exame.pessoa_id);
+        window.kit_cargo = await requisitarCargoKITEspecifico(window.kit_tipo_exame.cargo_id);
         if(window.kit_tipo_exame)
         {
           repopular_tipo_exame();
@@ -6785,13 +6842,16 @@ tipoContaInputs.forEach(input => {
         }
       }else if(tipo === "colaborador")
       {
-        $.ajax({
+        if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          $.ajax({
           url: "cadastros/processa_geracao_kit.php",
           type: "POST",
           dataType: "json",
           data: {
-            processo_geracao_kit: "incluir_valores_kit",
+            processo_geracao_kit: "atualizar_kit",
             valor_colaborador: valores,
+            valor_id_kit:window.recebe_id_kit
           },
           success: function(retorno_exame_geracao_kit) {
             // debugger;
@@ -6802,7 +6862,7 @@ tipoContaInputs.forEach(input => {
                       
                       <div>
                         
-                        <div>Pessoa gravada com sucesso.</div>
+                        <div>KIT atualizado com sucesso.</div>
                       </div>
                     </div>
                   </div>
@@ -6833,15 +6893,69 @@ tipoContaInputs.forEach(input => {
             // ajaxEmExecucao = false; // libera para tentar de novo
           },
         });
-      }else if(tipo === "cargo")
-      {
-        $.ajax({
+        }else
+        {
+          $.ajax({
           url: "cadastros/processa_geracao_kit.php",
           type: "POST",
           dataType: "json",
           data: {
             processo_geracao_kit: "incluir_valores_kit",
+            valor_colaborador: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            // debugger;
+
+            const mensagemSucesso = `
+                  <div id="colaborador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#colaborador-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#colaborador-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+        }
+      }else if(tipo === "cargo")
+      {
+        if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "atualizar_kit",
             valor_cargo: valores,
+            valor_id_kit:window.recebe_id_kit
           },
           success: function(retorno_exame_geracao_kit) {
             // debugger;
@@ -6852,7 +6966,7 @@ tipoContaInputs.forEach(input => {
                       
                       <div>
                         
-                        <div>Cargo gravado com sucesso.</div>
+                        <div>KIT atualizado com sucesso.</div>
                       </div>
                     </div>
                   </div>
@@ -6883,6 +6997,56 @@ tipoContaInputs.forEach(input => {
             // ajaxEmExecucao = false; // libera para tentar de novo
           },
         });
+        }else{
+          $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_cargo: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            // debugger;
+
+            const mensagemSucesso = `
+                  <div id="cargo-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#cargo-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#cargo-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+        }
       }
     }
 

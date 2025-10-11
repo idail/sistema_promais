@@ -986,6 +986,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_pessoa->execute();
         $resultado_busca_pessoa = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_pessoa);
+    }else if($recebe_processo_geracao_kit === "busca_cargo_kit")
+    {
+        $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+        $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+        $comando_busca_cargo->bindValue(":recebe_id_cargo",$_GET["valor_id_cargo_kit"]);
+        $comando_busca_cargo->execute();
+        $resultado_busca_cargo = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_cargo);
     }
 }
 ?>
