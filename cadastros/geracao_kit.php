@@ -2122,6 +2122,178 @@ function repopular_dados_clinica(tipo, inputId, resultadoId, chave) {
   }
 }
 
+async function repopular_dados_pessoa() {
+  debugger;
+  
+  try {
+    // if (!itemObj || !itemObj.id) {
+    //   console.warn("❌ Objeto da pessoa inválido:", itemObj);
+    //   return;
+    // }
+
+    // 🔹 Requisita os kits e guarda globalmente
+    window.kits = await requisitarKits(window.kit_tipo_exame.pessoa_id);
+    const resposta_kits = window.kits || [];
+
+    let resposta_empresa_pessoa = null;
+    let resposta_clinica_pessoa = null;
+    let resposta_cargo_pessoa = null;
+
+    // 🔹 Requisita dados da empresa (se houver)
+    if (window.kit_tipo_exame.empresa_id) {
+      resposta_empresa_pessoa = await requisitarEmpresaPessoa(window.kit_tipo_exame.empresa_id);
+    }
+
+    // 🔹 Requisita dados da clínica (se houver)
+    if (window.kit_tipo_exame.clinica_id) {
+      resposta_clinica_pessoa = await requisitarClinicaPessoa(window.kit_tipo_exame.clinica_id);
+    }
+
+    if(window.kit_tipo_exame.cargo_id){
+      resposta_cargo_pessoa = await requisitarDadosCargo(window.kit_tipo_exame.cargo_id);
+    }
+
+    // 🔹 Monta estrutura de kits por CPF
+    let kitsColaboradores = {};
+
+    if (window.kit_pessoa?.cpf && resposta_kits.length > 0) {
+      const cpfLimpo = window.kit_pessoa.cpf.replace(/[.\-]/g, "");
+
+      kitsColaboradores[cpfLimpo] = [];
+
+      resposta_kits.forEach(kit => {
+        kitsColaboradores[cpfLimpo].push({
+          id: kit.id || "",
+          data: kit.data_geracao || "",
+          empresa: resposta_empresa_pessoa?.nome || "Não informado",
+          colaborador: window.kit_pessoa.nome || "Não informado",
+          status: kit.status || "Não informado",
+          tipo_exame: kit.tipo_exame,
+          clinica: resposta_clinica_pessoa?.nome_fantasia || "Não informado"
+        });
+      });
+    }
+
+    // 🔹 Atualiza detalhes do colaborador e exibe kits
+    const detalhes = document.getElementById('detalhesColaborador');
+    if (window.kit_pessoa.nome || window.kit_pessoa.cpf) {
+
+      detalhes.className = 'ecp-details';
+      detalhes.style.display = 'block';
+
+      let html = `
+        <div style="background: white; padding: 1rem; border-radius: 0.5rem; border: 1px solid #f3f4f6; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+          <div style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+            <div style="width: 3rem; height: 3rem; border-radius: 9999px; background-color: #dbeafe; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; flex-shrink: 0;">
+              <i class="fas fa-user" style="color: #2563eb; font-size: 1.25rem;"></i>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827; margin: 0; line-height: 1.2;">
+              ${window.kit_pessoa.nome || 'Nome não informado'}
+            </h3>
+          </div>
+          <div style="margin-left: 3.75rem;">
+            <div style="display: flex; align-items: center; margin-bottom: 0.25rem; font-size: 0.875rem; color: #6b7280;">
+              <i class="far fa-id-card" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
+              <span>${window.kit_pessoa.cpf ? window.kit_pessoa.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : 'CPF não informado'}</span>
+            </div>
+            ${resposta_cargo_pessoa.titulo_cargo ? `
+            <div style="display: flex; align-items: center; font-size: 0.875rem; color: #6b7280;">
+              <i class="fas fa-briefcase" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
+              <span>${resposta_cargo_pessoa.titulo_cargo}</span>
+            </div>` : ''}
+          </div>
+        </div>
+      `;
+
+      const cpf = window.kit_pessoa.cpf ? window.kit_pessoa.cpf.replace(/[^\d]/g, '') : '';
+      const kitsDoColaborador = kitsColaboradores[cpf] || [];
+
+      html += `
+        <div style="margin-top: 1.5rem; border-top: 1px solid #f3f4f6; padding-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h4 style="font-size: 1rem; font-weight: 500; color: #111827; margin: 0; display: flex; align-items: center;">
+              <i class="fas fa-box-open" style="color: #3b82f6; margin-right: 0.5rem; font-size: 1.1rem;"></i>
+              Kits do Colaborador
+            </h4>
+            <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background-color: #dbeafe; color: #1e40af;">
+              ${kitsDoColaborador.length} ${kitsDoColaborador.length === 1 ? 'kit' : 'kits'} encontrados
+            </span>
+          </div>
+      `;
+
+      if (kitsDoColaborador.length > 0) {
+        const kitsOrdenados = [...kitsDoColaborador].sort((a, b) =>
+          new Date(b.data.split('/').reverse().join('-')) - new Date(a.data.split('/').reverse().join('-'))
+        );
+
+        const kitsParaExibir = kitsOrdenados.slice(0, 5);
+
+        html += `
+          <div style="display: grid; gap: 0.75rem;">
+            ${kitsParaExibir.map(kit => {
+              const statusConfig = {
+                'FINALIZADO': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
+                'RASCUNHO': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+                'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
+              };
+              const status = kit.status || 'RASCUNHO';
+              const config = statusConfig[status] || statusConfig.default;
+
+              return `
+                <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease;"
+                     onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${window.kit_pessoa.nome ? window.kit_pessoa.nome.replace(/'/g, "\\'") : 'Colaborador'}','${resposta_cargo_pessoa.titulo_cargo}')">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                        <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 500; background-color: ${config.bg}; color: ${config.text};">
+                          <i class="fas ${config.icon} mr-1" style="margin-inline: 5px;"></i>${status}
+                        </span>
+                      </div>
+                      <div style="font-size: 0.875rem; color: #4b5563; margin-bottom: 0.25rem;">
+                        <span style="font-weight: 500;">${kit.empresa || 'Sem empresa'}</span>
+                        ${kit.cargo ? `<span style="margin: 0 0.25rem; color: #d1d5db;">•</span><span>${kit.cargo}</span>` : ''}
+                      </div>
+                      ${kit.tipo_exame ? `<div style="font-size: 0.813rem; color: #374151; font-weight: 500; margin-top: 0.15rem;">🧾 ${kit.tipo_exame}</div>` : ''}
+                    </div>
+                    <div style="display: flex; align-items: center; margin-left: 0.5rem; color: #9ca3af; font-size: 0.875rem; white-space: nowrap;">
+                      <i class="far fa-calendar-alt mr-1"></i>${new Date(kit.data).toLocaleDateString('pt-BR')}
+                    </div>
+                  </div>
+                </div>`;
+            }).join('')}
+          </div>
+        `;
+
+        if (kitsDoColaborador.length > 5) {
+          html += `
+            <div style="margin-top: 1rem; text-align: center;">
+              <button style="background: none; border: none; color: #3b82f6; font-size: 0.875rem; cursor: pointer; display: inline-flex; align-items: center;"
+                      onclick="this.parentElement.previousElementSibling.querySelectorAll('div').forEach(el => el.style.display = 'block'); this.remove()">
+                <i class="fas fa-chevron-down mr-1"></i>
+                Mostrar mais ${kitsDoColaborador.length - 5} kits
+              </button>
+            </div>`;
+        }
+      } else {
+        html += `
+          <div style="text-align: center; padding: 1.5rem 1rem; background-color: #f9fafb; border-radius: 0.5rem; border: 1px dashed #e5e7eb; margin-top: 0.5rem;">
+            <i class="fas fa-inbox" style="font-size: 1.5rem; color: #9ca3af;"></i>
+            <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; margin-bottom: 0;">Nenhum kit encontrado para este colaborador</p>
+          </div>`;
+      }
+
+      html += `</div>`;
+      detalhes.innerHTML = html;
+    } else {
+      detalhes.style.display = 'none';
+    }
+
+  } catch (e) {
+    console.error("⚠️ Erro ao repopular dados da pessoa:", e);
+  }
+}
+
+
 
     // Restaura UI ao trocar de aba e mantém cabeçalho dos Médicos sincronizado
     document.addEventListener('tabChanged', function(e) {
@@ -2133,6 +2305,7 @@ function repopular_dados_clinica(tipo, inputId, resultadoId, chave) {
         // ✅ Repopula o tipo de exame gravado anteriormente
         try { repopular_empresa(); } catch (err) { console.error(err); }
         try { repopular_dados_clinica("clinicas","inputClinica","resultClinica","nome"); } catch (err) { console.error(err); }
+        try { repopular_dados_pessoa(); } catch (err) { console.error(err); }
       }
       // Passo 3 (index 2): Profissionais da Medicina
       if (step === 2) {
@@ -5209,6 +5382,24 @@ tipoContaInputs.forEach(input => {
       });
     }
 
+    function requisitarPessoaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_pessoa_kit",valor_id_pessoa_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     $(document).ready(async function(e){
       debugger;
 
@@ -5226,6 +5417,7 @@ tipoContaInputs.forEach(input => {
         window.kit_tipo_exame = await requisitarExameKITEspecifico(window.recebe_id_kit);
         window.kit_empresa = await requisitarEmpresaKITEspecifico(window.kit_tipo_exame.empresa_id);
         window.kit_clinica = await requisitarClinicaKITEspecifico(window.kit_tipo_exame.clinica_id);
+        window.kit_pessoa = await requisitarPessoaKITEspecifico(window.kit_tipo_exame.pessoa_id);
         if(window.kit_tipo_exame)
         {
           repopular_tipo_exame();
@@ -5917,8 +6109,10 @@ tipoContaInputs.forEach(input => {
     let recebe_codigo_empresa_pessoa;
     let recebe_codigo_clinica_pessoa;
     let recebe_codigo_pessoa;
+    let recebe_codigo_cargo;
     let resposta_empresa_pessoa;
     let resposta_clinica_pessoa;
+    let resposta_cargo_pessoa;
     let resposta_pessoa;
     let resposta_kits;
 
@@ -5928,8 +6122,8 @@ tipoContaInputs.forEach(input => {
   if (inputId === "inputColaborador") {
     // 🔹 requisita kits da pessoa
     if (item && item.id && item.id !== "") {
-  resposta_kits = await requisitarKits(item.id);
-}
+      resposta_kits = await requisitarKits(item.id);
+    }
 
 
     // Se retornou kits, pega a empresa_id do primeiro
@@ -5946,6 +6140,11 @@ tipoContaInputs.forEach(input => {
       {
         recebe_codigo_pessoa = resposta_kits[0]["pessoa_id"];
       }
+
+      if(recebe_codigo_cargo === "" || recebe_codigo_cargo == null)
+      {
+        recebe_codigo_cargo = resposta_kits[0]["cargo_id"];
+      }
     }
 
     // 🔹 requisita dados da empresa (se existir empresa_id)
@@ -5960,6 +6159,10 @@ tipoContaInputs.forEach(input => {
 
     if(recebe_codigo_pessoa){
       resposta_pessoa = await requisitarPessoa(recebe_codigo_pessoa);
+    }
+
+    if(recebe_codigo_cargo){
+      resposta_cargo_pessoa = await requisitarDadosCargo(recebe_codigo_cargo);
     }
 
     console.log("Resposta final de kits:", resposta_kits);
@@ -6152,10 +6355,10 @@ tipoContaInputs.forEach(input => {
                   <i class="far fa-id-card" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
                   <span>${itemObj.cpf ? itemObj.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : 'CPF não informado'}</span>
                 </div>
-                ${itemObj.cargo ? `
+                ${resposta_cargo_pessoa.titulo_cargo ? `
                 <div style="display: flex; align-items: center; font-size: 0.875rem; color: #6b7280;">
                   <i class="fas fa-briefcase" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
-                  <span>${itemObj.cargo}</span>
+                  <span>${resposta_cargo_pessoa.titutlo_cargo}</span>
                 </div>
                 ` : ''}
               </div>
@@ -6203,7 +6406,7 @@ tipoContaInputs.forEach(input => {
                   return `
   <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; 
               cursor: pointer; transition: all 0.2s ease;"
-       onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${itemObj.nome ? itemObj.nome.replace(/'/g, "\\'") : 'Colaborador'}')">
+       onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${itemObj.nome ? itemObj.nome.replace(/'/g, "\\'") : 'Colaborador'}','${resposta_cargo_pessoa.titulo_cargo}')">
     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
       <div style="flex: 1; min-width: 0;">
         <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
@@ -6826,7 +7029,7 @@ tipoContaInputs.forEach(input => {
       }
     }
     
-    function abrirDetalhesKit(kit, nomeColaborador) {
+    async function abrirDetalhesKit(kit, nomeColaborador,cargo) {
       debugger;
       // Configurações de status
       // const statusConfig = {
@@ -6955,7 +7158,7 @@ modal.innerHTML = `
           <div>
             <div style="font-weight: 600; color: #111827; margin-bottom: 2px;">${nomeColaborador || 'Nome não informado'}</div>
             <div style="font-size: 0.8125rem; color: #6b7280;">
-              ${kit.cargo || 'Cargo não informado'}
+              ${cargo || 'Cargo não informado'}
             </div>
           </div>
         </div>

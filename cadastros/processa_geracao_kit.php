@@ -978,6 +978,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_clinica_pessoa->execute();
         $resultado_busca_clinica_pessoa = $comando_busca_clinica_pessoa->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_clinica_pessoa);
+    }else if($recebe_processo_geracao_kit === "busca_pessoa_kit")
+    {
+        $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+        $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+        $comando_busca_pessoa->bindValue(":recebe_id_pessoa",$_GET["valor_id_pessoa_kit"]);
+        $comando_busca_pessoa->execute();
+        $resultado_busca_pessoa = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_pessoa);
     }
 }
 ?>
