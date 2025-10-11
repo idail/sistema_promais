@@ -2080,34 +2080,41 @@ function repopular_dados_clinica(tipo, inputId, resultadoId, chave) {
     typeof window.kit_clinica === 'object' &&
     Object.keys(window.kit_clinica).length > 0
   ) {
-
+    const detalhes = document.getElementById('detalhesClinica'); 
     const item = window.kit_clinica;
 
-    if (item.cbo) {
-              displayText = `${item[chave]} (CBO: ${item.cbo})`;
-            } else if (item.cpf) {
-              displayText = `${item[chave]} (CPF: ${item.cpf})`;
-            } else if (item.nome_fantasia) {
-              displayText = item.nome_fantasia;
-            } else {
-              displayText = item[chave] || 'Sem nome';
-            }
-    
-
-    // Monta o HTML com o mesmo estilo solicitado
-    const html = `
-      <div class="ecp-result-item" 
-                   onclick="selecionarECP('${inputId}', '${resultadoId}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, '${chave}')"
-                   style="cursor: pointer; padding: 8px 12px; border-bottom: 1px solid #eee;">
-                ${displayText}
-                ${item.cnpj ? `<div style="font-size: 0.8em; color: #666;">CNPJ: ${item.cnpj}</div>` : ''}
-                ${item.cpf ? `<div style="font-size: 0.8em; color: #666;">CPF: ${item.cpf}</div>` : ''}
-              </div>
+    detalhes.className = 'ecp-details';
+    detalhes.style.display = 'block';
+    detalhes.innerHTML = `
+    <strong>${item.nome_fantasia || ''}</strong>
+    <div>${item.cnpj || ''}</div>
     `;
 
-    // Exibe na tela
-    resultEl.innerHTML = html;
-    resultEl.style.display = 'block';
+    // if (item.cbo) {
+    //           displayText = `${item[chave]} (CBO: ${item.cbo})`;
+    //         } else if (item.cpf) {
+    //           displayText = `${item[chave]} (CPF: ${item.cpf})`;
+    //         } else if (item.nome_fantasia) {
+    //           displayText = item.nome_fantasia;
+    //         } else {
+    //           displayText = item[chave] || 'Sem nome';
+    //         }
+    
+
+    // // Monta o HTML com o mesmo estilo solicitado
+    // const html = `
+    //   <div class="ecp-result-item" 
+    //                onclick="selecionarECP('${inputId}', '${resultadoId}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, '${chave}')"
+    //                style="cursor: pointer; padding: 8px 12px; border-bottom: 1px solid #eee;">
+    //             ${displayText}
+    //             ${item.cnpj ? `<div style="font-size: 0.8em; color: #666;">CNPJ: ${item.cnpj}</div>` : ''}
+    //             ${item.cpf ? `<div style="font-size: 0.8em; color: #666;">CPF: ${item.cpf}</div>` : ''}
+    //           </div>
+    // `;
+
+    // // Exibe na tela
+    // resultEl.innerHTML = html;
+    // resultEl.style.display = 'block';
   } else {
     // Se não houver dados válidos, limpa e esconde
     resultEl.innerHTML = '';
@@ -6472,13 +6479,16 @@ tipoContaInputs.forEach(input => {
           }
       }else if(tipo === "clinica")
       {
-        $.ajax({
+        if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          $.ajax({
           url: "cadastros/processa_geracao_kit.php",
           type: "POST",
           dataType: "json",
           data: {
             processo_geracao_kit: "incluir_valores_kit",
             valor_clinica: valores,
+            valor_id_kit:window.recebe_id_kit
           },
           success: function(retorno_exame_geracao_kit) {
             // debugger;
@@ -6489,7 +6499,7 @@ tipoContaInputs.forEach(input => {
                       
                       <div>
                         
-                        <div>Clínica gravada com sucesso.</div>
+                        <div>KIT atualizado com sucesso.</div>
                       </div>
                     </div>
                   </div>
@@ -6520,6 +6530,56 @@ tipoContaInputs.forEach(input => {
             // ajaxEmExecucao = false; // libera para tentar de novo
           },
         });
+        }else{
+          $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+            processo_geracao_kit: "incluir_valores_kit",
+            valor_clinica: valores,
+          },
+          success: function(retorno_exame_geracao_kit) {
+            // debugger;
+
+            const mensagemSucesso = `
+                  <div id="clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      
+                      <div>
+                        
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#clinica-gravado").remove();
+                
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#clinica-gravado").fadeOut(500, function() {
+              $(this).remove();
+              });
+            }, 5000);
+
+
+            // $("#exame-gravado").html(retorno_exame_geracao_kit);
+            // $("#exame-gravado").show();
+            // $("#exame-gravado").fadeOut(4000);
+            console.log(retorno_exame_geracao_kit);
+            // ajaxEmExecucao = false; // libera para nova requisição
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            // ajaxEmExecucao = false; // libera para tentar de novo
+          },
+        });
+        }
       }else if(tipo === "colaborador")
       {
         $.ajax({
