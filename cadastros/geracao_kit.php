@@ -2030,6 +2030,92 @@ function renderResultadoProfissional(tipo) {
           }
         }
 
+//        function repopular_dados_clinica(inputId, chave) {
+//         debugger;
+//   const resultEl = document.getElementById(inputId);
+
+//   // Verifica se window.kit_clinica tem dados válidos
+//   if (window.kit_clinica && typeof window.kit_clinica === 'object' && Object.keys(window.kit_clinica).length > 0) {
+//     const item = window.kit_clinica;
+
+//     if (item.cbo) {
+//               displayText = `${item[chave]} (CBO: ${item.cbo})`;
+//             } else if (item.cpf) {
+//               displayText = `${item[chave]} (CPF: ${item.cpf})`;
+//             } else if (item.nome_fantasia) {
+//               displayText = item.nome_fantasia;
+//             } else {
+//               displayText = item[chave] || 'Sem nome';
+//             }
+
+//     // Monta o HTML com o mesmo estilo solicitado
+//     const html = `
+//       <div class="ecp-result-item" 
+//                    onclick="selecionarECP('${inputId}', '${resultadoId}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, '${chave}')"
+//                    style="cursor: pointer; padding: 8px 12px; border-bottom: 1px solid #eee;">
+//                 ${displayText}
+//                 ${item.cnpj ? `<div style="font-size: 0.8em; color: #666;">CNPJ: ${item.cnpj}</div>` : ''}
+//                 ${item.cpf ? `<div style="font-size: 0.8em; color: #666;">CPF: ${item.cpf}</div>` : ''}
+//               </div>
+//     `;
+
+//     // Exibe na tela
+//     resultEl.innerHTML = html;
+//     resultEl.style.display = 'block';
+//   } else {
+//     // Caso não tenha dados → limpa e esconde
+//     resultEl.innerHTML = '';
+//     resultEl.style.display = 'none';
+//   }
+// }
+
+function repopular_dados_clinica(tipo, inputId, resultadoId, chave) {
+  debugger;
+  const resultEl = document.getElementById(resultadoId);
+
+  // Garante que é do tipo "clinicas" e que há dados válidos
+  if (
+    tipo === 'clinicas' &&
+    window.kit_clinica &&
+    typeof window.kit_clinica === 'object' &&
+    Object.keys(window.kit_clinica).length > 0
+  ) {
+
+    const item = window.kit_clinica;
+
+    if (item.cbo) {
+              displayText = `${item[chave]} (CBO: ${item.cbo})`;
+            } else if (item.cpf) {
+              displayText = `${item[chave]} (CPF: ${item.cpf})`;
+            } else if (item.nome_fantasia) {
+              displayText = item.nome_fantasia;
+            } else {
+              displayText = item[chave] || 'Sem nome';
+            }
+    
+
+    // Monta o HTML com o mesmo estilo solicitado
+    const html = `
+      <div class="ecp-result-item" 
+                   onclick="selecionarECP('${inputId}', '${resultadoId}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, '${chave}')"
+                   style="cursor: pointer; padding: 8px 12px; border-bottom: 1px solid #eee;">
+                ${displayText}
+                ${item.cnpj ? `<div style="font-size: 0.8em; color: #666;">CNPJ: ${item.cnpj}</div>` : ''}
+                ${item.cpf ? `<div style="font-size: 0.8em; color: #666;">CPF: ${item.cpf}</div>` : ''}
+              </div>
+    `;
+
+    // Exibe na tela
+    resultEl.innerHTML = html;
+    resultEl.style.display = 'block';
+  } else {
+    // Se não houver dados válidos, limpa e esconde
+    resultEl.innerHTML = '';
+    resultEl.style.display = 'none';
+  }
+}
+
+
     // Restaura UI ao trocar de aba e mantém cabeçalho dos Médicos sincronizado
     document.addEventListener('tabChanged', function(e) {
       const step = e && e.detail ? e.detail.step : undefined;
@@ -2039,6 +2125,7 @@ function renderResultadoProfissional(tipo) {
         try { applyEcpStateToUI(); } catch (err) { /* noop */ }
         // ✅ Repopula o tipo de exame gravado anteriormente
         try { repopular_empresa(); } catch (err) { console.error(err); }
+        try { repopular_dados_clinica("clinicas","inputClinica","resultClinica","nome"); } catch (err) { console.error(err); }
       }
       // Passo 3 (index 2): Profissionais da Medicina
       if (step === 2) {
@@ -5097,6 +5184,24 @@ tipoContaInputs.forEach(input => {
       });
     }
 
+    function requisitarClinicaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_clinica_kit",valor_id_clinica_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     $(document).ready(async function(e){
       debugger;
 
@@ -5113,6 +5218,7 @@ tipoContaInputs.forEach(input => {
 
         window.kit_tipo_exame = await requisitarExameKITEspecifico(window.recebe_id_kit);
         window.kit_empresa = await requisitarEmpresaKITEspecifico(window.kit_tipo_exame.empresa_id);
+        window.kit_clinica = await requisitarClinicaKITEspecifico(window.kit_tipo_exame.clinica_id);
         if(window.kit_tipo_exame)
         {
           repopular_tipo_exame();
