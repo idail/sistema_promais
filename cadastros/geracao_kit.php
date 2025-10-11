@@ -6486,7 +6486,7 @@ tipoContaInputs.forEach(input => {
           type: "POST",
           dataType: "json",
           data: {
-            processo_geracao_kit: "incluir_valores_kit",
+            processo_geracao_kit: "atualizar_kit",
             valor_clinica: valores,
             valor_id_kit:window.recebe_id_kit
           },
