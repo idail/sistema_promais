@@ -2122,6 +2122,10 @@ function repopular_dados_clinica(tipo, inputId, resultadoId, chave) {
   }
 }
 
+let resposta_empresa_pessoa = null;
+    let resposta_clinica_pessoa = null;
+    let resposta_cargo_pessoa = null;
+
 async function repopular_dados_pessoa() {
   debugger;
   
@@ -2135,9 +2139,7 @@ async function repopular_dados_pessoa() {
     window.kits = await requisitarKits(window.kit_tipo_exame.pessoa_id);
     const resposta_kits = window.kits || [];
 
-    let resposta_empresa_pessoa = null;
-    let resposta_clinica_pessoa = null;
-    let resposta_cargo_pessoa = null;
+    
 
     // 🔹 Requisita dados da empresa (se houver)
     if (window.kit_tipo_exame.empresa_id) {
@@ -3123,6 +3125,209 @@ function requisitarExameKITEspecifico(codigo_kit) {
       });
     }
 
+    // ==========================================
+// 🔹 VARIÁVEIS GLOBAIS (SEM CONFLITO)
+// ==========================================
+window._snapshotRiscosGrupos = [];
+window._snapshotRiscosDetalhes = [];
+window._snapshotRiscosSelecionados = [];
+window._snapshotRiscosCodes = [];
+window.kit_riscos = window.kit_riscos || [];
+
+// ==========================================
+// 🔹 NOMES DOS GRUPOS
+// ==========================================
+const nomesGrupos = {
+  "ergonomico": "Riscos Ergonômicos",
+  "acidente_mecanico": "Riscos Acidentes - Mecânicos",
+  "fisico": "Riscos Físicos",
+  "quimico": "Riscos Químicos",
+  "biologico": "Riscos Biológicos",
+  "outro": "Outros Riscos"
+};
+
+// ================================
+// Função: repopularGruposRiscosSelecionados (versão final robusta)
+// ================================
+function repopularGruposRiscosSelecionados() {
+  debugger;
+  try {
+    let kit = window.kit_riscos;
+
+    // 🔹 Normaliza para array (caso venha como JSON string ou objeto simples)
+    if (typeof kit === 'string') {
+      try {
+        kit = JSON.parse(kit);
+      } catch (e) {
+        console.warn('repopularGruposRiscosSelecionados: window.kit_riscos é string inválida JSON:', e);
+        return;
+      }
+    }
+
+    if (!Array.isArray(kit)) {
+      // Se for um objeto (ex: mapa chave=>valor)
+      if (kit && typeof kit === 'object') {
+        kit = Object.entries(kit).map(([key, val]) => ({
+          codigo: val?.codigo || key || '',
+          descricao: val?.descricao || val?.name || val?.nome || '',
+          grupo: val?.grupo || val?.group || ''
+        }));
+      } else {
+        console.warn("repopularGruposRiscosSelecionados: formato inesperado de window.kit_riscos.");
+        return;
+      }
+    }
+
+    if (!kit.length) {
+      console.warn("repopularGruposRiscosSelecionados: nenhum risco disponível em kit_riscos.");
+      return;
+    }
+
+    const tempRisksData = {};
+    const gruposMarcados = new Set();
+
+    kit.forEach(item => {
+      const grupo = (item.grupo || '').trim();
+      const codigo = (item.codigo || '').trim();
+      const descricao = (item.descricao || '').trim();
+
+      if (!grupo || !codigo || !descricao) return;
+
+      if (!tempRisksData[grupo]) {
+        tempRisksData[grupo] = {
+          name: (window.nomesGrupos && window.nomesGrupos[grupo]) || grupo,
+          risks: []
+        };
+      }
+
+      tempRisksData[grupo].risks.push({
+        code: codigo,
+        name: descricao,
+        isOther: descricao.toLowerCase() === "outros"
+      });
+
+      gruposMarcados.add(grupo);
+    });
+
+    // 🔹 Se risksData estiver vazio, atribuimos tudo
+    if (!window.risksData || Object.keys(window.risksData).length === 0) {
+      window.risksData = tempRisksData;
+    } else {
+      // 🔹 Caso já exista, apenas mescla novos grupos sem sobrescrever
+      Object.keys(tempRisksData).forEach(g => {
+        if (!window.risksData[g]) window.risksData[g] = tempRisksData[g];
+      });
+    }
+
+    // 🔹 Mantém snapshot independente (não interfere na edição em andamento)
+    window._snapshotRiscosGrupos = Array.from(gruposMarcados);
+    window.riscosGruposEstadoSalvo = window.riscosGruposEstadoSalvo || window._snapshotRiscosGrupos.slice();
+
+    // 🔹 Reaplica UI se disponível
+    if (typeof window.reaplicarGruposSelecionadosUI === 'function') {
+      try {
+        window.reaplicarGruposSelecionadosUI();
+      } catch (e) {
+        console.warn('Falha ao reaplicarGruposSelecionadosUI():', e);
+      }
+    }
+
+    console.log('✅ repopularGruposRiscosSelecionados executada com sucesso:', window._snapshotRiscosGrupos);
+  } catch (e) {
+    console.error('Erro em repopularGruposRiscosSelecionados:', e);
+  }
+}
+
+
+function repopularDetalhesRiscosSelecionados() {
+  debugger;
+  try {
+    let riscosFonte = [];
+
+    // 1️⃣ Prioriza edição (_snapshot)
+    if (Array.isArray(window._snapshotRiscosSelecionados) && window._snapshotRiscosSelecionados.length > 0) {
+      riscosFonte = window._snapshotRiscosSelecionados.map(r => ({
+        codigo: r.codigo || '',
+        descricao: r.descricao || '',
+        grupo: r.grupo || ''
+      }));
+      console.log("🟢 Usando variáveis de edição (_snapshotRiscosSelecionados)");
+    }
+    // 2️⃣ Caso contrário, usa gravação se existir e não estiver vazio
+    else if (window.riscosEstadoSalvoDetalhes && Object.keys(window.riscosEstadoSalvoDetalhes).length > 0) {
+      riscosFonte = Object.entries(window.riscosEstadoSalvoDetalhes).map(([codigo, info]) => ({
+        codigo: codigo || '',
+        descricao: info?.name || '',
+        grupo: info?.group || ''
+      }));
+      console.log("🟡 Usando variáveis de gravação (riscosEstadoSalvoDetalhes)");
+    }
+    // 3️⃣ Caso contrário, usa window.kit_riscos
+    else if (window.kit_riscos) {
+      let kitRiscosArray = window.kit_riscos;
+
+      if (typeof kitRiscosArray === "string") {
+        try { kitRiscosArray = JSON.parse(kitRiscosArray); } 
+        catch (err) { 
+          console.error("❌ Erro ao converter window.kit_riscos de string para array:", err); 
+          kitRiscosArray = []; 
+        }
+      }
+
+      if (Array.isArray(kitRiscosArray) && kitRiscosArray.length > 0) {
+        riscosFonte = kitRiscosArray.map(item => ({
+          codigo: item.codigo?.trim() || '',
+          descricao: item.descricao?.trim() || '',
+          grupo: item.grupo?.trim() || ''
+        }));
+        console.log("🔵 Usando window.kit_riscos do cadastro");
+      }
+    }
+
+    if (!riscosFonte.length) {
+      console.warn("⚠️ Nenhum risco encontrado para repopular detalhes.");
+      return;
+    }
+
+    // Prepara selectedRisksLocal
+    const selectedRisksLocal = {};
+    riscosFonte.forEach(item => {
+      const { codigo, descricao, grupo } = item;
+      if (!codigo || !descricao || !grupo) return;
+      selectedRisksLocal[codigo] = { name: descricao, group: grupo };
+    });
+
+    // Atualiza snapshots globais
+    window._snapshotRiscosDetalhes = riscosFonte.slice();
+    window._snapshotRiscosSelecionados = Object.entries(selectedRisksLocal).map(([codigo, info]) => ({
+      codigo,
+      descricao: info.name,
+      grupo: info.group
+    }));
+    window._snapshotRiscosCodes = window._snapshotRiscosSelecionados.map(r => r.codigo);
+
+    // Só altera selectedRisks se não houver edição em andamento
+    if (!window.selectedRisks || Object.keys(window.selectedRisks).length === 0) {
+      window.selectedRisks = selectedRisksLocal;
+    }
+
+    // Atualiza UI se função disponível
+    if (typeof reaplicarRiscosSelecionadosUI === "function") {
+      window.riscos_selecionados = window._snapshotRiscosSelecionados;
+      window.riscosEstadoSalvoCodes = window._snapshotRiscosCodes;
+      window.riscosEstadoSalvoDetalhes = window._snapshotRiscosDetalhes;
+      reaplicarRiscosSelecionadosUI();
+    }
+
+    console.log("✅ Detalhes de riscos repopulados com segurança:", window._snapshotRiscosSelecionados);
+  } catch (e) {
+    console.error("❌ Erro ao repopular detalhes dos riscos:", e);
+  }
+}
+
+
+
+
     async function updateTab(step) {
       debugger;
 
@@ -3146,6 +3351,7 @@ function requisitarExameKITEspecifico(codigo_kit) {
         window.kit_cargo = await requisitarCargoKITEspecifico(window.kit_tipo_exame.cargo_id);
         window.kit_medico_coordenador = await requisitarMedicoCoordenadorKITEspecifico(window.kit_tipo_exame.medico_coordenador_id);
         window.kit_medico_examinador = await requisitarMedicoExaminadorKITEspecifico(window.kit_tipo_exame.medico_clinica_id);
+        window.kit_riscos = window.kit_tipo_exame.riscos_selecionados;
         
       } else {
         console.log("Nenhum parâmetro 'id' foi recebido.");
@@ -3243,15 +3449,50 @@ function requisitarExameKITEspecifico(codigo_kit) {
           //   console.error('Inicializador de riscos indisponível');
           // }
           initializeRiscosComponent();
-          // Reaplica UI dos riscos sem disparar gravação ao entrar na aba
-          setTimeout(() => {
-            if (typeof window.reaplicarRiscosSelecionadosUI === 'function') {
-              try { window.reaplicarRiscosSelecionadosUI(); } catch (e) { console.warn('Falha ao reaplicar UI de riscos:', e); }
-            }
-            if (typeof window.reaplicarGruposSelecionadosUI === 'function') {
-              try { window.reaplicarGruposSelecionadosUI(); } catch (e) { console.warn('Falha ao reaplicar grupos de riscos:', e); }
-            }
-          }, 150);
+          try { 
+  window.reaplicarRiscosSelecionadosUI(); 
+} catch (e) { 
+  console.warn('Falha ao reaplicar UI de riscos:', e); 
+}
+
+try { 
+  window.reaplicarGruposSelecionadosUI(); 
+} catch (e) { 
+  console.warn('Falha ao reaplicar grupos de riscos:', e); 
+}
+
+// ✅ Repopula dados após reabrir a aba
+try { 
+  repopularGruposRiscosSelecionados(); 
+} catch (e) { 
+  console.warn('Falha ao repopular grupos de riscos:', e); 
+}
+
+try { 
+  repopularDetalhesRiscosSelecionados(); 
+} catch (e) { 
+  console.warn('Falha ao repopular detalhes de riscos:', e); 
+}
+
+// ✅ Executa novamente após 150ms para garantir atualização visual
+setTimeout(() => {
+  if (typeof window.reaplicarRiscosSelecionadosUI === 'function') {
+    try { window.reaplicarRiscosSelecionadosUI(); } 
+    catch (e) { console.warn('Falha ao reaplicar UI de riscos:', e); }
+  }
+
+  if (typeof window.reaplicarGruposSelecionadosUI === 'function') {
+    try { window.reaplicarGruposSelecionadosUI(); } 
+    catch (e) { console.warn('Falha ao reaplicar grupos de riscos:', e); }
+  }
+
+  try { repopularGruposRiscosSelecionados(); } 
+  catch (e) { console.warn('Falha ao repopular grupos de riscos (timeout):', e); }
+
+  try { repopularDetalhesRiscosSelecionados(); } 
+  catch (e) { console.warn('Falha ao repopular detalhes de riscos (timeout):', e); }
+}, 150);
+
         }, 100);
 
       } else {
@@ -4846,43 +5087,78 @@ tipoContaInputs.forEach(input => {
         }
       }
       
-      // Reaplica os grupos marcados (checkboxes) sem disparar gravações
-      function reaplicarGruposSelecionadosUI() {
-        // Debug na reaplicação dos grupos marcados ao retornar à aba
-        try {
-          const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
-          console.log('DEBUG reaplicarGruposSelecionadosUI:', {
-            snapshot: Array.isArray(window.riscosGruposEstadoSalvo) ? window.riscosGruposEstadoSalvo : [],
-            qtdCheckboxes: checkboxes.length
-          });
-        } catch(e) {}
-        debugger;
-        try {
-          let gruposSalvos = Array.isArray(window.riscosGruposEstadoSalvo) ? window.riscosGruposEstadoSalvo : null;
-          const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
-          // Se não há snapshot, reconstrói a partir dos checkboxes marcados
-          if ((!gruposSalvos || !gruposSalvos.length) && checkboxes.length) {
-            gruposSalvos = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-            if (gruposSalvos.length) {
-              window.riscosGruposEstadoSalvo = gruposSalvos.slice();
-            }
-          }
-          if (gruposSalvos && gruposSalvos.length && checkboxes.length) {
-            checkboxes.forEach(cb => {
-              cb.checked = gruposSalvos.includes(cb.value);
-            });
-            // Atualiza estado interno e placeholder sem buscar automaticamente
-            selectedGroups = gruposSalvos.slice();
-            updateSearchPlaceholder();
-            // Preenche o input de busca com os grupos restaurados
-            if (typeof risksData === 'object' && searchBox) {
-              const groupNames = selectedGroups.map(group => risksData[group] ? risksData[group].name : group);
-              searchBox.value = groupNames.length ? `Busca em: ${groupNames.join(', ')}` : '';
-              searchBox.disabled = false; // garante habilitado
-            }
-          }
-        } catch (e) { /* ignore */ }
+      // ============================================
+// Função segura: reaplicarGruposSelecionadosUI()
+// - Usa variáveis globais de repopulação se existirem
+// - Mantém compatibilidade com o fluxo normal (gravação/edição)
+// ============================================
+function reaplicarGruposSelecionadosUI() {
+  debugger;
+  try {
+    const checkboxes = document.querySelectorAll('#group-select-container input[type="checkbox"]');
+
+    // 🔍 Tenta pegar o snapshot dos grupos marcados (preferência pelas variáveis globais de repopular)
+    let gruposSalvos = null;
+
+    if (Array.isArray(window._snapshotRiscosGrupos) && window._snapshotRiscosGrupos.length > 0) {
+      gruposSalvos = window._snapshotRiscosGrupos.slice();
+      console.log("🟢 usando _snapshotRiscosGrupos da repopulação");
+    } else if (Array.isArray(window.riscosGruposEstadoSalvo) && window.riscosGruposEstadoSalvo.length > 0) {
+      gruposSalvos = window.riscosGruposEstadoSalvo.slice();
+      console.log("🟢 usando riscosGruposEstadoSalvo da sessão atual");
+    }
+
+    // 🔁 Se ainda não há grupos, tenta reconstruir com base nos checkboxes marcados
+    if ((!gruposSalvos || !gruposSalvos.length) && checkboxes.length) {
+      gruposSalvos = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+      if (gruposSalvos.length) {
+        window.riscosGruposEstadoSalvo = gruposSalvos.slice();
+        console.log("⚙️ reconstruído a partir dos checkboxes marcados.");
       }
+    }
+
+    // 🚫 Se ainda não há nada, apenas sai
+    if (!gruposSalvos || !gruposSalvos.length) {
+      console.warn("⚠️ Nenhum grupo salvo encontrado para reaplicar.");
+      return;
+    }
+
+    // 🧩 Aplica os grupos marcados nos checkboxes da interface
+    checkboxes.forEach(cb => {
+      cb.checked = gruposSalvos.includes(cb.value);
+    });
+
+    // 🔄 Atualiza estado interno sem disparar gravação
+    window.selectedGroups = gruposSalvos.slice();
+    if (typeof updateSearchPlaceholder === "function") {
+      updateSearchPlaceholder();
+    }
+
+    // 🧭 Atualiza o campo de busca
+    const risksDataGlobal =
+      (typeof window.risksData === "object" && Object.keys(window.risksData).length > 0)
+        ? window.risksData
+        : (typeof risksData === "object" ? risksData : {});
+
+    const groupNames = gruposSalvos.map(group =>
+      risksDataGlobal[group] ? risksDataGlobal[group].name : group
+    );
+
+    if (window.searchBox) {
+      window.searchBox.value = groupNames.length
+        ? `Busca em: ${groupNames.join(', ')}`
+        : '';
+      window.searchBox.disabled = false;
+    }
+
+    console.log("✅ reaplicarGruposSelecionadosUI concluído:", gruposSalvos);
+  } catch (e) {
+    console.error("Erro em reaplicarGruposSelecionadosUI:", e);
+  }
+}
+
       // Event Listeners do campo de busca (bind uma única vez)
       if (searchBox) {
         if (!searchBox._inputBound) {
@@ -4960,7 +5236,7 @@ tipoContaInputs.forEach(input => {
       
       // Funções
       function updateSearchPlaceholder() {
-        // debugger;
+        debugger;
         if (!searchBox) return;
         
         if (selectedGroups.length === 0) {
@@ -5349,78 +5625,143 @@ tipoContaInputs.forEach(input => {
         }
       }
 
-      // Reaplica a UI dos riscos sem persistir (usado ao reentrar na aba Riscos)
       function reaplicarRiscosSelecionadosUI() {
-        if (window._riscosRenderRunning) return;
-        window._riscosRenderRunning = true;
-        try {
-          // Garante que o array esteja consistente com o objeto
-          riscos_selecionados = Object.entries(selectedRisks).map(([codigo, info]) => ({
-            codigo,
-            descricao: info.name,
-            grupo: info.group,
-          }));
+  debugger;
+  if (window._riscosRenderRunning) return;
+  window._riscosRenderRunning = true;
 
-          const selectedRisksContainer = document.getElementById('selected-risks-container');
-          if (!selectedRisksContainer) return;
-          // Garante que o listener de remoção esteja ativo mesmo após reentrada na aba
-          if (!selectedRisksContainer._removeDelegationBound) {
-            selectedRisksContainer.addEventListener('click', function(e) {
-              const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
-              if (!btn || !selectedRisksContainer.contains(btn)) return;
-              if (typeof e.stopPropagation === 'function') e.stopPropagation();
-              if (typeof e.preventDefault === 'function') e.preventDefault();
-              const codeToRemove = btn.getAttribute('data-code');
-              if (codeToRemove && selectedRisks[codeToRemove]) {
-                delete selectedRisks[codeToRemove];
-                window._riscosDirty = true;
-                updateSelectedRisksDisplay();
-                if (searchBox && searchBox.value && searchBox.value.trim() !== '') {
-                  try { performSearch(searchBox.value); } catch (e) { /* ignore */ }
-                }
-              }
-            });
-            selectedRisksContainer._removeDelegationBound = true;
-          }
-          selectedRisksContainer.innerHTML = '';
-          if (riscos_selecionados.length === 0) {
-            const emptyMessage = document.createElement('div');
-            emptyMessage.className = 'no-risks';
-            emptyMessage.textContent = 'Nenhum risco selecionado';
-            selectedRisksContainer.appendChild(emptyMessage);
-            return;
-          }
-          const risksByGroup = {};
-          for (const { codigo, descricao, grupo } of riscos_selecionados) {
-            if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
-            risksByGroup[grupo].push({ code: codigo, name: descricao });
-          }
-          for (const [group, risks] of Object.entries(risksByGroup)) {
-            const groupName = risksData[group] ? risksData[group].name : group;
-            const groupElement = document.createElement('div');
-            groupElement.className = 'risk-group';
-            const groupHeader = document.createElement('div');
-            groupHeader.className = 'risk-group-header';
-            groupHeader.textContent = groupName;
-            const groupContent = document.createElement('div');
-            groupContent.className = 'risk-group-content';
-            risks.forEach(risk => {
-              const riskElement = document.createElement('div');
-              riskElement.className = 'selected-risk';
-              riskElement.innerHTML = `
-                <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
-                <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
-              `;
-              groupContent.appendChild(riskElement);
-            });
-            groupElement.appendChild(groupHeader);
-            groupElement.appendChild(groupContent);
-            selectedRisksContainer.appendChild(groupElement);
-          }
-        } finally {
-          window._riscosRenderRunning = false;
-        }
+  try {
+    const selectedRisksContainer = document.getElementById('selected-risks-container');
+    if (!selectedRisksContainer) return;
+
+    // ==============================
+    // 1️⃣ Determina a fonte dos riscos
+    // ==============================
+    let riscosFonte = [];
+
+    // ✅ 1. Se estamos na edição e existem variáveis globais de snapshot preenchidas
+    if (Array.isArray(window._snapshotRiscosSelecionados) && window._snapshotRiscosSelecionados.length > 0) {
+      riscosFonte = window._snapshotRiscosSelecionados.map(r => ({
+        codigo: r.codigo || '',
+        descricao: r.descricao || '',
+        grupo: r.grupo || ''
+      }));
+      console.log("🟢 Usando riscos da edição (_snapshotRiscosSelecionados)");
+    }
+    // ✅ 2. Caso contrário, se há dados de repopulação do banco (cadastrando)
+    else if (Array.isArray(window.kit_riscos) && window.kit_riscos.length > 0) {
+      // Se vier como string JSON, tenta converter
+      let kitRiscosArray = window.kit_riscos;
+      if (typeof kitRiscosArray === "string") {
+        try { kitRiscosArray = JSON.parse(kitRiscosArray); } 
+        catch { kitRiscosArray = []; }
       }
+      riscosFonte = kitRiscosArray.map(r => ({
+        codigo: r.codigo || '',
+        descricao: r.descricao || '',
+        grupo: r.grupo || ''
+      }));
+      console.log("🟡 Usando riscos da repopulação do cadastro (window.kit_riscos)");
+    }
+    // ✅ 3. Caso contrário, usa selectedRisks da sessão atual
+    else if (typeof window.selectedRisks === 'object' && Object.keys(window.selectedRisks).length > 0) {
+      riscosFonte = Object.entries(window.selectedRisks).map(([codigo, info]) => ({
+        codigo,
+        descricao: info.name,
+        grupo: info.group
+      }));
+      console.log("🟠 Usando riscos da sessão atual (selectedRisks)");
+    }
+
+    // ==============================
+    // 2️⃣ Garante listener de remoção
+    // ==============================
+    if (!selectedRisksContainer._removeDelegationBound) {
+      selectedRisksContainer.addEventListener('click', function (e) {
+        const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
+        if (!btn || !selectedRisksContainer.contains(btn)) return;
+
+        e.stopPropagation?.();
+        e.preventDefault?.();
+
+        const codeToRemove = btn.getAttribute('data-code');
+        if (codeToRemove && window.selectedRisks && window.selectedRisks[codeToRemove]) {
+          delete window.selectedRisks[codeToRemove];
+          window._riscosDirty = true;
+          updateSelectedRisksDisplay?.();
+
+          if (window.searchBox && window.searchBox.value.trim() !== '') {
+            try { performSearch(window.searchBox.value); } catch (_) {}
+          }
+        }
+      });
+      selectedRisksContainer._removeDelegationBound = true;
+    }
+
+    // ==============================
+    // 3️⃣ Atualiza exibição dos riscos
+    // ==============================
+    selectedRisksContainer.innerHTML = '';
+
+    if (!riscosFonte.length) {
+      const emptyMessage = document.createElement('div');
+      emptyMessage.className = 'no-risks';
+      emptyMessage.textContent = 'Nenhum risco selecionado';
+      selectedRisksContainer.appendChild(emptyMessage);
+      return;
+    }
+
+    // Agrupa os riscos por grupo
+    const risksByGroup = {};
+    riscosFonte.forEach(({ codigo, descricao, grupo }) => {
+      if (!grupo) return;
+      if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
+      risksByGroup[grupo].push({ code: codigo, name: descricao });
+    });
+
+    // Fonte de nomes de grupo (usa global se existir)
+    const risksDataGlobal =
+      (typeof window.risksData === "object" && Object.keys(window.risksData).length > 0)
+        ? window.risksData
+        : {};
+
+    // Monta o HTML
+    for (const [group, risks] of Object.entries(risksByGroup)) {
+      const groupName = risksDataGlobal[group]?.name || group;
+      const groupElement = document.createElement('div');
+      groupElement.className = 'risk-group';
+
+      const groupHeader = document.createElement('div');
+      groupHeader.className = 'risk-group-header';
+      groupHeader.textContent = groupName;
+
+      const groupContent = document.createElement('div');
+      groupContent.className = 'risk-group-content';
+
+      risks.forEach(risk => {
+        const riskElement = document.createElement('div');
+        riskElement.className = 'selected-risk';
+        riskElement.innerHTML = `
+          <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
+          <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
+        `;
+        groupContent.appendChild(riskElement);
+      });
+
+      groupElement.appendChild(groupHeader);
+      groupElement.appendChild(groupContent);
+      selectedRisksContainer.appendChild(groupElement);
+    }
+
+    console.log("✅ reaplicarRiscosSelecionadosUI concluído:", riscosFonte.length, "riscos reaplicados.");
+  } catch (e) {
+    console.error("Erro em reaplicarRiscosSelecionadosUI:", e);
+  } finally {
+    window._riscosRenderRunning = false;
+  }
+}
+
+
 
       function gravar_riscos_selecionados()
       {
@@ -6382,9 +6723,9 @@ tipoContaInputs.forEach(input => {
     let recebe_codigo_clinica_pessoa;
     let recebe_codigo_pessoa;
     let recebe_codigo_cargo;
-    let resposta_empresa_pessoa;
-    let resposta_clinica_pessoa;
-    let resposta_cargo_pessoa;
+    // let resposta_empresa_pessoa;
+    // let resposta_clinica_pessoa;
+    // let resposta_cargo_pessoa;
     let resposta_pessoa;
     let resposta_kits;
 
