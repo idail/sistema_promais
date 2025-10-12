@@ -2997,8 +2997,160 @@ function renderAssinatura_examinador(pessoa) {
 //     qrcodeSelecionado: false    // Se o QR Code está selecionado
 // };
 
-    function updateTab(step) {
+function requisitarExameKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_kit",valor_id_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarEmpresaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_empresa_kit",valor_id_empresa_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarClinicaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_clinica_kit",valor_id_clinica_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarPessoaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_pessoa_kit",valor_id_pessoa_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarCargoKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_cargo_kit",valor_id_cargo_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarMedicoCoordenadorKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_medico_coordenador_kit",valor_id_medico_coordenador_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarMedicoExaminadorKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_medico_examinador_kit",valor_id_medico_examinador_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    async function updateTab(step) {
       debugger;
+
+      let parametros = new URLSearchParams(window.location.search);
+
+      // Obtém o valor do parâmetro "id"
+      window.recebe_id_kit = parametros.get("id");
+
+      window.recebe_acao = parametros.get("acao");
+
+      window.kit_tipo_exame = await requisitarExameKITEspecifico(window.recebe_id_kit);
+
+      // Confirma se veio o parâmetro
+      if (window.recebe_id_kit) {
+        console.log("ID recebido:", window.recebe_id_kit);
+
+        
+        window.kit_empresa = await requisitarEmpresaKITEspecifico(window.kit_tipo_exame.empresa_id);
+        window.kit_clinica = await requisitarClinicaKITEspecifico(window.kit_tipo_exame.clinica_id);
+        window.kit_pessoa = await requisitarPessoaKITEspecifico(window.kit_tipo_exame.pessoa_id);
+        window.kit_cargo = await requisitarCargoKITEspecifico(window.kit_tipo_exame.cargo_id);
+        window.kit_medico_coordenador = await requisitarMedicoCoordenadorKITEspecifico(window.kit_tipo_exame.medico_coordenador_id);
+        window.kit_medico_examinador = await requisitarMedicoExaminadorKITEspecifico(window.kit_tipo_exame.medico_clinica_id);
+        
+      } else {
+        console.log("Nenhum parâmetro 'id' foi recebido.");
+      }
+
       console.log('Atualizando para a aba:', step, 'Conteúdo:', etapas[step] ? 'disponível' : 'indisponível');
       // Controle ao trocar de abas envolvendo Riscos (etapa 3)
       try {
@@ -3025,6 +3177,34 @@ function renderAssinatura_examinador(pessoa) {
         if (etapas[0] && content.innerHTML.trim() !== etapas[0].trim()) {
           content.innerHTML = etapas[0];
         }
+
+        function repopular_tipo_exame() {
+            debugger;
+            const examCards = document.querySelectorAll('.exam-card');
+            const tipoExameSelecionado = window.kit_tipo_exame?.tipo_exame;
+
+            if (!examCards.length) {
+              console.warn('Nenhum card de exame encontrado.');
+              return;
+            }
+
+            if (!tipoExameSelecionado) {
+              console.warn('Nenhum tipo de exame encontrado em window.kit_tipo_exame.');
+              return;
+            }
+
+            // Marca apenas o tipo de exame que já foi salvo no kit
+            examCards.forEach(card => {
+              const tipo = card.dataset.exam;
+
+              if (tipo === tipoExameSelecionado) {
+                card.classList.add('active'); // Destaca visualmente o card
+                console.log('Exame repopulado (marcado):', tipo);
+              } else {
+                card.classList.remove('active');
+              }
+        });
+          }
         // Configurar os cards de exame
         setTimeout(() => {
           verifica_selecao_exame();
@@ -3035,6 +3215,11 @@ function renderAssinatura_examinador(pessoa) {
               document.querySelectorAll('.exam-card').forEach(card => card.classList.remove('active'));
               selectedCard.classList.add('active');
             }
+          }
+
+          if(window.kit_tipo_exame)
+          {
+            repopular_tipo_exame();
           }
         }, 0);
       } else if (step === 3) {
@@ -5534,188 +5719,12 @@ tipoContaInputs.forEach(input => {
     let pessoas = [];
     let cargos = [];
 
-    function requisitarExameKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "buscar_kit",valor_id_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
-
-    function requisitarEmpresaKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "buscar_empresa_kit",valor_id_empresa_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
-
-    function requisitarClinicaKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "busca_clinica_kit",valor_id_clinica_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
-
-    function requisitarPessoaKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "busca_pessoa_kit",valor_id_pessoa_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
-
-    function requisitarCargoKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "busca_cargo_kit",valor_id_cargo_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
-
-    function requisitarMedicoCoordenadorKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "buscar_medico_coordenador_kit",valor_id_medico_coordenador_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
-
-    function requisitarMedicoExaminadorKITEspecifico(codigo_kit) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          method: "GET",
-          dataType: "json",
-          data: { processo_geracao_kit: "busca_medico_examinador_kit",valor_id_medico_examinador_kit: codigo_kit},
-          success: function(resposta) {
-            console.log("KITs retornados:", resposta);
-            resolve(resposta);
-          },
-          error: function(xhr, status, error) {
-            reject(error);
-          }
-        });
-      });
-    }
+    
 
     $(document).ready(async function(e){
       debugger;
 
-      let parametros = new URLSearchParams(window.location.search);
-
-      // Obtém o valor do parâmetro "id"
-      window.recebe_id_kit = parametros.get("id");
-
-      window.recebe_acao = parametros.get("acao");
-
-      // Confirma se veio o parâmetro
-      if (window.recebe_id_kit) {
-        console.log("ID recebido:", window.recebe_id_kit);
-
-        window.kit_tipo_exame = await requisitarExameKITEspecifico(window.recebe_id_kit);
-        window.kit_empresa = await requisitarEmpresaKITEspecifico(window.kit_tipo_exame.empresa_id);
-        window.kit_clinica = await requisitarClinicaKITEspecifico(window.kit_tipo_exame.clinica_id);
-        window.kit_pessoa = await requisitarPessoaKITEspecifico(window.kit_tipo_exame.pessoa_id);
-        window.kit_cargo = await requisitarCargoKITEspecifico(window.kit_tipo_exame.cargo_id);
-        window.kit_medico_coordenador = await requisitarMedicoCoordenadorKITEspecifico(window.kit_tipo_exame.medico_coordenador_id);
-        window.kit_medico_examinador = await requisitarMedicoExaminadorKITEspecifico(window.kit_tipo_exame.medico_clinica_id);
-        if(window.kit_tipo_exame)
-        {
-          repopular_tipo_exame();
-          function repopular_tipo_exame() {
-            debugger;
-            const examCards = document.querySelectorAll('.exam-card');
-            const tipoExameSelecionado = window.kit_tipo_exame?.tipo_exame;
-
-            if (!examCards.length) {
-              console.warn('Nenhum card de exame encontrado.');
-              return;
-            }
-
-            if (!tipoExameSelecionado) {
-              console.warn('Nenhum tipo de exame encontrado em window.kit_tipo_exame.');
-              return;
-            }
-
-            // Marca apenas o tipo de exame que já foi salvo no kit
-            examCards.forEach(card => {
-              const tipo = card.dataset.exam;
-
-              if (tipo === tipoExameSelecionado) {
-                card.classList.add('active'); // Destaca visualmente o card
-                console.log('Exame repopulado (marcado):', tipo);
-              } else {
-                card.classList.remove('active');
-              }
-        });
-          }
-
-        }
-      } else {
-        console.log("Nenhum parâmetro 'id' foi recebido.");
-      }
+      
 
 
 
