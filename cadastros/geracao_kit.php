@@ -2371,6 +2371,67 @@ function repopular_dados_motorista() {
   }
 }
 
+  function repopular_medico_coordenador() {
+    debugger;
+    let tipo = null;
+    let dados = null;
+
+    // 🔹 Verifica qual variável global possui valor
+    if (window.kit_medico_coordenador && Object.keys(window.kit_medico_coordenador).length > 0) {
+      tipo = 'coordenador';
+      dados = window.kit_medico_coordenador;
+    } else if (window.kit_medico_examinador && Object.keys(window.kit_medico_examinador).length > 0) {
+      tipo = 'medico';
+      dados = window.kit_medico_examinador;
+    } else {
+      console.warn('Nenhum dado encontrado para médico coordenador ou examinador.');
+      return;
+    }
+
+    // 🔹 Define qual container será atualizado
+    const resId = tipo === 'coordenador' ? 'resultadoCoordenador' : 'resultadoMedico';
+    const container = document.getElementById(resId);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // 🔹 Se não houver nome, interrompe
+    if (!dados.nome) return;
+
+    // 🔹 Cria o chip visual com os dados
+    const chip = document.createElement('div');
+    chip.style.display = 'inline-flex';
+    chip.style.alignItems = 'center';
+    chip.style.gap = '8px';
+    chip.style.background = '#e2e8f0';
+    chip.style.color = '#0f172a';
+    chip.style.borderRadius = '999px';
+    chip.style.padding = '6px 10px';
+    chip.style.marginTop = '6px';
+    chip.style.fontSize = '14px';
+
+    const cpfHtml = dados.cpf
+      ? `<small style="color:#334155;opacity:.8; margin-left:6px;">CPF: ${dados.cpf}</small>`
+      : '';
+
+    chip.innerHTML = `<i class="fas fa-user-md" style="color:#2563eb"></i> <span>${dados.nome}</span>${cpfHtml}`;
+
+    // 🔹 Botão de remoção
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Remover');
+    btn.style.border = 'none';
+    btn.style.background = 'transparent';
+    btn.style.cursor = 'pointer';
+    btn.style.color = '#334155';
+    btn.innerHTML = '<i class="fas fa-times"></i>';
+    btn.addEventListener('click', () => removeProfissional(tipo));
+
+    chip.appendChild(btn);
+    container.appendChild(chip);
+  }
+
+
 
 
 
@@ -2397,6 +2458,8 @@ function repopular_dados_motorista() {
         setTimeout(() => {
           try { bindMedicosInputsOnce(); } catch (e) { /* noop */ }
           try { applyMedicosStateToUI(); } catch (e) { /* noop */ }
+          // 🔹 Chama depois que o estado foi aplicado
+          try { repopular_medico_coordenador(); } catch (err) { /* noop */ }
         }, 50);
       }
     });
@@ -5501,6 +5564,24 @@ tipoContaInputs.forEach(input => {
       });
     }
 
+    function requisitarMedicoCoordenadorKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_medico_coordenador_kit",valor_id_medico_coordenador_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     $(document).ready(async function(e){
       debugger;
 
@@ -5520,6 +5601,7 @@ tipoContaInputs.forEach(input => {
         window.kit_clinica = await requisitarClinicaKITEspecifico(window.kit_tipo_exame.clinica_id);
         window.kit_pessoa = await requisitarPessoaKITEspecifico(window.kit_tipo_exame.pessoa_id);
         window.kit_cargo = await requisitarCargoKITEspecifico(window.kit_tipo_exame.cargo_id);
+        window.kit_medico_coordenador = await requisitarMedicoCoordenadorKITEspecifico(window.kit_tipo_exame.medico_coordenador_id);
         if(window.kit_tipo_exame)
         {
           repopular_tipo_exame();

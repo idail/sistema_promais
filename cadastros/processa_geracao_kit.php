@@ -994,6 +994,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_cargo->execute();
         $resultado_busca_cargo = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_cargo);
+    }else if($recebe_processo_geracao_kit === "buscar_medico_coordenador_kit")
+    {
+        $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+        $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+        $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador",$_GET["valor_id_medico_coordenador_kit"]);
+        $comando_busca_medico_coordenador->execute();
+        $resultado_busca_medico_coordenador = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_medico_coordenador);
     }
 }
 ?>
