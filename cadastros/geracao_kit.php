@@ -3345,7 +3345,6 @@ function repopularDetalhesRiscosSelecionados() {
 
 async function repopular_treinamentos() {
   debugger;
-
   try {
     // 1️⃣ Busca todos os treinamentos disponíveis
     const response = await buscar_treinamentos();
@@ -3382,17 +3381,13 @@ async function repopular_treinamentos() {
     // Cria o HTML de todos os treinamentos
     const htmlTreinamentos = todosTreinamentos.map(t => `
       <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
-        <input type="checkbox" class="chkTreinamento" value="${t.
-codigo_treinamento_capacitacao
-}" 
+        <input type="checkbox" class="chkTreinamento" value="${t.codigo_treinamento_capacitacao}"
                data-nome="${t.nome}" 
                data-valor="${t.valor}" 
                style="margin-right: 10px; cursor: pointer;">
         <div style="flex: 1; cursor: pointer;">
           <div style="font-weight: 500;">${t.nome}</div>
-          <div style="font-size: 12px; color: #6c757d;">Código: ${t.
-codigo_treinamento_capacitacao
-}</div>
+          <div style="font-size: 12px; color: #6c757d;">Código: ${t.codigo_treinamento_capacitacao}</div>
         </div>
       </div>
     `).join('');
@@ -3409,30 +3404,131 @@ codigo_treinamento_capacitacao
       treinamentosMarcados = [];
     }
 
-    setTimeout(() => marcarTreinamentosSalvos(treinamentosMarcados, listaTreinamentos), 0);
+    // Aguarda a renderização do DOM antes de marcar
+    await new Promise(resolve => requestAnimationFrame(resolve));
 
+    // Marca e espera o término
+    await marcarTreinamentosSalvos(treinamentosMarcados, listaTreinamentos);
+
+    console.log("✅ Treinamentos renderizados e marcados corretamente.");
+
+    return true; // sinaliza que terminou
   } catch (error) {
     console.error("Erro ao repopular treinamentos:", error);
+    throw error;
   }
 }
 
-function marcarTreinamentosSalvos(treinamentosMarcados, listaTreinamentos) {
-  const marcar = () => {
-    treinamentosMarcados.forEach(t => {
-      const checkbox = listaTreinamentos.querySelector(`input[type="checkbox"][value="${t.codigo}"]`);
-      if (checkbox) checkbox.checked = true;
-    });
-  };
 
-  // Marca imediatamente
-  marcar();
+async function marcarTreinamentosSalvos(treinamentosMarcados, listaTreinamentos) {
+  if (!Array.isArray(treinamentosMarcados) || treinamentosMarcados.length === 0) return;
 
-  // Reforça a marcação após possível re-render
-  setTimeout(marcar, 200);
+  // Usa Promise para aguardar até que a marcação realmente termine
+  await new Promise(resolve => {
+    const marcar = () => {
+      treinamentosMarcados.forEach(t => {
+        const checkbox = listaTreinamentos.querySelector(`input[type="checkbox"][value="${t.codigo}"]`);
+        if (checkbox) checkbox.checked = true;
+      });
+    };
+
+    marcar();
+    // Faz uma segunda verificação 200ms depois e resolve
+    setTimeout(() => {
+      marcar();
+      resolve(true);
+    }, 200);
+  });
 }
 
 
 
+async function repopular_treinamentos_selecionados() {
+  try {
+    debugger;
+    const container = document.getElementById('treinamentosSelecionados');
+    const listaTreinamentos = document.getElementById('listaTreinamentos');
+
+    if (!container) {
+      console.warn('Container de treinamentos não encontrado.');
+      return;
+    }
+
+    // 🔹 Converte JSON string em array, se necessário
+    if (typeof window.treinamentos === 'string') {
+      try {
+        window.treinamentos = JSON.parse(window.treinamentos);
+      } catch (err) {
+        console.warn('Falha ao converter window.treinamentos:', err);
+        window.treinamentos = [];
+      }
+    }
+
+    // 🔹 Caso não haja treinamentos
+    if (!Array.isArray(window.treinamentos) || window.treinamentos.length === 0) {
+      container.innerHTML = `
+        <div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
+          Nenhum treinamento selecionado
+        </div>`;
+      window.fatTotalTreinamentos = 0;
+      if (typeof fatAtualizarTotais === 'function') fatAtualizarTotais();
+      return;
+    }
+
+    // 🔹 Marca os checkboxes e monta o HTML
+    let html = '';
+    let total = 0;
+
+    for (const t of window.treinamentos) {
+      const codigo = String(t.codigo);
+      const nome = t.descricao || `Treinamento ${codigo}`;
+      const valorStr = t.valor || '0';
+      const valor = parseFloat(valorStr.replace('.', '').replace(',', '.')) || 0;
+      total += valor;
+
+      // Marca o checkbox correspondente (se existir)
+      const checkbox = listaTreinamentos?.querySelector(`input[type="checkbox"][value="${codigo}"]`);
+      if (checkbox) {
+        checkbox.checked = true;
+        checkbox.dataset.nome = nome;
+        checkbox.dataset.valor = valorStr;
+      }
+
+      // Monta o HTML de exibição
+      html += `
+        <div class="treinamento-selecionado" 
+             style="padding: 8px 0; border-bottom: 1px solid #e9ecef; display: flex; 
+                    align-items: center; justify-content: space-between; gap: 8px;">
+          <div>
+            <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${nome}</div>
+            <div style="font-size: 12px; color: #6c757d;">Código: ${codigo}</div>
+          </div>
+          <button type="button" title="Remover" data-acao="remover-treinamento" data-codigo="${codigo}" 
+                  style="border: none; background: transparent; color: #dc3545; cursor: pointer; padding: 4px;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>`;
+    }
+
+    // 🔹 Aguarda um tick de renderização antes de atualizar o DOM (garante exibição fluida)
+    await new Promise(requestAnimationFrame);
+
+    // 🔹 Atualiza o container com os treinamentos
+    container.innerHTML = html;
+
+    // 🔹 Atualiza o total global
+    window.fatTotalTreinamentos = Number(total.toFixed(2));
+
+    // 🔹 Atualiza totais gerais, se a função existir
+    if (typeof fatAtualizarTotais === 'function') fatAtualizarTotais();
+
+    // 🔹 Resolve após tudo ser exibido corretamente
+    return true;
+  } catch (e) {
+    console.error("Erro ao repopular treinamentos selecionados:", e);
+    throw e;
+  }
+}
 
 
     async function updateTab(step) {
@@ -3583,7 +3679,7 @@ try {
 }
 
 // ✅ Executa novamente após 150ms para garantir atualização visual
-setTimeout(() => {
+setTimeout(async () => {
   if (typeof window.reaplicarRiscosSelecionadosUI === 'function') {
     try { window.reaplicarRiscosSelecionadosUI(); } 
     catch (e) { console.warn('Falha ao reaplicar UI de riscos:', e); }
@@ -3600,8 +3696,20 @@ setTimeout(() => {
   try { repopularDetalhesRiscosSelecionados(); } 
   catch (e) { console.warn('Falha ao repopular detalhes de riscos (timeout):', e); }
 
-  try { repopular_treinamentos(); } 
-  catch (e) { console.warn('Falha ao repopular detalhes de riscos (timeout):', e); }
+  try {
+  await repopular_treinamentos();
+  console.log("✅ Treinamentos exibidos corretamente.");
+} catch (e) {
+  console.warn("Falha ao repopular detalhes de riscos (timeout):", e);
+}
+
+
+  try {
+  await repopular_treinamentos_selecionados();
+  console.log('✅ Treinamentos repopulados com sucesso.');
+} catch (e) {
+  console.warn('Falha ao repopular detalhes de riscos (timeout):', e);
+}
 }, 150);
 
         }, 100);
