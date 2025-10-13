@@ -3343,6 +3343,95 @@ function repopularDetalhesRiscosSelecionados() {
   }
 }
 
+async function repopular_treinamentos() {
+  debugger;
+
+  try {
+    // 1️⃣ Busca todos os treinamentos disponíveis
+    const response = await buscar_treinamentos();
+
+    // Verifica se retornou algo válido
+    const todosTreinamentos = Array.isArray(response) ? response : [];
+
+    // 2️⃣ Renderiza a lista completa
+    const listaTreinamentos = document.getElementById('listaTreinamentos');
+    if (!listaTreinamentos) {
+      console.error("Elemento 'listaTreinamentos' não encontrado.");
+      return;
+    }
+
+    if (todosTreinamentos.length === 0) {
+      listaTreinamentos.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; color: #6c757d; font-style: italic; background: #fff; border-radius: 6px;">
+          <i class="fas fa-info-circle" style="margin-right: 5px; font-size: 18px;"></i>
+          <div style="margin-top: 8px;">Nenhum treinamento cadastrado</div>
+        </div>`;
+      
+      const btnAplicar = document.getElementById('btnAplicarTreinamentos');
+      if (btnAplicar) btnAplicar.style.display = 'none';
+      return;
+    }
+
+    // Mostra o botão de aplicar
+    const btnAplicar = document.getElementById('btnAplicarTreinamentos');
+    if (btnAplicar) btnAplicar.style.display = 'inline-flex';
+
+    // Limpa antes de renderizar
+    listaTreinamentos.innerHTML = '';
+
+    // Cria o HTML de todos os treinamentos
+    const htmlTreinamentos = todosTreinamentos.map(t => `
+      <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
+        <input type="checkbox" class="chkTreinamento" value="${t.
+codigo_treinamento_capacitacao
+}" 
+               data-nome="${t.nome}" 
+               data-valor="${t.valor}" 
+               style="margin-right: 10px; cursor: pointer;">
+        <div style="flex: 1; cursor: pointer;">
+          <div style="font-weight: 500;">${t.nome}</div>
+          <div style="font-size: 12px; color: #6c757d;">Código: ${t.
+codigo_treinamento_capacitacao
+}</div>
+        </div>
+      </div>
+    `).join('');
+
+    listaTreinamentos.innerHTML = htmlTreinamentos;
+
+    // 3️⃣ Marca automaticamente os treinamentos que vieram de window.treinamentos (edição)
+    let treinamentosMarcados = [];
+    try {
+      treinamentosMarcados = JSON.parse(window.treinamentos);
+      if (!Array.isArray(treinamentosMarcados)) treinamentosMarcados = [];
+    } catch (e) {
+      console.warn("window.treinamentos não é um JSON válido:", e);
+      treinamentosMarcados = [];
+    }
+
+    setTimeout(() => marcarTreinamentosSalvos(treinamentosMarcados, listaTreinamentos), 0);
+
+  } catch (error) {
+    console.error("Erro ao repopular treinamentos:", error);
+  }
+}
+
+function marcarTreinamentosSalvos(treinamentosMarcados, listaTreinamentos) {
+  const marcar = () => {
+    treinamentosMarcados.forEach(t => {
+      const checkbox = listaTreinamentos.querySelector(`input[type="checkbox"][value="${t.codigo}"]`);
+      if (checkbox) checkbox.checked = true;
+    });
+  };
+
+  // Marca imediatamente
+  marcar();
+
+  // Reforça a marcação após possível re-render
+  setTimeout(marcar, 200);
+}
+
+
 
 
 
@@ -3370,6 +3459,7 @@ function repopularDetalhesRiscosSelecionados() {
         window.kit_medico_coordenador = await requisitarMedicoCoordenadorKITEspecifico(window.kit_tipo_exame.medico_coordenador_id);
         window.kit_medico_examinador = await requisitarMedicoExaminadorKITEspecifico(window.kit_tipo_exame.medico_clinica_id);
         window.kit_riscos = window.kit_tipo_exame.riscos_selecionados;
+        window.treinamentos = window.kit_tipo_exame.treinamentos_selecionados;
         
       } else {
         console.log("Nenhum parâmetro 'id' foi recebido.");
@@ -3508,6 +3598,9 @@ setTimeout(() => {
   catch (e) { console.warn('Falha ao repopular grupos de riscos (timeout):', e); }
 
   try { repopularDetalhesRiscosSelecionados(); } 
+  catch (e) { console.warn('Falha ao repopular detalhes de riscos (timeout):', e); }
+
+  try { repopular_treinamentos(); } 
   catch (e) { console.warn('Falha ao repopular detalhes de riscos (timeout):', e); }
 }, 150);
 
@@ -11290,7 +11383,7 @@ function buscar_riscos() {
     
     // Função para gerenciar os treinamentos
     function gerenciarTreinamentos() {
-      // debugger;
+      debugger;
       // Array que irá armazenar os treinamentos
       const treinamentos = [];
       
@@ -11373,6 +11466,7 @@ function buscar_riscos() {
 
       // Renderiza a lista de treinamentos
       function renderizarTreinamentos() {
+        debugger;
         if (treinamentos.length === 0) {
           listaTreinamentos.innerHTML = `
             <div style="text-align: center; padding: 40px 20px; color: #6c757d; font-style: italic; background: #fff; border-radius: 6px;">
@@ -11544,6 +11638,7 @@ function buscar_riscos() {
 
       // Reconstrói o painel da direita e atualiza o total global com base no estado ATUAL (checkboxes marcados)
       function rebuildSelecionadosUIFromChecked() {
+        debugger;
         // Evita reentrância (fatAtualizarTotais pode disparar eventos que voltam aqui)
         if (window._rebuildTreinamentosRunning) return;
         window._rebuildTreinamentosRunning = true;
