@@ -3530,6 +3530,63 @@ async function repopular_treinamentos_selecionados() {
   }
 }
 
+    function marcarDropdownsLaudo() {
+  // Mapa entre o label e a variável global correspondente
+  const mapaValores = {
+    'insalubridade': window.insalubridade,
+    'porcentagem': window.porcentagem,
+    'periculosidade 30%': window.periculosidade,
+    'aposent. especial': window.aposent_especial,
+    'agente nocivo': window.agente_nocivo,
+    'ocorrência gfip': window.ocorrencia_gfip
+  };
+
+  document.querySelectorAll('.laudo-dropdown-wrapper').forEach(wrapper => {
+    const label = wrapper.querySelector('label');
+    const dropdown = wrapper.querySelector('.laudo-dropdown');
+    if (!label || !dropdown) return;
+
+    const chave = label.textContent.trim().toLowerCase();
+    const valorBruto = mapaValores[chave];
+    if (!valorBruto) return;
+
+    const valor = valorBruto.toString().trim().toLowerCase();
+
+    const selectedText = dropdown.querySelector('.selected-text');
+    const options = dropdown.querySelectorAll('.dropdown-option');
+    let encontrou = false;
+
+    options.forEach(option => {
+      const textoOption = option.textContent.trim().toLowerCase();
+
+      // Comparação direta (ex: "10%", "sim", "01", etc)
+      if (textoOption === valor) {
+        selectedText.textContent = option.textContent.trim();
+        encontrou = true;
+
+        // Garante que só essa fique ativa
+        options.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+      }
+    });
+
+    // Se não encontrar, mantém como "Selecione"
+    if (!encontrou) {
+      selectedText.textContent = 'Selecione';
+      options.forEach(opt => opt.classList.remove('active'));
+    }
+  });
+}
+
+// Exemplo de uso:
+// window.insalubridade = "Sim";
+// window.porcentagem = "20%";
+// window.periculosidade = "Não";
+// window.aposent_especial = "Sim";
+// window.agente_nocivo = "Ruído";
+// window.ocorrencia_gfip = "01";
+// marcarDropdownsLaudo();
+
 
     async function updateTab(step) {
       debugger;
@@ -3556,7 +3613,15 @@ async function repopular_treinamentos_selecionados() {
         window.kit_medico_examinador = await requisitarMedicoExaminadorKITEspecifico(window.kit_tipo_exame.medico_clinica_id);
         window.kit_riscos = window.kit_tipo_exame.riscos_selecionados;
         window.treinamentos = window.kit_tipo_exame.treinamentos_selecionados;
-        
+        window.insalubridade = window.kit_tipo_exame.insalubridade;
+        window.porcentagem = window.kit_tipo_exame.porcentagem;
+        window.periculosidade = window.kit_tipo_exame.periculosidade;
+        window.aposent_especial = window.kit_tipo_exame.aposentado_especial;
+        window.agente_nocivo = window.kit_tipo_exame.agente_nocivo;
+        window.ocorrencia_gfip = window.kit_tipo_exame.ocorrencia_gfip;
+
+        console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
+         + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
       } else {
         console.log("Nenhum parâmetro 'id' foi recebido.");
       }
@@ -3699,6 +3764,8 @@ setTimeout(async () => {
   try {
   await repopular_treinamentos();
   console.log("✅ Treinamentos exibidos corretamente.");
+
+  
 } catch (e) {
   console.warn("Falha ao repopular detalhes de riscos (timeout):", e);
 }
@@ -3706,6 +3773,13 @@ setTimeout(async () => {
 
   try {
   await repopular_treinamentos_selecionados();
+  console.log('✅ Treinamentos repopulados com sucesso.');
+} catch (e) {
+  console.warn('Falha ao repopular detalhes de riscos (timeout):', e);
+}
+
+try {
+  marcarDropdownsLaudo();
   console.log('✅ Treinamentos repopulados com sucesso.');
 } catch (e) {
   console.warn('Falha ao repopular detalhes de riscos (timeout):', e);
