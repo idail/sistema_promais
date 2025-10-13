@@ -6295,7 +6295,7 @@ th, td {
   height: 40px;
   border-bottom: 1px solid #000;
   display: block;
-  margin: 0 auto 4px auto;
+  margin: 0 auto -9px auto;
 }
 
 /* 🔹 Espaçamento mínimo entre blocos */
@@ -6414,72 +6414,72 @@ table.no-break strong {
             </table>
 
             <!-- Tabela de Meatoscopia -->
-<table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
-  <tr style="font-weight:bold; background-color:#f2f2f2;">
-    <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
-  </tr>
-  <tr>
-    <!-- OD -->
-    <td style="width:50%; border:1px solid #000; padding:6px;">
-      <strong>OD</strong><br>
-      <label><input type="checkbox" name="od_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="od_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="od_total" /> Obstrução Total</label>
-    </td>
+            <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <tr style="font-weight:bold; background-color:#f2f2f2;">
+                <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
+            </tr>
+            <tr>
+                <!-- OD -->
+                <td style="width:50%; border:1px solid #000; padding:6px;">
+                <strong>OD</strong><br>
+                <label><input type="checkbox" name="od_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="od_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="od_total" /> Obstrução Total</label>
+                </td>
 
-    <!-- OE -->
-    <td style="width:50%; border:1px solid #000; padding:6px;">
-      <strong>OE</strong><br>
-      <label><input type="checkbox" name="oe_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="oe_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
-      <label><input type="checkbox" name="oe_total" /> Obstrução Total</label>
-    </td>
-  </tr>
-</table>
+                <!-- OE -->
+                <td style="width:50%; border:1px solid #000; padding:6px;">
+                <strong>OE</strong><br>
+                <label><input type="checkbox" name="oe_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="oe_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="oe_total" /> Obstrução Total</label>
+                </td>
+            </tr>
+            </table>
 
             <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
-    <tr>
-        <!-- Orelha Direita -->
-        <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
-            <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-            <!-- Ajuste nas imagens dos audiogramas -->
-            <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
-    
-            <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
-                <tr>
-                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
-                        Média: __________________________________ dB
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
-                        Masc. VO: Tipo: __________________________________
-                    </td>
-                </tr>
-            </table>
-        </td>
+            <tr>
+                <!-- Orelha Direita -->
+                <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+                    <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
+                    <!-- Ajuste nas imagens dos audiogramas -->
+                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+            
+                    <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Média: __________________________________ dB
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Masc. VO: Tipo: __________________________________
+                            </td>
+                        </tr>
+                    </table>
+                </td>
 
-        <!-- Orelha Esquerda -->
-        <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
-            <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
-            <!-- Ajuste nas imagens dos audiogramas -->
-            <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
-    
-            <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
-                <tr>
-                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
-                        Média: __________________________________ dB
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
-                        Masc. VA: Tipo: __________________________________
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+                <!-- Orelha Esquerda -->
+                <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+                    <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
+                    <!-- Ajuste nas imagens dos audiogramas -->
+                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+            
+                    <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Média: __________________________________ dB
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Masc. VA: Tipo: __________________________________
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
 <!-- SEÇÃO LOGOAUDIOMETRIA -->
 <table style="width:100%; border-collapse:collapse; margin-top:8px;">
@@ -6497,12 +6497,14 @@ table.no-break strong {
                 </tr>
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
-                        <strong>OD:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dB
+                        <strong>OD:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
-                        <strong>OE:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dB
+                        <strong>OE:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
             </table>
@@ -6521,11 +6523,13 @@ table.no-break strong {
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; width:10%; text-align:center; vertical-align:middle;"><strong>OD</strong></td>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; width:15%; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
-                    <td style="border:1px solid #000; padding:6px; width:40%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px; width:50%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px; width:35%;">Monossílabos</td>
                 </tr>
                 <tr>
-                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
                 </tr>
 
@@ -6533,11 +6537,13 @@ table.no-break strong {
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
-                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
                 <tr>
-                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
                 </tr>
             </table>
@@ -6557,12 +6563,14 @@ table.no-break strong {
                 </tr>
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
-                        <strong>OD:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dB
+                        <strong>OD:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
-                        <strong>OE:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dB
+                        <strong>OE:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
             </table>
@@ -6613,7 +6621,7 @@ table.no-break strong {
                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada Severa | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Severa | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Severa <br> | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Profunda | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
             </td>
         </tr>
@@ -6629,10 +6637,16 @@ table.no-break strong {
                 </tr>
         <tr>
                     <!-- Espaço para assinatura -->
-                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
-                       Assinatura<br>Fonoaudiologo/Médico Examinador <br> ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
+                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
+                    ' . $html_assinatura . '<br>
+                    <span style="display:block; margin-top:-4px;">Assinatura</span>
+                    <span style="display:block;margin-top:-1px;">Fonoaudiólogo/Médico Examinador</span>
+                    <span style="display:block;">
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — 
+                        CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
+                    </span>
                     </td>
+
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                                     <br>
                                     
