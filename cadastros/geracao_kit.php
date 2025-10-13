@@ -3587,6 +3587,79 @@ async function repopular_treinamentos_selecionados() {
 // window.ocorrencia_gfip = "01";
 // marcarDropdownsLaudo();
 
+// Função para repopular os dropdowns e o resumo do laudo
+function repopular_laudos() {
+  debugger;
+  const resumoContainer = document.getElementById('resumo-laudo');
+  if (!resumoContainer) return;
+
+  // Mapeia os valores vindos das variáveis globais
+  const valoresGlobais = {
+    'Insalubridade': window.insalubridade,
+    'Porcentagem': window.porcentagem,
+    'Periculosidade 30%': window.periculosidade,
+    'Aposent. Especial': window.aposent_especial,
+    'Agente Nocivo': window.agente_nocivo,
+    'Ocorrência GFIP': window.ocorrencia_gfip
+  };
+
+  const itensSelecionados = [];
+
+  // Atualiza cada dropdown conforme o valor global
+  document.querySelectorAll('.laudo-dropdown-wrapper').forEach(wrapper => {
+    const labelEl = wrapper.querySelector('label');
+    const dropdown = wrapper.querySelector('.laudo-dropdown');
+    if (!labelEl || !dropdown) return;
+
+    const label = labelEl.textContent.trim();
+    const valor = valoresGlobais[label];
+
+    // Se houver valor salvo, ajusta o dropdown
+    if (valor && valor !== '' && valor !== 'Selecione') {
+      const selectedText = dropdown.querySelector('.selected-text');
+      selectedText.textContent = valor;
+
+      // Marca visualmente a opção selecionada
+      dropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+        if (opt.textContent.trim() === valor) {
+          opt.classList.add('selected');
+        } else {
+          opt.classList.remove('selected');
+        }
+      });
+
+      // Adiciona ao resumo
+      itensSelecionados.push({
+        label: label,
+        value: valor
+      });
+    }
+  });
+
+  // Limpa o resumo atual
+  resumoContainer.innerHTML = '';
+
+  // Gera o HTML do resumo
+  itensSelecionados.forEach(item => {
+    const itemElement = document.createElement('div');
+    itemElement.className = 'resumo-item';
+
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'label';
+    labelSpan.textContent = `${item.label}:`;
+
+    const valueSpan = document.createElement('span');
+    valueSpan.className = 'value';
+    valueSpan.textContent = item.value;
+
+    itemElement.appendChild(labelSpan);
+    itemElement.appendChild(valueSpan);
+    resumoContainer.appendChild(itemElement);
+  });
+
+  console.log('Laudos repopulados:', itensSelecionados);
+}
+
 
     async function updateTab(step) {
       debugger;
@@ -3784,7 +3857,17 @@ try {
 } catch (e) {
   console.warn('Falha ao repopular detalhes de riscos (timeout):', e);
 }
+
+try {
+  repopular_laudos();
+
+  console.log('✅ Treinamentos repopulados com sucesso.');
+} catch (e) {
+  console.warn('Falha ao repopular detalhes de riscos (timeout):', e);
+}
 }, 150);
+
+
 
         }, 100);
 
@@ -11100,6 +11183,7 @@ function buscar_riscos() {
 
     // Função para atualizar o resumo do laudo
     function atualizarResumoLaudo() {
+      debugger;
       const resumoContainer = document.getElementById('resumo-laudo');
       if (!resumoContainer) return;
       
