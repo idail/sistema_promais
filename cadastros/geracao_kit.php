@@ -2123,8 +2123,8 @@ function repopular_dados_clinica(tipo, inputId, resultadoId, chave) {
 }
 
 let resposta_empresa_pessoa = null;
-    let resposta_clinica_pessoa = null;
-    let resposta_cargo_pessoa = null;
+let resposta_clinica_pessoa = null;
+window.resposta_cargo_pessoa = null;
 
 async function repopular_dados_pessoa() {
   debugger;
@@ -2151,8 +2151,8 @@ async function repopular_dados_pessoa() {
       resposta_clinica_pessoa = await requisitarClinicaPessoa(window.kit_tipo_exame.clinica_id);
     }
 
-    if(window.kit_tipo_exame.cargo_id){
-      resposta_cargo_pessoa = await requisitarDadosCargo(window.kit_tipo_exame.cargo_id);
+    if(window.kit_tipo_exame.pessoa_id){
+      window.resposta_cargo_pessoa = await requisitarDadosCargo(window.kit_tipo_exame.pessoa_id);
     }
 
     // 🔹 Monta estrutura de kits por CPF
@@ -2198,10 +2198,10 @@ async function repopular_dados_pessoa() {
               <i class="far fa-id-card" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
               <span>${window.kit_pessoa.cpf ? window.kit_pessoa.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : 'CPF não informado'}</span>
             </div>
-            ${resposta_cargo_pessoa.titulo_cargo ? `
+            ${window.resposta_cargo_pessoa.titulo_cargo ? `
             <div style="display: flex; align-items: center; font-size: 0.875rem; color: #6b7280;">
               <i class="fas fa-briefcase" style="margin-right: 0.375rem; color: #9ca3af; width: 1rem; text-align: center;"></i>
-              <span>${resposta_cargo_pessoa.titulo_cargo}</span>
+              <span>${window.resposta_cargo_pessoa.titulo_cargo}</span>
             </div>` : ''}
           </div>
         </div>
@@ -2243,7 +2243,7 @@ async function repopular_dados_pessoa() {
 
               return `
                 <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease;"
-                     onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${window.kit_pessoa.nome ? window.kit_pessoa.nome.replace(/'/g, "\\'") : 'Colaborador'}','${resposta_cargo_pessoa.titulo_cargo}')">
+                     onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${window.kit_pessoa.nome ? window.kit_pessoa.nome.replace(/'/g, "\\'") : 'Colaborador'}','${window.resposta_cargo_pessoa.titulo_cargo}')">
                   <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div style="flex: 1; min-width: 0;">
                       <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
@@ -2503,7 +2503,7 @@ function renderAssinatura_examinador(pessoa) {
         // ✅ Repopula o tipo de exame gravado anteriormente
         try { repopular_empresa(); } catch (err) { console.error(err); }
         try { repopular_dados_clinica("clinicas","inputClinica","resultClinica","nome"); } catch (err) { console.error(err); }
-        try { repopular_dados_pessoa(); } catch (err) { console.error(err); }
+        try { if(window.kit_tipo_exame){ repopular_dados_pessoa(); } } catch (err) { console.error(err); }
         try { repopular_dados_cargo(); } catch (err) { console.error(err); }
         try { repopular_dados_motorista(); } catch (err) { console.error(err); }
       }
@@ -3114,6 +3114,24 @@ function requisitarExameKITEspecifico(codigo_kit) {
           method: "GET",
           dataType: "json",
           data: { processo_geracao_kit: "busca_medico_examinador_kit",valor_id_medico_examinador_kit: codigo_kit},
+          success: function(resposta) {
+            console.log("KITs retornados:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    function requisitarDadosPessoaKITEspecifico(codigo_kit) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "busca_pessoa_kit",valor_id_pessoa_kit: codigo_kit},
           success: function(resposta) {
             console.log("KITs retornados:", resposta);
             resolve(resposta);
@@ -6775,7 +6793,7 @@ function reaplicarGruposSelecionadosUI() {
     }
 
     if(recebe_codigo_cargo){
-      resposta_cargo_pessoa = await requisitarDadosCargo(recebe_codigo_cargo);
+      resposta_cargo_pessoa = await requisitarDadosCargo(resposta_pessoa.id);
     }
 
     console.log("Resposta final de kits:", resposta_kits);
@@ -8056,7 +8074,7 @@ modal.innerHTML = `
           url: "cadastros/processa_geracao_kit.php",
           method: "GET",
           dataType: "json",
-          data: { processo_geracao_kit: "buscar_cargo",valor_id_cargo: codigo_cargo},
+          data: { processo_geracao_kit: "buscar_cargo_kit",valor_id_cargo_kit: codigo_cargo},
           success: function(resposta) {
             console.log("Cargo retornado:", resposta);
             resolve(resposta);
@@ -8129,7 +8147,7 @@ modal.innerHTML = `
       debugger;
   try {
     let recebe_kit = await requisitarDadosKITEspecifico(id);
-    let recebe_cargo = await requisitarDadosCargo(resposta_pessoa.id);
+    //let recebe_cargo = await requisitarDadosCargo(resposta_pessoa.id);
     let recebe_medico_coordenador = await requisitarMedicoCoordenador(recebe_kit.medico_coordenador_id);
     let recebe_medico_examinador = await requisitarMedicoExaminador(recebe_kit.medico_clinica_id);
     let recebe_produto_kit = await requisitarProdutos(recebe_kit.id);
@@ -8143,7 +8161,7 @@ modal.innerHTML = `
       clinica: clinica ?? "Não informada",
       colaborador: colaborador ?? "Não informado",
       data: data ?? "Não informada",
-      cargo: recebe_cargo.titulo_cargo ?? "Não informada",
+      cargo: window.resposta_cargo_pessoa.titulo_cargo ?? "Não informada",
       motorista: recebe_kit.motorista ?? "Não informado",
       medico_coordenador: recebe_medico_coordenador.nome ?? "Não informado",
       medico_examinador: recebe_medico_examinador.nome ?? "Não informado",
