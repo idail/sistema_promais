@@ -12800,6 +12800,16 @@ console.log(total); // Exemplo: "180.10"
                 <span>Resumo de Laudo</span>
               </div>
             </label>
+
+            <!-- Teste de Romberg -->
+            <label class="sm-label">
+              <input type="checkbox" class="sm-checkbox">
+              <div class="sm-card">
+                <i class="fas fa-shoe-prints"></i>
+                <span>Teste de Romberg</span>
+              </div>
+            </label>
+
             
             <!-- Faturamento -->
             <label class="sm-label">
