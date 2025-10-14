@@ -7305,7 +7305,18 @@ table.no-break strong {
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="section-title">MODALIDADE RESUMO DE LAUDO:<label>Admissional<input type="checkbox"/></label><label>Mudança de função<input type="checkbox"/></label></td>
+                    <td colspan="2" class="section-title">
+  MODALIDADE RESUMO DE LAUDO:
+  <label style="margin-left: 10px;">
+    Admissional
+    <input type="checkbox" />
+  </label>
+  <label style="margin-left: 20px;">
+    Mudança de função
+    <input type="checkbox" />
+  </label>
+</td>
+
                 </tr>
             </table>
 
@@ -7353,7 +7364,7 @@ table.no-break strong {
 
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-                <strong>Observação:</strong> Se o colaborador for contemplado com qualquer adicional de insalubridade e periculosidade permanecer com o adicional de periculosidade pois é de valor maior.
+                <strong>Observação:</strong> Na hipotese de o colabodador fazer jus, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculados sobre o salario bruto.
                 </td>
             </tr>
 
