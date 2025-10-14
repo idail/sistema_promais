@@ -3143,6 +3143,8 @@ function requisitarExameKITEspecifico(codigo_kit) {
       });
     }
 
+    
+
     // ==========================================
 // 🔹 VARIÁVEIS GLOBAIS (SEM CONFLITO)
 // ==========================================
@@ -3697,9 +3699,12 @@ function repopular_laudos() {
         window.ocorrencia_gfip = window.kit_tipo_exame.ocorrencia_gfip;
         window.aptidoes = window.kit_tipo_exame.aptidoes_selecionadas;
         window.exames = window.kit_tipo_exame.exames_selecionados;
+        window.produtos = await requisitarProdutos(window.kit_tipo_exame.id);
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
+
+         console.log(window.produtos);
       } else {
         console.log("Nenhum parâmetro 'id' foi recebido.");
       }
@@ -4053,6 +4058,119 @@ try {
 
         carregarAsChavesPIX();
         carregarAgenciasContas();
+        repopular_produtos();
+
+        // Função para repopular produtos apenas para exibição
+function repopular_produtos() {
+  debugger;
+  const container = document.getElementById('fat-lista-produtos');
+  if (!container) {
+    console.error('Container de produtos não encontrado');
+    return;
+  }
+
+  // Limpa a lista antes de repopular
+  container.innerHTML = '';
+
+  // Aplica o CSS se ainda não tiver sido aplicado
+  if (!document.getElementById('fat-styles')) {
+    const style = document.createElement('style');
+    style.id = 'fat-styles';
+    style.textContent = `
+      .fat-produto-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 15px;
+        color: #2d3748;
+        font-size: 14px;
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+        background-color: white;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      }
+      .fat-produto-item:hover {
+        background-color: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+      .fat-produto-item > div {
+        padding: 4px 8px;
+      }
+      .fat-produto-descricao {
+        flex: 3;
+        font-weight: 500;
+        color: #1a365d;
+      }
+      .fat-produto-quantidade, .fat-produto-valor-unit, .fat-produto-total {
+        flex: 1;
+        text-align: center;
+        color: #4a5568;
+      }
+      .fat-produto-total {
+        font-weight: 600;
+        color: #2b6cb0;
+      }
+      .fat-produto-acoes {
+        flex: 0.8;
+        text-align: center;
+      }
+      .btn-remover {
+        background-color: #fff;
+        color: #e53e3e;
+        border: 1px solid #fed7d7;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s ease;
+      }
+      .btn-remover:hover {
+        background-color: #feb2b2;
+        color: #9b2c2c;
+        transform: translateY(-1px);
+      }
+      .btn-remover i {
+        font-size: 14px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  if (!Array.isArray(window.produtos) || window.produtos.length === 0) {
+    container.innerHTML = `<div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
+      Nenhum produto disponível
+    </div>`;
+    return;
+  }
+
+  // Percorre os produtos e adiciona na lista
+  window.produtos.forEach(prod => {
+    const valorTotal = prod.quantidade * prod.valorunit;
+    const linha = document.createElement('div');
+    linha.className = 'fat-produto-item';
+    linha.innerHTML = [
+      `<div class="fat-produto-descricao">${prod.nome}</div>`,
+      `<div class="fat-produto-quantidade">${prod.quantidade}</div>`,
+      `<div class="fat-produto-valor-unit">${fatFormatter.format(prod.valor)}</div>`,
+      `<div class="fat-produto-total">${fatFormatter.format(prod.valor)}</div>`,
+      '<div class="fat-produto-acoes">',
+      `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${prod.id}, ${prod.valor})">`,
+      '    <i class="fas fa-trash-alt"></i> Remover',
+      '  </button>',
+      '</div>'
+    ].join('');
+    container.appendChild(linha);
+  });
+}
+
+
 
         function carregarAsChavesPIX()
         {
