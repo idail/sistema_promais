@@ -8091,23 +8091,23 @@ table.no-break strong {
             <table style="width:100%; border:none; font-size:13px;">
                 <tr>
                     <td style="width:50%; vertical-align:top;">
-                        TONTEIRA ( )<br>
-                        ZUMBIDO ( )<br>
-                        VERTIGEM ( )<br>
-                        NÁUSEAS ( )<br>
-                        VÔMITOS ( )<br>
-                        QUEDAS ( )<br>
-                        ALGIA GUSTATIVA ( )<br>
-                        SUDORESE ( )
+                        TONTEIRA (&nbsp;&nbsp;&nbsp )<br>
+                        ZUMBIDO (&nbsp;&nbsp;&nbsp )<br>
+                        VERTIGEM (&nbsp;&nbsp;&nbsp )<br>
+                        NÁUSEAS (&nbsp;&nbsp;&nbsp )<br>
+                        VÔMITOS (&nbsp;&nbsp;&nbsp )<br>
+                        QUEDAS (&nbsp;&nbsp;&nbsp )<br>
+                        ALGIA GUSTATIVA (&nbsp;&nbsp;&nbsp )<br>
+                        SUDORESE (&nbsp;&nbsp;&nbsp )
                     </td>
                     <td style="width:50%; vertical-align:top;">
-                        SENSAÇÃO DE PLENITUDE AURICULAR ( )<br>
-                        HIPERSENSIBILIDADE NO COURO CABELUDO ( )<br>
-                        CEFALÉIAS PERIÓDICAS ( )<br>
-                        DORES FACIAIS ( )<br>
-                        TAQUICARDIA ( )<br>
-                        HIPERTENSÃO ( )<br>
-                        PESO NA NUCA ( )
+                        SENSAÇÃO DE PLENITUDE AURICULAR (&nbsp;&nbsp;&nbsp )<br>
+                        HIPERSENSIBILIDADE NO COURO CABELUDO (&nbsp;&nbsp;&nbsp )<br>
+                        CEFALÉIAS PERIÓDICAS (&nbsp;&nbsp;&nbsp )<br>
+                        DORES FACIAIS (&nbsp;&nbsp;&nbsp )<br>
+                        TAQUICARDIA (&nbsp;&nbsp;&nbsp )<br>
+                        HIPERTENSÃO (&nbsp;&nbsp;&nbsp )<br>
+                        PESO NA NUCA (&nbsp;&nbsp;&nbsp )
                     </td>
                 </tr>
             </table>
@@ -8125,19 +8125,19 @@ table.no-break strong {
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            * ROMBERG: ( ) Positivo - Paciente balança &nbsp;&nbsp;&nbsp; ( ) Sem alteração<br>
+            * ROMBERG: (&nbsp;&nbsp;&nbsp ) Positivo - Paciente balança &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Sem alteração<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            * APOIO MONOPODAL DE UEMURA: ( ) Normal &nbsp;&nbsp;&nbsp; ( ) Alterado<br>
+            * APOIO MONOPODAL DE UEMURA: (&nbsp;&nbsp;&nbsp ) Normal &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Alterado<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            * BRAÇOS ESTENDIDOS: ( ) Normal &nbsp;&nbsp;&nbsp; ( ) Alterado<br>
+            * BRAÇOS ESTENDIDOS: (&nbsp;&nbsp;&nbsp ) Normal &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Alterado<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
@@ -8150,7 +8150,7 @@ table.no-break strong {
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            * TESTE DE BABINSKI-WEIL: ( ) Sem desvios &nbsp;&nbsp;&nbsp; ( ) Desvio da marcha para ____________ &nbsp;&nbsp;&nbsp; ( ) Marcha Ebriosa<br>
+            * TESTE DE BABINSKI-WEIL: (&nbsp;&nbsp;&nbsp ) Sem desvios &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Desvio da marcha para ____________ &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Marcha Ebriosa<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
@@ -8163,13 +8163,13 @@ table.no-break strong {
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            * ÍNDICE - ÍNDICE: ( ) Positiva &nbsp;&nbsp;&nbsp; ( ) Negativa<br>
+            * ÍNDICE - ÍNDICE: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            * ÍNDICE - NARIZ: ( ) Positiva &nbsp;&nbsp;&nbsp; ( ) Negativa<br>
+            * ÍNDICE - NARIZ: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
@@ -8182,7 +8182,7 @@ table.no-break strong {
     </tr>
     <tr>
         <td colspan="2" style="font-size:13px;">
-            ( ) Normal &nbsp;&nbsp;&nbsp; ( ) Alterado<br>
+            (&nbsp;&nbsp;&nbsp ) Normal &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Alterado<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
@@ -8191,9 +8191,12 @@ table.no-break strong {
 <!-- APTIDÃO -->
 <table>
     <tr>
+        <td colspan="2" class="section-subtitle"><strong>O COLABORADOR ESTA</strong></td>
+    </tr>
+    <tr>
         <td colspan="2" style="font-size:13px; padding-top:10px;">
-            ( ) Apto para trabalhar em altura<br>
-            ( ) Inapto para trabalhar em altura
+            <input type="checkbox"/>Apto para trabalhar em altura<br>
+            <input type="checkbox"/> Inapto para trabalhar em altura
         </td>
     </tr>
 </table>
@@ -8209,7 +8212,7 @@ table.no-break strong {
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
                     ' . $html_assinatura . '<br>
-                    <span style="display:block; margin-top:-4px;">Assinatura</span>
+                    <span style="display:block; margin-top:-16px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
                     <span style="display:block;">
                         ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — 
