@@ -3701,6 +3701,7 @@ function repopular_laudos() {
         window.exames = window.kit_tipo_exame.exames_selecionados;
         window.produtos = await requisitarProdutos(window.kit_tipo_exame.id);
         window.tipo_orcamento = window.kit_tipo_exame.tipo_orcamento;
+        window.assinatura_digital = window.kit_tipo_exame.assinatura_digital;
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
@@ -4061,6 +4062,39 @@ try {
         carregarAgenciasContas();
         repopular_produtos();
         restaurar_tipo_orcamento();
+        repopular_assinatura()
+
+
+        function repopular_assinatura() {
+    debugger;
+
+    try {
+        const checkbox = document.getElementById('requer-assinatura');
+        if (!checkbox) {
+            console.warn('Checkbox de assinatura não encontrado.');
+            return;
+        }
+
+        // Verifica se o valor global existe
+        if (typeof window.assinatura_digital !== 'undefined' && window.assinatura_digital !== null) {
+            // Converte o valor ("Sim"/"Nao") em booleano
+            const deveMarcar = String(window.assinatura_digital).trim().toLowerCase() === 'sim';
+
+            // Marca ou desmarca o checkbox conforme o valor
+            checkbox.checked = deveMarcar;
+
+            // Salva o estado atual (caso você use isso em outras funções)
+            window.assinaturaDigitalEstado = deveMarcar;
+
+            console.log('Assinatura digital repopulada:', window.assinatura_digital);
+        } else {
+            console.warn('Variável global window.assinatura_digital não possui valor definido.');
+        }
+    } catch (e) {
+        console.error('Erro ao repopular assinatura digital:', e);
+    }
+}
+
 
         function restaurar_tipo_orcamento() {
   debugger;

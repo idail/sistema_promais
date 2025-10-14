@@ -8191,12 +8191,9 @@ table.no-break strong {
 <!-- APTIDÃO -->
 <table>
     <tr>
-        <td colspan="2" class="section-subtitle"><strong>O COLABORADOR ESTA</strong></td>
-    </tr>
-    <tr>
-        <td colspan="2" style="font-size:13px; padding-top:10px;">
-            <input type="checkbox"/>Apto para trabalhar em altura<br>
-            <input type="checkbox"/> Inapto para trabalhar em altura
+        <td colspan="2" class="section-subtitle"><strong>O colaborador esta:</strong>
+        <input type="checkbox"/>Apto para trabalhar em altura&nbsp;
+        <input type="checkbox"/> Inapto para trabalhar em altura
         </td>
     </tr>
 </table>
