@@ -16051,8 +16051,12 @@ function initFatDescricaoLiveSearch(){
       
       linha.innerHTML = html;
   
+      // Limpa a lista antes de adicionar novos produtos
+      const listaProdutos = document.getElementById('fat-lista-produtos');
+      listaProdutos.innerHTML = '';
+
       // Adiciona à lista de produtos
-      document.getElementById('fat-lista-produtos').appendChild(linha);
+      listaProdutos.appendChild(linha);
 
       // Armazena no array global e sincroniza JSON
       try {
