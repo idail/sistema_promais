@@ -3700,6 +3700,7 @@ function repopular_laudos() {
         window.aptidoes = window.kit_tipo_exame.aptidoes_selecionadas;
         window.exames = window.kit_tipo_exame.exames_selecionados;
         window.produtos = await requisitarProdutos(window.kit_tipo_exame.id);
+        window.tipo_orcamento = window.kit_tipo_exame.tipo_orcamento;
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
@@ -4059,6 +4060,81 @@ try {
         carregarAsChavesPIX();
         carregarAgenciasContas();
         repopular_produtos();
+        restaurar_tipo_orcamento();
+
+        function restaurar_tipo_orcamento() {
+  debugger;
+
+  // 1) Normaliza/parseia window.tipo_orcamento para um array de strings
+  let tipos = [];
+  try {
+    if (typeof window.tipo_orcamento === 'string') {
+      tipos = JSON.parse(window.tipo_orcamento);
+    } else if (Array.isArray(window.tipo_orcamento)) {
+      tipos = window.tipo_orcamento;
+    }
+  } catch (err) {
+    console.error('Erro ao parsear window.tipo_orcamento:', err);
+    tipos = [];
+  }
+
+  // Normaliza valores (minusculo + trim) para comparação
+  const tiposNormalizados = (Array.isArray(tipos) ? tipos : []).map(t => String(t).toLowerCase().trim());
+
+  // Seleciona todos os cards
+  const cards = document.querySelectorAll('.tipo-orcamento-card');
+
+  if (!cards.length) {
+    console.warn('Nenhum .tipo-orcamento-card encontrado no DOM.');
+    return;
+  }
+
+  // Percorre cada card e decide marcar/desmarcar
+  cards.forEach(card => {
+    debugger;
+    // Tenta encontrar o checkbox relacionado (dentro do card, ou no label pai)
+    let checkbox = card.querySelector('input[type="checkbox"]');
+    if (!checkbox) {
+      const parentLabel = card.closest('label, .tipo-orcamento-label');
+      if (parentLabel) checkbox = parentLabel.querySelector('input[type="checkbox"]');
+    }
+
+    // Obtém possíveis fontes de texto/valor para comparar:
+    const spanText = card.querySelector('span')?.textContent?.trim() || '';
+    const dataValue = card.getAttribute('data-value') || card.dataset?.value || '';
+    const inputValue = checkbox?.value || '';
+
+    // Normaliza todas as fontes
+    const fontes = [spanText, dataValue, inputValue, card.textContent || '']
+      .map(s => String(s).toLowerCase().trim())
+      .filter(Boolean); // remove vazios
+
+    // Verifica se alguma fonte bate com algum tipo vindo do servidor
+    const match = fontes.some(f => tiposNormalizados.includes(f));
+
+    if (checkbox) {
+      checkbox.checked = !!match; // marca se bate, desmarca caso contrário
+    }
+
+    // Atualiza classe visual
+    if (match) card.classList.add('selected');
+    else card.classList.remove('selected');
+  });
+
+  // Se você usa uma lista global de selecionados, atualize-a também:
+  if (!window.smDocumentosSelecionadosNomes) window.smDocumentosSelecionadosNomes = [];
+  // sincroniza: coloca só os que foram marcados hoje
+  window.smDocumentosSelecionadosNomes = Array.from(document.querySelectorAll('.tipo-orcamento-card.selected'))
+    .map(c => c.querySelector('span')?.textContent?.trim() || c.getAttribute('data-value') || '')
+    .filter(Boolean);
+
+  // Chama função de atualização se existir
+  if (typeof updateSelectedList === 'function') updateSelectedList();
+}
+
+
+
+
 
         // Função para repopular produtos apenas para exibição
 function repopular_produtos() {
