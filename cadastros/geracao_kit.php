@@ -3661,6 +3661,9 @@ function repopular_laudos() {
 }
 
 
+
+
+
     async function updateTab(step) {
       debugger;
 
@@ -3692,6 +3695,8 @@ function repopular_laudos() {
         window.aposent_especial = window.kit_tipo_exame.aposentado_especial;
         window.agente_nocivo = window.kit_tipo_exame.agente_nocivo;
         window.ocorrencia_gfip = window.kit_tipo_exame.ocorrencia_gfip;
+        window.aptidoes = window.kit_tipo_exame.aptidoes_selecionadas;
+        window.exames = window.kit_tipo_exame.exames_selecionados;
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
@@ -4004,6 +4009,42 @@ try {
         console.log('Aba de aptidões selecionada, carregando aptidões extras...');
         carregar_aptidoes_extras();
         carregar_exames();
+
+  //       setTimeout(async () => {
+  //   try {
+  //     // 1️⃣ Inicializa os componentes necessários
+  //     // if (typeof initializeAptidoesExames === 'function') {
+  //     //   initializeAptidoesExames();
+  //     // }
+
+  //     // 2️⃣ Aguarda a repopulação completa das aptidões
+      
+  //       await repopular_aptidoes();
+      
+
+  //     console.log('Passo 5 concluído: Aptidões e Exames carregados');
+  //   } catch (error) {
+  //     console.error('Erro ao executar repopular_aptidoes:', error);
+  //   }
+  // }, 100);
+
+  //       setTimeout(async () => {
+  //   try {
+  //     // 1️⃣ Inicializa os componentes necessários
+  //     if (typeof initializeAptidoesExames === 'function') {
+  //       initializeAptidoesExames();
+  //     }
+
+  //     // 2️⃣ Aguarda a repopulação completa das aptidões
+  //     if (typeof repopular_aptidoes === 'function') {
+  //       await repopular_aptidoes();
+  //     }
+
+  //     console.log('Passo 5 concluído: Aptidões e Exames carregados');
+  //   } catch (error) {
+  //     console.error('Erro ao executar repopular_aptidoes:', error);
+  //   }
+  // }, 100);
       }
       
       // Se for a aba de faturamento (etapa 5), atualiza os totais e inicializa a conta bancária
@@ -13723,7 +13764,6 @@ function updateSelectedList() {
     window._smDocUpdating = true;
   }
 }
-
       
       // Inicializa a seleção de documentos
       function initDocumentSelection() {
@@ -13816,8 +13856,16 @@ function updateSelectedList() {
           // Pequeno atraso para garantir que o conteúdo foi carregado
           // setTimeout(tryInitRiscos, 100);
         } else if (e.detail.step === 4) { // Índice 4 = Passo 5 (Aptidões e Exames)
-          setTimeout(initializeAptidoesExames, 100);
-        } else if (e.detail.step === 5) { // Índice 5 = Passo 6 (Documentos)
+  setTimeout(() => {
+    if (typeof initializeAptidoesExames === 'function') {
+      initializeAptidoesExames();
+    }
+    // if (typeof repopular_aptidoes === 'function') {
+    //   repopular_aptidoes();
+    // }
+  }, 100);
+}
+ else if (e.detail.step === 5) { // Índice 5 = Passo 6 (Documentos)
           // Pequeno atraso para garantir que o conteúdo foi carregado
           setTimeout(initDocumentSelection, 100);
         }
@@ -14005,7 +14053,7 @@ function updateSelectedList() {
     
     // Função para inicializar o componente de Aptidões e Exames com checkboxes
     function initializeAptidoesExames() {
-    debugger;
+      debugger;
       // carregar_exames();
       console.log('Inicializando componente de Aptidões e Exames...');
       console.log('Dados de aptidões disponíveis (window.aptDadosAptidoes):', window.aptDadosAptidoes);
@@ -14020,12 +14068,74 @@ function updateSelectedList() {
       //   { codigo: "0005", nome: "Direção defensiva" }
       // ];
       
-      // Usa os dados do banco se disponíveis, senão usa os dados de exemplo
-      const aptDadosAptidoes = window.aptDadosAptidoes && window.aptDadosAptidoes.length > 0 
-        ? window.aptDadosAptidoes 
-        : dadosExemploAptidoes;
-        
-      console.log('Aptidões que serão usadas:', aptDadosAptidoes);
+      console.log('Inicializando componente de Aptidões e Exames...');
+
+  // 🔹 Caso esteja em modo de edição (já existem dados gravados)
+  const temEdicao = (window.aptidoes && window.aptidoes.length > 0) || (window.exames && window.exames.length > 0);
+
+  if (temEdicao) {
+    console.log('🟢 Detectado modo de edição: preparando dados existentes...');
+    try {
+      // 🧩 Trata o caso de vir como string JSON
+      if (typeof window.aptidoes === "string") {
+        try {
+          window.aptidoes = JSON.parse(window.aptidoes);
+        } catch (e) {
+          console.error("Erro ao converter aptidões JSON:", e);
+          window.aptidoes = [];
+        }
+      }
+      if (typeof window.exames === "string") {
+        try {
+          window.exames = JSON.parse(window.exames);
+        } catch (e) {
+          console.error("Erro ao converter exames JSON:", e);
+          window.exames = [];
+        }
+      }
+
+      // ✅ Garante arrays
+      if (!Array.isArray(window.aptidoes)) window.aptidoes = [];
+      if (!Array.isArray(window.exames)) window.exames = [];
+
+      // ✅ Prepara arrays de trabalho
+      window.aptAptidoesSelecionadas = window.aptidoes.map(item => ({
+        codigo: item.codigo,
+        recebe_apenas_nome: item.nome || item.recebe_apenas_nome || "",
+        valor: item.valor || ""
+      }));
+      window.aptExamesSelecionados = window.exames.map(item => ({
+        codigo: item.codigo,
+        recebe_apenas_nome: item.nome || item.recebe_apenas_nome || "",
+        valor: item.valor || ""
+      }));
+
+      // ✅ Garante que as bases de dados de todos os checkboxes já estejam carregadas
+      if (!Array.isArray(window.aptDadosAptidoes)) window.aptDadosAptidoes = [];
+      if (!Array.isArray(window.aptDadosExames)) window.aptDadosExames = [];
+
+      // ✅ Renderiza os checkboxes normalmente (usa a função original)
+      console.log('🟢 Chamando renderizarCheckboxes() no modo edição...');
+      //renderizarCheckboxes();
+
+      console.log('✅ Aptidões e exames marcados com sucesso (modo edição).');
+      //return; // ✅ sai aqui — não executa o restante do fluxo
+    } catch (error) {
+      console.error('❌ Erro ao repopular dados em modo de edição:', error);
+    }
+  }
+
+  // 🔸 Se não está em edição (modo gravação), mantém o comportamento original
+  console.log('🟠 Modo gravação (sem dados prévios) - comportamento original.');
+  
+  // (mantém tudo o que já existe depois disso)
+  console.log('Dados de aptidões disponíveis (window.aptDadosAptidoes):', window.aptDadosAptidoes);
+  
+  const aptDadosAptidoes = window.aptDadosAptidoes && window.aptDadosAptidoes.length > 0 
+    ? window.aptDadosAptidoes 
+    : dadosExemploAptidoes;
+    
+  console.log('Aptidões que serão usadas:', aptDadosAptidoes);
 
       // const aptDadosExames = [
       //   { codigo: "0068", nome: "Acetilcolinesterase eritrocitária" },
@@ -14163,141 +14273,144 @@ function updateSelectedList() {
       let precisaSalvarExames = false;
 
       
-      // Função para atualizar a lista de itens selecionados
-      async function atualizarListaSelecionados(itens, container, tipo, devePersistir = false) {
-        debugger;
-        
-        // Verifica se o container existe antes de tentar acessá-lo
-        if (!container) {
-          console.error('Erro: Container não encontrado para o tipo:', tipo);
-          return;
-        }
-        
-        container.innerHTML = '';
-            
-        if (itens.length === 0) {
-          container.innerHTML = '<div style="color: #6c757d; font-style: italic;">Nenhum item selecionado</div>';
-          // Se não há itens, limpa o array de aptidões selecionadas
-          if (tipo === "aptidao") {
-              aptidoes_selecionadas = [];
-              json_aptidoes = JSON.stringify(aptidoes_selecionadas);
-              // Persistência somente quando for mudança do usuário
-              if (devePersistir && precisaSalvarAptidoes) {
-                await gravar_aptidoes_selecionadas();
-                precisaSalvarAptidoes = false;
-              }
-          } else if (tipo === "exame") {
-              exames_selecionados = [];
-              json_exames = JSON.stringify(exames_selecionados);
-              if (devePersistir && precisaSalvarExames) {
-                await gravar_exames_selecionadas();
-                precisaSalvarExames = false;
-              }
-          }
-          return;
-        }
-        
-        // Atualiza o array de aptidões selecionadas se for do tipo aptidão
-        if (tipo === "aptidao") {
-            // Cria um novo array apenas com os itens atuais, sem duplicatas
-            aptidoes_selecionadas = itens.map(item => ({
-                codigo: item.codigo,
-                nome: item.recebe_apenas_nome,
-                valor: item.valor
-            }));
-            
-            // Remove duplicatas baseado no código
-            aptidoes_selecionadas = [...new Map(aptidoes_selecionadas.map(item => 
-                [item.codigo, item])
-            ).values()];
-            
-            json_aptidoes = JSON.stringify(aptidoes_selecionadas);
-            console.log("Aptidões selecionadas:", aptidoes_selecionadas);
-            if (devePersistir && precisaSalvarAptidoes) {
-              await gravar_aptidoes_selecionadas();
-              precisaSalvarAptidoes = false;
-            }
-        }else if(tipo === "exame"){
-            // Cria um novo array apenas com os itens atuais, sem duplicatas
-            exames_selecionados = itens.map(item => ({
-                codigo: item.codigo,
-                nome: item.recebe_apenas_nome,
-                valor: item.valor
-            }));
-            
-            // Remove duplicatas baseado no código
-            exames_selecionados = [...new Map(exames_selecionados.map(item => 
-                [item.codigo, item])
-            ).values()];
-            
-            json_exames = JSON.stringify(exames_selecionados);
-            console.log("Exames selecionadas:", exames_selecionados);
-            if (devePersistir && precisaSalvarExames) {
-              await gravar_exames_selecionadas();
-              precisaSalvarExames = false;
-            }
-        }
+     async function atualizarListaSelecionados(itens, container, tipo, devePersistir = false) {
+  debugger;
 
-        // Renderiza os itens na interface
-        itens.forEach(item => {
-            const badge = document.createElement('div');
-            badge.style.display = 'inline-flex';
-            badge.style.alignItems = 'center';
-            badge.style.backgroundColor = tipo === 'aptidao' ? '#e3f2fd' : '#e8f5e9';
-            badge.style.color = tipo === 'aptidao' ? '#0d47a1' : '#1b5e20';
-            badge.style.padding = '4px 10px';
-            badge.style.borderRadius = '12px';
-            badge.style.fontSize = '13px';
-            badge.style.marginRight = '6px';
-            badge.style.marginBottom = '4px';
-            
-            badge.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <span>${item.codigo} - ${item.recebe_apenas_nome}</span>
-                    <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `;
-            
-            // Adiciona evento para remover o item
-            badge.querySelector('.btn-remover').addEventListener('click', async (e) => {
-                e.stopPropagation();
-                let index;
-                let arrayAlvo;
-                
-                if (tipo === 'aptidao') {
-                    index = aptAptidoesSelecionadas.findIndex(a => a.codigo === item.codigo);
-                    arrayAlvo = aptAptidoesSelecionadas;
-                } else {
-                    index = aptExamesSelecionados.findIndex(e => e.codigo === item.codigo);
-                    arrayAlvo = aptExamesSelecionados;
-                }
-                
-                if (index !== -1) {
-                    arrayAlvo.splice(index, 1);
-                    
-                    // Atualiza o checkbox correspondente (sem disparar o evento do usuário)
-                    const checkbox = document.querySelector(`#${tipo}-${item.codigo}`);
-                    if (checkbox) {
-                        emAtualizacaoProgramatica = true;
-                        checkbox.checked = false;
-                        emAtualizacaoProgramatica = false;
-                    }
-                    
-                    // Atualiza a lista de selecionados (mudança do usuário) e persiste
-                    if (tipo === 'aptidao') {
-                      precisaSalvarAptidoes = true;
-                    } else {
-                      precisaSalvarExames = true;
-                    }
-                    await atualizarListaSelecionados(arrayAlvo, container, tipo, true);
-                }
-            });
-            
-            container.appendChild(badge);
-        });
+  if (!container) {
+    console.error('Erro: Container não encontrado para o tipo:', tipo);
+    return;
+  }
+
+  // 🔹 Se não há itens, limpa container
+  container.innerHTML = '';
+  if (!Array.isArray(itens) || itens.length === 0) {
+    container.innerHTML = '<div style="color: #6c757d; font-style: italic;">Nenhum item selecionado</div>';
+    if (tipo === "aptidao") {
+      aptidoes_selecionadas = [];
+      json_aptidoes = JSON.stringify(aptidoes_selecionadas);
+      if (devePersistir && precisaSalvarAptidoes) {
+        await gravar_aptidoes_selecionadas();
+        precisaSalvarAptidoes = false;
       }
+    } else {
+      exames_selecionados = [];
+      json_exames = JSON.stringify(exames_selecionados);
+      if (devePersistir && precisaSalvarExames) {
+        await gravar_exames_selecionadas();
+        precisaSalvarExames = false;
+      }
+    }
+    return;
+  }
+
+  // 🔹 Seleciona array de base conforme modo (edição ou gravação)
+  let baseArray =
+    tipo === "aptidao"
+      ? (Array.isArray(window.aptidoes) && window.aptidoes.length > 0
+          ? window.aptidoes
+          : itens)
+      : (Array.isArray(window.exames) && window.exames.length > 0
+          ? window.exames
+          : itens);
+
+  // 🔹 Atualiza variáveis principais e JSON
+  if (tipo === "aptidao") {
+    aptidoes_selecionadas = baseArray.map(item => ({
+      codigo: item.codigo,
+      nome: item.recebe_apenas_nome || item.nome,
+      valor: item.valor
+    }));
+    aptidoes_selecionadas = [...new Map(aptidoes_selecionadas.map(i => [i.codigo, i])).values()];
+    json_aptidoes = JSON.stringify(aptidoes_selecionadas);
+    console.log("Aptidões selecionadas:", aptidoes_selecionadas);
+    if (devePersistir && precisaSalvarAptidoes) {
+      await gravar_aptidoes_selecionadas();
+      precisaSalvarAptidoes = false;
+    }
+  } else {
+    exames_selecionados = baseArray.map(item => ({
+      codigo: item.codigo,
+      nome: item.recebe_apenas_nome || item.nome,
+      valor: item.valor
+    }));
+    exames_selecionados = [...new Map(exames_selecionados.map(i => [i.codigo, i])).values()];
+    json_exames = JSON.stringify(exames_selecionados);
+    console.log("Exames selecionados:", exames_selecionados);
+    if (devePersistir && precisaSalvarExames) {
+      await gravar_exames_selecionadas();
+      precisaSalvarExames = false;
+    }
+  }
+
+  // 🔹 Cálculo do total de exames (somente no modo de edição)
+  if (tipo === "exame" && Array.isArray(window.exames) && window.exames.length > 0) {
+    const total = window.exames.reduce((soma, item) => {
+      let v = item?.valor ?? "0";
+      if (typeof v === "string") v = v.replace(",", ".");
+      const num = parseFloat(v);
+      return soma + (isNaN(num) ? 0 : num);
+    }, 0);
+
+    window.fatTotalExames = Number(total.toFixed(2));
+    console.log("💰 Total de exames (edição):", window.fatTotalExames);
+  } else if (tipo === "exame") {
+    // Caso não esteja no modo edição, usa o array recebido normalmente
+    const total = baseArray.reduce((soma, item) => {
+      let v = item?.valor ?? "0";
+      if (typeof v === "string") v = v.replace(",", ".");
+      const num = parseFloat(v);
+      return soma + (isNaN(num) ? 0 : num);
+    }, 0);
+    window.fatTotalExames = Number(total.toFixed(2));
+  }
+
+  // 🔹 Renderiza badges na interface
+  baseArray.forEach(item => {
+    const badge = document.createElement('div');
+    badge.style.display = 'inline-flex';
+    badge.style.alignItems = 'center';
+    badge.style.backgroundColor = tipo === 'aptidao' ? '#e3f2fd' : '#e8f5e9';
+    badge.style.color = tipo === 'aptidao' ? '#0d47a1' : '#1b5e20';
+    badge.style.padding = '4px 10px';
+    badge.style.borderRadius = '12px';
+    badge.style.fontSize = '13px';
+    badge.style.marginRight = '6px';
+    badge.style.marginBottom = '4px';
+
+    badge.innerHTML = `
+      <div style="display: flex; align-items: center;">
+        <span>${item.codigo} - ${item.recebe_apenas_nome || item.nome}</span>
+        <button class="btn-remover" style="background: none; border: none; color: inherit; margin-left: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>`;
+
+    badge.querySelector('.btn-remover').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const arrayAlvo = tipo === 'aptidao'
+        ? (window.aptAptidoesSelecionadas || aptAptidoesSelecionadas)
+        : (window.aptExamesSelecionados || aptExamesSelecionados);
+
+      const index = arrayAlvo.findIndex(a => a.codigo === item.codigo);
+      if (index !== -1) arrayAlvo.splice(index, 1);
+
+      const checkbox = document.querySelector(`#${tipo}-${item.codigo}`);
+      if (checkbox) {
+        emAtualizacaoProgramatica = true;
+        checkbox.checked = false;
+        emAtualizacaoProgramatica = false;
+      }
+
+      if (tipo === 'aptidao') precisaSalvarAptidoes = true;
+      else precisaSalvarExames = true;
+
+      await atualizarListaSelecionados(arrayAlvo, container, tipo, true);
+    });
+
+    container.appendChild(badge);
+  });
+}
+
 
       function gravar_aptidoes_selecionadas()
       {
@@ -14398,174 +14511,160 @@ function updateSelectedList() {
       }
       
       let recebe_valores_exames_selecionados = [];
+let bloqueioRenderizacaoSelecao = false;
 
-      let bloqueioRenderizacaoSelecao = false;
-      // Função para atualizar os itens selecionados
-      async function atualizarSelecionados(checkbox, tipo) {
-        debugger;
-        // Se mudança foi gerada programaticamente ou já estamos processando, ignorar
-        if (emAtualizacaoProgramatica || emProcessamentoSelecao) return;
-        // Congela o estado inicial do checkbox no momento do clique do usuário
-        const estadoInicialMarcado = !!checkbox.checked;
-        const codigo = checkbox.value;
-        const nome = checkbox.nextElementSibling.textContent.trim();
-        const valor = checkbox.getAttribute('data-valor') || checkbox.value; // captura o valor do checkbox (data-valor, se existir, senão value)
+async function atualizarSelecionados(checkbox, tipo) {
+  debugger;
 
-        let recebe_apenas_nome = nome.split('-')[1].trim(); // pega a parte depois do '-' e tira espaços extras
-        
-        // Encontra o item completo nos dados originais
-        const dadosOriginais = tipo === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
-        const itemOriginal = dadosOriginais.find(item => item.codigo === codigo);
-        
-        // Cria o item sem o valor
-        const item = { 
-          codigo, 
-          recebe_apenas_nome,
-          valor
-        };
-        
-        // Determina qual array e container usar com base no tipo
-        const arraySelecionado = tipo === 'aptidao' ? aptAptidoesSelecionadas : aptExamesSelecionados;
-        const container = tipo === 'aptidao' ? selectedAptidoesContainer : selectedExamesContainer;
-        
-        // Evita re-renderizações externas e reentrância
-        bloqueioRenderizacaoSelecao = true;
-        emProcessamentoSelecao = true;
+  // Ignora se atualização for automática
+  if (emAtualizacaoProgramatica || emProcessamentoSelecao) return;
 
-        if (estadoInicialMarcado) {
-          // Adiciona se não existir
-          const existe = arraySelecionado.some(a => a.codigo === codigo);
-          const existeSomaExame = recebe_valores_exames_selecionados.some(exame => exame.codigo === codigo);
-          if (!existe) {
-            arraySelecionado.push(item);
-          }
+  const estadoInicialMarcado = !!checkbox.checked;
+  const codigo = checkbox.value;
+  const nome = checkbox.nextElementSibling.textContent.trim();
+  const valor = checkbox.getAttribute('data-valor') || checkbox.value;
+  const recebe_apenas_nome = nome.split('-')[1]?.trim() || nome;
 
-          if (!existeSomaExame) {
-            recebe_valores_exames_selecionados.push({
-              codigo: codigo,
-              valor: valor
-            });
-          }
-        } else {
-          // Remove se existir
-          const index = arraySelecionado.findIndex(a => a.codigo === codigo);
-          if (index !== -1) {
-            arraySelecionado.splice(index, 1);
-          }
+  const dadosOriginais = tipo === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
+  const itemOriginal = dadosOriginais.find(item => item.codigo === codigo);
+  const item = { codigo, recebe_apenas_nome, valor };
 
-          const indiceValor = recebe_valores_exames_selecionados.findIndex(a => a.codigo === codigo);
-          if (indiceValor !== -1) {
-            recebe_valores_exames_selecionados.splice(indiceValor, 1);
-          }
-        }
+  // 🔹 Usa arrays de edição (globais) se existirem e contiverem dados
+  const arraySelecionado =
+    tipo === 'aptidao'
+      ? (Array.isArray(aptAptidoesSelecionadas) && aptAptidoesSelecionadas.length > 0
+          ? aptAptidoesSelecionadas
+          : (Array.isArray(window.aptAptidoesSelecionadas) ? window.aptAptidoesSelecionadas : []))
+      : (Array.isArray(aptExamesSelecionados) && aptExamesSelecionados.length > 0
+          ? aptExamesSelecionados
+          : (Array.isArray(window.aptExamesSelecionados) ? window.aptExamesSelecionados : []));
 
-        console.log("Exames com valor para somar:",recebe_valores_exames_selecionados);
+  const container = tipo === 'aptidao' ? selectedAptidoesContainer : selectedExamesContainer;
 
-        // if(recebe_valores_exames_selecionados.length > 0)
-        // {
-          
-        // }
+  bloqueioRenderizacaoSelecao = true;
+  emProcessamentoSelecao = true;
 
-        let total = recebe_valores_exames_selecionados
-          .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0);
+  if (estadoInicialMarcado) {
+    // Adiciona se não existir
+    if (!arraySelecionado.some(a => a.codigo === codigo)) {
+      arraySelecionado.push(item);
+    }
 
-          console.log(total); // Exemplo: 18.25
+    if (!recebe_valores_exames_selecionados.some(ex => ex.codigo === codigo)) {
+      recebe_valores_exames_selecionados.push({ codigo, valor });
+    }
+  } else {
+    // Remove se existir
+    const index = arraySelecionado.findIndex(a => a.codigo === codigo);
+    if (index !== -1) arraySelecionado.splice(index, 1);
 
-       
-          window.fatTotalExames = total;
-        
-        try {
-          // Marca como sujo para persistir (esta é uma ação do usuário)
-          if (tipo === 'aptidao') {
-            precisaSalvarAptidoes = true;
-          } else {
-            precisaSalvarExames = true;
-          }
-          // Atualiza a exibição e persiste por ser interação do usuário
-          await atualizarListaSelecionados(arraySelecionado, container, tipo, true);
-        } finally {
-          // Garante que o checkbox mantenha o estado que o usuário escolheu no início desta interação
-          if (checkbox.checked !== estadoInicialMarcado) {
-            emAtualizacaoProgramatica = true;
-            checkbox.checked = estadoInicialMarcado;
-            emAtualizacaoProgramatica = false;
-          }
-          // Libera os bloqueios após concluir a atualização visual atual
-          bloqueioRenderizacaoSelecao = false;
-          emProcessamentoSelecao = false;
-        }
-      }
+    const idxValor = recebe_valores_exames_selecionados.findIndex(a => a.codigo === codigo);
+    if (idxValor !== -1) recebe_valores_exames_selecionados.splice(idxValor, 1);
+  }
+
+  console.log("Exames com valor para somar:", recebe_valores_exames_selecionados);
+
+  const total = recebe_valores_exames_selecionados
+    .reduce((soma, item) => soma + parseFloat((item.valor || "0").replace(",", ".")), 0);
+
+  window.fatTotalExames = total;
+
+  try {
+    if (tipo === 'aptidao') precisaSalvarAptidoes = true;
+    else precisaSalvarExames = true;
+
+    await atualizarListaSelecionados(arraySelecionado, container, tipo, true);
+  } finally {
+    // Garante o estado do checkbox conforme o clique original
+    if (checkbox.checked !== estadoInicialMarcado) {
+      emAtualizacaoProgramatica = true;
+      checkbox.checked = estadoInicialMarcado;
+      emAtualizacaoProgramatica = false;
+    }
+
+    bloqueioRenderizacaoSelecao = false;
+    emProcessamentoSelecao = false;
+  }
+}
+
+
+      
   
   // Função para renderizar as listas de checkboxes
-  function renderizarCheckboxes() {
-    console.log('Iniciando renderização dos checkboxes...');
-    console.log('Dados de aptidões para renderizar:', window.aptDadosAptidoes);
-    
-    // Verifica se os containers existem
-    console.log('Container de aptidões:', checkboxContainerApt);
-    console.log('Container de exames:', checkboxContainerExames);
-    
-    // Se estivermos no meio de uma seleção (primeira seleção, por exemplo),
-    // não re-renderizar os checkboxes para não limpar os arrays/estado visual.
-    if (bloqueioRenderizacaoSelecao) {
-      atualizarListaSelecionados(aptAptidoesSelecionadas, selectedAptidoesContainer, 'aptidao');
-      atualizarListaSelecionados(aptExamesSelecionados, selectedExamesContainer, 'exame');
-      return;
-    }
+function renderizarCheckboxes() {
+  debugger;
+  console.log('Iniciando renderização dos checkboxes...');
+  console.log('Dados de aptidões para renderizar:', window.aptDadosAptidoes);
 
-    // Verifica se há dados para renderizar
-    if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0) {
-      console.warn('Nenhum dado de aptidão disponível para renderizar');
-      if (checkboxContainerApt) {
-        checkboxContainerApt.innerHTML = '<div class="alert alert-info">Nenhuma aptidão disponível</div>';
-      }
-      return;
-    }
-    
-    // Salva os itens selecionados atuais
-    const aptSelecionadas = [...aptAptidoesSelecionadas];
-    const examesSelecionados = [...aptExamesSelecionados];
-    
-    // Limpa os containers
+  // Verifica se os containers existem
+  console.log('Container de aptidões:', checkboxContainerApt);
+  console.log('Container de exames:', checkboxContainerExames);
+
+  // Se não há dados de aptidões, mostra aviso
+  if (!window.aptDadosAptidoes || window.aptDadosAptidoes.length === 0) {
+    console.warn('Nenhum dado de aptidão disponível para renderizar');
     if (checkboxContainerApt) {
-      checkboxContainerApt.innerHTML = '';
-      aptDadosAptidoes.forEach(item => {
-        const checkbox = criarCheckbox(item, 'aptidao');
-        // Marca como selecionado se estava na lista de selecionados
-        if (aptSelecionadas.some(a => a.codigo === item.codigo)) {
-          const input = checkbox.querySelector('input[type="checkbox"]');
-          if (input) {
-            // Marcação programática não deve disparar o handler
-            emAtualizacaoProgramatica = true;
-            input.checked = true;
-            emAtualizacaoProgramatica = false;
-          }
-        }
-        checkboxContainerApt.appendChild(checkbox);
-      });
+      checkboxContainerApt.innerHTML = '<div class="alert alert-info">Nenhuma aptidão disponível</div>';
     }
-    
-    if (checkboxContainerExames) {
-      checkboxContainerExames.innerHTML = '';
-      aptDadosExames.forEach(item => {
-        const checkbox = criarCheckbox(item, 'exame');
-        // Marca como selecionado se estava na lista de selecionados
-        if (examesSelecionados.some(e => e.codigo === item.codigo)) {
-          const input = checkbox.querySelector('input[type="checkbox"]');
-          if (input) {
-            emAtualizacaoProgramatica = true;
-            input.checked = true;
-            emAtualizacaoProgramatica = false;
-          }
-        }
-        checkboxContainerExames.appendChild(checkbox);
-      });
-    }
-    
-    // Atualiza as listas de selecionados
-    atualizarListaSelecionados(aptAptidoesSelecionadas, selectedAptidoesContainer, 'aptidao');
-    atualizarListaSelecionados(aptExamesSelecionados, selectedExamesContainer, 'exame');
+    return;
   }
+
+  // 🔹 Usa os arrays com dados — prioridade: local > global
+  const aptSelecionadas = (Array.isArray(aptAptidoesSelecionadas) && aptAptidoesSelecionadas.length > 0)
+    ? [...aptAptidoesSelecionadas]
+    : (Array.isArray(window.aptAptidoesSelecionadas) ? [...window.aptAptidoesSelecionadas] : []);
+
+  const examesSelecionados = (Array.isArray(aptExamesSelecionados) && aptExamesSelecionados.length > 0)
+    ? [...aptExamesSelecionados]
+    : (Array.isArray(window.aptExamesSelecionados) ? [...window.aptExamesSelecionados] : []);
+
+  // Limpa e renderiza checkboxes de aptidões
+  if (checkboxContainerApt) {
+    checkboxContainerApt.innerHTML = '';
+    aptDadosAptidoes.forEach(item => {
+      const checkbox = criarCheckbox(item, 'aptidao');
+      const input = checkbox.querySelector('input[type="checkbox"]');
+      if (aptSelecionadas.some(a => a.codigo === item.codigo)) {
+        emAtualizacaoProgramatica = true;
+        input.checked = true;
+        emAtualizacaoProgramatica = false;
+      }
+      checkboxContainerApt.appendChild(checkbox);
+    });
+  }
+
+  // Limpa e renderiza checkboxes de exames
+  if (checkboxContainerExames) {
+    checkboxContainerExames.innerHTML = '';
+    aptDadosExames.forEach(item => {
+      const checkbox = criarCheckbox(item, 'exame');
+      const input = checkbox.querySelector('input[type="checkbox"]');
+      if (examesSelecionados.some(e => e.codigo === item.codigo)) {
+        emAtualizacaoProgramatica = true;
+        input.checked = true;
+        emAtualizacaoProgramatica = false;
+      }
+      checkboxContainerExames.appendChild(checkbox);
+    });
+  }
+
+  // 🔸 Escolhe os arrays corretos para atualizar listas visuais
+  const aptParaAtualizar = (Array.isArray(aptAptidoesSelecionadas) && aptAptidoesSelecionadas.length > 0)
+    ? aptAptidoesSelecionadas
+    : (Array.isArray(window.aptAptidoesSelecionadas) ? window.aptAptidoesSelecionadas : []);
+
+  const examesParaAtualizar = (Array.isArray(aptExamesSelecionados) && aptExamesSelecionados.length > 0)
+    ? aptExamesSelecionados
+    : (Array.isArray(window.aptExamesSelecionados) ? window.aptExamesSelecionados : []);
+
+  // 🔹 Atualiza as listas de selecionados corretamente (sem perder marcações)
+  atualizarListaSelecionados(aptParaAtualizar, selectedAptidoesContainer, 'aptidao');
+  atualizarListaSelecionados(examesParaAtualizar, selectedExamesContainer, 'exame');
+
+  console.log('✅ renderizarCheckboxes finalizado com controle de gravação/edição.');
+}
+
+
   
   // Função para abrir o modal de adição
   function abrirModalAdicionar(tipo) {
