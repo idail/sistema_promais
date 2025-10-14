@@ -8097,7 +8097,7 @@ table.no-break strong {
                         NÁUSEAS (&nbsp;&nbsp;&nbsp )<br>
                         VÔMITOS (&nbsp;&nbsp;&nbsp )<br>
                         QUEDAS (&nbsp;&nbsp;&nbsp )<br>
-                        ALGIA GUSTATIVA (&nbsp;&nbsp;&nbsp )<br>
+                        ALGIACUSIA (&nbsp;&nbsp;&nbsp )<br>
                         SUDORESE (&nbsp;&nbsp;&nbsp )
                     </td>
                     <td style="width:50%; vertical-align:top;">
@@ -8141,52 +8141,51 @@ table.no-break strong {
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
-</table>
-
-<!-- EQUILÍBRIO DINÂMICO -->
-<table>
     <tr>
-        <td colspan="2" class="section-subtitle"><strong>EQUILÍBRIO DINÂMICO</strong></td>
-    </tr>
-    <tr>
-        <td colspan="2" style="font-size:13px;">
-            * TESTE DE BABINSKI-WEIL: (&nbsp;&nbsp;&nbsp ) Sem desvios &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Desvio da marcha para ____________ &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Marcha Ebriosa<br>
-            <strong>Observação:</strong> ___________________________________________
+        <td colspan="2" 
+            style="border-top:1px solid #000; text-align:left; font-weight:bold; padding-top:3px;">
+            EQUILÍBRIO DINÂMICO
         </td>
     </tr>
-</table>
-
-<!-- TESTE DE COORDENAÇÃO -->
-<table>
     <tr>
-        <td colspan="2" class="section-subtitle"><strong>TESTE DE COORDENAÇÃO</strong></td>
-    </tr>
-    <tr>
-        <td colspan="2" style="font-size:13px;">
-            * ÍNDICE - ÍNDICE: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
+        <td colspan="2" style="font-size:13px; padding:4px 0;">
+            * TESTE DE BABINSKI-WEIL: (&nbsp;&nbsp;&nbsp;) Sem desvios &nbsp;&nbsp;&nbsp;
+            (&nbsp;&nbsp;&nbsp;) Desvio da marcha para ____________ &nbsp;&nbsp;&nbsp;
+            (&nbsp;&nbsp;&nbsp;) Marcha Ebriosa<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
     <tr>
+        <td colspan="2" 
+            style="border-top:1px solid #000; text-align:left; font-weight:bold; padding-top:3px;">
+            TESTE DE COOORDENAÇÃO
+        </td>
+    </tr>
+    <tr>
         <td colspan="2" style="font-size:13px;">
-            * ÍNDICE - NARIZ: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
+            * INDEX - INDEX: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
+            <strong>Observação:</strong> ___________________________________________
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="font-size:13px;">
+            * INDEX - NARIZ: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
 </table>
 
 <!-- DIADOCOCINESIA -->
-<table>
-    <tr>
-        <td colspan="2" class="section-subtitle"><strong>DIADOCOCINESIA</strong></td>
-    </tr>
+<table style="width:100%; border-collapse:collapse;">
     <tr>
         <td colspan="2" style="font-size:13px;">
-            (&nbsp;&nbsp;&nbsp ) Normal &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Alterado<br>
+            <strong>DIADOCOCINESIA</strong><br><br>
+            ( &nbsp;&nbsp;&nbsp; ) Normal &nbsp;&nbsp;&nbsp; ( &nbsp;&nbsp;&nbsp; ) Alterado<br>
             <strong>Observação:</strong> ___________________________________________
         </td>
     </tr>
 </table>
+
 
 <!-- APTIDÃO -->
 <table>
@@ -8209,7 +8208,7 @@ table.no-break strong {
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
                     ' . $html_assinatura . '<br>
-                    <span style="display:block; margin-top:-16px;">Assinatura</span>
+                    <span style="display:block; margin-top:-17px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
                     <span style="display:block;">
                         ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — 

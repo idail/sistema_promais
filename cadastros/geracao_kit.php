@@ -3702,6 +3702,9 @@ function repopular_laudos() {
         window.produtos = await requisitarProdutos(window.kit_tipo_exame.id);
         window.tipo_orcamento = window.kit_tipo_exame.tipo_orcamento;
         window.assinatura_digital = window.kit_tipo_exame.assinatura_digital;
+        window.tipo_dado_bancario = window.kit_tipo_exame.tipo_dado_bancario;
+        window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
+        window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
@@ -4062,7 +4065,48 @@ try {
         carregarAgenciasContas();
         repopular_produtos();
         restaurar_tipo_orcamento();
-        repopular_assinatura()
+        repopular_assinatura();
+        repopular_dados_bancarios();
+
+        function repopular_dados_bancarios() {
+    debugger;
+
+    // 🔹 Garante que o valor de tipo_dado_bancario seja um array válido
+    let tipos = [];
+
+    try {
+        if (typeof window.tipo_dado_bancario === 'string') {
+            // Converte string JSON para array
+            tipos = JSON.parse(window.tipo_dado_bancario);
+        } else if (Array.isArray(window.tipo_dado_bancario)) {
+            tipos = window.tipo_dado_bancario;
+        } else {
+            console.warn('Formato inesperado em window.tipo_dado_bancario:', window.tipo_dado_bancario);
+            return;
+        }
+    } catch (e) {
+        console.error('Erro ao converter tipo_dado_bancario:', e);
+        return;
+    }
+
+    // 🔹 Monta o estado bancário global baseado nos valores vindos do banco
+    window.dadosBancariosEstado = {
+        agenciaConta: window.dado_bancario_agencia_conta ?? null,
+        agenciaContaSelecionado: window.tipo_dado_bancario.includes('agencia-conta'),
+        chavePix: window.dado_bancario_pix ?? null,
+        pixSelecionado: window.tipo_dado_bancario.includes('pix'),
+        qrcodeSelecionado: window.tipo_dado_bancario.includes('qrcode'),
+        textoAgenciaConta: window.dado_bancario_agencia_conta ?? null,
+        textoPix: window.dado_bancario_pix ?? null
+    };
+
+    console.log('✅ Estado bancário montado:', window.dadosBancariosEstado);
+
+    // 🔹 Chama a função que restaura a interface com base nesse estado
+    restaurarEstadoBancario();
+}
+
+
 
 
         function repopular_assinatura() {
@@ -4579,36 +4623,59 @@ function restaurarEstadoBancario() {
     marcarCheckbox(estado.qrcodeSelecionado, 'qrcode');
 
     // Restaura os valores dos selects
-    setTimeout(() => {
-        // Restaura PIX
-        if (estado.chavePix) {
-            const pixSelect = document.getElementById('pix-key-select');
-            const pixContainer = document.getElementById('pix-selector-container');
-            
-            if (pixSelect && pixContainer) {
-                pixSelect.value = estado.chavePix;
-                pixContainer.style.display = 'block';
-                pixSelect.dispatchEvent(new Event('change'));
-            }
-        }
+setTimeout(() => {
+    // Função para normalizar PIX (apenas números)
+    const formatarPix = (pix) => pix.replace(/\D/g, '');
 
-        // Restaura Agência/Conta
-        if (estado.agenciaConta) {
-            const acSelect = document.getElementById('agencia-conta-select');
-            const acContainer = document.getElementById('agencia-selector-container');
-            
-            if (acSelect && acContainer) {
-                acSelect.value = estado.agenciaConta;
-                acContainer.style.display = 'block';
-                acSelect.dispatchEvent(new Event('change'));
-            }
-        }
+    // Função para normalizar Agência/Conta ("Ag XXXX • C/C XXXXX-X" -> "XXXX|XXXXX-X")
+    const formatarAgenciaConta = (ac) => ac
+        .replace(/Ag\s*/, '')        // Remove "Ag " do início
+        .replace(/• C\/C\s*/, '|')   // Substitui "• C/C " por "|"
+        .replace(/\s+/g, '')          // Remove espaços extras
+        .trim();
 
-        // Força a atualização da UI
-        if (typeof atualizarVisibilidadePix === 'function') {
-            atualizarVisibilidadePix();
+    // Restaura PIX
+    if (estado.chavePix) {
+        const pixSelect = document.getElementById('pix-key-select');
+        const pixContainer = document.getElementById('pix-selector-container');
+
+        if (pixSelect && pixContainer) {
+            let valorPix = estado.chavePix;
+
+            if (window.recebe_acao === 'editar') {
+                valorPix = formatarPix(valorPix);
+            }
+
+            pixSelect.value = valorPix;
+            pixContainer.style.display = 'block';
+            pixSelect.dispatchEvent(new Event('change'));
         }
-    }, 100);
+    }
+
+    // Restaura Agência/Conta
+    if (estado.agenciaConta) {
+        const acSelect = document.getElementById('agencia-conta-select');
+        const acContainer = document.getElementById('agencia-selector-container');
+
+        if (acSelect && acContainer) {
+            let valorAC = estado.agenciaConta;
+
+            if (window.recebe_acao === 'editar') {
+                valorAC = formatarAgenciaConta(valorAC);
+            }
+
+            acSelect.value = valorAC;
+            acContainer.style.display = 'block';
+            acSelect.dispatchEvent(new Event('change'));
+        }
+    }
+
+    // Força a atualização da UI
+    if (typeof atualizarVisibilidadePix === 'function') {
+        atualizarVisibilidadePix();
+    }
+}, 100);
+
 }
         
         // Pequeno atraso para garantir que o DOM foi atualizado
@@ -4731,6 +4798,7 @@ function restaurarEstadoBancario() {
           // Função para atualizar o estado global dos dados bancários
 function atualizarEstadoBancario(tipo, valor, texto) {
     debugger;
+
     // Inicializa o objeto se não existir
     window.dadosBancariosEstado = window.dadosBancariosEstado || {
         pixSelecionado: false,
@@ -4739,31 +4807,134 @@ function atualizarEstadoBancario(tipo, valor, texto) {
         chavePix: null,
         textoPix: null,
         agenciaConta: null,
-        textoAgenciaConta: null
+        textoAgenciaConta: null,
+        __dadosCarregados: false
     };
 
-    console.log('Atualizando estado bancário:', { tipo, valor, texto });
-    
-    // Atualiza o estado do tipo específico
-    if (tipo === 'pix') {
-        window.dadosBancariosEstado.pixSelecionado = valor !== null;
-        if (valor !== null) {
-            window.dadosBancariosEstado.chavePix = valor;
-            window.dadosBancariosEstado.textoPix = texto;
-        }
-    } 
-    else if (tipo === 'agencia-conta') {
-        window.dadosBancariosEstado.agenciaContaSelecionado = valor !== null;
-        if (valor !== null) {
-            window.dadosBancariosEstado.agenciaConta = valor;
-            window.dadosBancariosEstado.textoAgenciaConta = texto;
-        }
-    } 
-    else if (tipo === 'qrcode') {
-        window.dadosBancariosEstado.qrcodeSelecionado = valor;
+    // Garante que a flag exista mesmo se o objeto já existia
+    if (typeof window.dadosBancariosEstado.__dadosCarregados === 'undefined') {
+        window.dadosBancariosEstado.__dadosCarregados = false;
     }
-    
-    console.log('Estado bancário atualizado:', window.dadosBancariosEstado);
+
+    // 🔹 Se estiver em modo edição, carrega uma vez os dados gravados
+    if (window.recebe_acao === 'editar' && !window.dadosBancariosEstado.__dadosCarregados) {
+        console.log('Modo edição detectado. Carregando dados bancários existentes...');
+
+        const dadosGravados = window.dadosBancariosEstado || {};
+
+        // ---------------- PIX ----------------
+        if (dadosGravados.chavePix) {
+            window.dadosBancariosEstado.pixSelecionado = true;
+            window.dadosBancariosEstado.chavePix = dadosGravados.chavePix;
+            window.dadosBancariosEstado.textoPix = dadosGravados.textoPix || dadosGravados.chavePix;
+
+            const pixSelect = document.getElementById('pix-key-select');
+            if (pixSelect) {
+                // Verifica se é <select> ou conjunto de <input type="radio">
+                if (pixSelect.tagName === 'SELECT') {
+                  
+                    // Percorre opções e seleciona a que corresponde
+                    for (const opt of pixSelect.options) {
+                      // Remove tudo que não for número
+const chaveFormatada = dadosGravados.chavePix.replace(/\D/g, '');
+                        if (opt.value === chaveFormatada) {
+                            opt.selected = true;
+                            break;
+                        }
+                    }
+                } else {
+                    // Caso seja checkbox ou radio
+                    const pixOptions = document.querySelectorAll('#pix-key-select input[type="radio"], #pix-key-select input[type="checkbox"]');
+                    pixOptions.forEach(opt => {
+                        if (opt.value === dadosGravados.chavePix) {
+                            opt.checked = true;
+                        }
+                    });
+                }
+            }
+        }
+
+        // ---------------- AGÊNCIA / CONTA ----------------
+        if (dadosGravados.agenciaConta) {
+            window.dadosBancariosEstado.agenciaContaSelecionado = true;
+            window.dadosBancariosEstado.agenciaConta = dadosGravados.agenciaConta;
+            window.dadosBancariosEstado.textoAgenciaConta = dadosGravados.textoAgenciaConta || dadosGravados.agenciaConta;
+
+            const acSelect = document.getElementById('agencia-conta-select');
+            if (acSelect) {
+                if (acSelect.tagName === 'SELECT') {
+                    for (const opt of acSelect.options) {
+                      // Converte dadosGravados.chavePix para o formato do opt.value
+const chaveFormatada = dadosGravados.agenciaConta
+    .replace(/Ag\s*/, '')        // Remove "Ag " do início
+    .replace(/• C\/C\s*/, '|')   // Substitui "• C/C " por "|"
+    .replace(/\s+/g, '')          // Remove todos os espaços restantes
+    .trim();
+
+if (opt.value === chaveFormatada) {
+    opt.selected = true;
+    break;
+}
+
+                        if (opt.value === chaveFormatada) {
+                            opt.selected = true;
+                            break;
+                        }
+                    }
+                } else {
+                    const acOptions = document.querySelectorAll('#agencia-conta-select input[type="radio"], #agencia-conta-select input[type="checkbox"]');
+                    acOptions.forEach(opt => {
+                        if (opt.value === dadosGravados.agenciaConta) {
+                            opt.checked = true;
+                        }
+                    });
+                }
+            }
+        }
+
+        // ---------------- QRCODE ----------------
+        if (dadosGravados.qrcodeSelecionado !== undefined) {
+            window.dadosBancariosEstado.qrcodeSelecionado = dadosGravados.qrcodeSelecionado;
+
+            const qrCheckbox = document.getElementById('qrcode-check');
+            if (qrCheckbox) {
+                qrCheckbox.checked = Boolean(dadosGravados.qrcodeSelecionado);
+            }
+        }
+
+        // Marca que os dados já foram carregados (para não recarregar em cada chamada)
+        window.dadosBancariosEstado.__dadosCarregados = true;
+
+        console.log('Dados bancários carregados para edição:', window.dadosBancariosEstado);
+
+        // ⚠️ Sai da função — não executa atualização normal
+        return;
+    }
+
+    // 🔹 Caso contrário (não está em edição), executa atualização normal
+    if (window.recebe_acao !== 'editar') {
+        console.log('Atualizando estado bancário (modo gravação):', { tipo, valor, texto });
+
+        if (tipo === 'pix') {
+            window.dadosBancariosEstado.pixSelecionado = valor !== null;
+            if (valor !== null) {
+                window.dadosBancariosEstado.chavePix = valor;
+                window.dadosBancariosEstado.textoPix = texto;
+            }
+        } 
+        else if (tipo === 'agencia-conta') {
+            window.dadosBancariosEstado.agenciaContaSelecionado = valor !== null;
+            if (valor !== null) {
+                window.dadosBancariosEstado.agenciaConta = valor;
+                window.dadosBancariosEstado.textoAgenciaConta = texto;
+            }
+        } 
+        else if (tipo === 'qrcode') {
+            window.dadosBancariosEstado.qrcodeSelecionado = valor;
+        }
+
+        console.log('Estado bancário atualizado:', window.dadosBancariosEstado);
+    }
 }
           
           // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
