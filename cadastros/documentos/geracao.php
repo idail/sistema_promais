@@ -7306,16 +7306,16 @@ table.no-break strong {
                 </tr>
                 <tr>
                     <td colspan="2" class="section-title">
-  MODALIDADE RESUMO DE LAUDO:
-  <label style="margin-left: 10px;">
-    Admissional
-    <input type="checkbox" />
-  </label>
-  <label style="margin-left: 20px;">
-    Mudança de função
-    <input type="checkbox" />
-  </label>
-</td>
+                    MODALIDADE RESUMO DE LAUDO:
+                    <label style="margin-left: 10px;">
+                        Admissional
+                        <input type="checkbox" />
+                    </label>
+                    <label style="margin-left: 20px;">
+                        Mudança de função
+                        <input type="checkbox" />
+                    </label>
+                    </td>
 
                 </tr>
             </table>
