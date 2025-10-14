@@ -6815,7 +6815,8 @@ function reaplicarGruposSelecionadosUI() {
                   id:resposta_pessoa[p].id,
                   nome:resposta_pessoa[p].nome,
                   cpf:resposta_pessoa[p].cpf,
-                  cargo:"Analista de Segurança"
+                  cargo:"Analista de Segurança",
+                  empresa:resposta_pessoa[p].empresa_id
                 });
               }
 
@@ -7252,6 +7253,24 @@ function reaplicarGruposSelecionadosUI() {
       });
     }
 
+    function requisitarEmpresaPrimeiroKIT() {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_empresa_primeiro_kit"},
+          success: function(resposta) {
+            console.log("Empresa retornada:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     let kitsColaboradores = {};
 
     let recebe_codigo_empresa_pessoa;
@@ -7298,6 +7317,8 @@ function reaplicarGruposSelecionadosUI() {
     // 🔹 requisita dados da empresa (se existir empresa_id)
     if (recebe_codigo_empresa_pessoa) {
       resposta_empresa_pessoa = await requisitarEmpresaPessoa(recebe_codigo_empresa_pessoa);
+    }else{
+      //resposta_empresa_pessoa = await requisitarEmpresaPrimeiroKIT();
     }
 
     if(recebe_codigo_clinica_pessoa)
@@ -7307,10 +7328,14 @@ function reaplicarGruposSelecionadosUI() {
 
     if(recebe_codigo_pessoa){
       resposta_pessoa = await requisitarPessoa(recebe_codigo_pessoa);
+    }else{
+      resposta_pessoa = await requisitarPessoa(item.id);
     }
 
     if(recebe_codigo_cargo){
       resposta_cargo_pessoa = await requisitarDadosCargo(resposta_pessoa.id);
+    }else{
+      resposta_cargo_pessoa = await requisitarDadosCargo(item.id);
     }
 
     console.log("Resposta final de kits:", resposta_kits);

@@ -11,7 +11,6 @@ use  Dompdf\Dompdf;
 use  Dompdf\Options;
 
 
-
 // conexao.php
 // $host = 'localhost';
 // $dbname = 'promais';
@@ -1029,6 +1028,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_pessoa->execute();
         $resultado_busca_pessoa = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_pessoa);
+    }else if($recebe_processo_geracao_kit === "buscar_empresa_primeiro_kit")
+    {
+        echo json_encode($_SESSION["empresa_id"]);
     }
 }
 ?>
