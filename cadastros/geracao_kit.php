@@ -2486,6 +2486,58 @@ function renderAssinatura_examinador(pessoa) {
 }
 
 
+// 🔹 Função assíncrona que aguarda o processamento completo
+async function popular_medico_relacionados_empresa_edicao() {
+  debugger;
+
+  const empresaId = window.kit_tipo_exame?.empresa_id;
+  if (!empresaId) {
+    console.warn("❗ Nenhuma empresa definida em window.kit_tipo_exame.empresa_id");
+    return;
+  }
+
+  await new Promise((resolve, reject) => {
+    $.ajax({
+      url: "cadastros/processa_medico.php",
+      method: "GET",
+      dataType: "json",
+      data: {
+        processo_medico: "buscar_medicos_associados_empresa",
+        valor_codigo_empresa_medicos_associados: empresaId,
+      },
+      success: function (resposta_medicos) {
+        debugger;
+        console.log("✅ Médicos associados retornados:", resposta_medicos);
+
+        if (Array.isArray(resposta_medicos) && resposta_medicos.length > 0) {
+          const medicos_relacionados_empresa = [];
+
+          for (const medico of resposta_medicos) {
+            medicos_relacionados_empresa.push({
+              id: medico.medico_id,
+              nome: medico.nome_medico,
+              cpf: medico.cpf,
+            });
+          }
+
+          // 🔹 Atualiza variável global ou objeto existente
+          if (typeof profissionaisMedicinaData !== "undefined") {
+            profissionaisMedicinaData.coordenadores = medicos_relacionados_empresa;
+          }
+        }
+
+        resolve(); // ✅ sinaliza que terminou
+      },
+      error: function (xhr, status, error) {
+        console.error("❌ Falha ao buscar médicos:", error);
+        reject(error);
+      },
+    });
+  });
+}
+
+
+
 
 
 
@@ -2494,7 +2546,7 @@ function renderAssinatura_examinador(pessoa) {
 
 
     // Restaura UI ao trocar de aba e mantém cabeçalho dos Médicos sincronizado
-    document.addEventListener('tabChanged', function(e) {
+    document.addEventListener('tabChanged', function(e){
       const step = e && e.detail ? e.detail.step : undefined;
       // Passo 2 (index 1): ECP
       if (step === 1) {
@@ -2511,10 +2563,17 @@ function renderAssinatura_examinador(pessoa) {
       if (step === 2) {
         try { applyMedicosHeaderFromEcp(); } catch (err) { /* noop */ }
         // Garante binds e restaura seleção dos profissionais (ligeiro atraso para DOM assentar)
-        setTimeout(() => {
+        setTimeout(async () => {
           try { bindMedicosInputsOnce(); } catch (e) { /* noop */ }
           try { applyMedicosStateToUI(); } catch (e) { /* noop */ }
           // 🔹 Chama depois que o estado foi aplicado
+          try {
+            await popular_medico_relacionados_empresa_edicao();
+            console.log("🔹 Médicos carregados e processados com sucesso.");
+            // segue o código normalmente...
+          } catch (err) {
+            console.error("Erro ao popular médicos:", err);
+          }
           try { repopular_dados_medico_coordenador(); } catch (err) { /* noop */ }
           try { repopular_dados_medico_examinador(window.kit_medico_examinador, document.getElementById('resultadoMedico')); } catch (err) { /* noop */ }
 
@@ -7787,7 +7846,10 @@ function reaplicarGruposSelecionadosUI() {
 
           recebe_codigo_empresa_selecionada = itemObj.id;
 
-          busca_medicos_relacionados_empresa();
+          if(window.recebe_acao !== "editar")
+          {
+            busca_medicos_relacionados_empresa();
+          }
         }else if(inputId === "inputClinica")
         {
           await grava_ecp_kit("clinica",itemObj.id);
@@ -10209,10 +10271,10 @@ modal.innerHTML = `
           dataType: "json",
           data: {
               "processo_medico": "buscar_medicos_associados_empresa",
-              valor_codigo_empresa_medicos_associados: recebe_codigo_empresa_selecionada,
+              valor_codigo_empresa_medicos_associados: recebe_codigo_empresa_selecionada || (window.kit_tipo_exame ? window.kit_tipo_exame.empresa_id : null),
           },
           success: function(resposta_medicos) {
-            // debugger;
+            debugger;
             console.log(resposta_medicos);
 
             if(resposta_medicos.length > 0)
@@ -10630,63 +10692,125 @@ modal.innerHTML = `
     {
         debugger;
 
-        let recebe_id;
-        if(valores.id !== undefined)
+        if(window.recebe_acao && window.recebe_acao === "editar")
         {
-          recebe_id = valores.id;
-        }else{
-          recebe_id = valores;
-        }
+          let recebe_id;
+          if(valores.id !== undefined)
+          {
+            recebe_id = valores.id;
+          }else{
+            recebe_id = valores;
+          }
 
-        console.log(valores);
-        $.ajax({
-          url: "cadastros/processa_geracao_kit.php",
-          type: "POST",
-          dataType: "json",
-          data: {
-            processo_geracao_kit: "incluir_valores_kit",
-            valor_medico_coordenador_id: recebe_id,
-          },
-          success: function(retorno_exame_geracao_kit) {
-            // debugger;
+          console.log(valores);
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "atualizar_kit",
+              valor_medico_coordenador_id: recebe_id,
+              valor_id_kit:window.recebe_id_kit
+            },
+            success: function(retorno_exame_geracao_kit) {
+              // debugger;
 
-            const mensagemSucesso = `
-                  <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                      
-                      <div>
+              const mensagemSucesso = `
+                    <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                      <div style="display: flex; align-items: center; justify-content: center;">
                         
-                        <div>Médico coordenador gravado com sucesso.</div>
+                        <div>
+                          
+                          <div>KIT atualizado com sucesso.</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-            `;
+              `;
 
-            // Remove mensagem anterior se existir
-            $("#medico-coordenador-gravado").remove();
-                
-            // Adiciona a nova mensagem acima das abas
-            $(".tabs-container").before(mensagemSucesso);
+              // Remove mensagem anterior se existir
+              $("#medico-coordenador-gravado").remove();
+                  
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
 
-            // Configura o fade out após 5 segundos
-            setTimeout(function() {
-              $("#medico-coordenador-gravado").fadeOut(500, function() {
-              $(this).remove();
-              });
-            }, 5000);
+              // Configura o fade out após 5 segundos
+              setTimeout(function() {
+                $("#medico-coordenador-gravado").fadeOut(500, function() {
+                $(this).remove();
+                });
+              }, 5000);
 
 
-            // $("#exame-gravado").html(retorno_exame_geracao_kit);
-            // $("#exame-gravado").show();
-            // $("#exame-gravado").fadeOut(4000);
-            console.log(retorno_exame_geracao_kit);
-            // ajaxEmExecucao = false; // libera para nova requisição
-          },
-          error: function(xhr, status, error) {
-            console.log("Falha ao incluir exame: " + error);
-            // ajaxEmExecucao = false; // libera para tentar de novo
-          },
-        });
+              // $("#exame-gravado").html(retorno_exame_geracao_kit);
+              // $("#exame-gravado").show();
+              // $("#exame-gravado").fadeOut(4000);
+              console.log(retorno_exame_geracao_kit);
+              // ajaxEmExecucao = false; // libera para nova requisição
+            },
+            error: function(xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              // ajaxEmExecucao = false; // libera para tentar de novo
+            },
+          });
+        }else{
+          let recebe_id;
+          if(valores.id !== undefined)
+          {
+            recebe_id = valores.id;
+          }else{
+            recebe_id = valores;
+          }
+
+          console.log(valores);
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "incluir_valores_kit",
+              valor_medico_coordenador_id: recebe_id,
+            },
+            success: function(retorno_exame_geracao_kit) {
+              // debugger;
+
+              const mensagemSucesso = `
+                    <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                      <div style="display: flex; align-items: center; justify-content: center;">
+                        
+                        <div>
+                          
+                          <div>Médico coordenador gravado com sucesso.</div>
+                        </div>
+                      </div>
+                    </div>
+              `;
+
+              // Remove mensagem anterior se existir
+              $("#medico-coordenador-gravado").remove();
+                  
+              // Adiciona a nova mensagem acima das abas
+              $(".tabs-container").before(mensagemSucesso);
+
+              // Configura o fade out após 5 segundos
+              setTimeout(function() {
+                $("#medico-coordenador-gravado").fadeOut(500, function() {
+                $(this).remove();
+                });
+              }, 5000);
+
+
+              // $("#exame-gravado").html(retorno_exame_geracao_kit);
+              // $("#exame-gravado").show();
+              // $("#exame-gravado").fadeOut(4000);
+              console.log(retorno_exame_geracao_kit);
+              // ajaxEmExecucao = false; // libera para nova requisição
+            },
+            error: function(xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              // ajaxEmExecucao = false; // libera para tentar de novo
+            },
+          });
+        }
     }
 
     function grava_medico_clinica_kit(valores)
