@@ -6095,7 +6095,7 @@ tipoContaInputs.forEach(input => {
         groupSelectContainer._changeBound = true;
         // Inicializa as seleções: se há snapshot salvo, reaplica; senão, usa o estado atual
         if (Array.isArray(window.riscosGruposEstadoSalvo) && window.riscosGruposEstadoSalvo.length) {
-          reaplicarGruposSelecionadosUI();
+          // reaplicarGruposSelecionadosUI();
         } else {
           updateSelectedGroups();
         }
@@ -11603,7 +11603,8 @@ function buscar_riscos() {
         const deveMarcar = Array.isArray(window.riscosGruposEstadoSalvo) && window.riscosGruposEstadoSalvo.includes(codigo);
         const checkboxHtml = `
           <label class="group-option" style="display: block; padding: 5px 0;">
-            <input type="checkbox" value="${codigo}" ${deveMarcar ? 'checked' : ''}>
+            
+            <input type="checkbox" value="${codigo}">
             ${dados.name}
           </label>
         `;
