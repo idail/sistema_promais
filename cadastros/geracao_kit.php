@@ -14549,6 +14549,22 @@ function updateSelectedList() {
     }
   }
 
+
+  // 🔸 Se não está em edição (modo gravação)
+console.log('🟠 Modo gravação (sem dados prévios) - comportamento original.');
+
+// 🟢 NOVO - restaurar seleções se existirem variáveis globais
+if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0) ||
+    (window.aptExamesSelecionados && window.aptExamesSelecionados.length > 0)) {
+  console.log('🔁 Restaurando seleções anteriores salvas globalmente...');
+  aptAptidoesSelecionadas = [...(window.aptAptidoesSelecionadas || [])];
+  aptExamesSelecionados = [...(window.aptExamesSelecionados || [])];
+  //renderizarCheckboxes();
+  console.log('✅ Aptidões e exames restaurados a partir das variáveis globais.');
+  //return;
+}
+
+
   // 🔸 Se não está em edição (modo gravação), mantém o comportamento original
   console.log('🟠 Modo gravação (sem dados prévios) - comportamento original.');
   
@@ -14766,6 +14782,48 @@ function updateSelectedList() {
     }
   }
 
+  // 🔹 Atualiza variáveis principais e JSON
+if (tipo === "aptidao") {
+  aptidoes_selecionadas = baseArray.map(item => ({
+    codigo: item.codigo,
+    nome: item.recebe_apenas_nome || item.nome,
+    valor: item.valor
+  }));
+  aptidoes_selecionadas = [...new Map(aptidoes_selecionadas.map(i => [i.codigo, i])).values()];
+  json_aptidoes = JSON.stringify(aptidoes_selecionadas);
+  console.log("Aptidões selecionadas:", aptidoes_selecionadas);
+
+  // 🟠 NOVO - se for gravação (step 4), salva globalmente
+  if (window.recebe_acao !== "edicao") {
+    window.aptAptidoesSelecionadas = [...aptidoes_selecionadas];
+  }
+
+  if (devePersistir && precisaSalvarAptidoes) {
+    await gravar_aptidoes_selecionadas();
+    precisaSalvarAptidoes = false;
+  }
+} else {
+  exames_selecionados = baseArray.map(item => ({
+    codigo: item.codigo,
+    nome: item.recebe_apenas_nome || item.nome,
+    valor: item.valor
+  }));
+  exames_selecionados = [...new Map(exames_selecionados.map(i => [i.codigo, i])).values()];
+  json_exames = JSON.stringify(exames_selecionados);
+  console.log("Exames selecionados:", exames_selecionados);
+
+  // 🟠 NOVO - se for gravação (step 4), salva globalmente
+  if (window.recebe_acao !== "edicao") {
+    window.aptExamesSelecionados = [...exames_selecionados];
+  }
+
+  if (devePersistir && precisaSalvarExames) {
+    await gravar_exames_selecionadas();
+    precisaSalvarExames = false;
+  }
+}
+
+
   // 🔹 Cálculo do total de exames (somente no modo de edição)
   if (tipo === "exame" && Array.isArray(window.exames) && window.exames.length > 0) {
     const total = window.exames.reduce((soma, item) => {
@@ -14790,6 +14848,7 @@ function updateSelectedList() {
 
   // 🔹 Renderiza badges na interface
   baseArray.forEach(item => {
+    debugger;
     const badge = document.createElement('div');
     badge.style.display = 'inline-flex';
     badge.style.alignItems = 'center';
