@@ -3705,6 +3705,7 @@ function repopular_laudos() {
         window.tipo_dado_bancario = window.kit_tipo_exame.tipo_dado_bancario;
         window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
         window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        window.modelos_documentos = window.kit_tipo_exame.modelos_selecionados;
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
@@ -4422,9 +4423,82 @@ function repopular_produtos() {
         restaurarModelosSelecionados();
 
         function restaurarModelosSelecionados() {
-          debugger;
+  debugger;
+
+  // 🔹 Caso seja edição — utiliza modelos de ambas as variáveis
+  if (window.recebe_acao === 'editar') {
+    const modelosBancoRaw = Array.isArray(window.modelos_documentos)
+      ? window.modelos_documentos.slice()
+      : (window.modelos_documentos ? [String(window.modelos_documentos)] : []);
+
+    const modelosGlobaisRaw = Array.isArray(window.smModelosDocumentosSelecionados)
+      ? window.smModelosDocumentosSelecionados.slice()
+      : (window.smModelosDocumentosSelecionados ? [String(window.smModelosDocumentosSelecionados)] : []);
+
+    // Função para normalizar/achatar entradas (trata strings JSON, aspas, trims, lowercase)
+    function flattenAndNormalize(arr) {
+      const out = [];
+      arr.forEach(item => {
+        if (item == null) return;
+        if (typeof item === 'string') {
+          let s = item.trim();
+
+          // tenta fazer parse se for JSON (ex: '["A","B"]')
+          if ((s.startsWith('[') && s.endsWith(']')) || (s.startsWith('"[') && s.endsWith(']"'))) {
+            try {
+              const parsed = JSON.parse(s);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(p => { if (p != null) out.push(String(p).trim().toLowerCase()); });
+                return;
+              }
+            } catch (e) {
+              // não conseguiu parsear, segue abaixo para tratamento como string comum
+            }
+          }
+
+          // remove aspas externas sobrando: "ASO - ..." ou 'ASO - ...'
+          if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+            s = s.slice(1, -1).trim();
+          }
+
+          // Se contém vírgula e parece lista, tenta separar (opcional)
+          if (s.includes(',') && !s.includes(' - ')) {
+            s.split(',').forEach(part => { if (part.trim()) out.push(part.trim().toLowerCase()); });
+          } else {
+            out.push(s.toLowerCase());
+          }
+        } else {
+          out.push(String(item).trim().toLowerCase());
+        }
+      });
+
+      return Array.from(new Set(out));
+    }
+
+    const todosModelosNorm = flattenAndNormalize([...modelosBancoRaw, ...modelosGlobaisRaw]);
+
+    if (!todosModelosNorm.length) return;
+
+    // Marca todos os checkboxes correspondentes (comparação normalizada)
+    document.querySelectorAll('.sm-label').forEach(label => {
+      debugger;
+      const card = label.querySelector('.sm-card');
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      if (card && checkbox) {
+        const text = card.querySelector('span')?.textContent?.trim();
+        const textNorm = text ? text.toLowerCase() : '';
+        if (textNorm && todosModelosNorm.includes(textNorm)) {
+          checkbox.checked = true;
+        }
+      }
+    });
+
+    return; // encerra aqui se for edição
+  }
+
+  // 🔹 Caso contrário — executa o comportamento original
   if (!window.smModelosDocumentosSelecionados || !window.smModelosDocumentosSelecionados.length) return;
-  
+
   document.querySelectorAll('.sm-label').forEach(label => {
     const card = label.querySelector('.sm-card');
     const checkbox = label.querySelector('input[type="checkbox"]');
@@ -4436,6 +4510,9 @@ function repopular_produtos() {
     }
   });
 }
+
+
+
 
         // const pixKeySelect = document.getElementById('pix-key-select');
         // if (!pixKeySelect) return;
