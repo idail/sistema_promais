@@ -7000,7 +7000,21 @@ function reaplicarGruposSelecionadosUI() {
       console.log('Forçando busca inicial de clínicas...');
       buscarECP('clinicas', 'inputClinica', 'resultClinica', 'nome');
 
-      $.ajax({
+      if(window.recebe_acao === "editar")
+      {
+        if (!$('#kit-toast-style').length) {
+            $('head').append('<style id="kit-toast-style">\n              #kit-toast {\n                position: fixed;\n                top: 10px;\n                right: 10px;\n                background: #28a745; /* verde similar ao totalizador */\n                color: #fff;\n                padding: 8px 16px;\n                border-radius: 4px;\n                font-weight: 600;\n                z-index: 9999;\n                display: none;\n                box-shadow: 0 2px 6px rgba(0,0,0,.2);\n              }\n            </style>');
+          }
+
+          // Cria (ou reusa) o banner
+          let $toast = $('#kit-toast');
+          if (!$toast.length) {
+            $toast = $('<div id="kit-toast"></div>').appendTo('body');
+          }
+          $toast.text('Edição do kit iniciada').stop(true, true).fadeIn(200).delay(5000).fadeOut(1000);
+      }else
+      {
+        $.ajax({
         url: "cadastros/processa_geracao_kit.php",
         type: "POST",
         dataType: "json",
@@ -7039,6 +7053,7 @@ function reaplicarGruposSelecionadosUI() {
           try { console.log('[KIT][COMPLETE] headers:', xhr && xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()); } catch(_) {}
         }
       });
+      }
 
 
       console.log('Iniciando carregamento de empresas...');
@@ -7330,7 +7345,7 @@ function reaplicarGruposSelecionadosUI() {
 }
 
   function buscarECP(tipo, inputId, resultadoId, chave) {
-    debugger;
+    //debugger;
     console.log('buscarECP chamada com parâmetros:', {tipo, inputId, resultadoId, chave});
     console.log('ecpData no início da busca:', ecpData);
     console.log('Dados disponíveis para busca:', ecpData[tipo]);
