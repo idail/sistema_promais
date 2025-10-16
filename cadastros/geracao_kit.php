@@ -14976,7 +14976,7 @@ tipoContaInputs.forEach(input => {
             atualizarEstadoBancario('qrcode', true, null);
         }
 
-        gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+        //gravar_tipo_dado_bancario(JSON.stringify(selecionados));
     });
 });
   
@@ -17331,7 +17331,7 @@ function renderizarCheckboxes() {
           dataType: "json",
           data: {
            processo_produto: "deletar_produto",
-           valor_codigo_produto: codigoProduto,
+           valor_codigo_produto: window.recebe_codigo_produto,
           },
           success: function(retorno_produto) {
             debugger;
@@ -17704,6 +17704,7 @@ function initFatDescricaoLiveSearch(){
   // Função para remover produto
     window.fatRemoverProduto = async function(botao, codigo,valorTotal) {
       debugger;
+      window.recebe_codigo_produto = codigo;
       // Cria um elemento de confirmação estilizado
       const linha = botao.closest('.fat-produto-item');
       
