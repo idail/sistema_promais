@@ -5456,6 +5456,7 @@ tipoContaInputs.forEach(input => {
 });
 
 document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
+  debugger;
   input.addEventListener('click', function () {
     // 🚫 Se estiver carregando aba, ignora
     if (window._carregandoAbaBancaria) {
