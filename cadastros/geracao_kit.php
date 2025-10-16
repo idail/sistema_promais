@@ -5396,56 +5396,128 @@ if (opt.value === chaveFormatada) {
         console.log('Estado bancário atualizado:', window.dadosBancariosEstado);
     }
 }
+
+// ============================================================
+// 🔹 Controle inicial
+// ============================================================
+window._habilitarGravacaoBancaria = false;  // só ativa após clique real
+window._carregandoAbaBancaria = false;      // true somente se for setado manualmente
+
+// ============================================================
+// 🔹 Função para tratar seleção do tipo bancário pelo usuário
+// ============================================================
+function tratarSelecaoTipoBancario(input) {
+  debugger;
+
+  const tipo = input.value;
+  const estaMarcado = input.checked;
+
+  // 🟢 Ativa gravação na primeira ação real
+  if (!window._habilitarGravacaoBancaria) {
+    console.log('🟢 Usuário interagiu com dados bancários — gravação habilitada.');
+    window._habilitarGravacaoBancaria = true;
+  }
+
+  if (tipo === 'pix' && estaMarcado) {
+    atualizarEstadoBancario('pix', null, null);
+  } else if (tipo === 'agencia-conta' && estaMarcado) {
+    atualizarEstadoBancario('agencia-conta', null, null);
+  } else if (tipo === 'qrcode') {
+    atualizarEstadoBancario('qrcode', estaMarcado, null);
+  }
+
+  if (pixSelectorContainer) {
+    const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
+    pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+  }
+
+  const selecionados = Array.from(tipoContaInputs)
+    .filter(i => i.checked)
+    .map(i => i.value);
+
+  console.group('💾 Tipo bancário selecionado');
+  console.log('Selecionados:', selecionados);
+  console.groupEnd();
+
+  // ✅ Só grava se o usuário tiver interagido (flag true)
+  if (window._habilitarGravacaoBancaria) {
+    gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+  } else {
+    console.warn('⏸️ Gravação ignorada — interação do usuário ainda não detectada.');
+  }
+}
+
+// ============================================================
+// 🔹 Associação de eventos — apenas clique real do usuário
+// ============================================================
+tipoContaInputs.forEach(input => {
+  // Remove eventuais listeners antigos (segurança)
+  input.replaceWith(input.cloneNode(true));
+});
+
+document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
+  input.addEventListener('click', function () {
+    // 🚫 Se estiver carregando aba, ignora
+    if (window._carregandoAbaBancaria) {
+      console.log('⏸️ Clique ignorado — aba bancária ainda carregando.');
+      return;
+    }
+
+    // ✅ Chama tratamento somente em clique do usuário
+    tratarSelecaoTipoBancario(this);
+  });
+});
+
           
           // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
   // Modifique o evento change dos inputs de tipo de conta
-tipoContaInputs.forEach(input => {
-    input.addEventListener('change', function() {
-      debugger;
-        const tipo = this.value;
-        const estaMarcado = this.checked;
+// tipoContaInputs.forEach(input => {
+//     input.addEventListener('change', function() {
+//       debugger;
+//         const tipo = this.value;
+//         const estaMarcado = this.checked;
         
-        // Atualiza o estado global
-        if (tipo === 'pix' && estaMarcado) {
-            atualizarEstadoBancario('pix', estaMarcado, null);
-        } else if (tipo === 'agencia-conta' && estaMarcado) {
-            atualizarEstadoBancario('agencia-conta', estaMarcado, null);
-        } else if (tipo === 'qrcode') {
-            atualizarEstadoBancario('qrcode', estaMarcado, null);
-        }
+//         // Atualiza o estado global
+//         if (tipo === 'pix' && estaMarcado) {
+//             atualizarEstadoBancario('pix', estaMarcado, null);
+//         } else if (tipo === 'agencia-conta' && estaMarcado) {
+//             atualizarEstadoBancario('agencia-conta', estaMarcado, null);
+//         } else if (tipo === 'qrcode') {
+//             atualizarEstadoBancario('qrcode', estaMarcado, null);
+//         }
 
-        // Verifica se algum checkbox de PIX está marcado
-        if (pixSelectorContainer) {
-            const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
-            pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
-        }
+//         // Verifica se algum checkbox de PIX está marcado
+//         if (pixSelectorContainer) {
+//             const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
+//             pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+//         }
 
-        try {
-            console.group('Conta Bancária > tipo-conta change');
-            console.log('Input clicado:', this);
-            console.log('Valor selecionado:', this.value);
-            console.groupEnd();
-        } catch (e) { /* noop */ }
+//         try {
+//             console.group('Conta Bancária > tipo-conta change');
+//             console.log('Input clicado:', this);
+//             console.log('Valor selecionado:', this.value);
+//             console.groupEnd();
+//         } catch (e) { /* noop */ }
 
-        // Grava imediatamente todas as opções selecionadas como array JSON
-        const selecionados = Array.from(tipoContaInputs)
-            .filter(i => i.checked)
-            .map(i => i.value);
+//         // Grava imediatamente todas as opções selecionadas como array JSON
+//         const selecionados = Array.from(tipoContaInputs)
+//             .filter(i => i.checked)
+//             .map(i => i.value);
         
-        // Atualiza o estado global com os tipos selecionados
-        if (selecionados.includes('pix')) {
-            atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
-        }
-        if (selecionados.includes('agencia-conta')) {
-            atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
-        }
-        if (selecionados.includes('qrcode')) {
-            atualizarEstadoBancario('qrcode', true, null);
-        }
+//         // Atualiza o estado global com os tipos selecionados
+//         if (selecionados.includes('pix')) {
+//             atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
+//         }
+//         if (selecionados.includes('agencia-conta')) {
+//             atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
+//         }
+//         if (selecionados.includes('qrcode')) {
+//             atualizarEstadoBancario('qrcode', true, null);
+//         }
 
-        gravar_tipo_dado_bancario(JSON.stringify(selecionados));
-    });
-});
+//         gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+//     });
+// });
           
           // Função para abrir o modal de cadastro de chave PIX
           function abrirModalChavePix() {
@@ -14833,6 +14905,28 @@ console.log(total); // Exemplo: "180.10"
           </div>
         </div>`]
 
+
+// ============================================================
+// 🔹 Associação de eventos — apenas clique real do usuário
+// ============================================================
+tipoContaInputs.forEach(input => {
+  // Remove eventuais listeners antigos (segurança)
+  input.replaceWith(input.cloneNode(true));
+});
+
+document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
+  debugger;
+  input.addEventListener('click', function () {
+    // 🚫 Se estiver carregando aba, ignora
+    if (window._carregandoAbaBancaria) {
+      console.log('⏸️ Clique ignorado — aba bancária ainda carregando.');
+      return;
+    }
+
+    // ✅ Chama tratamento somente em clique do usuário
+    tratarSelecaoTipoBancario(this);
+  });
+});
 
 // Script para controle da seção de Conta Bancária
 document.addEventListener('DOMContentLoaded', function() {
