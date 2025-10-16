@@ -5455,19 +5455,58 @@ tipoContaInputs.forEach(input => {
   input.replaceWith(input.cloneNode(true));
 });
 
+// document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
+//   debugger;
+//   input.addEventListener('click', function () {
+//     // 🚫 Se estiver carregando aba, ignora
+//     if (window._carregandoAbaBancaria) {
+//       console.log('⏸️ Clique ignorado — aba bancária ainda carregando.');
+//       return;
+//     }
+
+//     // ✅ Chama tratamento somente em clique do usuário
+//     tratarSelecaoTipoBancario(this);
+//   });
+// });
+
+// Marca se o usuário clicou manualmente
+window._mudancaManualTipoConta = false;
+
+// Detecta clique manual
 document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
   debugger;
-  input.addEventListener('click', function () {
-    // 🚫 Se estiver carregando aba, ignora
-    if (window._carregandoAbaBancaria) {
-      console.log('⏸️ Clique ignorado — aba bancária ainda carregando.');
-      return;
-    }
+  input.addEventListener('mousedown', () => window._mudancaManualTipoConta = true);
+  input.addEventListener('keydown', () => window._mudancaManualTipoConta = true);
+  input.addEventListener('click', () => window._carregandoAbaBancaria = false);
+  input.addEventListener('click', () => window._mudancaManualTipoConta = true);
 
-    // ✅ Chama tratamento somente em clique do usuário
-    tratarSelecaoTipoBancario(this);
+  input.addEventListener('click', function () {
+    debugger;
+    try {
+      // 🚫 Ignora clique se a aba bancária ainda estiver carregando
+      if (window._carregandoAbaBancaria) {
+        console.log('⏸️ Clique ignorado — aba bancária ainda carregando.');
+        return;
+      }
+
+      // 🚫 Ignora se não foi uma interação manual
+      if (!window._mudancaManualTipoConta) {
+        console.log('⏸️ Clique ignorado — não foi interação manual.');
+        return;
+      }
+
+      // ✅ Executa a função de tratamento
+      tratarSelecaoTipoBancario(this);
+
+    } catch (e) {
+      console.error('❌ Erro no clique de tipo-conta:', e);
+    } finally {
+      // 🔹 Reseta a flag após o uso
+      window._mudancaManualTipoConta = false;
+    }
   });
 });
+
 
           
           // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
@@ -15175,6 +15214,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
   // Modifique o evento change dos inputs de tipo de conta
 tipoContaInputs.forEach(input => {
+  debugger;
     input.addEventListener('change', function() {
       debugger;
         const tipo = this.value;
