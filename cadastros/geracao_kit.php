@@ -4475,6 +4475,118 @@ try {
 
 
         // Função para repopular produtos apenas para exibição
+// function repopular_produtos() {
+//   debugger;
+//   const container = document.getElementById('fat-lista-produtos');
+//   if (!container) {
+//     console.error('Container de produtos não encontrado');
+//     return;
+//   }
+
+//   // Limpa a lista antes de repopular
+//   container.innerHTML = '';
+
+//   // Aplica o CSS se ainda não tiver sido aplicado
+//   if (!document.getElementById('fat-styles')) {
+//     const style = document.createElement('style');
+//     style.id = 'fat-styles';
+//     style.textContent = `
+//       .fat-produto-item {
+//         display: flex;
+//         align-items: center;
+//         gap: 15px;
+//         padding: 12px 15px;
+//         color: #2d3748;
+//         font-size: 14px;
+//         border-bottom: 1px solid #e2e8f0;
+//         transition: all 0.2s ease;
+//         background-color: white;
+//         border-radius: 8px;
+//         margin-bottom: 8px;
+//         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+//       }
+//       .fat-produto-item:hover {
+//         background-color: #f8fafc;
+//         transform: translateY(-1px);
+//         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+//       }
+//       .fat-produto-item > div {
+//         padding: 4px 8px;
+//       }
+//       .fat-produto-descricao {
+//         flex: 3;
+//         font-weight: 500;
+//         color: #1a365d;
+//       }
+//       .fat-produto-quantidade, .fat-produto-valor-unit, .fat-produto-total {
+//         flex: 1;
+//         text-align: center;
+//         color: #4a5568;
+//       }
+//       .fat-produto-total {
+//         font-weight: 600;
+//         color: #2b6cb0;
+//       }
+//       .fat-produto-acoes {
+//         flex: 0.8;
+//         text-align: center;
+//       }
+//       .btn-remover {
+//         background-color: #fff;
+//         color: #e53e3e;
+//         border: 1px solid #fed7d7;
+//         border-radius: 6px;
+//         padding: 6px 12px;
+//         font-size: 13px;
+//         font-weight: 500;
+//         cursor: pointer;
+//         display: inline-flex;
+//         align-items: center;
+//         gap: 4px;
+//         transition: all 0.2s ease;
+//       }
+//       .btn-remover:hover {
+//         background-color: #feb2b2;
+//         color: #9b2c2c;
+//         transform: translateY(-1px);
+//       }
+//       .btn-remover i {
+//         font-size: 14px;
+//       }
+//     `;
+//     document.head.appendChild(style);
+//   }
+
+//   if (!Array.isArray(window.produtos) || window.produtos.length === 0) {
+//     container.innerHTML = `<div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
+//       Nenhum produto disponível
+//     </div>`;
+//     return;
+//   }
+
+//   // Percorre os produtos e adiciona na lista
+//   window.produtos.forEach(prod => {
+//     const valorTotal = prod.quantidade * prod.valorunit;
+//     const linha = document.createElement('div');
+//     linha.className = 'fat-produto-item';
+//     linha.innerHTML = [
+//       `<div class="fat-produto-descricao">${prod.nome}</div>`,
+//       `<div class="fat-produto-quantidade">${prod.quantidade}</div>`,
+//       `<div class="fat-produto-valor-unit">${fatFormatter.format(prod.valor)}</div>`,
+//       `<div class="fat-produto-total">${fatFormatter.format(prod.valor)}</div>`,
+//       '<div class="fat-produto-acoes">',
+//       `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${prod.id}, ${prod.valor})">`,
+//       '    <i class="fas fa-trash-alt"></i> Remover',
+//       '  </button>',
+//       '</div>'
+//     ].join('');
+//     container.appendChild(linha);
+//   });
+// }
+
+// =============================
+// 🔹 Função para repopular produtos
+// =============================
 function repopular_produtos() {
   debugger;
   const container = document.getElementById('fat-lista-produtos');
@@ -4561,27 +4673,38 @@ function repopular_produtos() {
     container.innerHTML = `<div style="color: #6c757d; font-style: italic; text-align: center; padding: 20px 0;">
       Nenhum produto disponível
     </div>`;
+    window.fatTotalEPI = 0;
     return;
   }
 
+  // 🔹 Calcula o total geral dos produtos
+  let totalProdutos = 0;
+
   // Percorre os produtos e adiciona na lista
   window.produtos.forEach(prod => {
-    const valorTotal = prod.quantidade * prod.valorunit;
+    const valorUnit = parseFloat(prod.valorunit || prod.valor || 0);
+    const quantidade = parseFloat(prod.quantidade || 1);
+    const valorTotal = valorUnit * quantidade;
+    totalProdutos += valorTotal;
+
     const linha = document.createElement('div');
     linha.className = 'fat-produto-item';
     linha.innerHTML = [
       `<div class="fat-produto-descricao">${prod.nome}</div>`,
-      `<div class="fat-produto-quantidade">${prod.quantidade}</div>`,
-      `<div class="fat-produto-valor-unit">${fatFormatter.format(prod.valor)}</div>`,
-      `<div class="fat-produto-total">${fatFormatter.format(prod.valor)}</div>`,
+      `<div class="fat-produto-quantidade">${quantidade}</div>`,
+      `<div class="fat-produto-valor-unit">${fatFormatter.format(valorUnit)}</div>`,
+      `<div class="fat-produto-total">${fatFormatter.format(valorTotal)}</div>`,
       '<div class="fat-produto-acoes">',
-      `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${prod.id}, ${prod.valor})">`,
+      `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${prod.id}, ${valorTotal})">`,
       '    <i class="fas fa-trash-alt"></i> Remover',
       '  </button>',
       '</div>'
     ].join('');
     container.appendChild(linha);
   });
+
+  // 🔸 Armazena o total global de produtos
+  window.fatTotalEPI = totalProdutos;
 }
 
 
@@ -17645,149 +17768,344 @@ function initFatDescricaoLiveSearch(){
         }
       });
     };
+
+    function fatAtualizarTotais() {
+  debugger;
+
+  const isEdicao = window.recebe_acao === 'editar';
+
+  // ================================
+  // 🧭 Conversor seguro para número BR
+  // ================================
+  const toNumberBR = (val) => {
+    if (val === null || val === undefined) return 0;
+    if (typeof val === 'number') return isFinite(val) ? val : 0;
+    if (typeof val === 'string') {
+      const limpo = val
+        .replace(/[^0-9,.-]/g, '')
+        .replace(/\.(?=\d{3}(\D|$))/g, '')
+        .replace(',', '.');
+      const n = parseFloat(limpo);
+      return isNaN(n) ? 0 : n;
+    }
+    if (typeof val === 'object' && val !== null && 'valor' in val) {
+      return toNumberBR(val.valor);
+    }
+    return 0;
+  };
+
+  // 🔹 Formatter BR (único global)
+  if (!window.fatFormatter) {
+    window.fatFormatter = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+  }
+
+  // ================================
+  // 🔸 Modo de edição
+  // ================================
+  if (isEdicao) {
+    console.log('🟠 Modo edição detectado — totais serão atualizados com base em dados existentes');
+
+    // 🔹 Trata EXAMES (string JSON ou array)
+    try {
+      const examesLista = Array.isArray(window.exames)
+        ? window.exames
+        : JSON.parse(window.exames || '[]');
+
+      window.fatTotalExames = examesLista.reduce(
+        (acc, ex) => acc + (toNumberBR(ex.valor) || 0),
+        0
+      );
+    } catch {
+      window.fatTotalExames = 0;
+    }
+
+    // 🔹 Trata TREINAMENTOS (string JSON ou array)
+    try {
+      const treinLista = Array.isArray(window.treinamentos)
+        ? window.treinamentos
+        : JSON.parse(window.treinamentos || '[]');
+
+      window.fatTotalTreinamentos = treinLista.reduce(
+        (acc, tr) => acc + (toNumberBR(tr.valor) || 0),
+        0
+      );
+    } catch {
+      window.fatTotalTreinamentos = 0;
+    }
+
+    // 🧮 Usa o total de produtos já definido por repopular_produtos
+    window.fatTotalEPI = parseFloat(window.fatTotalEPI) || 0;
+  }
+
+  // ================================
+  // 🔸 Quando NÃO for edição
+  // ================================
+  else {
+    console.log('🟢 Modo inclusão — garantindo existência das variáveis globais');
+
+    // Garante existência sem sobrescrever
+    window.fatTotalExames = window.fatTotalExames || 0;
+    window.fatTotalTreinamentos = window.fatTotalTreinamentos || 0;
+    window.fatTotalEPI = window.fatTotalEPI || 0;
+
+    // 🔹 Converte e soma EXAMES
+    try {
+      const examesLista = Array.isArray(window.exames)
+        ? window.exames
+        : JSON.parse(window.exames || '[]');
+
+      window.fatTotalExames = examesLista.reduce(
+        (acc, ex) => acc + (toNumberBR(ex.valor) || 0),
+        0
+      );
+    } catch {
+      window.fatTotalExames = 0;
+    }
+
+    // 🔹 Converte e soma TREINAMENTOS
+    try {
+      const treinLista = Array.isArray(window.treinamentos)
+        ? window.treinamentos
+        : JSON.parse(window.treinamentos || '[]');
+
+      window.fatTotalTreinamentos = treinLista.reduce(
+        (acc, tr) => acc + (toNumberBR(tr.valor) || 0),
+        0
+      );
+    } catch {
+      window.fatTotalTreinamentos = 0;
+    }
+
+    // ⚙️ EPI (já vem de repopular_produtos)
+  }
+
+  // ================================
+  // 🧾 Cálculo total geral
+  // ================================
+  const totalEPI = toNumberBR(window.fatTotalEPI);
+  const totalExames = toNumberBR(window.fatTotalExames);
+  const totalTreinamentos = toNumberBR(window.fatTotalTreinamentos);
+  const totalGeral = totalEPI + totalExames + totalTreinamentos;
+  window.total_final = totalGeral;
+
+  console.log('💰 Valores atuais dos totais:', {
+    fatTotalExames: totalExames,
+    fatTotalTreinamentos: totalTreinamentos,
+    fatTotalEPI: totalEPI,
+    totalGeral: totalGeral,
+  });
+
+  // ================================
+  // 🧩 Atualiza visualmente no DOM
+  // ================================
+  const updateElementIfExists = (id, value) => {
+    try {
+      const element = document.getElementById(id);
+      if (!element) return false;
+
+      const numeric = toNumberBR(value);
+      const formattedValue = window.fatFormatter.format(numeric);
+
+      if (element.textContent !== formattedValue) {
+        element.textContent = formattedValue;
+      }
+      return true;
+    } catch (error) {
+      console.error(`Erro ao atualizar o elemento ${id}:`, error);
+      return false;
+    }
+  };
+
+  const elementsUpdated = [
+    updateElementIfExists('fat-total-epi', totalEPI),
+    updateElementIfExists('fat-total-exames', totalExames),
+    updateElementIfExists('fat-total-treinamentos', totalTreinamentos),
+    updateElementIfExists('fat-total-geral', totalGeral),
+  ];
+
+  // Caso os elementos individuais não existam, atualiza container completo
+  if (elementsUpdated.some((u) => !u)) {
+    const container = document.getElementById('fat-totais-container');
+    if (container) {
+      container.innerHTML = `
+        <div class="fat-total-item">
+          <span>EPI/EPC:</span>
+          <span id="fat-total-epi">${window.fatFormatter.format(totalEPI)}</span>
+        </div>
+        <div class="fat-total-item">
+          <span>Exames:</span>
+          <span id="fat-total-exames">${window.fatFormatter.format(totalExames)}</span>
+        </div>
+        <div class="fat-total-item">
+          <span>Treinamentos:</span>
+          <span id="fat-total-treinamentos">${window.fatFormatter.format(totalTreinamentos)}</span>
+        </div>
+        <div class="fat-total-item" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
+          <span style="font-weight: 600; font-size: 16px; color: #2d3748;">Total Geral:</span>
+          <span id="fat-total-geral" style="font-weight: 700; font-size: 18px; color: #2b6cb0;">
+            ${window.fatFormatter.format(totalGeral)}
+          </span>
+        </div>
+      `;
+    }
+  }
+
+  // ================================
+  // 🔔 Dispara evento de atualização
+  // ================================
+  const event = new CustomEvent('totaisAtualizados', {
+    detail: { totalEPI, totalExames, totalTreinamentos, totalGeral },
+  });
+  document.dispatchEvent(event);
+}
+
+
   
         // Função para atualizar totais
-        function fatAtualizarTotais() {
-          debugger;
-          try {
-            console.log('=== Iniciando fatAtualizarTotais ===');
+        // function fatAtualizarTotais() {
+        //   debugger;
+        //   try {
+        //     console.log('=== Iniciando fatAtualizarTotais ===');
             
-            // Garante que as variáveis globais estão definidas
-            window.fatTotalEPI = window.fatTotalEPI || 0;
-            window.fatTotalExames = window.fatTotalExames || 0;
-            window.fatTotalTreinamentos = window.fatTotalTreinamentos || 0;
+        //     // Garante que as variáveis globais estão definidas
+        //     window.fatTotalEPI = window.fatTotalEPI || 0;
+        //     window.fatTotalExames = window.fatTotalExames || 0;
+        //     window.fatTotalTreinamentos = window.fatTotalTreinamentos || 0;
             
-            // Utilitário: converte string/valor em número no padrão pt-BR (remove R$, pontos de milhar e usa vírgula como decimal)
-            const toNumberBR = (val) => {
-              if (val === null || val === undefined) return 0;
-              if (typeof val === 'number') return isFinite(val) ? val : 0;
-              if (typeof val === 'string') {
-                // Mantém apenas dígitos, vírgula, ponto, sinal; remove "R$", espaços e outros
-                const limpo = val.replace(/[^0-9,.-]/g, '')
-                                 .replace(/\.(?=\d{3}(\D|$))/g, '') // remove pontos de milhar
-                                 .replace(',', '.'); // usa ponto como separador decimal
-                const n = parseFloat(limpo);
-                return isNaN(n) ? 0 : n;
-              }
-              // Suporta objetos com propriedade "valor"
-              if (typeof val === 'object' && val !== null && 'valor' in val) {
-                return toNumberBR(val.valor);
-              }
-              return 0;
-            };
+        //     // Utilitário: converte string/valor em número no padrão pt-BR (remove R$, pontos de milhar e usa vírgula como decimal)
+        //     const toNumberBR = (val) => {
+        //       if (val === null || val === undefined) return 0;
+        //       if (typeof val === 'number') return isFinite(val) ? val : 0;
+        //       if (typeof val === 'string') {
+        //         // Mantém apenas dígitos, vírgula, ponto, sinal; remove "R$", espaços e outros
+        //         const limpo = val.replace(/[^0-9,.-]/g, '')
+        //                          .replace(/\.(?=\d{3}(\D|$))/g, '') // remove pontos de milhar
+        //                          .replace(',', '.'); // usa ponto como separador decimal
+        //         const n = parseFloat(limpo);
+        //         return isNaN(n) ? 0 : n;
+        //       }
+        //       // Suporta objetos com propriedade "valor"
+        //       if (typeof val === 'object' && val !== null && 'valor' in val) {
+        //         return toNumberBR(val.valor);
+        //       }
+        //       return 0;
+        //     };
 
-            // Inicializa o formatter se não existir
-            if (!window.fatFormatter) {
-              window.fatFormatter = new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              });
-            }
+        //     // Inicializa o formatter se não existir
+        //     if (!window.fatFormatter) {
+        //       window.fatFormatter = new Intl.NumberFormat('pt-BR', {
+        //         style: 'currency',
+        //         currency: 'BRL',
+        //       });
+        //     }
             
-            // Normaliza valores e calcula o total geral (evita NaN)
-            const totalEPI = toNumberBR(window.fatTotalEPI);
-            const totalExames = toNumberBR(window.fatTotalExames);
-            const totalTreinamentos = toNumberBR(window.fatTotalTreinamentos);
-            const totalGeral = totalEPI + totalExames + totalTreinamentos;
+        //     // Normaliza valores e calcula o total geral (evita NaN)
+        //     const totalEPI = toNumberBR(window.fatTotalEPI);
+        //     const totalExames = toNumberBR(window.fatTotalExames);
+        //     const totalTreinamentos = toNumberBR(window.fatTotalTreinamentos);
+        //     const totalGeral = totalEPI + totalExames + totalTreinamentos;
             
-            window.total_final = totalGeral;
+        //     window.total_final = totalGeral;
 
-            console.log('Valores atuais dos totais:', {
-              fatTotalExames: totalExames,
-              fatTotalTreinamentos: totalTreinamentos,
-              fatTotalEPI: totalEPI,
-              totalGeral: totalGeral,
-              fatFormatter: window.fatFormatter ? 'Disponível' : 'Indisponível'
-            });
+        //     console.log('Valores atuais dos totais:', {
+        //       fatTotalExames: totalExames,
+        //       fatTotalTreinamentos: totalTreinamentos,
+        //       fatTotalEPI: totalEPI,
+        //       totalGeral: totalGeral,
+        //       fatFormatter: window.fatFormatter ? 'Disponível' : 'Indisponível'
+        //     });
             
-            // Função auxiliar para atualizar o conteúdo de um elemento se ele existir
-            const updateElementIfExists = (id, value) => {
-              try {
-                const element = document.getElementById(id);
-                if (!element) {
-                  console.warn(`Elemento não encontrado: ${id}`);
-                  return false;
-                }
+        //     // Função auxiliar para atualizar o conteúdo de um elemento se ele existir
+        //     const updateElementIfExists = (id, value) => {
+        //       try {
+        //         const element = document.getElementById(id);
+        //         if (!element) {
+        //           console.warn(`Elemento não encontrado: ${id}`);
+        //           return false;
+        //         }
                 
-                // Formata o valor
-                let formattedValue;
-                try {
-                  const numeric = toNumberBR(value);
-                  formattedValue = window.fatFormatter.format(numeric);
-                } catch (e) {
-                  console.warn(`Erro ao formatar valor ${value} para ${id}, usando fallback`, e);
-                  const numeric = toNumberBR(value);
-                  formattedValue = `R$ ${numeric.toFixed(2).replace('.', ',')}`;
-                }
+        //         // Formata o valor
+        //         let formattedValue;
+        //         try {
+        //           const numeric = toNumberBR(value);
+        //           formattedValue = window.fatFormatter.format(numeric);
+        //         } catch (e) {
+        //           console.warn(`Erro ao formatar valor ${value} para ${id}, usando fallback`, e);
+        //           const numeric = toNumberBR(value);
+        //           formattedValue = `R$ ${numeric.toFixed(2).replace('.', ',')}`;
+        //         }
                 
-                // Atualiza o elemento
-                if (element.textContent !== formattedValue) {
-                  element.textContent = formattedValue;
-                  console.log(`Elemento ${id} atualizado para:`, formattedValue);
-                }
-                return true;
-              } catch (error) {
-                console.error(`Erro ao atualizar o elemento ${id}:`, error);
-                return false;
-              }
-            };
+        //         // Atualiza o elemento
+        //         if (element.textContent !== formattedValue) {
+        //           element.textContent = formattedValue;
+        //           console.log(`Elemento ${id} atualizado para:`, formattedValue);
+        //         }
+        //         return true;
+        //       } catch (error) {
+        //         console.error(`Erro ao atualizar o elemento ${id}:`, error);
+        //         return false;
+        //       }
+        //     };
             
-            // Atualiza os totais individuais
-            const elementsUpdated = [
-              updateElementIfExists('fat-total-epi', totalEPI),
-              updateElementIfExists('fat-total-exames', totalExames),
-              updateElementIfExists('fat-total-treinamentos', totalTreinamentos),
-              updateElementIfExists('fat-total-geral', totalGeral)
-            ];
+        //     // Atualiza os totais individuais
+        //     const elementsUpdated = [
+        //       updateElementIfExists('fat-total-epi', totalEPI),
+        //       updateElementIfExists('fat-total-exames', totalExames),
+        //       updateElementIfExists('fat-total-treinamentos', totalTreinamentos),
+        //       updateElementIfExists('fat-total-geral', totalGeral)
+        //     ];
             
-            // Se algum elemento não foi encontrado, tenta atualizar o container completo
-            if (elementsUpdated.some(updated => !updated)) {
-              console.log('Alguns elementos não foram encontrados, tentando atualizar o container completo...');
-              const totaisContainer = document.getElementById('fat-totais-container');
-              if (totaisContainer) {
-                console.log('Atualizando container de totais...');
-                totaisContainer.innerHTML = `
-                  <div class="fat-total-item">
-                    <span>EPI/EPC:</span>
-                    <span id="fat-total-epi">${window.fatFormatter.format(totalEPI)}</span>
-                  </div>
-                  <div class="fat-total-item">
-                    <span>Exames:</span>
-                    <span id="fat-total-exames">${window.fatFormatter.format(totalExames)}</span>
-                  </div>
-                  <div class="fat-total-item">
-                    <span>Treinamentos:</span>
-                    <span id="fat-total-treinamentos">${window.fatFormatter.format(totalTreinamentos)}</span>
-                  </div>
-                  <div class="fat-total-item" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
-                    <span style="font-weight: 600; font-size: 16px; color: #2d3748;">Total Geral:</span>
-                    <span id="fat-total-geral" style="font-weight: 700; font-size: 18px; color: #2b6cb0;">
-                      ${window.fatFormatter.format(totalGeral)}
-                    </span>
-                  </div>
-                `;
-              } else {
-                console.warn('Container de totais não encontrado no DOM');
-              }
-            }
+        //     // Se algum elemento não foi encontrado, tenta atualizar o container completo
+        //     if (elementsUpdated.some(updated => !updated)) {
+        //       console.log('Alguns elementos não foram encontrados, tentando atualizar o container completo...');
+        //       const totaisContainer = document.getElementById('fat-totais-container');
+        //       if (totaisContainer) {
+        //         console.log('Atualizando container de totais...');
+        //         totaisContainer.innerHTML = `
+        //           <div class="fat-total-item">
+        //             <span>EPI/EPC:</span>
+        //             <span id="fat-total-epi">${window.fatFormatter.format(totalEPI)}</span>
+        //           </div>
+        //           <div class="fat-total-item">
+        //             <span>Exames:</span>
+        //             <span id="fat-total-exames">${window.fatFormatter.format(totalExames)}</span>
+        //           </div>
+        //           <div class="fat-total-item">
+        //             <span>Treinamentos:</span>
+        //             <span id="fat-total-treinamentos">${window.fatFormatter.format(totalTreinamentos)}</span>
+        //           </div>
+        //           <div class="fat-total-item" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
+        //             <span style="font-weight: 600; font-size: 16px; color: #2d3748;">Total Geral:</span>
+        //             <span id="fat-total-geral" style="font-weight: 700; font-size: 18px; color: #2b6cb0;">
+        //               ${window.fatFormatter.format(totalGeral)}
+        //             </span>
+        //           </div>
+        //         `;
+        //       } else {
+        //         console.warn('Container de totais não encontrado no DOM');
+        //       }
+        //     }
             
-            // Dispara evento de atualização de totais
-            const event = new CustomEvent('totaisAtualizados', { 
-              detail: { 
-                totalEPI: totalEPI,
-                totalExames: totalExames,
-                totalTreinamentos: totalTreinamentos,
-                totalGeral: totalGeral
-              } 
-            });
-            document.dispatchEvent(event);
+        //     // Dispara evento de atualização de totais
+        //     const event = new CustomEvent('totaisAtualizados', { 
+        //       detail: { 
+        //         totalEPI: totalEPI,
+        //         totalExames: totalExames,
+        //         totalTreinamentos: totalTreinamentos,
+        //         totalGeral: totalGeral
+        //       } 
+        //     });
+        //     document.dispatchEvent(event);
             
-          } catch (error) {
-            console.error('Erro ao atualizar totais:', error);
-          }
+        //   } catch (error) {
+        //     console.error('Erro ao atualizar totais:', error);
+        //   }
           
-          console.log('=== Finalizando fatAtualizarTotais ===');
-        }
+        //   console.log('=== Finalizando fatAtualizarTotais ===');
+        // }
 
         // Torna a função disponível globalmente
         window.fatAtualizarTotais = fatAtualizarTotais;
