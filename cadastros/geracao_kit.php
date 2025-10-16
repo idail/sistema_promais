@@ -15955,100 +15955,201 @@ if (tipo === "aptidao") {
 
       function gravar_aptidoes_selecionadas()
       {
-        return new Promise((resolve, reject) => {
-          $.ajax({
-            url: "cadastros/processa_geracao_kit.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-              processo_geracao_kit: "incluir_valores_kit",
-              valor_aptidoes: json_aptidoes,
-            },
-            success: function (retorno_exame_geracao_kit) {
-              debugger;
+        if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          return new Promise((resolve, reject) => {
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "atualizar_kit",
+                valor_aptidoes: json_aptidoes,
+                valor_id_kit:window.recebe_id_kit
+              },
+              success: function (retorno_exame_geracao_kit) {
+                debugger;
 
-              const mensagemSucesso = `
-                <div id="aptidao-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <div>
-                      <div>KIT atualizado com sucesso.</div>
+                const mensagemSucesso = `
+                  <div id="aptidao-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      <div>
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `;
+                `;
 
-              // Remove mensagem anterior se existir
-              $("#aptidao-gravado").remove();
+                // Remove mensagem anterior se existir
+                $("#aptidao-gravado").remove();
 
-              // Adiciona a nova mensagem acima das abas
-              $(".tabs-container").before(mensagemSucesso);
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
 
-              // Configura o fade out após 5 segundos
-              setTimeout(function () {
-                $("#aptidao-gravado").fadeOut(500, function () {
-                  $(this).remove();
-                });
-              }, 5000);
+                // Configura o fade out após 5 segundos
+                setTimeout(function () {
+                  $("#aptidao-gravado").fadeOut(500, function () {
+                    $(this).remove();
+                  });
+                }, 5000);
 
-              console.log(retorno_exame_geracao_kit);
+                console.log(retorno_exame_geracao_kit);
 
-              resolve(retorno_exame_geracao_kit);
-            },
-            error: function (xhr, status, error) {
-              console.log("Falha ao incluir exame: " + error);
-              reject(error);
-            },
+                resolve(retorno_exame_geracao_kit);
+              },
+              error: function (xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                reject(error);
+              },
+            });
           });
-        });
+        }else{
+          return new Promise((resolve, reject) => {
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_aptidoes: json_aptidoes,
+              },
+              success: function (retorno_exame_geracao_kit) {
+                debugger;
+
+                const mensagemSucesso = `
+                  <div id="aptidao-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      <div>
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+
+                // Remove mensagem anterior se existir
+                $("#aptidao-gravado").remove();
+
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
+
+                // Configura o fade out após 5 segundos
+                setTimeout(function () {
+                  $("#aptidao-gravado").fadeOut(500, function () {
+                    $(this).remove();
+                  });
+                }, 5000);
+
+                console.log(retorno_exame_geracao_kit);
+
+                resolve(retorno_exame_geracao_kit);
+              },
+              error: function (xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                reject(error);
+              },
+            });
+          });
+        }
       }
 
       function gravar_exames_selecionadas()
       {
-        return new Promise((resolve, reject) => {
-          $.ajax({
-            url: "cadastros/processa_geracao_kit.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-              processo_geracao_kit: "incluir_valores_kit",
-              valor_exames_selecionados: json_exames,
-            },
-            success: function (retorno_exame_geracao_kit) {
-              debugger;
+        if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          return new Promise((resolve, reject) => {
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_exames_selecionados: json_exames,
+                valor_id_kit:window.recebe_id_kit
+              },
+              success: function (retorno_exame_geracao_kit) {
+                debugger;
 
-              const mensagemSucesso = `
-                <div id="exame-quarta-etapa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <div>
-                      <div>KIT atualizado com sucesso.</div>
+                const mensagemSucesso = `
+                  <div id="exame-quarta-etapa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      <div>
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `;
+                `;
 
-              // Remove mensagem anterior se existir
-              $("#exame-quarta-etapa-gravado").remove();
+                // Remove mensagem anterior se existir
+                $("#exame-quarta-etapa-gravado").remove();
 
-              // Adiciona a nova mensagem acima das abas
-              $(".tabs-container").before(mensagemSucesso);
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
 
-              // Configura o fade out após 5 segundos
-              setTimeout(function () {
-                $("#exame-quarta-etapa-gravado").fadeOut(500, function () {
-                  $(this).remove();
-                });
-              }, 5000);
+                // Configura o fade out após 5 segundos
+                setTimeout(function () {
+                  $("#exame-quarta-etapa-gravado").fadeOut(500, function () {
+                    $(this).remove();
+                  });
+                }, 5000);
 
-              console.log(retorno_exame_geracao_kit);
+                console.log(retorno_exame_geracao_kit);
 
-              resolve(retorno_exame_geracao_kit);
-            },
-            error: function (xhr, status, error) {
-              console.log("Falha ao incluir exame: " + error);
-              reject(error);
-            },
+                resolve(retorno_exame_geracao_kit);
+              },
+              error: function (xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                reject(error);
+              },
+            });
           });
-        });
+        }else{
+          return new Promise((resolve, reject) => {
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_exames_selecionados: json_exames,
+              },
+              success: function (retorno_exame_geracao_kit) {
+                debugger;
+
+                const mensagemSucesso = `
+                  <div id="exame-quarta-etapa-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      <div>
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+
+                // Remove mensagem anterior se existir
+                $("#exame-quarta-etapa-gravado").remove();
+
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
+
+                // Configura o fade out após 5 segundos
+                setTimeout(function () {
+                  $("#exame-quarta-etapa-gravado").fadeOut(500, function () {
+                    $(this).remove();
+                  });
+                }, 5000);
+
+                console.log(retorno_exame_geracao_kit);
+
+                resolve(retorno_exame_geracao_kit);
+              },
+              error: function (xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                reject(error);
+              },
+            });
+          });
+        }
+        
       }
       
       let recebe_valores_exames_selecionados = [];
