@@ -13511,58 +13511,113 @@ console.log(total); // Exemplo: "180.10"
 
       function gravar_treinamentos_selecionados()
       {
-        return new Promise((resolve, reject) => {
+        if(window.recebe_acao && window.recebe_acao === "editar")
+        {
           $.ajax({
-            url: "cadastros/processa_geracao_kit.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-              processo_geracao_kit: "incluir_valores_kit",
-              valor_treinamentos: json_cursos_selecionados,
-            },
-            success: function (retorno_exame_geracao_kit) {
-              debugger;
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "atualizar_kit",
+                valor_treinamentos: json_cursos_selecionados,
+                valor_id_kit:window.recebe_id_kit
+              },
+              success: function (retorno_exame_geracao_kit) {
+                debugger;
 
-              const mensagemSucesso = `
-                <div id="treinamento-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <div>
-                      <div>Treinamentos gravados com sucesso.</div>
+                const mensagemSucesso = `
+                  <div id="treinamento-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      <div>
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `;
+                `;
 
-              // Remove mensagem anterior se existir
-              $("#treinamento-gravado").remove();
+                // Remove mensagem anterior se existir
+                $("#treinamento-gravado").remove();
 
-              // Adiciona a nova mensagem acima das abas
-              $(".tabs-container").before(mensagemSucesso);
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
 
-              // Configura o fade out após 5 segundos
-              setTimeout(function () {
-                $("#treinamento-gravado").fadeOut(500, function () {
-                  $(this).remove();
-                });
-              }, 5000);
+                // Configura o fade out após 5 segundos
+                setTimeout(function () {
+                  $("#treinamento-gravado").fadeOut(500, function () {
+                    $(this).remove();
+                  });
+                }, 5000);
 
-              console.log(retorno_exame_geracao_kit);
-              // Atualiza snapshot persistido após sucesso
-              try {
-                if (Array.isArray(riscos_selecionados)) {
-                  window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
-                }
-                window._riscosDirty = false;
-              } catch (e) { /* ignore */ }
-              
-              resolve(retorno_exame_geracao_kit);
-            },
-            error: function (xhr, status, error) {
-              console.log("Falha ao incluir exame: " + error);
-              reject(error);
-            },
+                console.log(retorno_exame_geracao_kit);
+                // Atualiza snapshot persistido após sucesso
+                try {
+                  if (Array.isArray(riscos_selecionados)) {
+                    window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+                  }
+                  window._riscosDirty = false;
+                } catch (e) { /* ignore */ }
+                
+                resolve(retorno_exame_geracao_kit);
+              },
+              error: function (xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                reject(error);
+              },
+            });
+        }else{
+          return new Promise((resolve, reject) => {
+            $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_treinamentos: json_cursos_selecionados,
+              },
+              success: function (retorno_exame_geracao_kit) {
+                debugger;
+
+                const mensagemSucesso = `
+                  <div id="treinamento-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      <div>
+                        <div>KIT atualizado com sucesso.</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+
+                // Remove mensagem anterior se existir
+                $("#treinamento-gravado").remove();
+
+                // Adiciona a nova mensagem acima das abas
+                $(".tabs-container").before(mensagemSucesso);
+
+                // Configura o fade out após 5 segundos
+                setTimeout(function () {
+                  $("#treinamento-gravado").fadeOut(500, function () {
+                    $(this).remove();
+                  });
+                }, 5000);
+
+                console.log(retorno_exame_geracao_kit);
+                // Atualiza snapshot persistido após sucesso
+                try {
+                  if (Array.isArray(riscos_selecionados)) {
+                    window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+                  }
+                  window._riscosDirty = false;
+                } catch (e) { /* ignore */ }
+                
+                resolve(retorno_exame_geracao_kit);
+              },
+              error: function (xhr, status, error) {
+                console.log("Falha ao incluir exame: " + error);
+                reject(error);
+              },
+            });
           });
-        });
+        }
       }
 
       // Salva imediatamente o estado ATUAL dos treinamentos selecionados (persistência no PHP)
