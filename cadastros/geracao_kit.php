@@ -5867,21 +5867,134 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
             // Opções agora são preenchidas pelo AJAX acima
             // Depuração: capturar valor ao selecionar item no PIX
             try {
-              pixKeySelect.addEventListener('change', function() {
-                debugger;
-                try {
-                  const val = this.value;
-                  const text = this.options[this.selectedIndex]?.text || '';
-                  console.group('PIX > pix-key-select change');
-                  console.log('Valor selecionado:', val);
-                  console.log('Texto selecionado:', text);
+              // pixKeySelect.addEventListener('change', function() {
+              //   debugger;
+              //   try {
+              //     const val = this.value;
+              //     const text = this.options[this.selectedIndex]?.text || '';
+              //     console.group('PIX > pix-key-select change');
+              //     console.log('Valor selecionado:', val);
+              //     console.log('Texto selecionado:', text);
 
-                  atualizarEstadoBancario('pix', val, text);
+              //     atualizarEstadoBancario('pix', val, text);
 
-                  gravar_pix(text);
-                  console.groupEnd();
-                } catch (e) { /* noop */ }
-              });
+              //     gravar_pix(text);
+              //     console.groupEnd();
+              //   } catch (e) { /* noop */ }
+              // });
+// // // Marca que a aba está carregando (bloqueia execução inicial)
+// window._carregandoAbaBancaria = true;
+
+// // // ============================================================
+// // // 🔹 Função auxiliar para liberar aba bancária se ativa
+// // // ============================================================
+// // function liberarAbaBancariaSeAberta() {
+// //   debugger;
+// //   const abaAtiva = document.querySelector('.tab.active');
+// //   if (abaAtiva && abaAtiva.dataset.step === '5') {
+// //     window._carregandoAbaBancaria = false;
+// //     console.log('✅ Aba bancária liberada (data-step=5).');
+// //   }
+// // }
+
+// // document.addEventListener('DOMContentLoaded', liberarAbaBancariaSeAberta());
+
+
+// // Assim que a aba "Modelos e Faturas" termina de carregar, libera os eventos
+// document.addEventListener('DOMContentLoaded', function () {
+//   // aguarda um pequeno tempo para garantir que o DOM e selects estejam prontos
+//   setTimeout(() => {
+//     window._carregandoAbaBancaria = false;
+//     console.log('✅ Aba bancária carregada — eventos liberados.');
+//   }, 500);
+// });
+
+// // Escuta a mudança de chave PIX
+// document.querySelector('#pix-key-select').addEventListener('change', function () {
+//   debugger;
+//   if (window._carregandoAbaBancaria) {
+//     console.log('⏸️ Mudança de PIX ignorada — aba ainda carregando.');
+//     return;
+//   }
+
+//   const val = this.value;
+//   const text = this.options[this.selectedIndex]?.text || '';
+
+//   if (val && val.trim() !== '') {
+//     window._habilitarGravacaoBancaria = true;
+//     console.group('PIX > pix-key-select change');
+//     console.log('Valor selecionado:', val);
+//     console.log('Texto selecionado:', text);
+//     console.groupEnd();
+
+//     atualizarEstadoBancario('pix', val, text);
+
+//     // 🔥 Agora só grava quando o usuário realmente seleciona
+//     gravar_pix(text);
+//   } else {
+//     console.warn('⚠️ Nenhum PIX selecionado — gravação ignorada.');
+//   }
+// });
+
+// ============================================================
+// 🔹 Controle de carregamento da aba
+// ============================================================
+window._carregandoAbaBancaria = true;
+
+// 🔹 Libera após o carregamento do DOM
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(() => {
+    window._carregandoAbaBancaria = false;
+    console.log('✅ Aba bancária carregada — eventos liberados.');
+  }, 500);
+});
+
+// ============================================================
+// 🔹 Controle de mudança manual (somente se o usuário interagir)
+// ============================================================
+window._mudancaManualPix = false;
+
+const pixSelect = document.querySelector('#pix-key-select');
+if (pixSelect) {
+  debugger;
+  pixSelect.addEventListener('mousedown', () => window._mudancaManualPix = true);
+  pixSelect.addEventListener('keydown', () => window._mudancaManualPix = true);
+  pixSelect.addEventListener('change', () => window._carregandoAbaBancaria = false);
+
+  pixSelect.addEventListener('change', function () {
+debugger;
+    if (window._carregandoAbaBancaria) {
+      console.log('⏸️ Mudança de PIX ignorada — aba ainda carregando.');
+      return;
+    }
+
+    if (!window._mudancaManualPix) {
+      console.log('⏸️ Mudança de PIX ignorada — alteração automática.');
+      return;
+    }
+
+    const val = this.value;
+    const text = this.options[this.selectedIndex]?.text || '';
+
+    if (val && val.trim() !== '') {
+      window._habilitarGravacaoBancaria = true;
+      console.group('PIX > pix-key-select change');
+      console.log('Valor selecionado:', val);
+      console.log('Texto selecionado:', text);
+      console.groupEnd();
+
+      atualizarEstadoBancario('pix', val, text);
+      gravar_pix(text);
+    } else {
+      console.warn('⚠️ Nenhum PIX selecionado — gravação ignorada.');
+    }
+
+    // reseta a flag após o uso
+    window._mudancaManualPix = false;
+  });
+}
+
+
             } catch (e) { /* noop */ }
           }
           // Chama o carregador de chaves PIX
