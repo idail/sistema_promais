@@ -6773,130 +6773,264 @@ tipoContaInputs.forEach(input => {
         // }
       }
       
-      function addSelectedRisk(code, name, group) {
-        debugger;
-        console.log('addSelectedRisk chamado:', { code, name, group });
-        if (!selectedRisks[code]) {
-          selectedRisks[code] = { name, group };
-          // marca como alterado para possíveis gravações condicionais ao sair/voltar da aba
-          window._riscosDirty = true;
-          updateSelectedRisksDisplay();
-          // Não reexecuta performSearch; mantém a listagem atual (renderizada uma única vez)
-        }
-      }
+      // function addSelectedRisk(code, name, group) {
+      //   debugger;
+      //   console.log('addSelectedRisk chamado:', { code, name, group });
+      //   if (!selectedRisks[code]) {
+      //     selectedRisks[code] = { name, group };
+      //     // marca como alterado para possíveis gravações condicionais ao sair/voltar da aba
+      //     window._riscosDirty = true;
+      //     updateSelectedRisksDisplay();
+      //     // Não reexecuta performSearch; mantém a listagem atual (renderizada uma única vez)
+      //   }
+      // }
       
-      // Expõe globalmente para qualquer handler legado acessar
-      try {
-        window.addSelectedRisk = addSelectedRisk;
-        window.reaplicarRiscosSelecionadosUI = reaplicarRiscosSelecionadosUI;
-        window.updateSelectedGroups = updateSelectedGroups;
-        window.getSelectedRiskCodes = function() { return Object.keys(selectedRisks || {}); };
-        window.reaplicarGruposSelecionadosUI = reaplicarGruposSelecionadosUI;
-      } catch (e) { /* ignore */ }
+      // // Expõe globalmente para qualquer handler legado acessar
+      // try {
+      //   window.addSelectedRisk = addSelectedRisk;
+      //   window.reaplicarRiscosSelecionadosUI = reaplicarRiscosSelecionadosUI;
+      //   window.updateSelectedGroups = updateSelectedGroups;
+      //   window.getSelectedRiskCodes = function() { return Object.keys(selectedRisks || {}); };
+      //   window.reaplicarGruposSelecionadosUI = reaplicarGruposSelecionadosUI;
+      // } catch (e) { /* ignore */ }
+
+      function addSelectedRisk(code, name, group) {
+  debugger;
+  console.log('addSelectedRisk chamado:', { code, name, group });
+
+  // garante que o objeto global existe
+  if (!window.selectedRisks) window.selectedRisks = {};
+
+  if (!window.selectedRisks[code]) {
+    window.selectedRisks[code] = { name, group };
+    window._riscosDirty = true;
+
+    // atualiza a UI
+    updateSelectedRisksDisplay();
+
+    // Não reexecuta performSearch; mantém a listagem atual
+  }
+}
+
+// expõe globalmente
+try {
+  window.addSelectedRisk = addSelectedRisk;
+  window.reaplicarRiscosSelecionadosUI = reaplicarRiscosSelecionadosUI;
+  window.updateSelectedGroups = updateSelectedGroups;
+  window.getSelectedRiskCodes = function() { return Object.keys(window.selectedRisks || {}); };
+  window.reaplicarGruposSelecionadosUI = reaplicarGruposSelecionadosUI;
+} catch (e) { /* ignore */ }
+
       
       let riscos_selecionados = [];
       let json_riscos;
+
       async function updateSelectedRisksDisplay() {
-        debugger;
-        if (window._riscosRenderRunning) return;
-        window._riscosRenderRunning = true;
+  if (window._riscosRenderRunning) return;
+  window._riscosRenderRunning = true;
 
-        try {
-          // Reconstrói o array consolidado a partir do objeto selectedRisks (sem duplicar, reflete remoções)
-          riscos_selecionados = Object.entries(selectedRisks).map(([codigo, info]) => ({
-            codigo,
-            descricao: info.name,
-            grupo: info.group,
-          }));
+  try {
+    // Reconstrói array de riscos
+    const riscos_selecionados = Object.entries(window.selectedRisks || {}).map(([codigo, info]) => ({
+      codigo,
+      descricao: info.name,
+      grupo: info.group,
+    }));
 
-          console.log('Riscos selecionados (array):', riscos_selecionados);
-          json_riscos = JSON.stringify(riscos_selecionados);
+    console.log('Riscos selecionados (array):', riscos_selecionados);
+    json_riscos = JSON.stringify(riscos_selecionados);
 
-          // Não alterar seleção de grupos aqui; grupos são controlados apenas pelos checkboxes
+    // Persistência assíncrona
+    try {
+      await gravar_riscos_selecionados();
+      window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+      window.riscosEstadoSalvoDetalhes = { ...window.selectedRisks };
+      window._riscosDirty = false;
+    } catch (err) {
+      console.warn('Falha ao gravar riscos selecionados:', err);
+    }
 
-          // Persistência assíncrona imediata (mantém comportamento atual ao selecionar/remover)
-          try {
-            const ret = await gravar_riscos_selecionados();
-            // Atualiza snapshot de persistência e limpa dirty
-            window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
-            // Salva também detalhes para reidratar na reentrada da aba
-            window.riscosEstadoSalvoDetalhes = { ...selectedRisks };
-            window._riscosDirty = false;
-            // Não reaplicar grupos aqui para não desmarcar a escolha do usuário
-          } catch (err) {
-            console.warn('Falha ao gravar riscos selecionados (não bloqueante):', err);
+    const container = document.getElementById('selected-risks-container');
+    if (!container) return;
+
+    // ==============================
+    // 2️⃣ Delegação de remoção (bind uma vez)
+    // ==============================
+    if (!container._removeDelegationBound) {
+      container.addEventListener('click', function (e) {
+        const btn = e.target?.closest('.remove-risk');
+        if (!btn || !container.contains(btn)) return;
+
+        e.stopPropagation?.();
+        e.preventDefault?.();
+
+        const codeToRemove = btn.getAttribute('data-code');
+        if (codeToRemove && window.selectedRisks?.[codeToRemove]) {
+          delete window.selectedRisks[codeToRemove];
+          window._riscosDirty = true;
+
+          // chama atualização após remover
+          updateSelectedRisksDisplay();
+          if (window.searchBox?.value.trim() !== '') {
+            try { performSearch(window.searchBox.value); } catch (_) {}
           }
-
-          // Renderização de UI
-          const selectedRisksContainer = document.getElementById('selected-risks-container');
-          if (!selectedRisksContainer) return;
-
-          // Delegação de eventos para remover risco (bind uma vez)
-          if (!selectedRisksContainer._removeDelegationBound) {
-            selectedRisksContainer.addEventListener('click', function(e) {
-              const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
-              if (!btn || !selectedRisksContainer.contains(btn)) return;
-              if (typeof e.stopPropagation === 'function') e.stopPropagation();
-              if (typeof e.preventDefault === 'function') e.preventDefault();
-              const codeToRemove = btn.getAttribute('data-code');
-              if (codeToRemove && selectedRisks[codeToRemove]) {
-                delete selectedRisks[codeToRemove];
-                window._riscosDirty = true;
-                updateSelectedRisksDisplay();
-                if (searchBox && searchBox.value && searchBox.value.trim() !== '') {
-                  try { performSearch(searchBox.value); } catch (e) { /* ignore */ }
-                }
-              }
-            });
-            selectedRisksContainer._removeDelegationBound = true;
-          }
-
-          selectedRisksContainer.innerHTML = '';
-
-          if (riscos_selecionados.length === 0) {
-            const emptyMessage = document.createElement('div');
-            emptyMessage.className = 'no-risks';
-            emptyMessage.textContent = 'Nenhum risco selecionado';
-            selectedRisksContainer.appendChild(emptyMessage);
-            return;
-          }
-
-          // Agrupar riscos por categoria
-          const risksByGroup = {};
-          for (const { codigo, descricao, grupo } of riscos_selecionados) {
-            if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
-            risksByGroup[grupo].push({ code: codigo, name: descricao });
-          }
-
-          for (const [group, risks] of Object.entries(risksByGroup)) {
-            const groupName = risksData[group] ? risksData[group].name : group;
-            const groupElement = document.createElement('div');
-            groupElement.className = 'risk-group';
-            const groupHeader = document.createElement('div');
-            groupHeader.className = 'risk-group-header';
-            groupHeader.textContent = groupName;
-            const groupContent = document.createElement('div');
-            groupContent.className = 'risk-group-content';
-            risks.forEach(risk => {
-              const riskElement = document.createElement('div');
-              riskElement.className = 'selected-risk';
-              riskElement.innerHTML = `
-                <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
-                <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
-              `;
-              groupContent.appendChild(riskElement);
-            });
-            groupElement.appendChild(groupHeader);
-            groupElement.appendChild(groupContent);
-            selectedRisksContainer.appendChild(groupElement);
-          }
-
-          // Removido binding direto por querySelectorAll('.remove-risk');
-          // Agora a remoção é tratada via delegação no container 'selected-risks-container'.
-        } finally {
-          window._riscosRenderRunning = false;
         }
-      }
+      });
+      container._removeDelegationBound = true;
+    }
+
+    // Limpa container
+    container.innerHTML = '';
+
+    if (riscos_selecionados.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'no-risks';
+      empty.textContent = 'Nenhum risco selecionado';
+      container.appendChild(empty);
+      return;
+    }
+
+    // Agrupa e renderiza riscos
+    const risksByGroup = {};
+    for (const { codigo, descricao, grupo } of riscos_selecionados) {
+      if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
+      risksByGroup[grupo].push({ code: codigo, name: descricao });
+    }
+
+    for (const [group, risks] of Object.entries(risksByGroup)) {
+      const groupName = risksData[group]?.name || group;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'risk-group';
+
+      const header = document.createElement('div');
+      header.className = 'risk-group-header';
+      header.textContent = groupName;
+
+      const content = document.createElement('div');
+      content.className = 'risk-group-content';
+
+      risks.forEach(risk => {
+        const riskEl = document.createElement('div');
+        riskEl.className = 'selected-risk';
+        riskEl.innerHTML = `
+          <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
+          <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
+        `;
+        content.appendChild(riskEl);
+      });
+
+      groupEl.appendChild(header);
+      groupEl.appendChild(content);
+      container.appendChild(groupEl);
+    }
+
+  } finally {
+    window._riscosRenderRunning = false;
+  }
+}
+
+
+      // async function updateSelectedRisksDisplay() {
+      //   debugger;
+      //   if (window._riscosRenderRunning) return;
+      //   window._riscosRenderRunning = true;
+
+      //   try {
+      //     // Reconstrói o array consolidado a partir do objeto selectedRisks (sem duplicar, reflete remoções)
+      //     riscos_selecionados = Object.entries(selectedRisks).map(([codigo, info]) => ({
+      //       codigo,
+      //       descricao: info.name,
+      //       grupo: info.group,
+      //     }));
+
+      //     console.log('Riscos selecionados (array):', riscos_selecionados);
+      //     json_riscos = JSON.stringify(riscos_selecionados);
+
+      //     // Não alterar seleção de grupos aqui; grupos são controlados apenas pelos checkboxes
+
+      //     // Persistência assíncrona imediata (mantém comportamento atual ao selecionar/remover)
+      //     try {
+      //       const ret = await gravar_riscos_selecionados();
+      //       // Atualiza snapshot de persistência e limpa dirty
+      //       window.riscosEstadoSalvoCodes = riscos_selecionados.map(r => String(r.codigo));
+      //       // Salva também detalhes para reidratar na reentrada da aba
+      //       window.riscosEstadoSalvoDetalhes = { ...selectedRisks };
+      //       window._riscosDirty = false;
+      //       // Não reaplicar grupos aqui para não desmarcar a escolha do usuário
+      //     } catch (err) {
+      //       console.warn('Falha ao gravar riscos selecionados (não bloqueante):', err);
+      //     }
+
+      //     // Renderização de UI
+      //     const selectedRisksContainer = document.getElementById('selected-risks-container');
+      //     if (!selectedRisksContainer) return;
+
+      //     // Delegação de eventos para remover risco (bind uma vez)
+      //     if (!selectedRisksContainer._removeDelegationBound) {
+      //       selectedRisksContainer.addEventListener('click', function(e) {
+      //         const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
+      //         if (!btn || !selectedRisksContainer.contains(btn)) return;
+      //         if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      //         if (typeof e.preventDefault === 'function') e.preventDefault();
+      //         const codeToRemove = btn.getAttribute('data-code');
+      //         if (codeToRemove && selectedRisks[codeToRemove]) {
+      //           delete selectedRisks[codeToRemove];
+      //           window._riscosDirty = true;
+      //           updateSelectedRisksDisplay();
+      //           if (searchBox && searchBox.value && searchBox.value.trim() !== '') {
+      //             try { performSearch(searchBox.value); } catch (e) { /* ignore */ }
+      //           }
+      //         }
+      //       });
+      //       selectedRisksContainer._removeDelegationBound = true;
+      //     }
+
+      //     selectedRisksContainer.innerHTML = '';
+
+      //     if (riscos_selecionados.length === 0) {
+      //       const emptyMessage = document.createElement('div');
+      //       emptyMessage.className = 'no-risks';
+      //       emptyMessage.textContent = 'Nenhum risco selecionado';
+      //       selectedRisksContainer.appendChild(emptyMessage);
+      //       return;
+      //     }
+
+      //     // Agrupar riscos por categoria
+      //     const risksByGroup = {};
+      //     for (const { codigo, descricao, grupo } of riscos_selecionados) {
+      //       if (!risksByGroup[grupo]) risksByGroup[grupo] = [];
+      //       risksByGroup[grupo].push({ code: codigo, name: descricao });
+      //     }
+
+      //     for (const [group, risks] of Object.entries(risksByGroup)) {
+      //       const groupName = risksData[group] ? risksData[group].name : group;
+      //       const groupElement = document.createElement('div');
+      //       groupElement.className = 'risk-group';
+      //       const groupHeader = document.createElement('div');
+      //       groupHeader.className = 'risk-group-header';
+      //       groupHeader.textContent = groupName;
+      //       const groupContent = document.createElement('div');
+      //       groupContent.className = 'risk-group-content';
+      //       risks.forEach(risk => {
+      //         const riskElement = document.createElement('div');
+      //         riskElement.className = 'selected-risk';
+      //         riskElement.innerHTML = `
+      //           <span style="font-size: 0.85em;">${risk.code} - ${risk.name}</span>
+      //           <span class="remove-risk" data-code="${risk.code}" title="Remover" style="font-size: 0.9em;">×</span>
+      //         `;
+      //         groupContent.appendChild(riskElement);
+      //       });
+      //       groupElement.appendChild(groupHeader);
+      //       groupElement.appendChild(groupContent);
+      //       selectedRisksContainer.appendChild(groupElement);
+      //     }
+
+      //     // Removido binding direto por querySelectorAll('.remove-risk');
+      //     // Agora a remoção é tratada via delegação no container 'selected-risks-container'.
+      //   } finally {
+      //     window._riscosRenderRunning = false;
+      //   }
+      // }
 
       function reaplicarRiscosSelecionadosUI() {
   debugger;
@@ -6913,19 +7047,30 @@ tipoContaInputs.forEach(input => {
     let riscosFonte = [];
 
     // 🔹 Caso 1: Edição (dados vindos do banco)
-    if (window.recebe_acao === "editar" && Array.isArray(window.kit_riscos) && window.kit_riscos.length > 0) {
+    if (window.recebe_acao === "editar" && window.kit_riscos) {
       let kitRiscosArray = window.kit_riscos;
+
+      // Se vier como string, converte para array
       if (typeof kitRiscosArray === "string") {
-        try { kitRiscosArray = JSON.parse(kitRiscosArray); } 
-        catch { kitRiscosArray = []; }
+        try { 
+          kitRiscosArray = JSON.parse(kitRiscosArray); 
+        } catch (e) { 
+          console.error("Erro ao parsear window.kit_riscos:", e);
+          kitRiscosArray = []; 
+        }
       }
-      riscosFonte = kitRiscosArray.map(r => ({
-        codigo: r.codigo || '',
-        descricao: r.descricao || '',
-        grupo: r.grupo || ''
-      }));
-      console.log("🟢 Modo edição: riscos carregados do banco (window.kit_riscos)");
+
+      // Só processa se realmente for array
+      if (Array.isArray(kitRiscosArray) && kitRiscosArray.length > 0) {
+        riscosFonte = kitRiscosArray.map(r => ({
+          codigo: r.codigo || '',
+          descricao: r.descricao || '',
+          grupo: r.grupo || ''
+        }));
+        console.log("🟢 Modo edição: riscos carregados do banco (window.kit_riscos)");
+      }
     }
+
     // 🔹 Caso 2: Snapshot (usuário trocou de aba)
     else if (Array.isArray(window._snapshotRiscosSelecionados) && window._snapshotRiscosSelecionados.length > 0) {
       riscosFonte = window._snapshotRiscosSelecionados.map(r => ({
