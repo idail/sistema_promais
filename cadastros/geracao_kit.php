@@ -6162,24 +6162,57 @@ debugger;
             try {
               const acSelect = document.getElementById('agencia-conta-select');
               if (acSelect) {
+                // 🔹 Marca se o usuário interagiu manualmente
+                window._mudancaManualAgenciaConta = false;
+                window._carregandoAbaBancaria = true;
+
+                acSelect.addEventListener('mousedown', () => window._mudancaManualAgenciaConta = true);
+                acSelect.addEventListener('keydown', () => window._mudancaManualAgenciaConta = true);
+                acSelect.addEventListener('change', () => window._carregandoAbaBancaria = false);
+
                 acSelect.addEventListener('change', function() {
                   debugger;
                   try {
+                    // 🔹 Evita execução durante o carregamento
+                    if (window._carregandoAbaBancaria) {
+                      console.log('⏸️ Mudança de Agência/Conta ignorada — aba ainda carregando.');
+                      return;
+                    }
+
+                    // 🔹 Evita execução automática (sem interação do usuário)
+                    if (!window._mudancaManualAgenciaConta) {
+                      console.log('⏸️ Mudança de Agência/Conta ignorada — alteração automática.');
+                      return;
+                    }
+
                     const val = this.value;
                     const text = this.options[this.selectedIndex]?.text || '';
-                    console.group('Agência/Conta > change');
-                    console.log('Valor selecionado:', val);
-                    console.log('Texto selecionado:', text);
 
-                    atualizarEstadoBancario('agencia-conta', val, text);
+                    if (val && val.trim() !== '') {
+                      console.group('🏦 Agência/Conta > change');
+                      console.log('Valor selecionado:', val);
+                      console.log('Texto selecionado:', text);
 
-                    gravar_agencia_conta(text);
+                      atualizarEstadoBancario('agencia-conta', val, text);
+                      gravar_agencia_conta(text);
 
-                    console.groupEnd();
-                  } catch (e) { /* noop */ }
+                      console.groupEnd();
+                    } else {
+                      console.warn('⚠️ Nenhuma Agência/Conta selecionada — gravação ignorada.');
+                    }
+
+                  } catch (e) {
+                    console.error('❌ Erro no evento de mudança de Agência/Conta:', e);
+                  } finally {
+                    // 🔹 Reseta a flag após o uso
+                    window._mudancaManualAgenciaConta = false;
+                  }
                 });
               }
-            } catch (e) { /* noop */ }
+            } catch (e) {
+              console.error('❌ Erro ao inicializar evento de Agência/Conta:', e);
+            }
+
 
             if (acBtnSave) {
               acBtnSave.addEventListener('click', () => {
