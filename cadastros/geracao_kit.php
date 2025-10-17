@@ -5641,46 +5641,46 @@ window._carregandoAbaBancaria = false;      // true somente se for setado manual
 // ============================================================
 // 🔹 Função para tratar seleção do tipo bancário pelo usuário
 // ============================================================
-/*function tratarSelecaoTipoBancario(input) {
-  debugger;
+// function tratarSelecaoTipoBancario(input) {
+//   debugger;
 
-  const tipo = input.value;
-  const estaMarcado = input.checked;
+//   const tipo = input.value;
+//   const estaMarcado = input.checked;
 
-  // 🟢 Ativa gravação na primeira ação real
-  if (!window._habilitarGravacaoBancaria) {
-    console.log('🟢 Usuário interagiu com dados bancários — gravação habilitada.');
-    window._habilitarGravacaoBancaria = true;
-  }
+//   // 🟢 Ativa gravação na primeira ação real
+//   if (!window._habilitarGravacaoBancaria) {
+//     console.log('🟢 Usuário interagiu com dados bancários — gravação habilitada.');
+//     window._habilitarGravacaoBancaria = true;
+//   }
 
-  if (tipo === 'pix' && estaMarcado) {
-    atualizarEstadoBancario('pix', null, null);
-  } else if (tipo === 'agencia-conta' && estaMarcado) {
-    atualizarEstadoBancario('agencia-conta', null, null);
-  } else if (tipo === 'qrcode') {
-    atualizarEstadoBancario('qrcode', estaMarcado, null);
-  }
+//   if (tipo === 'pix' && estaMarcado) {
+//     atualizarEstadoBancario('pix', null, null);
+//   } else if (tipo === 'agencia-conta' && estaMarcado) {
+//     atualizarEstadoBancario('agencia-conta', null, null);
+//   } else if (tipo === 'qrcode') {
+//     atualizarEstadoBancario('qrcode', estaMarcado, null);
+//   }
 
-  if (pixSelectorContainer) {
-    const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
-    pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
-  }
+//   if (pixSelectorContainer) {
+//     const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
+//     pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+//   }
 
-  const selecionados = Array.from(tipoContaInputs)
-    .filter(i => i.checked)
-    .map(i => i.value);
+//   const selecionados = Array.from(tipoContaInputs)
+//     .filter(i => i.checked)
+//     .map(i => i.value);
 
-  console.group('💾 Tipo bancário selecionado');
-  console.log('Selecionados:', selecionados);
-  console.groupEnd();
+//   console.group('💾 Tipo bancário selecionado');
+//   console.log('Selecionados:', selecionados);
+//   console.groupEnd();
 
-  // ✅ Só grava se o usuário tiver interagido (flag true)
-  if (window._habilitarGravacaoBancaria) {
-    gravar_tipo_dado_bancario(JSON.stringify(selecionados));
-  } else {
-    console.warn('⏸️ Gravação ignorada — interação do usuário ainda não detectada.');
-  }
-}*/
+//   // ✅ Só grava se o usuário tiver interagido (flag true)
+//   if (window._habilitarGravacaoBancaria) {
+//     gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+//   } else {
+//     console.warn('⏸️ Gravação ignorada — interação do usuário ainda não detectada.');
+//   }
+// }
 
 // ============================================================
 // 🔹 Função para tratar seleção do tipo bancário pelo usuário
