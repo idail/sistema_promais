@@ -5406,7 +5406,7 @@ window._carregandoAbaBancaria = false;      // true somente se for setado manual
 // ============================================================
 // 🔹 Função para tratar seleção do tipo bancário pelo usuário
 // ============================================================
-function tratarSelecaoTipoBancario(input) {
+/*function tratarSelecaoTipoBancario(input) {
   debugger;
 
   const tipo = input.value;
@@ -5445,7 +5445,79 @@ function tratarSelecaoTipoBancario(input) {
   } else {
     console.warn('⏸️ Gravação ignorada — interação do usuário ainda não detectada.');
   }
+}*/
+
+// ============================================================
+// 🔹 Função para tratar seleção do tipo bancário pelo usuário
+// ============================================================
+function tratarSelecaoTipoBancario(input) {
+  debugger;
+
+  const tipo = input.value;
+  const estaMarcado = input.checked;
+
+  // 🟢 Marca que o usuário interagiu (habilita gravação)
+  if (!window._habilitarGravacaoBancaria) {
+    console.log('🟢 Interação detectada — gravação habilitada.');
+    window._habilitarGravacaoBancaria = true;
+  }
+
+  // 🔹 Atualiza estado bancário conforme tipo
+  if (tipo === 'pix') {
+    atualizarEstadoBancario('pix', estaMarcado ? null : null, null);
+  } 
+  else if (tipo === 'agencia-conta') {
+    atualizarEstadoBancario('agencia-conta', estaMarcado ? null : null, null);
+  } 
+  else if (tipo === 'qrcode') {
+    atualizarEstadoBancario('qrcode', estaMarcado, null);
+  }
+
+  // =======================================================
+  // 🔹 Controle de exibição dos containers (PIX e Agência)
+  // =======================================================
+  const pixSelectorContainer = document.getElementById('pix-selector-container');
+  const agenciaSelectorContainer = document.getElementById('agencia-selector-container');
+  const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
+
+  if (pixSelectorContainer) {
+    const algumPixMarcado = Array.from(tipoContaInputs)
+      .some(i => i.value === 'pix' && i.checked);
+    pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+  }
+
+  if (agenciaSelectorContainer) {
+    const algumaAgenciaMarcada = Array.from(tipoContaInputs)
+      .some(i => i.value === 'agencia-conta' && i.checked);
+    agenciaSelectorContainer.style.display = algumaAgenciaMarcada ? 'block' : 'none';
+  }
+
+  // =======================================================
+  // 🔹 Sempre reflete o estado atual dos checkboxes marcados
+  // =======================================================
+  const selecionados = Array.from(tipoContaInputs)
+    .filter(i => i.checked)
+    .map(i => i.value);
+
+  console.group('💾 Tipos bancários selecionados (atualizados)');
+  console.log('Selecionados:', selecionados);
+  console.groupEnd();
+
+  // =======================================================
+  // 🔹 Se for modo edição — grava sempre o estado atual
+  // 🔹 Se não for edição — grava apenas após interação real
+  // =======================================================
+  const emEdicao = window.recebe_acao === 'editar';
+
+  if (emEdicao || window._habilitarGravacaoBancaria) {
+    console.log('💾 Enviando para gravar_tipo_dado_bancario:', selecionados);
+    gravar_tipo_dado_bancario(JSON.stringify(selecionados));
+  } else {
+    console.warn('⏸️ Gravação ignorada — interação do usuário ainda não detectada.');
+  }
 }
+
+
 
 // ============================================================
 // 🔹 Associação de eventos — apenas clique real do usuário
