@@ -5462,19 +5462,50 @@ function tratarSelecaoTipoBancario(input) {
     window._habilitarGravacaoBancaria = true;
   }
 
-  // 🔹 Atualiza estado bancário conforme tipo
+  // Garante que o estado global existe
+  window.dadosBancariosEstado = window.dadosBancariosEstado || {
+    pixSelecionado: false,
+    agenciaContaSelecionado: false,
+    qrcodeSelecionado: false,
+    chavePix: null,
+    textoPix: null,
+    agenciaConta: null,
+    textoAgenciaConta: null,
+    __dadosCarregados: false
+  };
+
+  // =======================================================
+  // 🔹 Atualiza ou limpa estado conforme o tipo e marcação
+  // =======================================================
   if (tipo === 'pix') {
-    atualizarEstadoBancario('pix', estaMarcado ? null : null, null);
+    if (estaMarcado) {
+      atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
+      window.dadosBancariosEstado.pixSelecionado = true;
+    } else {
+      // 🔴 Desmarcado — limpa dados PIX
+      window.dadosBancariosEstado.pixSelecionado = false;
+      window.dadosBancariosEstado.chavePix = null;
+      window.dadosBancariosEstado.textoPix = null;
+    }
   } 
   else if (tipo === 'agencia-conta') {
-    atualizarEstadoBancario('agencia-conta', estaMarcado ? null : null, null);
+    if (estaMarcado) {
+      atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
+      window.dadosBancariosEstado.agenciaContaSelecionado = true;
+    } else {
+      // 🔴 Desmarcado — limpa dados Agência/Conta
+      window.dadosBancariosEstado.agenciaContaSelecionado = false;
+      window.dadosBancariosEstado.agenciaConta = null;
+      window.dadosBancariosEstado.textoAgenciaConta = null;
+    }
   } 
   else if (tipo === 'qrcode') {
+    window.dadosBancariosEstado.qrcodeSelecionado = estaMarcado;
     atualizarEstadoBancario('qrcode', estaMarcado, null);
   }
 
   // =======================================================
-  // 🔹 Controle de exibição dos containers (PIX e Agência)
+  // 🔹 Controle visual dos containers (PIX e Agência)
   // =======================================================
   const pixSelectorContainer = document.getElementById('pix-selector-container');
   const agenciaSelectorContainer = document.getElementById('agencia-selector-container');
@@ -5493,7 +5524,7 @@ function tratarSelecaoTipoBancario(input) {
   }
 
   // =======================================================
-  // 🔹 Sempre reflete o estado atual dos checkboxes marcados
+  // 🔹 Monta a lista de tipos atualmente marcados
   // =======================================================
   const selecionados = Array.from(tipoContaInputs)
     .filter(i => i.checked)
@@ -5504,8 +5535,20 @@ function tratarSelecaoTipoBancario(input) {
   console.groupEnd();
 
   // =======================================================
-  // 🔹 Se for modo edição — grava sempre o estado atual
-  // 🔹 Se não for edição — grava apenas após interação real
+  // 🔹 Atualiza o estado global com os tipos selecionados
+  // =======================================================
+  if (selecionados.includes('pix')) {
+    atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
+  }
+  if (selecionados.includes('agencia-conta')) {
+    atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
+  }
+  if (selecionados.includes('qrcode')) {
+    atualizarEstadoBancario('qrcode', true, null);
+  }
+
+  // =======================================================
+  // 🔹 Envia para gravação (edição ou nova criação)
   // =======================================================
   const emEdicao = window.recebe_acao === 'editar';
 
@@ -15203,7 +15246,83 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function gravar_tipo_dado_bancario(tipo_dado_bancario) {
       debugger;
-      try {
+      if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          try {
+        console.group('Conta Bancária > gravar_tipo_dado_bancario');
+        console.log('Valor recebido para gravação:', tipo_dado_bancario);
+        console.groupEnd();
+      } catch (e) { /* noop */ }
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        async: false,
+        beforeSend: function() {
+          try {
+            console.group('AJAX > inclusão valor kit (beforeSend)');
+            console.log('Processo:', 'atualizar_kit');
+            console.log('valor_tipo_dado_bancario:', tipo_dado_bancario);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+        },
+        data: {
+          processo_geracao_kit: "atualizar_kit",
+          valor_tipo_dado_bancario: tipo_dado_bancario,
+          valor_id_kit:window.recebe_id_kit
+        },
+        success: function(retorno_exame_geracao_kit) {
+          debugger;
+          try {
+            console.group('AJAX > sucesso inclusão valor kit');
+            console.log('Retorno:', retorno_exame_geracao_kit);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+
+          const mensagemSucesso = `
+                <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>Exame cadastrado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#exame-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#exame-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+
+          $("#exame-gravado").html(retorno_exame_geracao_kit);
+          $("#exame-gravado").show();
+          $("#exame-gravado").fadeOut(4000);
+          console.log(retorno_exame_geracao_kit);
+          ajaxEmExecucao = false; // libera para nova requisição
+        },
+        error: function(xhr, status, error) {
+          console.log("Falha ao incluir exame: " + error);
+          ajaxEmExecucao = false; // libera para tentar de novo
+        },
+        complete: function() {
+          try {
+            console.log('AJAX > inclusão valor kit finalizado');
+          } catch(e) { /* noop */ }
+        }
+      });
+        }else{
+try {
         console.group('Conta Bancária > gravar_tipo_dado_bancario');
         console.log('Valor recebido para gravação:', tipo_dado_bancario);
         console.groupEnd();
@@ -15275,6 +15394,7 @@ document.addEventListener('DOMContentLoaded', function() {
           } catch(e) { /* noop */ }
         }
       });
+        }
     }
   
   // Verificar se o tipo PIX já está selecionado ao carregar a página
