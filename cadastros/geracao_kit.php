@@ -4601,7 +4601,37 @@ try {
     }
 
 
-        function repopular_assinatura() {
+//         function repopular_assinatura() {
+//     debugger;
+
+//     try {
+//         const checkbox = document.getElementById('requer-assinatura');
+//         if (!checkbox) {
+//             console.warn('Checkbox de assinatura não encontrado.');
+//             return;
+//         }
+
+//         // Verifica se o valor global existe
+//         if (typeof window.assinatura_digital !== 'undefined' && window.assinatura_digital !== null) {
+//             // Converte o valor ("Sim"/"Nao") em booleano
+//             const deveMarcar = String(window.assinatura_digital).trim().toLowerCase() === 'sim';
+
+//             // Marca ou desmarca o checkbox conforme o valor
+//             checkbox.checked = deveMarcar;
+
+//             // Salva o estado atual (caso você use isso em outras funções)
+//             window.assinaturaDigitalEstado = deveMarcar;
+
+//             console.log('Assinatura digital repopulada:', window.assinatura_digital);
+//         } else {
+//             console.warn('Variável global window.assinatura_digital não possui valor definido.');
+//         }
+//     } catch (e) {
+//         console.error('Erro ao repopular assinatura digital:', e);
+//     }
+// }
+
+function repopular_assinatura() {
     debugger;
 
     try {
@@ -4611,28 +4641,42 @@ try {
             return;
         }
 
-        // Verifica se o valor global existe
-        if (typeof window.assinatura_digital !== 'undefined' && window.assinatura_digital !== null) {
-            // Converte o valor ("Sim"/"Nao") em booleano
-            const deveMarcar = String(window.assinatura_digital).trim().toLowerCase() === 'sim';
+        let deveMarcar = false;
 
-            // Marca ou desmarca o checkbox conforme o valor
-            checkbox.checked = deveMarcar;
-
-            // Salva o estado atual (caso você use isso em outras funções)
-            window.assinaturaDigitalEstado = deveMarcar;
-
-            console.log('Assinatura digital repopulada:', window.assinatura_digital);
+        // 🔹 Verifica o modo de ação
+        if (window.recebe_acao === 'editar') {
+            // Valor vem de window.assinatura_digital (geralmente "Sim" ou "Nao")
+            if (typeof window.assinatura_digital !== 'undefined' && window.assinatura_digital !== null) {
+                deveMarcar = String(window.assinatura_digital).trim().toLowerCase() === 'sim';
+            } else {
+                console.warn('Variável window.assinatura_digital não possui valor definido no modo edição.');
+            }
         } else {
-            console.warn('Variável global window.assinatura_digital não possui valor definido.');
+            // Valor vem de window.assinaturaDigitalEstado (boolean)
+            if (typeof window.assinaturaDigitalEstado !== 'undefined') {
+                deveMarcar = !!window.assinaturaDigitalEstado;
+            } else {
+                console.warn('Variável window.assinaturaDigitalEstado não possui valor definido no modo normal.');
+            }
         }
+
+        // 🔸 Marca ou desmarca o checkbox conforme o valor detectado
+        checkbox.checked = deveMarcar;
+
+        // 🔸 Atualiza a variável global com o estado atual
+        window.assinaturaDigitalEstado = deveMarcar;
+
+        console.log('🔁 Assinatura digital repopulada. Estado atual:', deveMarcar);
     } catch (e) {
-        console.error('Erro ao repopular assinatura digital:', e);
+        console.error('❌ Erro ao repopular assinatura digital:', e);
     }
 }
 
-window._tiposOrcamentoSelecionados = window._tiposOrcamentoSelecionados || [];
+
+        window._tiposOrcamentoSelecionados = window._tiposOrcamentoSelecionados || [];
         window._modelosSelecionados = window._modelosSelecionados || [];
+        window.assinaturaDigitalEstado = window.assinaturaDigitalEstado || "";
+        
 
         // ============================================================
 // 🔹 FUNÇÃO: Restaurar Tipos de Orçamento
@@ -5342,6 +5386,20 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
   }, 300);
 }
 
+// Adiciona o event listener para futuras mudanças
+        $(document).off('change', '#requer-assinatura').on('change', '#requer-assinatura', function() {
+          debugger;
+            window.assinaturaDigitalEstado = $(this).is(':checked');
+            console.log('Estado da assinatura atualizado para:', window.assinaturaDigitalEstado);
+            atualizarEstadoAssinatura($(this).is(':checked'));
+        });
+
+        function atualizarEstadoAssinatura(assinatura)
+{
+  debugger;
+  window.assinaturaDigitalEstado = assinatura;
+}
+
       setTimeout(() => {
         debugger;
     const checkbox = document.getElementById('requer-assinatura');
@@ -5353,11 +5411,6 @@ if ((window.smDocumentosSelecionadosNomes && window.smDocumentosSelecionadosNome
             console.log('Estado da assinatura restaurado:', window.assinaturaDigitalEstado);
         }
         
-        // Adiciona o event listener para futuras mudanças
-        $(document).off('change', '#requer-assinatura').on('change', '#requer-assinatura', function() {
-            window.assinaturaDigitalEstado = $(this).is(':checked');
-            console.log('Estado da assinatura atualizado para:', window.assinaturaDigitalEstado);
-        });
     }
 }, 100);
 
@@ -16036,6 +16089,15 @@ tipoContaInputs.forEach(input => {
   
   // Carrega as chaves PIX ao carregar a página
   carregarChavesPix();
+
+  if (document.getElementById('requer-assinatura')) {
+    configurarEventoAssinatura();
+  }
+
+  $(document).on('change', '#requer-assinatura', function() {
+  debugger;
+    atualizarEstadoAssinatura($(this).is(':checked'));
+});
 });
 
 // Adiciona o event listener para o checkbox de assinatura
