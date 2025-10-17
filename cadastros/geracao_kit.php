@@ -4026,8 +4026,10 @@ function repopular_laudos() {
               } else {
                 card.classList.remove('active');
               }
-        });
-          }
+            });
+        }
+
+        
         // Configurar os cards de exame
         setTimeout(() => {
           verifica_selecao_exame();
@@ -4320,6 +4322,11 @@ try {
       // Se for a aba de faturamento (etapa 5), atualiza os totais e inicializa a conta bancária
       if (step === 5) {
         window.fatProdutosGlobais = window.fatProdutosGlobais || [];
+
+        // ============================================================
+        // 🔹 VARIÁVEIS GLOBAIS (inicialização segura)
+        // ===========================================================
+        
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
 
         carregarAsChavesPIX();
@@ -4624,76 +4631,132 @@ try {
     }
 }
 
+window._tiposOrcamentoSelecionados = window._tiposOrcamentoSelecionados || [];
+        window._modelosSelecionados = window._modelosSelecionados || [];
 
-        function restaurar_tipo_orcamento() {
+        // ============================================================
+// 🔹 FUNÇÃO: Restaurar Tipos de Orçamento
+// ============================================================
+// function restaurar_tipo_orcamento() {
+//   debugger;
+
+//   let tipos = [];
+
+//   // 🔸 Detecta origem (modo edição ou normal)
+//   if (window.recebe_acao === 'editar') {
+//     try {
+//       if (typeof window.tipo_orcamento === 'string') {
+//         tipos = JSON.parse(window.tipo_orcamento);
+//       } else if (Array.isArray(window.tipo_orcamento)) {
+//         tipos = window.tipo_orcamento;
+//       }
+//     } catch (err) {
+//       console.error('Erro ao parsear window.tipo_orcamento:', err);
+//       tipos = [];
+//     }
+//   } else {
+//     tipos = [...(window._tiposOrcamentoSelecionados || [])];
+//   }
+
+//   // Normaliza os tipos para comparação
+//   const tiposNormalizados = tipos.map(t => String(t).toLowerCase().trim());
+
+//   const cards = document.querySelectorAll('.tipo-orcamento-card');
+//   if (!cards.length) {
+//     console.warn('Nenhum .tipo-orcamento-card encontrado.');
+//     return;
+//   }
+
+//   cards.forEach(card => {
+//     // Busca o checkbox de forma segura
+//     const checkbox = card.querySelector('input[type="checkbox"]');
+//     if (!checkbox) {
+//       console.warn('Checkbox não encontrado no card:', card);
+//       return; // pula para o próximo card
+//     }
+
+//     const spanText = card.querySelector('span')?.textContent?.trim() || '';
+//     const dataValue = card.getAttribute('data-value') || '';
+
+//     // Normaliza todas as fontes possíveis para comparação
+//     const fontes = [spanText, dataValue, checkbox.value || '']
+//       .map(s => s.toLowerCase().trim())
+//       .filter(Boolean);
+
+//     // Verifica se algum valor bate com os tipos selecionados
+//     const match = tiposNormalizados.some(tipo => fontes.includes(tipo));
+
+//     // Marca ou desmarca o checkbox
+//     checkbox.checked = match;
+
+//     // Adiciona ou remove classe visual
+//     if (match) card.classList.add('selected');
+//     else card.classList.remove('selected');
+//   });
+
+//   // Atualiza variável global de tipos selecionados
+//   window._tiposOrcamentoSelecionados = Array.from(
+//     document.querySelectorAll('.tipo-orcamento-card input[type="checkbox"]:checked')
+//   )
+//     .map(cb => cb.closest('.tipo-orcamento-card')?.querySelector('span')?.textContent?.trim())
+//     .filter(Boolean);
+
+//   // Atualiza lista visual, se existir função
+//   if (typeof updateSelectedList === 'function') updateSelectedList();
+// }
+
+
+function restaurar_tipo_orcamento() {
   debugger;
-
-  // 1) Normaliza/parseia window.tipo_orcamento para um array de strings
+  // 🔹 Obtém os tipos que já estavam selecionados
   let tipos = [];
-  try {
-    if (typeof window.tipo_orcamento === 'string') {
-      tipos = JSON.parse(window.tipo_orcamento);
-    } else if (Array.isArray(window.tipo_orcamento)) {
-      tipos = window.tipo_orcamento;
+  if (window.recebe_acao === 'editar') {
+    try {
+      if (typeof window.tipo_orcamento === 'string') {
+        tipos = JSON.parse(window.tipo_orcamento);
+      } else if (Array.isArray(window.tipo_orcamento)) {
+        tipos = window.tipo_orcamento;
+      }
+    } catch (err) {
+      console.error('Erro ao parsear window.tipo_orcamento:', err);
+      tipos = [];
     }
-  } catch (err) {
-    console.error('Erro ao parsear window.tipo_orcamento:', err);
-    tipos = [];
+  } else {
+    tipos = [...(window._tiposOrcamentoSelecionados || [])];
   }
 
-  // Normaliza valores (minusculo + trim) para comparação
-  const tiposNormalizados = (Array.isArray(tipos) ? tipos : []).map(t => String(t).toLowerCase().trim());
+  // Normaliza os tipos para comparação
+  const tiposNormalizados = tipos.map(t => String(t).toLowerCase().trim());
 
-  // Seleciona todos os cards
-  const cards = document.querySelectorAll('.tipo-orcamento-card');
+  // 🔹 Percorre todos os labels e marca os checkboxes que correspondem
+  document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
+    const card = label.querySelector('.tipo-orcamento-card');
+    const checkbox = label.querySelector('input[type="checkbox"]');
 
-  if (!cards.length) {
-    console.warn('Nenhum .tipo-orcamento-card encontrado no DOM.');
-    return;
-  }
+    if (card && checkbox) {
+      const spanText = card.querySelector('span')?.textContent?.trim() || '';
+      const dataValue = card.getAttribute('data-value') || '';
 
-  // Percorre cada card e decide marcar/desmarcar
-  cards.forEach(card => {
-    debugger;
-    // Tenta encontrar o checkbox relacionado (dentro do card, ou no label pai)
-    let checkbox = card.querySelector('input[type="checkbox"]');
-    if (!checkbox) {
-      const parentLabel = card.closest('label, .tipo-orcamento-label');
-      if (parentLabel) checkbox = parentLabel.querySelector('input[type="checkbox"]');
+      const fontes = [spanText, dataValue, checkbox.value || '']
+        .map(s => s.toLowerCase().trim())
+        .filter(Boolean);
+
+      const match = fontes.some(f => tiposNormalizados.includes(f));
+
+      checkbox.checked = match;
+
+      if (match) card.classList.add('selected');
+      else card.classList.remove('selected');
     }
-
-    // Obtém possíveis fontes de texto/valor para comparar:
-    const spanText = card.querySelector('span')?.textContent?.trim() || '';
-    const dataValue = card.getAttribute('data-value') || card.dataset?.value || '';
-    const inputValue = checkbox?.value || '';
-
-    // Normaliza todas as fontes
-    const fontes = [spanText, dataValue, inputValue, card.textContent || '']
-      .map(s => String(s).toLowerCase().trim())
-      .filter(Boolean); // remove vazios
-
-    // Verifica se alguma fonte bate com algum tipo vindo do servidor
-    const match = fontes.some(f => tiposNormalizados.includes(f));
-
-    if (checkbox) {
-      checkbox.checked = !!match; // marca se bate, desmarca caso contrário
-    }
-
-    // Atualiza classe visual
-    if (match) card.classList.add('selected');
-    else card.classList.remove('selected');
   });
 
-  // Se você usa uma lista global de selecionados, atualize-a também:
-  if (!window.smDocumentosSelecionadosNomes) window.smDocumentosSelecionadosNomes = [];
-  // sincroniza: coloca só os que foram marcados hoje
-  window.smDocumentosSelecionadosNomes = Array.from(document.querySelectorAll('.tipo-orcamento-card.selected'))
-    .map(c => c.querySelector('span')?.textContent?.trim() || c.getAttribute('data-value') || '')
-    .filter(Boolean);
+  // Atualiza variável global para refletir a seleção atual
+  window._tiposOrcamentoSelecionados = tipos;
 
-  // Chama função de atualização se existir
+  // Atualiza lista visual se existir função
   if (typeof updateSelectedList === 'function') updateSelectedList();
 }
+
 
 
 
@@ -5087,93 +5150,50 @@ function repopular_produtos() {
 
         
 
-        function restaurarModelosSelecionados() {
+        // ============================================================
+// 🔹 FUNÇÃO: Restaurar Modelos Selecionados
+// ============================================================
+function restaurarModelosSelecionados() {
   debugger;
 
-  // 🔹 Caso seja edição — utiliza modelos de ambas as variáveis
+  let modelos = [];
+
+  // 🔸 Detecta origem dos dados
   if (window.recebe_acao === 'editar') {
-    const modelosBancoRaw = Array.isArray(window.modelos_documentos)
-      ? window.modelos_documentos.slice()
-      : (window.modelos_documentos ? [String(window.modelos_documentos)] : []);
-
-    const modelosGlobaisRaw = Array.isArray(window.smModelosDocumentosSelecionados)
-      ? window.smModelosDocumentosSelecionados.slice()
-      : (window.smModelosDocumentosSelecionados ? [String(window.smModelosDocumentosSelecionados)] : []);
-
-    // Função para normalizar/achatar entradas (trata strings JSON, aspas, trims, lowercase)
-    function flattenAndNormalize(arr) {
-      const out = [];
-      arr.forEach(item => {
-        if (item == null) return;
-        if (typeof item === 'string') {
-          let s = item.trim();
-
-          // tenta fazer parse se for JSON (ex: '["A","B"]')
-          if ((s.startsWith('[') && s.endsWith(']')) || (s.startsWith('"[') && s.endsWith(']"'))) {
-            try {
-              const parsed = JSON.parse(s);
-              if (Array.isArray(parsed)) {
-                parsed.forEach(p => { if (p != null) out.push(String(p).trim().toLowerCase()); });
-                return;
-              }
-            } catch (e) {
-              // não conseguiu parsear, segue abaixo para tratamento como string comum
-            }
-          }
-
-          // remove aspas externas sobrando: "ASO - ..." ou 'ASO - ...'
-          if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
-            s = s.slice(1, -1).trim();
-          }
-
-          // Se contém vírgula e parece lista, tenta separar (opcional)
-          if (s.includes(',') && !s.includes(' - ')) {
-            s.split(',').forEach(part => { if (part.trim()) out.push(part.trim().toLowerCase()); });
-          } else {
-            out.push(s.toLowerCase());
-          }
-        } else {
-          out.push(String(item).trim().toLowerCase());
-        }
-      });
-
-      return Array.from(new Set(out));
-    }
-
-    const todosModelosNorm = flattenAndNormalize([...modelosBancoRaw, ...modelosGlobaisRaw]);
-
-    if (!todosModelosNorm.length) return;
-
-    // Marca todos os checkboxes correspondentes (comparação normalizada)
-    document.querySelectorAll('.sm-label').forEach(label => {
-      debugger;
-      const card = label.querySelector('.sm-card');
-      const checkbox = label.querySelector('input[type="checkbox"]');
-      if (card && checkbox) {
-        const text = card.querySelector('span')?.textContent?.trim();
-        const textNorm = text ? text.toLowerCase() : '';
-        if (textNorm && todosModelosNorm.includes(textNorm)) {
-          checkbox.checked = true;
-        }
+    try {
+      if (Array.isArray(window.modelos_documentos)) {
+        modelos = window.modelos_documentos.slice();
+      } else if (typeof window.modelos_documentos === 'string') {
+        const parsed = JSON.parse(window.modelos_documentos);
+        modelos = Array.isArray(parsed) ? parsed : [window.modelos_documentos];
       }
-    });
-
-    return; // encerra aqui se for edição
+    } catch (err) {
+      console.warn('Erro ao interpretar modelos_documentos:', err);
+      modelos = [];
+    }
+  } else {
+    modelos = [...(window._modelosSelecionados || [])];
   }
 
-  // 🔹 Caso contrário — executa o comportamento original
-  if (!window.smModelosDocumentosSelecionados || !window.smModelosDocumentosSelecionados.length) return;
+  const modelosNorm = modelos.map(m => String(m).toLowerCase().trim());
 
   document.querySelectorAll('.sm-label').forEach(label => {
     const card = label.querySelector('.sm-card');
     const checkbox = label.querySelector('input[type="checkbox"]');
-    if (card && checkbox) {
-      const text = card.querySelector('span')?.textContent?.trim();
-      if (text && window.smModelosDocumentosSelecionados.includes(text)) {
-        checkbox.checked = true;
-      }
+    const text = card?.querySelector('span')?.textContent?.trim().toLowerCase() || '';
+
+    if (checkbox) {
+      checkbox.checked = modelosNorm.includes(text);
     }
   });
+
+  // Atualiza variável global
+  window._modelosSelecionados = Array.from(
+    document.querySelectorAll('.sm-card input[type="checkbox"]:checked')
+  ).map(cb => cb.closest('.sm-card').querySelector('span')?.textContent?.trim())
+   .filter(Boolean);
+
+  if (typeof updateSelectedList === 'function') updateSelectedList();
 }
 
 
@@ -18391,169 +18411,95 @@ function renderizarCheckboxes() {
       }
     }
 
-    // Função para atualizar a lista de selecionados
-function updateSelectedList() {
-  debugger;
-  if (window._smDocUpdating) return;
-  window._smDocUpdating = true;
-
+    function updateSelectedList() {
+    debugger;
   try {
+    // 🔹 Captura os elementos da interface
     const selectedList = document.getElementById('sm-selected-list');
-    if (!selectedList) return;
 
-    // Salva os modelos de documentos selecionados
+    // 🔹 Arrays temporários locais
     const modelosSelecionados = [];
+    const tiposOrcamentoSelecionados = [];
+
+    // 🔹 Captura modelos de documentos selecionados
     document.querySelectorAll('.sm-label').forEach(label => {
       const card = label.querySelector('.sm-card');
       const checkbox = label.querySelector('input[type="checkbox"]');
       if (card && checkbox && checkbox.checked) {
         const text = card.querySelector('span')?.textContent?.trim();
-        if (text) {
-          modelosSelecionados.push(text);
-        }
+        if (text) modelosSelecionados.push(text);
       }
     });
 
-    // Salva os tipos de orçamento selecionados antes de limpar
-    const tiposOrcamentoSelecionados = [];
+    // 🔹 Captura tipos de orçamento selecionados
     document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
       const card = label.querySelector('.tipo-orcamento-card');
       const checkbox = label.querySelector('input[type="checkbox"]');
       if (card && checkbox && checkbox.checked) {
         const text = card.querySelector('span')?.textContent?.trim();
-        if (text) {
-          tiposOrcamentoSelecionados.push(text);
-        }
+        if (text) tiposOrcamentoSelecionados.push(text);
       }
     });
 
-    // Limpa a lista
+    // 🔹 Atualiza variáveis globais
+    window._modelosSelecionados = modelosSelecionados;
+    window._tiposOrcamentoSelecionados = tiposOrcamentoSelecionados;
+
+    // 🔹 Se não existe lista visual, apenas armazena e sai
+    if (!selectedList) {
+      console.warn('⚠️ Elemento #sm-selected-list não encontrado. Dados armazenados apenas nas variáveis globais.');
+      return;
+    }
+
+    // 🔹 Limpa a lista antes de redesenhar
     selectedList.innerHTML = '';
 
-    // Atualiza o backup com os tipos de orçamento atualmente selecionados
-    // Atualiza os backups
-    window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
-    window.smModelosDocumentosSelecionados = [...new Set(modelosSelecionados)];
+    // 🔹 Renderiza os modelos selecionados visualmente
+    window._modelosSelecionados.forEach(text => {
+      const selectedItem = document.createElement('div');
+      selectedItem.className = 'sm-selected-item';
+      selectedItem.textContent = text;
 
-    // Atualiza a lista global com os valores do backup
-    window.smDocumentosSelecionadosNomes = [...(window.smDocumentosSelecionadosBackup || [])];
-    // Zera array global
-    window.smDocumentosSelecionadosNomes = [];
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-document';
+      removeBtn.innerHTML = '×';
+      removeBtn.title = 'Remover';
 
-    // Seleciona documentos (.sm-label) e orçamentos (.tipo-orcamento-label)
-    const labels = document.querySelectorAll('.sm-label, .tipo-orcamento-label');
+      // 🔸 Ao clicar no X → desmarca o checkbox e atualiza lista
+      removeBtn.onclick = e => {
+        e.stopPropagation();
+        const checkbox = Array.from(
+          document.querySelectorAll('.sm-label input[type="checkbox"]')
+        ).find(cb =>
+          cb.closest('.sm-card').querySelector('span')?.textContent?.trim() === text
+        );
 
-    labels.forEach(label => {
-      const checkbox = label.querySelector('input[type="checkbox"]');
-      const card = label.querySelector('.sm-card, .tipo-orcamento-card');
-      const icon = card ? card.querySelector('i') : null;
+        if (checkbox) checkbox.checked = false;
 
-      if (checkbox && checkbox.checked && card) {
-        // Sempre armazena o nome no array global
-        const text = card.querySelector('span')?.textContent || '';
-        try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
+        // Garante atualização sem loop
+        window._smDocUpdating = false;
+        updateSelectedList();
+      };
 
-        // Identifica se é um item de orçamento
-        const isOrcamento = label.classList.contains('tipo-orcamento-label')
-          || (card && card.classList.contains('tipo-orcamento-card'));
-
-        // Se for orçamento, não renderiza no sm-selected-list (apenas armazena)
-        if (isOrcamento) {
-          return;
-        }
-
-        // Armazena no array apropriado
-        if (isOrcamento) {
-          try { 
-            window.smDocumentosSelecionadosNomes = [...new Set([...window.smDocumentosSelecionadosNomes || [], text.trim()])];
-          } catch (e) { console.error(e); }
-          return;
-        } else {
-          try {
-            window.smModelosDocumentosSelecionados = [...new Set([...window.smModelosDocumentosSelecionados || [], text.trim()])];
-          } catch (e) { console.error(e); }
-        }
-
-        // Renderização visual apenas para itens que não são orçamento
-        const selectedItem = document.createElement('div');
-        selectedItem.className = 'sm-selected-item';
-
-        let bgColor = '#f3f4f6';
-        let textColor = '#1f2937';
-
-        if (icon) {
-          if (icon.classList.contains('fa-paper-plane')) {
-            bgColor = '#dbeafe'; textColor = '#1e40af';
-          } else if (icon.classList.contains('fa-clipboard-list')) {
-            bgColor = '#d1fae5'; textColor = '#065f46';
-          } else if (icon.classList.contains('fa-file-medical')) {
-            bgColor = '#fef3c7'; textColor = '#92400e';
-          } else if (icon.classList.contains('fa-eye')) {
-            bgColor = '#fee2e2'; textColor = '#991b1b';
-          } else if (icon.classList.contains('fa-users')) {
-            bgColor = '#e0e7ff'; textColor = '#3730a3';
-          } else if (icon.classList.contains('fa-exclamation-triangle')) {
-            bgColor = '#fef3c7'; textColor = '#92400e';
-          } else if (icon.classList.contains('fa-file-alt')) {
-            bgColor = '#1e1b4b'; textColor = '#ffffff';
-          } else if (icon.classList.contains('fa-dollar-sign')) {
-            bgColor = '#ecfdf5'; textColor = '#065f46';
-          } else if (icon.classList.contains('fa-stethoscope')) {
-            bgColor = '#f3e8ff'; textColor = '#6d28d9';
-          } else if (icon.classList.contains('fa-graduation-cap')) {
-            bgColor = '#fff7ed'; textColor = '#9a3412';
-          } else if (icon.classList.contains('fa-hard-hat')) {
-            bgColor = '#fef9c3'; textColor = '#854d0e';
-          }
-        }
-
-        selectedItem.style.backgroundColor = bgColor;
-        selectedItem.style.color = textColor;
-
-        // Ícone
-        if (icon) {
-          const iconClone = icon.cloneNode(true);
-          iconClone.className = 'sm-selected-icon';
-          selectedItem.appendChild(iconClone);
-        }
-
-        // Texto
-        const textNode = document.createTextNode(text);
-
-        // Botão remover
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-document';
-        removeBtn.innerHTML = '×';
-        removeBtn.title = 'Remover';
-        removeBtn.onclick = (e) => {
-          e.stopPropagation();
-          checkbox.checked = false;
-          window._smDocUpdating = false;
-          updateSelectedList();
-        };
-
-        selectedItem.appendChild(textNode);
-        selectedItem.appendChild(removeBtn);
-
-        selectedList.appendChild(selectedItem);
-      }
+      selectedItem.appendChild(removeBtn);
+      selectedList.appendChild(selectedItem);
     });
 
-    // Remove duplicatas
-    try { 
-      window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes));
-    } catch (e) {}
-
-    // JSON global
-    window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
-
-    if (selectedList.children.length === 0) {
+    // 🔹 Caso nada esteja selecionado
+    if (!window._modelosSelecionados.length) {
       selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
     }
-  } finally {
-    window._smDocUpdating = true;
+
+    console.log('✅ Variáveis globais atualizadas:', {
+      modelos: window._modelosSelecionados,
+      tiposOrcamento: window._tiposOrcamentoSelecionados
+    });
+  } catch (err) {
+    console.error('❌ Erro em updateSelectedList:', err);
   }
 }
+
+
 
     // Função auxiliar para atualizar a lista global a partir do DOM
     function atualizarTiposOrcamentoSelecionados() {
