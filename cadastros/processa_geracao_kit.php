@@ -287,27 +287,66 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $valor_tipo_dado_bancario_bind = isset($_SESSION["tipo_dado_bancario"]) ? $_SESSION["tipo_dado_bancario"] : null;
 
-        if(isset($_POST["valor_agencia_conta"]) && $_POST["valor_agencia_conta"])
-        {
-            $recebe_agencia_conta = $_POST["valor_agencia_conta"];
+        // if(isset($_POST["valor_agencia_conta"]) && $_POST["valor_agencia_conta"])
+        // {
+        //     $recebe_agencia_conta = $_POST["valor_agencia_conta"];
 
-            if(!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta)
-            {
-                $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
-            }
-        }
-        $valor_dado_bancario_agencia_conta_bind = isset($_SESSION["dado_bancario_agencia_conta"]) ? $_SESSION["dado_bancario_agencia_conta"] : null;
+        //     if(!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta)
+        //     {
+        //         $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
+        //     }
+        // }
+        // $valor_dado_bancario_agencia_conta_bind = isset($_SESSION["dado_bancario_agencia_conta"]) ? $_SESSION["dado_bancario_agencia_conta"] : null;
 
-        if(isset($_POST["valor_pix"]) && $_POST["valor_pix"])
-        {
-            $recebe_pix = $_POST["valor_pix"];
+        // Agência/Conta
+        $valor_dado_bancario_agencia_conta_bind = null; // garante que existe
 
-            if(!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix)
-            {
-                $_SESSION["dado_bancario_pix"] = $recebe_pix;
-            }
-        }
-        $valor_dado_bancario_pix_bind = isset($_SESSION["dado_bancario_pix"]) ? $_SESSION["dado_bancario_pix"] : null;
+if (isset($_POST["valor_agencia_conta"])) {
+    // Se vier valor do POST, trata "" como null
+    $recebe_agencia_conta = $_POST["valor_agencia_conta"] !== "" ? $_POST["valor_agencia_conta"] : null;
+
+    // Atualiza a sessão somente se o valor for diferente do atual
+    if (!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta) {
+        $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
+    }
+}
+
+// Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+if (isset($_SESSION["dado_bancario_agencia_conta"])) {
+    $valor_dado_bancario_agencia_conta_bind = $_SESSION["dado_bancario_agencia_conta"];
+}
+
+
+
+        // if(isset($_POST["valor_pix"]) && $_POST["valor_pix"])
+        // {
+        //     $recebe_pix = $_POST["valor_pix"];
+
+        //     if(!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix)
+        //     {
+        //         $_SESSION["dado_bancario_pix"] = $recebe_pix;
+        //     }
+        // }
+        // $valor_dado_bancario_pix_bind = isset($_SESSION["dado_bancario_pix"]) ? $_SESSION["dado_bancario_pix"] : null;
+
+        // PIX
+        $valor_dado_bancario_pix_bind = null; // garante que existe
+
+if (isset($_POST["valor_pix"])) {
+    // Trata "" como null
+    $recebe_pix = $_POST["valor_pix"] !== "" ? $_POST["valor_pix"] : null;
+
+    // Atualiza a sessão somente se for diferente do valor atual
+    if (!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix) {
+        $_SESSION["dado_bancario_pix"] = $recebe_pix;
+    }
+}
+
+// Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+if (isset($_SESSION["dado_bancario_pix"])) {
+    $valor_dado_bancario_pix_bind = $_SESSION["dado_bancario_pix"];
+}
+
 
         //DOCUMENTO
         if (isset($_POST["valor_documento"]) && $_POST["valor_documento"]) {
@@ -448,8 +487,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado",    $valor_aptidao_selecionado_bind,  $valor_aptidao_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_exames_selecionado",    $valor_exames_selecionado_bind,  $valor_exames_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado",    $valor_tipo_dado_bancario_bind,  $valor_tipo_dado_bancario_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-        $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_selecionado",    $valor_dado_bancario_agencia_conta_bind,  $valor_dado_bancario_agencia_conta_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-        $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_selecionado",    $valor_dado_bancario_pix_bind,  $valor_dado_bancario_pix_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        // Bind no PDO
+        $comando_atualizar_kit->bindValue(
+            ":recebe_dado_bancario_agencia_conta_selecionado",
+            $valor_dado_bancario_agencia_conta_bind,
+            $valor_dado_bancario_agencia_conta_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        );
+
+        $comando_atualizar_kit->bindValue(
+            ":recebe_dado_bancario_pix_selecionado",
+            $valor_dado_bancario_pix_bind,
+            $valor_dado_bancario_pix_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        );
         $comando_atualizar_kit->bindValue(":recebe_assinatura_digital_selecionada",    $valor_assinatura_bind,  $valor_assinatura_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado",    $valor_tipo_orcamento_bind,  $valor_tipo_orcamento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado",    $valor_documento_bind,  $valor_documento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
@@ -679,27 +728,64 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         $valor_tipo_dado_bancario_bind = isset($_SESSION["tipo_dado_bancario"]) ? $_SESSION["tipo_dado_bancario"] : null;
 
-        if(isset($_POST["valor_agencia_conta"]) && $_POST["valor_agencia_conta"])
-        {
-            $recebe_agencia_conta = $_POST["valor_agencia_conta"];
+        // if(isset($_POST["valor_agencia_conta"]) && $_POST["valor_agencia_conta"])
+        // {
+        //     $recebe_agencia_conta = $_POST["valor_agencia_conta"];
 
-            if(!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta)
-            {
-                $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
-            }
-        }
-        $valor_dado_bancario_agencia_conta_bind = isset($_SESSION["dado_bancario_agencia_conta"]) ? $_SESSION["dado_bancario_agencia_conta"] : null;
+        //     if(!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta)
+        //     {
+        //         $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
+        //     }
+        // }
+        // $valor_dado_bancario_agencia_conta_bind = isset($_SESSION["dado_bancario_agencia_conta"]) ? $_SESSION["dado_bancario_agencia_conta"] : null;
 
-        if(isset($_POST["valor_pix"]) && $_POST["valor_pix"])
-        {
-            $recebe_pix = $_POST["valor_pix"];
+        // Agência/Conta
+        $valor_dado_bancario_agencia_conta_bind = null; // garante que existe
 
-            if(!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix)
-            {
-                $_SESSION["dado_bancario_pix"] = $recebe_pix;
-            }
-        }
-        $valor_dado_bancario_pix_bind = isset($_SESSION["dado_bancario_pix"]) ? $_SESSION["dado_bancario_pix"] : null;
+if (isset($_POST["valor_agencia_conta"])) {
+    // Se vier valor do POST, trata "" como null
+    $recebe_agencia_conta = $_POST["valor_agencia_conta"] !== "" ? $_POST["valor_agencia_conta"] : null;
+
+    // Atualiza a sessão somente se o valor for diferente do atual
+    if (!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta) {
+        $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
+    }
+}
+
+// Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+if (isset($_SESSION["dado_bancario_agencia_conta"])) {
+    $valor_dado_bancario_agencia_conta_bind = $_SESSION["dado_bancario_agencia_conta"];
+}
+
+        // if(isset($_POST["valor_pix"]) && $_POST["valor_pix"])
+        // {
+        //     $recebe_pix = $_POST["valor_pix"];
+
+        //     if(!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix)
+        //     {
+        //         $_SESSION["dado_bancario_pix"] = $recebe_pix;
+        //     }
+        // }
+        // $valor_dado_bancario_pix_bind = isset($_SESSION["dado_bancario_pix"]) ? $_SESSION["dado_bancario_pix"] : null;
+
+        // PIX
+        $valor_dado_bancario_pix_bind = null; // garante que existe
+
+if (isset($_POST["valor_pix"])) {
+    // Trata "" como null
+    $recebe_pix = $_POST["valor_pix"] !== "" ? $_POST["valor_pix"] : null;
+
+    // Atualiza a sessão somente se for diferente do valor atual
+    if (!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix) {
+        $_SESSION["dado_bancario_pix"] = $recebe_pix;
+    }
+}
+
+// Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+if (isset($_SESSION["dado_bancario_pix"])) {
+    $valor_dado_bancario_pix_bind = $_SESSION["dado_bancario_pix"];
+}
+
 
         //DOCUMENTO
         if (isset($_POST["valor_documento"]) && $_POST["valor_documento"]) {

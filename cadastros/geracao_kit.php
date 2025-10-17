@@ -4366,75 +4366,226 @@ try {
     restaurarEstadoBancario();
 }
 
-function gravar_tipo_dado_bancario(tipo_dado_bancario) {
-            debugger;
-            try {
-              console.group('Conta Bancária > gravar_tipo_dado_bancario');
-              console.log('Valor recebido para gravação:', tipo_dado_bancario);
-              console.groupEnd();
-            } catch (e) { /* noop */ }
-            $.ajax({
-              url: "cadastros/processa_geracao_kit.php",
-              type: "POST",
-              dataType: "json",
-              async: false,
-              data: {
-                processo_geracao_kit: "incluir_valores_kit",
-                valor_tipo_dado_bancario: tipo_dado_bancario,
-              },
-              success: function(retorno_exame_geracao_kit) {
-                debugger;
-                try {
-                  console.group('AJAX > sucesso inclusão valor kit');
-                  console.log('Retorno:', retorno_exame_geracao_kit);
-                  console.groupEnd();
-                } catch(e) { /* noop */ }
+// function gravar_tipo_dado_bancario(tipo_dado_bancario) {
+//             debugger;
+//             try {
+//               console.group('Conta Bancária > gravar_tipo_dado_bancario');
+//               console.log('Valor recebido para gravação:', tipo_dado_bancario);
+//               console.groupEnd();
+//             } catch (e) { /* noop */ }
+//             $.ajax({
+//               url: "cadastros/processa_geracao_kit.php",
+//               type: "POST",
+//               dataType: "json",
+//               async: false,
+//               data: {
+//                 processo_geracao_kit: "incluir_valores_kit",
+//                 valor_tipo_dado_bancario: tipo_dado_bancario,
+//               },
+//               success: function(retorno_exame_geracao_kit) {
+//                 debugger;
+//                 try {
+//                   console.group('AJAX > sucesso inclusão valor kit');
+//                   console.log('Retorno:', retorno_exame_geracao_kit);
+//                   console.groupEnd();
+//                 } catch(e) { /* noop */ }
 
-                const mensagemSucesso = `
-                      <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                        <div style="display: flex; align-items: center; justify-content: center;">
+//                 const mensagemSucesso = `
+//                       <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+//                         <div style="display: flex; align-items: center; justify-content: center;">
                           
-                          <div>
+//                           <div>
                             
-                            <div>Exame cadastrado com sucesso.</div>
-                          </div>
-                        </div>
-                      </div>
-                `;
+//                             <div>Exame cadastrado com sucesso.</div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                 `;
 
-                // Remove mensagem anterior se existir
-                $("#exame-gravado").remove();
+//                 // Remove mensagem anterior se existir
+//                 $("#exame-gravado").remove();
                     
-                // Adiciona a nova mensagem acima das abas
-                $(".tabs-container").before(mensagemSucesso);
+//                 // Adiciona a nova mensagem acima das abas
+//                 $(".tabs-container").before(mensagemSucesso);
 
-                // Configura o fade out após 5 segundos
-                setTimeout(function() {
-                  $("#exame-gravado").fadeOut(500, function() {
-                  $(this).remove();
-                  });
-                }, 5000);
+//                 // Configura o fade out após 5 segundos
+//                 setTimeout(function() {
+//                   $("#exame-gravado").fadeOut(500, function() {
+//                   $(this).remove();
+//                   });
+//                 }, 5000);
 
 
-                $("#exame-gravado").html(retorno_exame_geracao_kit);
-                $("#exame-gravado").show();
-                $("#exame-gravado").fadeOut(4000);
-                console.log(retorno_exame_geracao_kit);
-                ajaxEmExecucao = false; // libera para nova requisição
-              },
-              error: function(xhr, status, error) {
-                console.log("Falha ao incluir exame: " + error);
-                ajaxEmExecucao = false; // libera para tentar de novo
-              },
-              complete: function() {
-                try {
-                  console.log('AJAX > inclusão valor kit finalizado');
-                } catch(e) { /* noop */ }
-              }
+//                 $("#exame-gravado").html(retorno_exame_geracao_kit);
+//                 $("#exame-gravado").show();
+//                 $("#exame-gravado").fadeOut(4000);
+//                 console.log(retorno_exame_geracao_kit);
+//                 ajaxEmExecucao = false; // libera para nova requisição
+//               },
+//               error: function(xhr, status, error) {
+//                 console.log("Falha ao incluir exame: " + error);
+//                 ajaxEmExecucao = false; // libera para tentar de novo
+//               },
+//               complete: function() {
+//                 try {
+//                   console.log('AJAX > inclusão valor kit finalizado');
+//                 } catch(e) { /* noop */ }
+//               }
+//             });
+//           }
+
+function gravar_tipo_dado_bancario(tipo_dado_bancario) {
+      debugger;
+      if(window.recebe_acao && window.recebe_acao === "editar")
+        {
+          try {
+        console.group('Conta Bancária > gravar_tipo_dado_bancario');
+        console.log('Valor recebido para gravação:', tipo_dado_bancario);
+        console.groupEnd();
+      } catch (e) { /* noop */ }
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        async: false,
+        beforeSend: function() {
+          try {
+            console.group('AJAX > inclusão valor kit (beforeSend)');
+            console.log('Processo:', 'atualizar_kit');
+            console.log('valor_tipo_dado_bancario:', tipo_dado_bancario);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+        },
+        data: {
+          processo_geracao_kit: "atualizar_kit",
+          valor_tipo_dado_bancario: tipo_dado_bancario,
+          valor_id_kit:window.recebe_id_kit
+        },
+        success: function(retorno_exame_geracao_kit) {
+          debugger;
+          try {
+            console.group('AJAX > sucesso inclusão valor kit');
+            console.log('Retorno:', retorno_exame_geracao_kit);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+
+          const mensagemSucesso = `
+                <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>Exame cadastrado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#exame-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#exame-gravado").fadeOut(500, function() {
+            $(this).remove();
             });
-          }
+          }, 5000);
 
 
+          $("#exame-gravado").html(retorno_exame_geracao_kit);
+          $("#exame-gravado").show();
+          $("#exame-gravado").fadeOut(4000);
+          console.log(retorno_exame_geracao_kit);
+          ajaxEmExecucao = false; // libera para nova requisição
+        },
+        error: function(xhr, status, error) {
+          console.log("Falha ao incluir exame: " + error);
+          ajaxEmExecucao = false; // libera para tentar de novo
+        },
+        complete: function() {
+          try {
+            console.log('AJAX > inclusão valor kit finalizado');
+          } catch(e) { /* noop */ }
+        }
+      });
+        }else{
+try {
+        console.group('Conta Bancária > gravar_tipo_dado_bancario');
+        console.log('Valor recebido para gravação:', tipo_dado_bancario);
+        console.groupEnd();
+      } catch (e) { /* noop */ }
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        async: false,
+        beforeSend: function() {
+          try {
+            console.group('AJAX > inclusão valor kit (beforeSend)');
+            console.log('Processo:', 'incluir_valores_kit');
+            console.log('valor_tipo_dado_bancario:', tipo_dado_bancario);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+        },
+        data: {
+          processo_geracao_kit: "incluir_valores_kit",
+          valor_tipo_dado_bancario: tipo_dado_bancario,
+        },
+        success: function(retorno_exame_geracao_kit) {
+          debugger;
+          try {
+            console.group('AJAX > sucesso inclusão valor kit');
+            console.log('Retorno:', retorno_exame_geracao_kit);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+
+          const mensagemSucesso = `
+                <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>Exame cadastrado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#exame-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#exame-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+
+          $("#exame-gravado").html(retorno_exame_geracao_kit);
+          $("#exame-gravado").show();
+          $("#exame-gravado").fadeOut(4000);
+          console.log(retorno_exame_geracao_kit);
+          ajaxEmExecucao = false; // libera para nova requisição
+        },
+        error: function(xhr, status, error) {
+          console.log("Falha ao incluir exame: " + error);
+          ajaxEmExecucao = false; // libera para tentar de novo
+        },
+        complete: function() {
+          try {
+            console.log('AJAX > inclusão valor kit finalizado');
+          } catch(e) { /* noop */ }
+        }
+      });
+        }
+    }
 
 
         function repopular_assinatura() {
@@ -5455,6 +5606,7 @@ function tratarSelecaoTipoBancario(input) {
 
   const tipo = input.value;
   const estaMarcado = input.checked;
+  const emEdicao = window.recebe_acao === 'editar';
 
   // 🟢 Marca que o usuário interagiu (habilita gravação)
   if (!window._habilitarGravacaoBancaria) {
@@ -5486,6 +5638,13 @@ function tratarSelecaoTipoBancario(input) {
       window.dadosBancariosEstado.pixSelecionado = false;
       window.dadosBancariosEstado.chavePix = null;
       window.dadosBancariosEstado.textoPix = null;
+
+      // 🔹 Atualiza banco (zera PIX)
+      if (emEdicao) {
+        gravar_pix(""); // modo edição — envia vazio e atualizar_kit
+      } else {
+        gravar_pix(""); // modo gravação normal — envia vazio e incluir_valores_kit
+      }
     }
   } 
   else if (tipo === 'agencia-conta') {
@@ -5497,6 +5656,13 @@ function tratarSelecaoTipoBancario(input) {
       window.dadosBancariosEstado.agenciaContaSelecionado = false;
       window.dadosBancariosEstado.agenciaConta = null;
       window.dadosBancariosEstado.textoAgenciaConta = null;
+
+      // 🔹 Atualiza banco (zera Agência/Conta)
+      if (emEdicao) {
+        gravar_agencia_conta(""); // modo edição — envia vazio e atualizar_kit
+      } else {
+        gravar_agencia_conta(""); // modo gravação normal — envia vazio e incluir_valores_kit
+      }
     }
   } 
   else if (tipo === 'qrcode') {
@@ -5550,8 +5716,6 @@ function tratarSelecaoTipoBancario(input) {
   // =======================================================
   // 🔹 Envia para gravação (edição ou nova criação)
   // =======================================================
-  const emEdicao = window.recebe_acao === 'editar';
-
   if (emEdicao || window._habilitarGravacaoBancaria) {
     console.log('💾 Enviando para gravar_tipo_dado_bancario:', selecionados);
     gravar_tipo_dado_bancario(JSON.stringify(selecionados));
@@ -5560,6 +5724,49 @@ function tratarSelecaoTipoBancario(input) {
   }
 }
 
+function gravar_pix(pix) {
+  debugger;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_pix: pix,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_pix: pix
+    },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
+
+function gravar_agencia_conta(agencia_conta) {
+  debugger;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_agencia_conta: agencia_conta,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_agencia_conta: agencia_conta
+    },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
 
 
 // ============================================================
@@ -5951,73 +6158,95 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
             //   pixKeySelect.remove(1);
             // }
 
-            function gravar_pix(pix) {
-              debugger;
-              try {
-                console.group('Conta Bancária > gravar_pix');
-                console.log('Valor recebido para gravação:', pix);
-                console.groupEnd();
-              } catch (e) { /* noop */ }
-              $.ajax({
-                url: "cadastros/processa_geracao_kit.php",
-                type: "POST",
-                dataType: "json",
-                async: false,
-                data: {
-                  processo_geracao_kit: "incluir_valores_kit",
-                  valor_pix: pix,
-                },
-                success: function(retorno_exame_geracao_kit) {
-                  debugger;
-                  try {
-                    console.group('AJAX > sucesso inclusão valor kit');
-                    console.log('Retorno:', retorno_exame_geracao_kit);
-                    console.groupEnd();
-                  } catch(e) { /* noop */ }
+            // function gravar_pix(pix) {
+            //   debugger;
+            //   try {
+            //     console.group('Conta Bancária > gravar_pix');
+            //     console.log('Valor recebido para gravação:', pix);
+            //     console.groupEnd();
+            //   } catch (e) { /* noop */ }
+            //   $.ajax({
+            //     url: "cadastros/processa_geracao_kit.php",
+            //     type: "POST",
+            //     dataType: "json",
+            //     async: false,
+            //     data: {
+            //       processo_geracao_kit: "incluir_valores_kit",
+            //       valor_pix: pix,
+            //     },
+            //     success: function(retorno_exame_geracao_kit) {
+            //       debugger;
+            //       try {
+            //         console.group('AJAX > sucesso inclusão valor kit');
+            //         console.log('Retorno:', retorno_exame_geracao_kit);
+            //         console.groupEnd();
+            //       } catch(e) { /* noop */ }
 
-                  const mensagemSucesso = `
-                        <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                          <div style="display: flex; align-items: center; justify-content: center;">
+            //       const mensagemSucesso = `
+            //             <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+            //               <div style="display: flex; align-items: center; justify-content: center;">
                             
-                            <div>
+            //                 <div>
                               
-                              <div>Exame cadastrado com sucesso.</div>
-                            </div>
-                          </div>
-                        </div>
-                  `;
+            //                   <div>Exame cadastrado com sucesso.</div>
+            //                 </div>
+            //               </div>
+            //             </div>
+            //       `;
 
-                  // Remove mensagem anterior se existir
-                  $("#exame-gravado").remove();
+            //       // Remove mensagem anterior se existir
+            //       $("#exame-gravado").remove();
                       
-                  // Adiciona a nova mensagem acima das abas
-                  $(".tabs-container").before(mensagemSucesso);
+            //       // Adiciona a nova mensagem acima das abas
+            //       $(".tabs-container").before(mensagemSucesso);
 
-                  // Configura o fade out após 5 segundos
-                  setTimeout(function() {
-                    $("#exame-gravado").fadeOut(500, function() {
-                    $(this).remove();
-                    });
-                  }, 5000);
+            //       // Configura o fade out após 5 segundos
+            //       setTimeout(function() {
+            //         $("#exame-gravado").fadeOut(500, function() {
+            //         $(this).remove();
+            //         });
+            //       }, 5000);
 
 
-                  $("#exame-gravado").html(retorno_exame_geracao_kit);
-                  $("#exame-gravado").show();
-                  $("#exame-gravado").fadeOut(4000);
-                  console.log(retorno_exame_geracao_kit);
-                  ajaxEmExecucao = false; // libera para nova requisição
-                },
-                error: function(xhr, status, error) {
-                  console.log("Falha ao incluir exame: " + error);
-                  ajaxEmExecucao = false; // libera para tentar de novo
-                },
-                complete: function() {
-                  try {
-                    console.log('AJAX > inclusão valor kit finalizado');
-                  } catch(e) { /* noop */ }
-                }
-              });
-            }
+            //       $("#exame-gravado").html(retorno_exame_geracao_kit);
+            //       $("#exame-gravado").show();
+            //       $("#exame-gravado").fadeOut(4000);
+            //       console.log(retorno_exame_geracao_kit);
+            //       ajaxEmExecucao = false; // libera para nova requisição
+            //     },
+            //     error: function(xhr, status, error) {
+            //       console.log("Falha ao incluir exame: " + error);
+            //       ajaxEmExecucao = false; // libera para tentar de novo
+            //     },
+            //     complete: function() {
+            //       try {
+            //         console.log('AJAX > inclusão valor kit finalizado');
+            //       } catch(e) { /* noop */ }
+            //     }
+            //   });
+            // }
+
+            function gravar_pix(pix) {
+  debugger;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_pix: pix,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_pix: pix
+    },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
             
             // Opções agora são preenchidas pelo AJAX acima
             // Depuração: capturar valor ao selecionar item no PIX
@@ -6245,73 +6474,95 @@ debugger;
               });
             })();
 
-            function gravar_agencia_conta(agencia_conta) {
-              debugger;
-              try {
-                console.group('Conta Bancária > gravar_agencia_conta');
-                console.log('Valor recebido para gravação:', agencia_conta);
-                console.groupEnd();
-              } catch (e) { /* noop */ }
-              $.ajax({
-                url: "cadastros/processa_geracao_kit.php",
-                type: "POST",
-                dataType: "json",
-                async: false,
-                data: {
-                  processo_geracao_kit: "incluir_valores_kit",
-                  valor_agencia_conta: agencia_conta,
-                },
-                success: function(retorno_exame_geracao_kit) {
-                  debugger;
-                  try {
-                    console.group('AJAX > sucesso inclusão valor kit');
-                    console.log('Retorno:', retorno_exame_geracao_kit);
-                    console.groupEnd();
-                  } catch(e) { /* noop */ }
+          //   function gravar_agencia_conta(agencia_conta) {
+          //     debugger;
+          //     try {
+          //       console.group('Conta Bancária > gravar_agencia_conta');
+          //       console.log('Valor recebido para gravação:', agencia_conta);
+          //       console.groupEnd();
+          //     } catch (e) { /* noop */ }
+          //     $.ajax({
+          //       url: "cadastros/processa_geracao_kit.php",
+          //       type: "POST",
+          //       dataType: "json",
+          //       async: false,
+          //       data: {
+          //         processo_geracao_kit: "incluir_valores_kit",
+          //         valor_agencia_conta: agencia_conta,
+          //       },
+          //       success: function(retorno_exame_geracao_kit) {
+          //         debugger;
+          //         try {
+          //           console.group('AJAX > sucesso inclusão valor kit');
+          //           console.log('Retorno:', retorno_exame_geracao_kit);
+          //           console.groupEnd();
+          //         } catch(e) { /* noop */ }
 
-                  const mensagemSucesso = `
-                        <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                          <div style="display: flex; align-items: center; justify-content: center;">
+          //         const mensagemSucesso = `
+          //               <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+          //                 <div style="display: flex; align-items: center; justify-content: center;">
                             
-                            <div>
+          //                   <div>
                               
-                              <div>Exame cadastrado com sucesso.</div>
-                            </div>
-                          </div>
-                        </div>
-                  `;
+          //                     <div>Exame cadastrado com sucesso.</div>
+          //                   </div>
+          //                 </div>
+          //               </div>
+          //         `;
 
-                  // Remove mensagem anterior se existir
-                  $("#exame-gravado").remove();
+          //         // Remove mensagem anterior se existir
+          //         $("#exame-gravado").remove();
                       
-                  // Adiciona a nova mensagem acima das abas
-                  $(".tabs-container").before(mensagemSucesso);
+          //         // Adiciona a nova mensagem acima das abas
+          //         $(".tabs-container").before(mensagemSucesso);
 
-                  // Configura o fade out após 5 segundos
-                  setTimeout(function() {
-                    $("#exame-gravado").fadeOut(500, function() {
-                    $(this).remove();
-                    });
-                  }, 5000);
+          //         // Configura o fade out após 5 segundos
+          //         setTimeout(function() {
+          //           $("#exame-gravado").fadeOut(500, function() {
+          //           $(this).remove();
+          //           });
+          //         }, 5000);
 
 
-                  $("#exame-gravado").html(retorno_exame_geracao_kit);
-                  $("#exame-gravado").show();
-                  $("#exame-gravado").fadeOut(4000);
-                  console.log(retorno_exame_geracao_kit);
-                  ajaxEmExecucao = false; // libera para nova requisição
-                },
-                error: function(xhr, status, error) {
-                  console.log("Falha ao incluir exame: " + error);
-                  ajaxEmExecucao = false; // libera para tentar de novo
-                },
-                complete: function() {
-                  try {
-                    console.log('AJAX > inclusão valor kit finalizado');
-                  } catch(e) { /* noop */ }
-                }
-              });
-          }
+          //         $("#exame-gravado").html(retorno_exame_geracao_kit);
+          //         $("#exame-gravado").show();
+          //         $("#exame-gravado").fadeOut(4000);
+          //         console.log(retorno_exame_geracao_kit);
+          //         ajaxEmExecucao = false; // libera para nova requisição
+          //       },
+          //       error: function(xhr, status, error) {
+          //         console.log("Falha ao incluir exame: " + error);
+          //         ajaxEmExecucao = false; // libera para tentar de novo
+          //       },
+          //       complete: function() {
+          //         try {
+          //           console.log('AJAX > inclusão valor kit finalizado');
+          //         } catch(e) { /* noop */ }
+          //       }
+          //     });
+          // }
+
+          function gravar_agencia_conta(agencia_conta) {
+  debugger;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_agencia_conta: agencia_conta,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_agencia_conta: agencia_conta
+    },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
 
             // Depuração: capturar valor ao selecionar item no Agência/Conta
             try {
