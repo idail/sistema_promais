@@ -18482,14 +18482,11 @@ function renderizarCheckboxes() {
     if (window._smDocUpdating) return;
     window._smDocUpdating = true;
 
-    // 🔹 Elemento visual que contém os selecionados (pode não existir)
     const selectedList = document.getElementById('sm-selected-list');
-
-    // 🔹 Arrays temporários locais
     const modelosSelecionados = [];
     const tiposOrcamentoSelecionados = [];
 
-    // 🔹 Captura modelos de documentos selecionados (seguro)
+    // Captura modelos de documentos selecionados
     document.querySelectorAll('.sm-label').forEach(label => {
       const card = label.querySelector('.sm-card');
       const checkbox = label.querySelector('input[type="checkbox"]');
@@ -18499,7 +18496,7 @@ function renderizarCheckboxes() {
       }
     });
 
-    // 🔹 Captura tipos de orçamento selecionados (seguro)
+    // Captura tipos de orçamento selecionados
     document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
       const card = label.querySelector('.tipo-orcamento-card');
       const checkbox = label.querySelector('input[type="checkbox"]');
@@ -18509,38 +18506,33 @@ function renderizarCheckboxes() {
       }
     });
 
-    // 🔹 Atualiza variáveis globais (sem sobrescrever se já houver dados)
-window._modelosSelecionados = window._modelosSelecionados || [];
-window._tiposOrcamentoSelecionados = window._tiposOrcamentoSelecionados || [];
+    // Atualiza variáveis globais
+    window._modelosSelecionados = window._modelosSelecionados || [];
+    window._tiposOrcamentoSelecionados = window._tiposOrcamentoSelecionados || [];
 
-// 🔹 Atualiza apenas se houve seleção (mantém os antigos se nada novo for marcado)
-const novosModelos = modelosSelecionados.map(m => m.text);
-const novosTipos = [...new Set(tiposOrcamentoSelecionados)];
+    const novosModelos = modelosSelecionados.map(m => m.text);
+    const novosTipos = [...new Set(tiposOrcamentoSelecionados)];
 
-if (novosModelos.length > 0) {
-  window._modelosSelecionados = novosModelos;
-}
+    if (novosModelos.length > 0) {
+      window._modelosSelecionados = novosModelos;
+    }
 
-if (novosTipos.length > 0) {
-  window._tiposOrcamentoSelecionados = novosTipos;
-}
+    if (novosTipos.length > 0) {
+      window._tiposOrcamentoSelecionados = novosTipos;
+    }
 
-    // Compatibilidade retroativa (se você usa essas outras variáveis)
     window.smModelosDocumentosSelecionados = [...new Set(window._modelosSelecionados)];
     window.smDocumentosSelecionadosBackup = [...new Set(window._tiposOrcamentoSelecionados)];
     window.smDocumentosSelecionadosNomes = [...new Set([...(window.smDocumentosSelecionadosNomes || []), ...window._tiposOrcamentoSelecionados])];
 
-    // 🔹 Se não existe lista visual, para aqui (dados já salvos nas globais)
     if (!selectedList) {
       console.warn('⚠️ Elemento #sm-selected-list não encontrado — variáveis globais atualizadas.');
       window._smDocUpdating = false;
       return;
     }
 
-    // 🔹 Limpa a lista antes de redesenhar
     selectedList.innerHTML = '';
 
-    // Função auxiliar para escolher cores por ícone
     const getColorsForIcon = icon => {
       let bg = '#f3f4f6', fg = '#1f2937';
       if (!icon) return { bg, fg };
@@ -18558,17 +18550,14 @@ if (novosTipos.length > 0) {
       return { bg, fg };
     };
 
-    // 🔹 Renderização visual apenas para modelos (não tipos de orçamento)
+    // Renderização visual dos modelos
     modelosSelecionados.forEach(item => {
       const { text, card, checkbox } = item;
-
-      // Determina o ícone de dentro do card (se existir)
       const icon = card?.querySelector('i') || null;
 
-      // Elementos
       const selectedItem = document.createElement('div');
       selectedItem.className = 'sm-selected-item';
-      // aplica cores por ícone
+
       const { bg, fg } = getColorsForIcon(icon);
       selectedItem.style.backgroundColor = bg;
       selectedItem.style.color = fg;
@@ -18584,7 +18573,6 @@ if (novosTipos.length > 0) {
         try {
           const iconClone = icon.cloneNode(true);
           iconClone.classList.add('sm-selected-icon');
-          // remove event handlers caso existam e torna apenas decorativo
           selectedItem.appendChild(iconClone);
         } catch (err) { /* ignore clone failures */ }
       }
@@ -18595,58 +18583,47 @@ if (novosTipos.length > 0) {
       textNode.style.flex = '1';
       selectedItem.appendChild(textNode);
 
-      // Botão remover
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'remove-document';
-      removeBtn.innerHTML = '×';
-      removeBtn.title = 'Remover';
-      removeBtn.style.cursor = 'pointer';
-      removeBtn.style.border = 'none';
-      removeBtn.style.background = 'transparent';
-      removeBtn.style.fontSize = '18px';
-      removeBtn.style.lineHeight = '1';
-      removeBtn.style.padding = '2px 6px';
-      removeBtn.onclick = (e) => {
-        e.stopPropagation();
-        try {
-          // desmarca o checkbox do respectivo modelo (procura pelo texto)
-          const cb = Array.from(document.querySelectorAll('.sm-label input[type="checkbox"]')).find(c => {
-            const cCard = c.closest('.sm-card');
-            const t = cCard?.querySelector('span')?.textContent?.trim();
-            return t === text;
-          });
-          if (cb) cb.checked = false;
-          // atualiza as variáveis globais e a UI
-          window._smDocUpdating = false;
-          updateSelectedList();
-        } catch (err) {
-          console.error('Erro ao remover item selecionado:', err);
-        }
-      };
+      // ✅ Botão remover (ajustado para remover também da variável global)
+const removeBtn = document.createElement('button');
+removeBtn.className = 'remove-document';
+removeBtn.innerHTML = '×';
+removeBtn.title = 'Remover';
+removeBtn.onclick = (e) => {
+  debugger;
+    e.stopPropagation();
+
+    // 1️⃣ desmarca o checkbox
+    checkbox.checked = false;
+
+    // 2️⃣ remove o modelo da variável global
+    window._modelosSelecionados = (window._modelosSelecionados || []).filter(m => m !== text);
+
+    // 3️⃣ atualiza a lista visual
+    window._smDocUpdating = false;
+    updateSelectedList();
+};
+
 
       selectedItem.appendChild(removeBtn);
       selectedList.appendChild(selectedItem);
     });
 
-    // 🔹 Caso nada esteja selecionado, mostra mensagem vazia
     if (!window._modelosSelecionados.length) {
       selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
     }
 
-    // log útil para depuração
     console.log('✅ updateSelectedList → modelos:', window._modelosSelecionados, 'tipos:', window._tiposOrcamentoSelecionados);
 
     window.smDocumentosSelecionadosJSON = JSON.stringify(window._modelosSelecionados || []);
-
     window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window._tiposOrcamentoSelecionados || []);
 
   } catch (err) {
     console.error('❌ Erro em updateSelectedList:', err);
   } finally {
-    // libera lock
     window._smDocUpdating = false;
   }
 }
+
 
 
 
