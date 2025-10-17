@@ -16038,30 +16038,31 @@ tipoContaInputs.forEach(input => {
   carregarChavesPix();
 });
 
-// // Adiciona o event listener para o checkbox de assinatura
-// function configurarEventoAssinatura() {
-//   const checkboxAssinatura = document.getElementById('requer-assinatura');
+// Adiciona o event listener para o checkbox de assinatura
+function configurarEventoAssinatura() {
+  debugger;
+  const checkboxAssinatura = document.getElementById('requer-assinatura');
   
-//   // Remove event listeners anteriores para evitar duplicação
-//   const novoCheckbox = checkboxAssinatura.cloneNode(true);
-//   checkboxAssinatura.parentNode.replaceChild(novoCheckbox, checkboxAssinatura);
+  // Remove event listeners anteriores para evitar duplicação
+  const novoCheckbox = checkboxAssinatura.cloneNode(true);
+  checkboxAssinatura.parentNode.replaceChild(novoCheckbox, checkboxAssinatura);
   
-//   // Adiciona o novo event listener
-//   novoCheckbox.addEventListener('change', function() {
-//     atualizarEstadoAssinatura(this.checked);
-//     console.log('Estado da assinatura alterado para:', this.checked);
-//   });
+  // Adiciona o novo event listener
+  novoCheckbox.addEventListener('change', function() {
+    atualizarEstadoAssinatura(this.checked);
+    console.log('Estado da assinatura alterado para:', this.checked);
+  });
   
-//   return novoCheckbox;
-// }
+  return novoCheckbox;
+}
 
-// // Chame esta função quando o DOM estiver pronto e quando a aba for carregada
-// document.addEventListener('DOMContentLoaded', function() {
-//   // Configura o evento uma vez quando a página carregar
-//   if (document.getElementById('requer-assinatura')) {
-//     configurarEventoAssinatura();
-//   }
-// });
+// Chame esta função quando o DOM estiver pronto e quando a aba for carregada
+document.addEventListener('DOMContentLoaded', function() {
+  // Configura o evento uma vez quando a página carregar
+  if (document.getElementById('requer-assinatura')) {
+    configurarEventoAssinatura();
+  }
+});
 
 function atualizarEstadoAssinatura(assinatura)
 {
