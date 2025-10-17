@@ -13819,7 +13819,8 @@ function buscar_riscos() {
                   let input = document.createElement("input");
                   input.type = "hidden";
                   input.name = "processo_geracao";
-                  input.value = window.smDocumentosSelecionadosNomes;
+                  // input.value = window.smDocumentosSelecionadosNomes;
+                  input.value = window._modelosSelecionados;
                   form.appendChild(input);
 
                   // Adiciona o form ao body e envia
@@ -18475,26 +18476,30 @@ function renderizarCheckboxes() {
     }
 
     function updateSelectedList() {
-    debugger;
+  debugger;
   try {
-    // 🔹 Captura os elementos da interface
+    // Proteção contra reentrância
+    if (window._smDocUpdating) return;
+    window._smDocUpdating = true;
+
+    // 🔹 Elemento visual que contém os selecionados (pode não existir)
     const selectedList = document.getElementById('sm-selected-list');
 
     // 🔹 Arrays temporários locais
     const modelosSelecionados = [];
     const tiposOrcamentoSelecionados = [];
 
-    // 🔹 Captura modelos de documentos selecionados
+    // 🔹 Captura modelos de documentos selecionados (seguro)
     document.querySelectorAll('.sm-label').forEach(label => {
       const card = label.querySelector('.sm-card');
       const checkbox = label.querySelector('input[type="checkbox"]');
       if (card && checkbox && checkbox.checked) {
         const text = card.querySelector('span')?.textContent?.trim();
-        if (text) modelosSelecionados.push(text);
+        if (text) modelosSelecionados.push({ text, card, checkbox, label });
       }
     });
 
-    // 🔹 Captura tipos de orçamento selecionados
+    // 🔹 Captura tipos de orçamento selecionados (seguro)
     document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
       const card = label.querySelector('.tipo-orcamento-card');
       const checkbox = label.querySelector('input[type="checkbox"]');
@@ -18504,63 +18509,145 @@ function renderizarCheckboxes() {
       }
     });
 
-    // 🔹 Atualiza variáveis globais
-    window._modelosSelecionados = modelosSelecionados;
-    window._tiposOrcamentoSelecionados = tiposOrcamentoSelecionados;
+    // 🔹 Atualiza variáveis globais (sem sobrescrever se já houver dados)
+window._modelosSelecionados = window._modelosSelecionados || [];
+window._tiposOrcamentoSelecionados = window._tiposOrcamentoSelecionados || [];
 
-    // 🔹 Se não existe lista visual, apenas armazena e sai
+// 🔹 Atualiza apenas se houve seleção (mantém os antigos se nada novo for marcado)
+const novosModelos = modelosSelecionados.map(m => m.text);
+const novosTipos = [...new Set(tiposOrcamentoSelecionados)];
+
+if (novosModelos.length > 0) {
+  window._modelosSelecionados = novosModelos;
+}
+
+if (novosTipos.length > 0) {
+  window._tiposOrcamentoSelecionados = novosTipos;
+}
+
+    // Compatibilidade retroativa (se você usa essas outras variáveis)
+    window.smModelosDocumentosSelecionados = [...new Set(window._modelosSelecionados)];
+    window.smDocumentosSelecionadosBackup = [...new Set(window._tiposOrcamentoSelecionados)];
+    window.smDocumentosSelecionadosNomes = [...new Set([...(window.smDocumentosSelecionadosNomes || []), ...window._tiposOrcamentoSelecionados])];
+
+    // 🔹 Se não existe lista visual, para aqui (dados já salvos nas globais)
     if (!selectedList) {
-      console.warn('⚠️ Elemento #sm-selected-list não encontrado. Dados armazenados apenas nas variáveis globais.');
+      console.warn('⚠️ Elemento #sm-selected-list não encontrado — variáveis globais atualizadas.');
+      window._smDocUpdating = false;
       return;
     }
 
     // 🔹 Limpa a lista antes de redesenhar
     selectedList.innerHTML = '';
 
-    // 🔹 Renderiza os modelos selecionados visualmente
-    window._modelosSelecionados.forEach(text => {
+    // Função auxiliar para escolher cores por ícone
+    const getColorsForIcon = icon => {
+      let bg = '#f3f4f6', fg = '#1f2937';
+      if (!icon) return { bg, fg };
+      if (icon.classList.contains('fa-paper-plane')) { bg = '#dbeafe'; fg = '#1e40af'; }
+      else if (icon.classList.contains('fa-clipboard-list')) { bg = '#d1fae5'; fg = '#065f46'; }
+      else if (icon.classList.contains('fa-file-medical')) { bg = '#fef3c7'; fg = '#92400e'; }
+      else if (icon.classList.contains('fa-eye')) { bg = '#fee2e2'; fg = '#991b1b'; }
+      else if (icon.classList.contains('fa-users')) { bg = '#e0e7ff'; fg = '#3730a3'; }
+      else if (icon.classList.contains('fa-exclamation-triangle')) { bg = '#fef3c7'; fg = '#92400e'; }
+      else if (icon.classList.contains('fa-file-alt')) { bg = '#1e1b4b'; fg = '#ffffff'; }
+      else if (icon.classList.contains('fa-dollar-sign')) { bg = '#ecfdf5'; fg = '#065f46'; }
+      else if (icon.classList.contains('fa-stethoscope')) { bg = '#f3e8ff'; fg = '#6d28d9'; }
+      else if (icon.classList.contains('fa-graduation-cap')) { bg = '#fff7ed'; fg = '#9a3412'; }
+      else if (icon.classList.contains('fa-hard-hat')) { bg = '#fef9c3'; fg = '#854d0e'; }
+      return { bg, fg };
+    };
+
+    // 🔹 Renderização visual apenas para modelos (não tipos de orçamento)
+    modelosSelecionados.forEach(item => {
+      const { text, card, checkbox } = item;
+
+      // Determina o ícone de dentro do card (se existir)
+      const icon = card?.querySelector('i') || null;
+
+      // Elementos
       const selectedItem = document.createElement('div');
       selectedItem.className = 'sm-selected-item';
-      selectedItem.textContent = text;
+      // aplica cores por ícone
+      const { bg, fg } = getColorsForIcon(icon);
+      selectedItem.style.backgroundColor = bg;
+      selectedItem.style.color = fg;
+      selectedItem.style.display = 'flex';
+      selectedItem.style.alignItems = 'center';
+      selectedItem.style.gap = '8px';
+      selectedItem.style.padding = '6px 8px';
+      selectedItem.style.borderRadius = '8px';
+      selectedItem.style.marginBottom = '6px';
 
+      // Ícone clonado
+      if (icon) {
+        try {
+          const iconClone = icon.cloneNode(true);
+          iconClone.classList.add('sm-selected-icon');
+          // remove event handlers caso existam e torna apenas decorativo
+          selectedItem.appendChild(iconClone);
+        } catch (err) { /* ignore clone failures */ }
+      }
+
+      // Texto
+      const textNode = document.createElement('span');
+      textNode.textContent = text;
+      textNode.style.flex = '1';
+      selectedItem.appendChild(textNode);
+
+      // Botão remover
       const removeBtn = document.createElement('button');
       removeBtn.className = 'remove-document';
       removeBtn.innerHTML = '×';
       removeBtn.title = 'Remover';
-
-      // 🔸 Ao clicar no X → desmarca o checkbox e atualiza lista
-      removeBtn.onclick = e => {
+      removeBtn.style.cursor = 'pointer';
+      removeBtn.style.border = 'none';
+      removeBtn.style.background = 'transparent';
+      removeBtn.style.fontSize = '18px';
+      removeBtn.style.lineHeight = '1';
+      removeBtn.style.padding = '2px 6px';
+      removeBtn.onclick = (e) => {
         e.stopPropagation();
-        const checkbox = Array.from(
-          document.querySelectorAll('.sm-label input[type="checkbox"]')
-        ).find(cb =>
-          cb.closest('.sm-card').querySelector('span')?.textContent?.trim() === text
-        );
-
-        if (checkbox) checkbox.checked = false;
-
-        // Garante atualização sem loop
-        window._smDocUpdating = false;
-        updateSelectedList();
+        try {
+          // desmarca o checkbox do respectivo modelo (procura pelo texto)
+          const cb = Array.from(document.querySelectorAll('.sm-label input[type="checkbox"]')).find(c => {
+            const cCard = c.closest('.sm-card');
+            const t = cCard?.querySelector('span')?.textContent?.trim();
+            return t === text;
+          });
+          if (cb) cb.checked = false;
+          // atualiza as variáveis globais e a UI
+          window._smDocUpdating = false;
+          updateSelectedList();
+        } catch (err) {
+          console.error('Erro ao remover item selecionado:', err);
+        }
       };
 
       selectedItem.appendChild(removeBtn);
       selectedList.appendChild(selectedItem);
     });
 
-    // 🔹 Caso nada esteja selecionado
+    // 🔹 Caso nada esteja selecionado, mostra mensagem vazia
     if (!window._modelosSelecionados.length) {
       selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
     }
 
-    console.log('✅ Variáveis globais atualizadas:', {
-      modelos: window._modelosSelecionados,
-      tiposOrcamento: window._tiposOrcamentoSelecionados
-    });
+    // log útil para depuração
+    console.log('✅ updateSelectedList → modelos:', window._modelosSelecionados, 'tipos:', window._tiposOrcamentoSelecionados);
+
+    window.smDocumentosSelecionadosJSON = JSON.stringify(window._modelosSelecionados || []);
+
+    window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window._tiposOrcamentoSelecionados || []);
+
   } catch (err) {
     console.error('❌ Erro em updateSelectedList:', err);
+  } finally {
+    // libera lock
+    window._smDocUpdating = false;
   }
 }
+
 
 
 
