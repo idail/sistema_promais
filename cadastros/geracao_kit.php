@@ -5741,7 +5741,37 @@ function gravar_pix(pix) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_pix: pix
     },
-    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    success: function(ret) { 
+      const mensagemSucesso = `
+                <div id="dados-pix-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#dados-pix-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#dados-pix-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+
+          // $("#exame-gravado").html(retorno_exame_geracao_kit);
+          // $("#exame-gravado").show();
+          // $("#exame-gravado").fadeOut(4000);
+     },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -5763,7 +5793,38 @@ function gravar_agencia_conta(agencia_conta) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_agencia_conta: agencia_conta
     },
-    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    success: function(ret) { 
+      const mensagemSucesso = `
+                <div id="dados-agencia-conta-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#dados-agencia-conta-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#dados-agencia-conta-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+
+          // $("#exame-gravado").html(retorno_exame_geracao_kit);
+          // $("#exame-gravado").show();
+          // $("#exame-gravado").fadeOut(4000);
+
+     },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -16094,6 +16155,7 @@ function updateSelectedList() {
     window._smDocUpdating = true;
   }
 }
+
       
       // Inicializa a seleção de documentos
       function initDocumentSelection() {
