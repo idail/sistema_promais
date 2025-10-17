@@ -4325,8 +4325,13 @@ try {
         carregarAgenciasContas();
         repopular_produtos();
         restaurar_tipo_orcamento();
+        restaurarModelosSelecionados();
         repopular_assinatura();
         repopular_dados_bancarios();
+
+        if (typeof tratar_modelos_orcamentos === 'function') {
+  tratar_modelos_orcamentos();
+}
 
         function repopular_dados_bancarios() {
     debugger;
@@ -4803,6 +4808,7 @@ try {
 //   });
 // }
 
+//verificando repopulação
 // =============================
 // 🔹 Função para repopular produtos
 // =============================
@@ -5021,7 +5027,7 @@ function repopular_produtos() {
             });
         }
 
-        restaurarModelosSelecionados();
+        
 
         function restaurarModelosSelecionados() {
   debugger;
@@ -15993,168 +15999,168 @@ $(document).on('change', '#requer-assinatura', function() {
 
 
      // Função para atualizar a lista de selecionados
-function updateSelectedList() {
-  debugger;
-  if (window._smDocUpdating) return;
-  window._smDocUpdating = true;
+// function updateSelectedList() {
+//   debugger;
+//   if (window._smDocUpdating) return;
+//   window._smDocUpdating = true;
 
-  try {
-    const selectedList = document.getElementById('sm-selected-list');
-    if (!selectedList) return;
+//   try {
+//     const selectedList = document.getElementById('sm-selected-list');
+//     if (!selectedList) return;
 
-    // Salva os modelos de documentos selecionados
-    const modelosSelecionados = [];
-    document.querySelectorAll('.sm-label').forEach(label => {
-      const card = label.querySelector('.sm-card');
-      const checkbox = label.querySelector('input[type="checkbox"]');
-      if (card && checkbox && checkbox.checked) {
-        const text = card.querySelector('span')?.textContent?.trim();
-        if (text) {
-          modelosSelecionados.push(text);
-        }
-      }
-    });
+//     // Salva os modelos de documentos selecionados
+//     const modelosSelecionados = [];
+//     document.querySelectorAll('.sm-label').forEach(label => {
+//       const card = label.querySelector('.sm-card');
+//       const checkbox = label.querySelector('input[type="checkbox"]');
+//       if (card && checkbox && checkbox.checked) {
+//         const text = card.querySelector('span')?.textContent?.trim();
+//         if (text) {
+//           modelosSelecionados.push(text);
+//         }
+//       }
+//     });
 
-    // Salva os tipos de orçamento selecionados antes de limpar
-    const tiposOrcamentoSelecionados = [];
-    document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
-      const card = label.querySelector('.tipo-orcamento-card');
-      const checkbox = label.querySelector('input[type="checkbox"]');
-      if (card && checkbox && checkbox.checked) {
-        const text = card.querySelector('span')?.textContent?.trim();
-        if (text) {
-          tiposOrcamentoSelecionados.push(text);
-        }
-      }
-    });
+//     // Salva os tipos de orçamento selecionados antes de limpar
+//     const tiposOrcamentoSelecionados = [];
+//     document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
+//       const card = label.querySelector('.tipo-orcamento-card');
+//       const checkbox = label.querySelector('input[type="checkbox"]');
+//       if (card && checkbox && checkbox.checked) {
+//         const text = card.querySelector('span')?.textContent?.trim();
+//         if (text) {
+//           tiposOrcamentoSelecionados.push(text);
+//         }
+//       }
+//     });
 
-    // Limpa a lista
-    selectedList.innerHTML = '';
+//     // Limpa a lista
+//     selectedList.innerHTML = '';
 
-    // Atualiza o backup com os tipos de orçamento atualmente selecionados
-    // Atualiza os backups
-    window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
-    window.smModelosDocumentosSelecionados = [...new Set(modelosSelecionados)];
+//     // Atualiza o backup com os tipos de orçamento atualmente selecionados
+//     // Atualiza os backups
+//     window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
+//     window.smModelosDocumentosSelecionados = [...new Set(modelosSelecionados)];
 
-    // Atualiza a lista global com os valores do backup
-    window.smDocumentosSelecionadosNomes = [...(window.smDocumentosSelecionadosBackup || [])];
-    // Zera array global
-    window.smDocumentosSelecionadosNomes = [];
+//     // Atualiza a lista global com os valores do backup
+//     window.smDocumentosSelecionadosNomes = [...(window.smDocumentosSelecionadosBackup || [])];
+//     // Zera array global
+//     window.smDocumentosSelecionadosNomes = [];
 
-    // Seleciona documentos (.sm-label) e orçamentos (.tipo-orcamento-label)
-    const labels = document.querySelectorAll('.sm-label, .tipo-orcamento-label');
+//     // Seleciona documentos (.sm-label) e orçamentos (.tipo-orcamento-label)
+//     const labels = document.querySelectorAll('.sm-label, .tipo-orcamento-label');
 
-    labels.forEach(label => {
-      const checkbox = label.querySelector('input[type="checkbox"]');
-      const card = label.querySelector('.sm-card, .tipo-orcamento-card');
-      const icon = card ? card.querySelector('i') : null;
+//     labels.forEach(label => {
+//       const checkbox = label.querySelector('input[type="checkbox"]');
+//       const card = label.querySelector('.sm-card, .tipo-orcamento-card');
+//       const icon = card ? card.querySelector('i') : null;
 
-      if (checkbox && checkbox.checked && card) {
-        // Sempre armazena o nome no array global
-        const text = card.querySelector('span')?.textContent || '';
-        try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
+//       if (checkbox && checkbox.checked && card) {
+//         // Sempre armazena o nome no array global
+//         const text = card.querySelector('span')?.textContent || '';
+//         try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
 
-        // Identifica se é um item de orçamento
-        const isOrcamento = label.classList.contains('tipo-orcamento-label')
-          || (card && card.classList.contains('tipo-orcamento-card'));
+//         // Identifica se é um item de orçamento
+//         const isOrcamento = label.classList.contains('tipo-orcamento-label')
+//           || (card && card.classList.contains('tipo-orcamento-card'));
 
-        // Se for orçamento, não renderiza no sm-selected-list (apenas armazena)
-        if (isOrcamento) {
-          return;
-        }
+//         // Se for orçamento, não renderiza no sm-selected-list (apenas armazena)
+//         if (isOrcamento) {
+//           return;
+//         }
 
-        // Armazena no array apropriado
-        if (isOrcamento) {
-          try { 
-            window.smDocumentosSelecionadosNomes = [...new Set([...window.smDocumentosSelecionadosNomes || [], text.trim()])];
-          } catch (e) { console.error(e); }
-          return;
-        } else {
-          try {
-            window.smModelosDocumentosSelecionados = [...new Set([...window.smModelosDocumentosSelecionados || [], text.trim()])];
-          } catch (e) { console.error(e); }
-        }
+//         // Armazena no array apropriado
+//         if (isOrcamento) {
+//           try { 
+//             window.smDocumentosSelecionadosNomes = [...new Set([...window.smDocumentosSelecionadosNomes || [], text.trim()])];
+//           } catch (e) { console.error(e); }
+//           return;
+//         } else {
+//           try {
+//             window.smModelosDocumentosSelecionados = [...new Set([...window.smModelosDocumentosSelecionados || [], text.trim()])];
+//           } catch (e) { console.error(e); }
+//         }
 
-        // Renderização visual apenas para itens que não são orçamento
-        const selectedItem = document.createElement('div');
-        selectedItem.className = 'sm-selected-item';
+//         // Renderização visual apenas para itens que não são orçamento
+//         const selectedItem = document.createElement('div');
+//         selectedItem.className = 'sm-selected-item';
 
-        let bgColor = '#f3f4f6';
-        let textColor = '#1f2937';
+//         let bgColor = '#f3f4f6';
+//         let textColor = '#1f2937';
 
-        if (icon) {
-          if (icon.classList.contains('fa-paper-plane')) {
-            bgColor = '#dbeafe'; textColor = '#1e40af';
-          } else if (icon.classList.contains('fa-clipboard-list')) {
-            bgColor = '#d1fae5'; textColor = '#065f46';
-          } else if (icon.classList.contains('fa-file-medical')) {
-            bgColor = '#fef3c7'; textColor = '#92400e';
-          } else if (icon.classList.contains('fa-eye')) {
-            bgColor = '#fee2e2'; textColor = '#991b1b';
-          } else if (icon.classList.contains('fa-users')) {
-            bgColor = '#e0e7ff'; textColor = '#3730a3';
-          } else if (icon.classList.contains('fa-exclamation-triangle')) {
-            bgColor = '#fef3c7'; textColor = '#92400e';
-          } else if (icon.classList.contains('fa-file-alt')) {
-            bgColor = '#1e1b4b'; textColor = '#ffffff';
-          } else if (icon.classList.contains('fa-dollar-sign')) {
-            bgColor = '#ecfdf5'; textColor = '#065f46';
-          } else if (icon.classList.contains('fa-stethoscope')) {
-            bgColor = '#f3e8ff'; textColor = '#6d28d9';
-          } else if (icon.classList.contains('fa-graduation-cap')) {
-            bgColor = '#fff7ed'; textColor = '#9a3412';
-          } else if (icon.classList.contains('fa-hard-hat')) {
-            bgColor = '#fef9c3'; textColor = '#854d0e';
-          }
-        }
+//         if (icon) {
+//           if (icon.classList.contains('fa-paper-plane')) {
+//             bgColor = '#dbeafe'; textColor = '#1e40af';
+//           } else if (icon.classList.contains('fa-clipboard-list')) {
+//             bgColor = '#d1fae5'; textColor = '#065f46';
+//           } else if (icon.classList.contains('fa-file-medical')) {
+//             bgColor = '#fef3c7'; textColor = '#92400e';
+//           } else if (icon.classList.contains('fa-eye')) {
+//             bgColor = '#fee2e2'; textColor = '#991b1b';
+//           } else if (icon.classList.contains('fa-users')) {
+//             bgColor = '#e0e7ff'; textColor = '#3730a3';
+//           } else if (icon.classList.contains('fa-exclamation-triangle')) {
+//             bgColor = '#fef3c7'; textColor = '#92400e';
+//           } else if (icon.classList.contains('fa-file-alt')) {
+//             bgColor = '#1e1b4b'; textColor = '#ffffff';
+//           } else if (icon.classList.contains('fa-dollar-sign')) {
+//             bgColor = '#ecfdf5'; textColor = '#065f46';
+//           } else if (icon.classList.contains('fa-stethoscope')) {
+//             bgColor = '#f3e8ff'; textColor = '#6d28d9';
+//           } else if (icon.classList.contains('fa-graduation-cap')) {
+//             bgColor = '#fff7ed'; textColor = '#9a3412';
+//           } else if (icon.classList.contains('fa-hard-hat')) {
+//             bgColor = '#fef9c3'; textColor = '#854d0e';
+//           }
+//         }
 
-        selectedItem.style.backgroundColor = bgColor;
-        selectedItem.style.color = textColor;
+//         selectedItem.style.backgroundColor = bgColor;
+//         selectedItem.style.color = textColor;
 
-        // Ícone
-        if (icon) {
-          const iconClone = icon.cloneNode(true);
-          iconClone.className = 'sm-selected-icon';
-          selectedItem.appendChild(iconClone);
-        }
+//         // Ícone
+//         if (icon) {
+//           const iconClone = icon.cloneNode(true);
+//           iconClone.className = 'sm-selected-icon';
+//           selectedItem.appendChild(iconClone);
+//         }
 
-        // Texto
-        const textNode = document.createTextNode(text);
+//         // Texto
+//         const textNode = document.createTextNode(text);
 
-        // Botão remover
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-document';
-        removeBtn.innerHTML = '×';
-        removeBtn.title = 'Remover';
-        removeBtn.onclick = (e) => {
-          e.stopPropagation();
-          checkbox.checked = false;
-          window._smDocUpdating = false;
-          updateSelectedList();
-        };
+//         // Botão remover
+//         const removeBtn = document.createElement('button');
+//         removeBtn.className = 'remove-document';
+//         removeBtn.innerHTML = '×';
+//         removeBtn.title = 'Remover';
+//         removeBtn.onclick = (e) => {
+//           e.stopPropagation();
+//           checkbox.checked = false;
+//           window._smDocUpdating = false;
+//           updateSelectedList();
+//         };
 
-        selectedItem.appendChild(textNode);
-        selectedItem.appendChild(removeBtn);
+//         selectedItem.appendChild(textNode);
+//         selectedItem.appendChild(removeBtn);
 
-        selectedList.appendChild(selectedItem);
-      }
-    });
+//         selectedList.appendChild(selectedItem);
+//       }
+//     });
 
-    // Remove duplicatas
-    try { 
-      window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes));
-    } catch (e) {}
+//     // Remove duplicatas
+//     try { 
+//       window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes));
+//     } catch (e) {}
 
-    // JSON global
-    window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
+//     // JSON global
+//     window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
 
-    if (selectedList.children.length === 0) {
-      selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
-    }
-  } finally {
-    window._smDocUpdating = true;
-  }
-}
+//     if (selectedList.children.length === 0) {
+//       selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
+//     }
+//   } finally {
+//     window._smDocUpdating = true;
+//   }
+// }
 
       
       // Inicializa a seleção de documentos
@@ -18186,34 +18192,229 @@ function renderizarCheckboxes() {
       }
     }
 
-    // Função auxiliar para atualizar a lista global a partir do DOM
-    function atualizarTiposOrcamentoSelecionados() {
-      debugger;
-      try {
-        const selecionados = Array.from(document.querySelectorAll('input.tipo-orcamento:checked'))
-          .map(el => el.value);
-        window.tiposOrcamentoSelecionados = selecionados;
-        // Mantém o snapshot JSON sempre sincronizado após cada atualização
-        window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window.tiposOrcamentoSelecionados || []);
-        console.log('Tipos de orçamento selecionados:', window.tiposOrcamentoSelecionados);
-      } catch (e) {
-        console.warn('Falha ao atualizar tipos de orçamento selecionados:', e);
-      }
-    }
+    // Função para atualizar a lista de selecionados
+function updateSelectedList() {
+  debugger;
+  if (window._smDocUpdating) return;
+  window._smDocUpdating = true;
 
-    // Delegação de eventos: funciona mesmo com conteúdo dinâmico da aba
-    document.addEventListener('change', function(e) {
-      if (e.target && e.target.matches('input.tipo-orcamento')) {
-        atualizarTiposOrcamentoSelecionados();
+  try {
+    const selectedList = document.getElementById('sm-selected-list');
+    if (!selectedList) return;
+
+    // Salva os modelos de documentos selecionados
+    const modelosSelecionados = [];
+    document.querySelectorAll('.sm-label').forEach(label => {
+      const card = label.querySelector('.sm-card');
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      if (card && checkbox && checkbox.checked) {
+        const text = card.querySelector('span')?.textContent?.trim();
+        if (text) {
+          modelosSelecionados.push(text);
+        }
       }
     });
 
-    // Inicializa a variável global com o estado atual quando o DOM estiver pronto
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', atualizarTiposOrcamentoSelecionados);
-    } else {
-      atualizarTiposOrcamentoSelecionados();
+    // Salva os tipos de orçamento selecionados antes de limpar
+    const tiposOrcamentoSelecionados = [];
+    document.querySelectorAll('.tipo-orcamento-label').forEach(label => {
+      const card = label.querySelector('.tipo-orcamento-card');
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      if (card && checkbox && checkbox.checked) {
+        const text = card.querySelector('span')?.textContent?.trim();
+        if (text) {
+          tiposOrcamentoSelecionados.push(text);
+        }
+      }
+    });
+
+    // Limpa a lista
+    selectedList.innerHTML = '';
+
+    // Atualiza o backup com os tipos de orçamento atualmente selecionados
+    // Atualiza os backups
+    window.smDocumentosSelecionadosBackup = [...new Set(tiposOrcamentoSelecionados)];
+    window.smModelosDocumentosSelecionados = [...new Set(modelosSelecionados)];
+
+    // Atualiza a lista global com os valores do backup
+    window.smDocumentosSelecionadosNomes = [...(window.smDocumentosSelecionadosBackup || [])];
+    // Zera array global
+    window.smDocumentosSelecionadosNomes = [];
+
+    // Seleciona documentos (.sm-label) e orçamentos (.tipo-orcamento-label)
+    const labels = document.querySelectorAll('.sm-label, .tipo-orcamento-label');
+
+    labels.forEach(label => {
+      const checkbox = label.querySelector('input[type="checkbox"]');
+      const card = label.querySelector('.sm-card, .tipo-orcamento-card');
+      const icon = card ? card.querySelector('i') : null;
+
+      if (checkbox && checkbox.checked && card) {
+        // Sempre armazena o nome no array global
+        const text = card.querySelector('span')?.textContent || '';
+        try { window.smDocumentosSelecionadosNomes.push(text.trim()); } catch (e) {}
+
+        // Identifica se é um item de orçamento
+        const isOrcamento = label.classList.contains('tipo-orcamento-label')
+          || (card && card.classList.contains('tipo-orcamento-card'));
+
+        // Se for orçamento, não renderiza no sm-selected-list (apenas armazena)
+        if (isOrcamento) {
+          return;
+        }
+
+        // Armazena no array apropriado
+        if (isOrcamento) {
+          try { 
+            window.smDocumentosSelecionadosNomes = [...new Set([...window.smDocumentosSelecionadosNomes || [], text.trim()])];
+          } catch (e) { console.error(e); }
+          return;
+        } else {
+          try {
+            window.smModelosDocumentosSelecionados = [...new Set([...window.smModelosDocumentosSelecionados || [], text.trim()])];
+          } catch (e) { console.error(e); }
+        }
+
+        // Renderização visual apenas para itens que não são orçamento
+        const selectedItem = document.createElement('div');
+        selectedItem.className = 'sm-selected-item';
+
+        let bgColor = '#f3f4f6';
+        let textColor = '#1f2937';
+
+        if (icon) {
+          if (icon.classList.contains('fa-paper-plane')) {
+            bgColor = '#dbeafe'; textColor = '#1e40af';
+          } else if (icon.classList.contains('fa-clipboard-list')) {
+            bgColor = '#d1fae5'; textColor = '#065f46';
+          } else if (icon.classList.contains('fa-file-medical')) {
+            bgColor = '#fef3c7'; textColor = '#92400e';
+          } else if (icon.classList.contains('fa-eye')) {
+            bgColor = '#fee2e2'; textColor = '#991b1b';
+          } else if (icon.classList.contains('fa-users')) {
+            bgColor = '#e0e7ff'; textColor = '#3730a3';
+          } else if (icon.classList.contains('fa-exclamation-triangle')) {
+            bgColor = '#fef3c7'; textColor = '#92400e';
+          } else if (icon.classList.contains('fa-file-alt')) {
+            bgColor = '#1e1b4b'; textColor = '#ffffff';
+          } else if (icon.classList.contains('fa-dollar-sign')) {
+            bgColor = '#ecfdf5'; textColor = '#065f46';
+          } else if (icon.classList.contains('fa-stethoscope')) {
+            bgColor = '#f3e8ff'; textColor = '#6d28d9';
+          } else if (icon.classList.contains('fa-graduation-cap')) {
+            bgColor = '#fff7ed'; textColor = '#9a3412';
+          } else if (icon.classList.contains('fa-hard-hat')) {
+            bgColor = '#fef9c3'; textColor = '#854d0e';
+          }
+        }
+
+        selectedItem.style.backgroundColor = bgColor;
+        selectedItem.style.color = textColor;
+
+        // Ícone
+        if (icon) {
+          const iconClone = icon.cloneNode(true);
+          iconClone.className = 'sm-selected-icon';
+          selectedItem.appendChild(iconClone);
+        }
+
+        // Texto
+        const textNode = document.createTextNode(text);
+
+        // Botão remover
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-document';
+        removeBtn.innerHTML = '×';
+        removeBtn.title = 'Remover';
+        removeBtn.onclick = (e) => {
+          e.stopPropagation();
+          checkbox.checked = false;
+          window._smDocUpdating = false;
+          updateSelectedList();
+        };
+
+        selectedItem.appendChild(textNode);
+        selectedItem.appendChild(removeBtn);
+
+        selectedList.appendChild(selectedItem);
+      }
+    });
+
+    // Remove duplicatas
+    try { 
+      window.smDocumentosSelecionadosNomes = Array.from(new Set(window.smDocumentosSelecionadosNomes));
+    } catch (e) {}
+
+    // JSON global
+    window.smDocumentosSelecionadosJSON = JSON.stringify(window.smDocumentosSelecionadosNomes || []);
+
+    if (selectedList.children.length === 0) {
+      selectedList.innerHTML = '<p class="sm-empty-message">Nenhum item selecionado</p>';
     }
+  } finally {
+    window._smDocUpdating = true;
+  }
+}
+
+    // Função auxiliar para atualizar a lista global a partir do DOM
+    function atualizarTiposOrcamentoSelecionados() {
+      // debugger;
+      // try {
+      //   const selecionados = Array.from(document.querySelectorAll('input.tipo-orcamento:checked'))
+      //     .map(el => el.value);
+      //   window.tiposOrcamentoSelecionados = selecionados;
+      //   // Mantém o snapshot JSON sempre sincronizado após cada atualização
+      //   window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window.tiposOrcamentoSelecionados || []);
+      //   console.log('Tipos de orçamento selecionados:', window.tiposOrcamentoSelecionados);
+      // } catch (e) {
+      //   console.warn('Falha ao atualizar tipos de orçamento selecionados:', e);
+      // }
+
+      tratar_modelos_orcamentos();
+    }
+
+    function tratar_modelos_orcamentos() {
+  try { window._smDocUpdating = false; } catch (e) {}
+  if (typeof updateSelectedList === 'function') {
+    updateSelectedList();
+  } else {
+    console.warn('updateSelectedList() ainda não está disponível.');
+  }
+}
+
+    // Delegação de eventos: funciona mesmo com conteúdo dinâmico da aba
+    // document.addEventListener('change', function(e) {
+    //   if (e.target && e.target.matches('input.tipo-orcamento')) {
+    //     atualizarTiposOrcamentoSelecionados();
+    //   }
+    // });
+
+    // Delegação de eventos: funciona mesmo com conteúdo dinâmico da aba
+document.addEventListener('change', function(e) {
+  const t = e && e.target ? e.target : null;
+  if (!t || !t.matches) return;
+
+  const isTipoOrcamento = t.matches('input.tipo-orcamento');
+  const isModeloSelecionado = t.matches('.sm-label input.sm-checkbox') || t.matches('.sm-checkbox');
+
+  if (isTipoOrcamento || isModeloSelecionado) {
+    tratar_modelos_orcamentos();
+  }
+});
+
+    // Inicializa a variável global com o estado atual quando o DOM estiver pronto
+    // if (document.readyState === 'loading') {
+    //   document.addEventListener('DOMContentLoaded', atualizarTiposOrcamentoSelecionados);
+    // } else {
+    //   atualizarTiposOrcamentoSelecionados();
+    // }
+
+    // Inicializa a lista quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tratar_modelos_orcamentos);
+} else {
+  tratar_modelos_orcamentos();
+}
 
 // Busca incremental (live search) para #fat-descricao usando $.ajax (GET)
 function initFatDescricaoLiveSearch(){
