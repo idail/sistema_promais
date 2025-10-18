@@ -703,7 +703,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // Atualiza a sessão somente se for diferente do valor atual
             if (!isset($_SESSION["assinatura"]) || $_SESSION["assinatura"] !== $recebe_requer_assinatura) {
-                $_SESSION["assinatura"] = $recebe_requer_assinatura;
+                $_SESSION["assinatura"] = $recebe_final_requer_assinatura;
             }
         }
 

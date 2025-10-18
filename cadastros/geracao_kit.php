@@ -13771,6 +13771,8 @@ function buscar_riscos() {
       }
     }
 
+    window.smDocumentosSelecionadosJSON = window.smDocumentosSelecionadosJSON || [];
+
     function gravar_final_kit()
     {
         return new Promise((resolve, reject) => {
@@ -18765,6 +18767,9 @@ function updateSelectedList() {
     }
 
     console.log('✅ Modelos:', window._modelosSelecionados, 'Tipos:', window._tiposOrcamentoSelecionados);
+
+    window.smDocumentosSelecionadosJSON = JSON.stringify(window._modelosSelecionados || []);
+    window.tiposOrcamentoSelecionadosJSON = JSON.stringify(window._tiposOrcamentoSelecionados || []);
   } catch (err) {
     console.error('❌ Erro em updateSelectedList:', err);
   } finally {
