@@ -8667,7 +8667,6 @@ table.no-break strong {
             <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
             ';
 
-
             if($exames_procedimentos === true && $treinamentos === true && $epi_epc === true && $faturamento === true)
             {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
