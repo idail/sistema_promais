@@ -13917,6 +13917,108 @@ function buscar_riscos() {
       }
     
     // Função para validar todos os campos obrigatórios do formulário
+    // function validarFormularioCompleto() {
+    //   debugger;
+    //   // Validação do tipo de exame
+    //   if (!appState.selectedExam) {
+    //     mostrarErroValidacao('Por favor, selecione um tipo de exame.');
+    //     return false;
+    //   }
+      
+    //   // Validação dos campos da empresa (etapa 1)
+    //   if (appState.currentStep >= 1) {
+    //     // Usa estado global/variável para validar seleção, pois o elemento pode não estar no DOM neste momento
+    //     const empresaSelecionadaId = (window.ecpState && window.ecpState.empresa && window.ecpState.empresa.id)
+    //       || (typeof recebe_codigo_empresa_selecionada !== 'undefined' ? recebe_codigo_empresa_selecionada : null)
+    //       || null;
+    //     if (!empresaSelecionadaId) {
+    //       mostrarErroValidacao('Por favor, selecione uma empresa.');
+    //       return false;
+    //     } else {
+    //       // Confirmação não intrusiva para depuração
+    //       try { console.log('Uma empresa foi selecionada. ID:', empresaSelecionadaId); } catch (e) { /* noop */ }
+    //     }
+
+    //     // Usa estado global/variável para validar a clínica, pois o elemento pode não estar no DOM
+    //     const clinicaSelecionadaId = (window.ecpState && window.ecpState.clinica && window.ecpState.clinica.id)
+    //       || (typeof recebe_codigo_clinica_selecionada !== 'undefined' ? recebe_codigo_clinica_selecionada : null)
+    //       || null;
+    //     if (!clinicaSelecionadaId) {
+    //       mostrarErroValidacao('Por favor, selecione uma clínica.');
+    //       return false;
+    //     } else {
+    //       // Confirmação não intrusiva para depuração
+    //       try { console.log('Uma clínica foi selecionada. ID:', clinicaSelecionadaId); } catch (e) { /* noop */ }
+    //     }
+    //   }
+      
+    //   // Validação do colaborador (etapa 2)
+    //   if (appState.currentStep >= 2) {
+    //     // Usa o estado global salvo em selecionarECP() para confirmar o colaborador selecionado
+    //     const colaboradorSelecionadoId = (window.ecpState && window.ecpState.colaborador && window.ecpState.colaborador.id) || null;
+    //     if (!colaboradorSelecionadoId) {
+    //       mostrarErroValidacao('Por favor, selecione um colaborador.');
+    //       return false;
+    //     } else {
+    //       // Confirmação não intrusiva para depuração
+    //       try { console.log('Um colaborador foi selecionado. ID:', colaboradorSelecionadoId); } catch (e) { /* noop */ }
+    //     }
+    //   }
+      
+    //   // // Validação dos riscos ocupacionais (etapa 3)
+    //   // if (appState.currentStep >= 3) {
+    //   //   // Usa o estado global de riscos acumulado via addSelectedRisk
+    //   //   let riskCodes = (typeof window.getSelectedRiskCodes === 'function')
+    //   //     ? window.getSelectedRiskCodes()
+    //   //     : (typeof selectedRisks !== 'undefined' ? Object.keys(selectedRisks || {}) : []);
+    //   //   // Fallback: se vazio, tenta riscos persistidos em window.riscosEstadoSalvoDetalhes
+    //   //   if (!riskCodes || riskCodes.length === 0) {
+    //   //     try {
+    //   //       const persistidos = (window.riscosEstadoSalvoDetalhes && typeof window.riscosEstadoSalvoDetalhes === 'object')
+    //   //         ? Object.keys(window.riscosEstadoSalvoDetalhes)
+    //   //         : [];
+    //   //       if (persistidos && persistidos.length > 0) {
+    //   //         riskCodes = persistidos;
+    //   //       }
+    //   //     } catch (e) { /* noop */ }
+    //   //   }
+    //   //   if (!riskCodes || riskCodes.length === 0) {
+    //   //     mostrarErroValidacao('Por favor, adicione pelo menos um risco ocupacional.');
+    //   //     return false;
+    //   //   } else {
+    //   //     // Confirmação não intrusiva
+    //   //     try { console.log('Riscos selecionados:', riskCodes); } catch (e) { /* noop */ }
+    //   //   }
+    //   // }
+      
+    //   // Validação dos documentos selecionados (etapa 5)
+    //   if (appState.currentStep >= 5) {
+    //     // Usa variável global que armazena os nomes dos documentos selecionados
+    //     let documentosSelecionadosCount = 0;
+    //     try {
+    //       if (Array.isArray(window.smDocumentosSelecionadosNomes)) {
+    //         documentosSelecionadosCount = window.smDocumentosSelecionadosNomes.length;
+    //       } else if (window.smDocumentosSelecionadosNomes && typeof window.smDocumentosSelecionadosNomes === 'object') {
+    //         documentosSelecionadosCount = Object.keys(window.smDocumentosSelecionadosNomes).length;
+    //       }
+    //     } catch (e) { /* noop */ }
+    //     // Fallback: caso a variável global não esteja disponível, usa os checkboxes marcados
+    //     if (!documentosSelecionadosCount) {
+    //       const documentosSelecionados = document.querySelectorAll('.sm-checkbox:checked');
+    //       documentosSelecionadosCount = documentosSelecionados ? documentosSelecionados.length : 0;
+    //     }
+    //     if (!documentosSelecionadosCount) {
+    //       mostrarErroValidacao('Por favor, selecione pelo menos um documento para gerar.');
+    //       return false;
+    //     } else {
+    //       try { console.log('Documentos selecionados (quantidade):', documentosSelecionadosCount); } catch (e) { /* noop */ }
+    //     }
+    //   }
+      
+    //   return true;
+    // }
+
+    // Função para validar todos os campos obrigatórios do formulário
     function validarFormularioCompleto() {
       debugger;
       // Validação do tipo de exame
@@ -13927,41 +14029,87 @@ function buscar_riscos() {
       
       // Validação dos campos da empresa (etapa 1)
       if (appState.currentStep >= 1) {
-        // Usa estado global/variável para validar seleção, pois o elemento pode não estar no DOM neste momento
-        const empresaSelecionadaId = (window.ecpState && window.ecpState.empresa && window.ecpState.empresa.id)
-          || (typeof recebe_codigo_empresa_selecionada !== 'undefined' ? recebe_codigo_empresa_selecionada : null)
-          || null;
+        // 🔸 Define o ID da empresa com base no modo atual (edição ou não)
+        let empresaSelecionadaId = null;
+
+        if (window.recebe_acao === "editar") {
+          // 👉 Em modo de edição, o ID vem do kit da empresa
+          empresaSelecionadaId = window.kit_empresa?.id || null;
+        } else {
+          // 👉 Fora do modo de edição, tenta buscar das variáveis padrão
+          empresaSelecionadaId =
+            (window.ecpState?.empresa?.id) ||
+            (typeof recebe_codigo_empresa_selecionada !== 'undefined' ? recebe_codigo_empresa_selecionada : null) ||
+            null;
+        }
+
+        // 🔸 Validação
         if (!empresaSelecionadaId) {
           mostrarErroValidacao('Por favor, selecione uma empresa.');
           return false;
         } else {
-          // Confirmação não intrusiva para depuração
-          try { console.log('Uma empresa foi selecionada. ID:', empresaSelecionadaId); } catch (e) { /* noop */ }
+          // 🔸 Log informativo (não interrompe a execução)
+          try {
+            console.log('✅ Empresa selecionada com sucesso. ID:', empresaSelecionadaId);
+          } catch (e) {
+            /* noop */
+          }
         }
 
+        // 🔹 Validação da clínica selecionada
         // Usa estado global/variável para validar a clínica, pois o elemento pode não estar no DOM
-        const clinicaSelecionadaId = (window.ecpState && window.ecpState.clinica && window.ecpState.clinica.id)
-          || (typeof recebe_codigo_clinica_selecionada !== 'undefined' ? recebe_codigo_clinica_selecionada : null)
-          || null;
+        let clinicaSelecionadaId = null;
+
+        if (window.recebe_acao === "editar") {
+          // 👉 Em modo de edição, o ID vem do kit da clínica
+          clinicaSelecionadaId = window.kit_clinica?.id || null;
+        } else {
+          // 👉 Fora do modo de edição, tenta buscar das variáveis globais padrão
+          clinicaSelecionadaId =
+            (window.ecpState?.clinica?.id) ||
+            (typeof recebe_codigo_clinica_selecionada !== 'undefined' ? recebe_codigo_clinica_selecionada : null) ||
+            null;
+        }
+
+        // 🔸 Validação
         if (!clinicaSelecionadaId) {
           mostrarErroValidacao('Por favor, selecione uma clínica.');
           return false;
         } else {
-          // Confirmação não intrusiva para depuração
-          try { console.log('Uma clínica foi selecionada. ID:', clinicaSelecionadaId); } catch (e) { /* noop */ }
+          // 🔸 Log informativo para depuração
+          try {
+            console.log('✅ Clínica selecionada com sucesso. ID:', clinicaSelecionadaId);
+          } catch (e) {
+            /* noop */
+          }
         }
       }
       
       // Validação do colaborador (etapa 2)
       if (appState.currentStep >= 2) {
+        // 🔹 Validação do colaborador selecionado
         // Usa o estado global salvo em selecionarECP() para confirmar o colaborador selecionado
-        const colaboradorSelecionadoId = (window.ecpState && window.ecpState.colaborador && window.ecpState.colaborador.id) || null;
+        let colaboradorSelecionadoId = null;
+
+        if (window.recebe_acao === "editar") {
+          // 👉 Em modo de edição, o ID vem do kit da pessoa
+          colaboradorSelecionadoId = window.kit_pessoa?.id || null;
+        } else {
+          // 👉 Fora do modo de edição, tenta buscar do estado global
+          colaboradorSelecionadoId = window.ecpState?.colaborador?.id || null;
+        }
+
+        // 🔸 Validação
         if (!colaboradorSelecionadoId) {
           mostrarErroValidacao('Por favor, selecione um colaborador.');
           return false;
         } else {
-          // Confirmação não intrusiva para depuração
-          try { console.log('Um colaborador foi selecionado. ID:', colaboradorSelecionadoId); } catch (e) { /* noop */ }
+          // 🔸 Log informativo para depuração
+          try {
+            console.log('✅ Colaborador selecionado com sucesso. ID:', colaboradorSelecionadoId);
+          } catch (e) {
+            /* noop */
+          }
         }
       }
       
@@ -13993,26 +14141,52 @@ function buscar_riscos() {
       
       // Validação dos documentos selecionados (etapa 5)
       if (appState.currentStep >= 5) {
-        // Usa variável global que armazena os nomes dos documentos selecionados
-        let documentosSelecionadosCount = 0;
-        try {
-          if (Array.isArray(window.smDocumentosSelecionadosNomes)) {
-            documentosSelecionadosCount = window.smDocumentosSelecionadosNomes.length;
-          } else if (window.smDocumentosSelecionadosNomes && typeof window.smDocumentosSelecionadosNomes === 'object') {
-            documentosSelecionadosCount = Object.keys(window.smDocumentosSelecionadosNomes).length;
-          }
-        } catch (e) { /* noop */ }
-        // Fallback: caso a variável global não esteja disponível, usa os checkboxes marcados
-        if (!documentosSelecionadosCount) {
-          const documentosSelecionados = document.querySelectorAll('.sm-checkbox:checked');
-          documentosSelecionadosCount = documentosSelecionados ? documentosSelecionados.length : 0;
-        }
-        if (!documentosSelecionadosCount) {
-          mostrarErroValidacao('Por favor, selecione pelo menos um documento para gerar.');
-          return false;
-        } else {
-          try { console.log('Documentos selecionados (quantidade):', documentosSelecionadosCount); } catch (e) { /* noop */ }
-        }
+        // 🔹 Validação dos documentos selecionados
+let documentosSelecionadosCount = 0;
+
+try {
+  if (window.recebe_acao === "editar") {
+    // 👉 Em modo de edição: o valor vem do banco como um array de strings, ex: ["Audiometria"]
+    if (Array.isArray(window.modelos_documentos)) {
+      documentosSelecionadosCount = window.modelos_documentos.length;
+    } else if (typeof window.modelos_documentos === 'string') {
+      // Caso venha em formato de string JSON
+      try {
+        const parsed = JSON.parse(window.modelos_documentos);
+        if (Array.isArray(parsed)) documentosSelecionadosCount = parsed.length;
+      } catch (e) {
+        console.warn('⚠️ modeloss_documentos não é um array válido:', e);
+      }
+    }
+  } else {
+    // 👉 Fora do modo de edição: usa as variáveis globais normais
+    if (Array.isArray(window.smDocumentosSelecionadosNomes)) {
+      documentosSelecionadosCount = window.smDocumentosSelecionadosNomes.length;
+    } else if (window.smDocumentosSelecionadosNomes && typeof window.smDocumentosSelecionadosNomes === 'object') {
+      documentosSelecionadosCount = Object.keys(window.smDocumentosSelecionadosNomes).length;
+    }
+  }
+} catch (e) {
+  console.warn('⚠️ Erro ao contar documentos selecionados:', e);
+}
+
+// 🔸 Fallback: caso nada tenha sido encontrado, usa os checkboxes
+if (!documentosSelecionadosCount) {
+  const documentosSelecionados = document.querySelectorAll('.sm-checkbox:checked');
+  documentosSelecionadosCount = documentosSelecionados ? documentosSelecionados.length : 0;
+}
+
+// 🔸 Validação final
+if (!documentosSelecionadosCount) {
+  mostrarErroValidacao('Por favor, selecione pelo menos um documento para gerar.');
+  return false;
+} else {
+  try {
+    console.log('✅ Documentos selecionados (quantidade):', documentosSelecionadosCount);
+  } catch (e) {
+    /* noop */
+  }
+}
       }
       
       return true;

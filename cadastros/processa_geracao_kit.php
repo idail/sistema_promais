@@ -945,14 +945,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     {
         // EXAME
         // ... (seu código anterior, começando nos blocos de POST que você enviou)
+        // if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
+        //     $recebe_exame_selecionado = $_POST["valor_exame"];
+
+        //     if (!isset($_SESSION["exame_selecionado"]) || $_SESSION["exame_selecionado"] !== $recebe_exame_selecionado) {
+        //         $_SESSION["exame_selecionado"] = $recebe_exame_selecionado;
+        //     }
+        // }
+        // $valor_exame_bind = isset($_SESSION["exame_selecionado"]) ? $_SESSION["exame_selecionado"] : null;
+
+
+        // Só entra aqui se realmente veio valor válido
         if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
             $recebe_exame_selecionado = $_POST["valor_exame"];
 
+            // Atualiza a sessão se mudou
             if (!isset($_SESSION["exame_selecionado"]) || $_SESSION["exame_selecionado"] !== $recebe_exame_selecionado) {
                 $_SESSION["exame_selecionado"] = $recebe_exame_selecionado;
             }
+
+            // Define apenas se tem valor
+            $valor_exame_bind = $_SESSION["exame_selecionado"];
+
+            // Faz o bind e atualiza o banco
+            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame_bind, PDO::PARAM_STR);
+        } else {
+            // ❌ Não faz nada — nem define variável, nem atualiza, nem muda sessão
+            // Assim o campo não entra no UPDATE
         }
-        $valor_exame_bind = isset($_SESSION["exame_selecionado"]) ? $_SESSION["exame_selecionado"] : null;
+
+
 
         // EMPRESA
         if (isset($_POST["valor_empresa"]) && $_POST["valor_empresa"] !== "") {
@@ -1329,10 +1351,26 @@ if (isset($_SESSION["dado_bancario_pix"])) {
         status = :recebe_status_kit
     WHERE id = :recebe_kit_id";
 
+        // 2️⃣ Só então faz o ajuste condicional
+        if (!isset($_POST["valor_exame"]) || $_POST["valor_exame"] === "") {
+            // Remove o campo do update (mantém o valor atual)
+            $instrucao_atualizar_kit = str_replace(
+                "tipo_exame = :recebe_tipo_exame,",
+                "tipo_exame = tipo_exame,",
+                $instrucao_atualizar_kit
+            );
+}
+
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
 
         // Binds
-        $comando_atualizar_kit->bindValue(":recebe_tipo_exame",   $valor_exame_bind,      $valor_exame_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        // $comando_atualizar_kit->bindValue(":recebe_tipo_exame",   $valor_exame_bind,      $valor_exame_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // 4️⃣ E só faz o bind se veio valor
+        if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
+            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame_bind, PDO::PARAM_STR);
+        }
+        
         $comando_atualizar_kit->bindValue(":recebe_empresa_id",   $valor_empresa_bind,    $valor_empresa_bind    === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_clinica_id",   $valor_clinica_bind,    $valor_clinica_bind    === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando_atualizar_kit->bindValue(":recebe_pessoa_id",    $valor_colaborador_bind, $valor_colaborador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
