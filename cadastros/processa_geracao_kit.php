@@ -1108,23 +1108,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $instrucao_atualizar_kit = "
             UPDATE kits SET 
                 tipo_exame = :recebe_tipo_exame,
+                empresa_id = :recebe_empresa_id,
                 status = :recebe_status_kit
             WHERE id = :recebe_kit_id
-            ";
+        ";
 
         // 🔹 Ajusta o SQL para campos opcionais
         $bind_tipo_exame = bindCondicional($instrucao_atualizar_kit, "valor_exame", "tipo_exame", ":recebe_tipo_exame");
+        $bind_empresa_id = bindCondicional($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id");
 
         // 🔹 Prepara o comando APENAS UMA VEZ
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_tipo_exame) {
-            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $_POST["valor_exame"], PDO::PARAM_STR);
+            $valor_exame = $_POST["valor_exame"];
+
+            // Atualiza a sessão com o valor que veio do POST
+            $_SESSION["exame_selecionado"] = $valor_exame;
+
+            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
         }
 
-        $recebe_status_kit_bind = "RASCUNHO";
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_empresa_id) {
+            $valor_empresa = $_POST["valor_empresa"];
+
+            // Atualiza a sessão com o valor que veio do POST
+            $_SESSION["empresa_selecionado"] = $valor_empresa;
+
+            $comando_atualizar_kit->bindValue(":recebe_empresa_id", $valor_empresa, PDO::PARAM_STR);
+        }
+
         // 🔹 Campos obrigatórios
+        $recebe_status_kit_bind = "RASCUNHO";
         $comando_atualizar_kit->bindValue(":recebe_status_kit", $recebe_status_kit_bind, PDO::PARAM_STR);
 
         // 🔹 ID do kit (obrigatório)
