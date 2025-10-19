@@ -8481,6 +8481,7 @@ try {
       const examCards = document.querySelectorAll('.exam-card');
 
       examCards.forEach(card => {
+        //debugger;
         card.addEventListener('click', function() {
           // Remove active de todos
           examCards.forEach(c => c.classList.remove('active'));
@@ -13846,6 +13847,79 @@ function buscar_riscos() {
 
     function gravar_final_kit()
     {
+      if(window.recebe_acao && window.recebe_acao === "editar")
+      {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: "cadastros/processa_geracao_kit.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+              processo_geracao_kit: "atualizar_kit",
+              valor_tipo_orcamento: window.tiposOrcamentoSelecionadosJSON,
+              valor_documento: window.smDocumentosSelecionadosJSON,
+              valor_total: window.total_final,
+              valor_finalizamento: "finalizando kit",
+              valor_id_kit:window.recebe_id_kit,
+              requer_assinatura: (function(){ var el = document.getElementById('requer-assinatura'); return !!(el && el.checked); })()
+            },
+            success: function (retorno_final_kit) {
+              debugger;
+
+              Swal.fire({
+                icon: 'success',
+                title: '<span style="color: #28a745">Sucesso!</span>',
+                html: `
+                  <div style="text-align: center;">
+                    <div style="font-size: 60px; color: #28a745; margin-bottom: 15px;">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 style="color: #28a745; margin-bottom: 10px;">Kit salvo com sucesso!</h3>
+                    <p style="color: #6c757d;">Seus dados foram armazenados com segurança.</p>
+                  </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Visualizar',
+                confirmButtonColor: '#28a745',
+                allowOutsideClick: false
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  debugger;
+                  // Cria formulário oculto
+                  let form = document.createElement("form");
+                  form.method = "POST";
+                  // form.action = "cadastros/processa_geracao_kit.php";
+                  form.action = "cadastros/documentos/geracao.php";
+                  form.target = "_blank"; // abre em nova aba
+
+                  // Adiciona input hidden "acao"
+                  let input = document.createElement("input");
+                  input.type = "hidden";
+                  input.name = "processo_geracao";
+                  // input.value = window.smDocumentosSelecionadosNomes;
+                  input.value = window.todosSelecionados;
+                  form.appendChild(input);
+
+                  // Adiciona o form ao body e envia
+                  document.body.appendChild(form);
+                  form.submit();
+
+                  // Remove o form depois de enviar (boa prática)
+                  document.body.removeChild(form);
+                }
+              });
+
+              console.log(retorno_final_kit);
+              resolve(retorno_final_kit);
+            },
+            error: function (xhr, status, error) {
+              console.log("Falha ao incluir exame: " + error);
+              reject(error);
+            },
+          });
+        });
+      }else
+      {
         return new Promise((resolve, reject) => {
           $.ajax({
             url: "cadastros/processa_geracao_kit.php",
@@ -13914,6 +13988,7 @@ function buscar_riscos() {
             },
           });
         });
+      }
       }
     
     // Função para validar todos os campos obrigatórios do formulário
@@ -14022,10 +14097,44 @@ function buscar_riscos() {
     function validarFormularioCompleto() {
       debugger;
       // Validação do tipo de exame
-      if (!appState.selectedExam) {
+      // if (!appState.selectedExam) {
+      //   mostrarErroValidacao('Por favor, selecione um tipo de exame.');
+      //   return false;
+      // }
+
+      // 🔹 Validação do tipo de exame selecionado
+      let tipoExameSelecionado = null;
+
+      if (window.recebe_acao === "editar") {
+        // 👉 Em modo de edição, pode vir do kit ou do estado do app
+        tipoExameSelecionado =
+          window.kit_tipo_exame?.tipo_exame ||
+          appState.selectedExam ||
+          null;
+      } else {
+        // 👉 Fora do modo de edição, apenas do estado do app
+        tipoExameSelecionado = appState.selectedExam || null;
+      }
+
+      // 🔸 Validação
+      if (!tipoExameSelecionado) {
         mostrarErroValidacao('Por favor, selecione um tipo de exame.');
         return false;
+      } else {
+        // 🔸 Log informativo para depuração
+        try {
+          const fonte =
+            window.recebe_acao === "editar" && window.kit_tipo_exame?.tipo_exame
+              ? kit_tipo_exame.tipo_exame
+              : appState.selectedExam;
+
+          console.log(`✅ Tipo de exame selecionado com sucesso (${fonte}):`, tipoExameSelecionado);
+        } catch (e) {
+          /* noop */
+        }
       }
+
+
       
       // Validação dos campos da empresa (etapa 1)
       if (appState.currentStep >= 1) {
@@ -14033,8 +14142,11 @@ function buscar_riscos() {
         let empresaSelecionadaId = null;
 
         if (window.recebe_acao === "editar") {
-          // 👉 Em modo de edição, o ID vem do kit da empresa
-          empresaSelecionadaId = window.kit_empresa?.id || null;
+          // 👉 Em edição, tenta pegar primeiro do kit da empresa
+          empresaSelecionadaId =
+          window.kit_empresa?.id ||
+          (typeof recebe_codigo_empresa_selecionada !== 'undefined' ? recebe_codigo_empresa_selecionada : null) ||
+          null;
         } else {
           // 👉 Fora do modo de edição, tenta buscar das variáveis padrão
           empresaSelecionadaId =
@@ -14061,12 +14173,17 @@ function buscar_riscos() {
         let clinicaSelecionadaId = null;
 
         if (window.recebe_acao === "editar") {
-          // 👉 Em modo de edição, o ID vem do kit da clínica
-          clinicaSelecionadaId = window.kit_clinica?.id || null;
-        } else {
-          // 👉 Fora do modo de edição, tenta buscar das variáveis globais padrão
+          // 👉 Em modo de edição, tenta primeiro o kit da clínica, mas faz fallback para outras fontes
           clinicaSelecionadaId =
-            (window.ecpState?.clinica?.id) ||
+            window.kit_clinica?.id ||
+            window.ecpState?.clinica?.id ||
+            (typeof recebe_codigo_clinica_selecionada !== 'undefined' ? recebe_codigo_clinica_selecionada : null) ||
+            null;
+        } else {
+          // 👉 Fora do modo de edição, tenta buscar de onde estiver disponível
+          clinicaSelecionadaId =
+            window.ecpState?.clinica?.id ||
+            window.kit_clinica?.id ||
             (typeof recebe_codigo_clinica_selecionada !== 'undefined' ? recebe_codigo_clinica_selecionada : null) ||
             null;
         }
@@ -14092,11 +14209,19 @@ function buscar_riscos() {
         let colaboradorSelecionadoId = null;
 
         if (window.recebe_acao === "editar") {
-          // 👉 Em modo de edição, o ID vem do kit da pessoa
-          colaboradorSelecionadoId = window.kit_pessoa?.id || null;
+          // 👉 Em modo de edição, tenta primeiro o kit da pessoa, mas faz fallback para outras fontes
+          colaboradorSelecionadoId =
+            window.kit_pessoa?.id ||
+            window.ecpState?.colaborador?.id ||
+            (typeof recebe_codigo_pessoa !== 'undefined' ? recebe_codigo_pessoa : null) ||
+            null;
         } else {
-          // 👉 Fora do modo de edição, tenta buscar do estado global
-          colaboradorSelecionadoId = window.ecpState?.colaborador?.id || null;
+          // 👉 Fora do modo de edição, tenta buscar de onde estiver disponível
+          colaboradorSelecionadoId =
+            window.ecpState?.colaborador?.id ||
+            window.kit_pessoa?.id ||
+            (typeof recebe_codigo_pessoa !== 'undefined' ? recebe_codigo_pessoa : null) ||
+            null;
         }
 
         // 🔸 Validação
