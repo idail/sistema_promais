@@ -1109,6 +1109,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             UPDATE kits SET 
                 tipo_exame = :recebe_tipo_exame,
                 empresa_id = :recebe_empresa_id,
+                clinica_id = :recebe_clinica_id,
+                pessoa_id = :recebe_pessoa_id,
+                motorista = :recebe_motorista,
                 status = :recebe_status_kit
             WHERE id = :recebe_kit_id
         ";
@@ -1116,6 +1119,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // 🔹 Ajusta o SQL para campos opcionais
         $bind_tipo_exame = bindCondicional($instrucao_atualizar_kit, "valor_exame", "tipo_exame", ":recebe_tipo_exame");
         $bind_empresa_id = bindCondicional($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id");
+        $bind_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id");
+        $bind_pessoa_id = bindCondicional($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id");
+        $bind_motorista = bindCondicional($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista");
 
         // 🔹 Prepara o comando APENAS UMA VEZ
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -1138,6 +1144,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["empresa_selecionado"] = $valor_empresa;
 
             $comando_atualizar_kit->bindValue(":recebe_empresa_id", $valor_empresa, PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_clinica_id) {
+            $valor_clinica = $_POST["valor_clinica"];
+
+            // Atualiza a sessão com o valor que veio do POST
+            $_SESSION["clinica_selecionado"] = $valor_clinica;
+
+            $comando_atualizar_kit->bindValue(":recebe_clinica_id", $valor_clinica, PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_pessoa_id) {
+            $valor_colaborador = $_POST["valor_colaborador"];
+
+            // Atualiza a sessão com o valor que veio do POST
+            $_SESSION["colaborador_selecionado"] = $valor_colaborador;
+
+            $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $valor_colaborador, PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_motorista) {
+            $valor_motorista = $_POST["valor_motorista"];
+
+            // Atualiza a sessão com o valor que veio do POST
+            $_SESSION["motorista_selecionado"] = $valor_motorista;
+
+            $comando_atualizar_kit->bindValue(":recebe_motorista", $valor_motorista, PDO::PARAM_STR);
         }
 
         // 🔹 Campos obrigatórios
