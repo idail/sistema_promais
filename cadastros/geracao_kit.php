@@ -13900,6 +13900,13 @@ function buscar_riscos() {
                   input.value = window.todosSelecionados;
                   form.appendChild(input);
 
+                  // 🔹 Envia o campo "valor_id_kit"
+                  let inputIdKit = document.createElement("input");
+                  inputIdKit.type = "hidden";
+                  inputIdKit.name = "valor_id_kit";
+                  inputIdKit.value = window.recebe_id_kit;
+                  form.appendChild(inputIdKit);
+
                   // Adiciona o form ao body e envia
                   document.body.appendChild(form);
                   form.submit();

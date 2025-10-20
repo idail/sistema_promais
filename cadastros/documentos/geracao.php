@@ -610,8 +610,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                    ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                    : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -768,8 +768,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                    ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                    : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -1140,8 +1140,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                    ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                    : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -1319,151 +1319,113 @@ function printSection(button) {
 
 
 ';
-
-
-
             }
-        }else if($guia_encaminhamento)
-        {
+        } else if ($guia_encaminhamento) {
 
             $informacoes_clinica;
 
-            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
-                salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
-                salvarLog($_SESSION["exame_selecionado"]);
+            if (isset($_POST['valor_id_kit'])) {
+                $valor_id_kit = $_POST['valor_id_kit'];
 
-                // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+                $instrucao_busca_dados_kit = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_dados_kit = $pdo->prepare($instrucao_busca_dados_kit);
+                $comando_busca_dados_kit->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_dados_kit->execute();
+                $resultado_dados_kit = $comando_busca_dados_kit->fetch(PDO::FETCH_ASSOC);
 
-                // echo $_SESSION["exame_selecionado"] . "<br>";
-
-                $recebe_exame = $_SESSION["exame_selecionado"];
-
-                $recebe_exame_exibicao;
-
-                if ($recebe_exame === "admissional") {
-                    $recebe_exame_exibicao = "Admissional";
-                } else if ($recebe_exame === "mudanca") {
-                    $recebe_exame_exibicao = "Mudança de função";
+                $recebe_exame;
+                if (!empty($resultado_dados_kit["tipo_exame"])) {
+                    // Tem valor válido (não nulo, não vazio, não zero)
+                    $recebe_exame = $resultado_dados_kit["tipo_exame"];
                 }
 
-                $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
-                $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
-                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
-                $comando_busca_exames_procedimentos_kit->execute();
-                $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
+                if (!empty($resultado_dados_kit["exames_selecionados"])) {
+                    // Pega os exames do resultado
+                    $examesJson = $resultado_dados_kit["exames_selecionados"] ?? "";
+                    $linhasExames = "";
 
-                //var_dump($resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"]);
+                    if (!empty($examesJson)) {
+                        $exames = json_decode($examesJson, true);
+                        if (is_array($exames)) {
+                            $coluna = 0;
+                            $linhasExames .= "<tr>";
 
-                // Pega os exames do resultado
-                $examesJson = $resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"] ?? "";
-                $linhasExames = "";
+                            foreach ($exames as $exame) {
+                                $codigo = $exame['codigo'] ?? '';
+                                $nome   = $exame['nome'] ?? '';
+                                $dataExame = $dataAtual ?? "__/__/2025";
 
-                if (!empty($examesJson)) {
-                    $exames = json_decode($examesJson, true);
-                    if (is_array($exames)) {
-                        $coluna = 0;
-                        $linhasExames .= "<tr>";
-                        
-                        foreach ($exames as $exame) {
-                            $codigo = $exame['codigo'] ?? '';
-                            $nome   = $exame['nome'] ?? '';
-                            $dataExame = $dataAtual ?? "__/__/2025";
-
-                            $linhasExames .= "
+                                $linhasExames .= "
                                 <td style='font-size:12px; line-height:1.4; width:50%;'>
-                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) ."
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . "
                                 </td>
                             ";
 
-                            $coluna++;
+                                $coluna++;
 
-                            // quando preencher 2 colunas, fecha a linha
-                            if ($coluna % 2 == 0) {
-                                $linhasExames .= "</tr><tr>";
+                                // quando preencher 2 colunas, fecha a linha
+                                if ($coluna % 2 == 0) {
+                                    $linhasExames .= "</tr><tr>";
+                                }
+                            }
+
+                            // Se terminou com uma coluna só, fecha linha corretamente
+                            if ($coluna % 2 != 0) {
+                                $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                            } else {
+                                $linhasExames .= "</tr>";
                             }
                         }
+                    }
+                }
 
-                        // Se terminou com uma coluna só, fecha linha corretamente
-                        if ($coluna % 2 != 0) {
-                            $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
-                        } else {
-                            $linhasExames .= "</tr>";
+                if (!empty($resultado_dados_kit["clinica_id"])) {
+                    $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                    $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                    $comando_busca_clinica->bindValue(":recebe_clinica_id", $resultado_dados_kit["clinica_id"]);
+                    $comando_busca_clinica->execute();
+                    $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // print_r($resultado_clinica_selecionada);
+
+                    // ----------------- BUSCA NA API DO IBGE -----------------
+                    $cidadeNome = '';
+                    $estadoSigla = '';
+
+                    if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                        $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                        $cidadeJson = @file_get_contents($urlCidade);
+                        if ($cidadeJson !== false) {
+                            $cidadeData = json_decode($cidadeJson, true);
+                            $cidadeNome = $cidadeData['nome'] ?? '';
                         }
                     }
-                }
 
-
-
-                // Define o fuso horário do Brasil (evita diferenças)
-                date_default_timezone_set('America/Sao_Paulo');
-
-                // Data atual no formato brasileiro
-                $dataAtual = date('d/m/Y');
-
-                // Função helper para marcar
-                function marcar($valor, $tipoExame)
-                {
-                    return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
-                }
-
-                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
-                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
-                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
-                $comando_busca_clinica->execute();
-                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
-
-                // print_r($resultado_clinica_selecionada);
-
-                // ----------------- BUSCA NA API DO IBGE -----------------
-                $cidadeNome = '';
-                $estadoSigla = '';
-
-                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
-                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
-                    $cidadeJson = @file_get_contents($urlCidade);
-                    if ($cidadeJson !== false) {
-                        $cidadeData = json_decode($cidadeJson, true);
-                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                        $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                        $estadoJson = @file_get_contents($urlEstado);
+                        if ($estadoJson !== false) {
+                            $estadoData = json_decode($estadoJson, true);
+                            $estadoSigla = $estadoData['sigla'] ?? '';
+                        }
                     }
+
+                    // Exemplo: "ALTO ARAGUAIA - MT"
+                    $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
                 }
 
-                if (!empty($resultado_clinica_selecionada['id_estado'])) {
-                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
-                    $estadoJson = @file_get_contents($urlEstado);
-                    if ($estadoJson !== false) {
-                        $estadoData = json_decode($estadoJson, true);
-                        $estadoSigla = $estadoData['sigla'] ?? '';
-                    }
-                }
-
-                // Exemplo: "ALTO ARAGUAIA - MT"
-                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
-                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
-
-                // Debug
-                // print_r($resultado_clinica_selecionada);
-                // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
-
-                if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                if (!empty($resultado_dados_kit["empresa_id"])) {
                     $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
                     $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
-                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $resultado_dados_kit["empresa_id"]);
                     $comando_busca_empresa->execute();
                     $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
-
-                    // var_dump($resultado_empresa_selecionada);
-
-                    // echo "<br>";
-
-                    ob_start();
-                    var_dump($resultado_empresa_selecionada);
-                    salvarLog(ob_get_clean());
                 }
 
-                if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                if (!empty($resultado_dados_kit["pessoa_id"])) {
                     $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
                     $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
-                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $resultado_dados_kit["pessoa_id"]);
                     $comando_busca_pessoa->execute();
                     $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
 
@@ -1491,31 +1453,24 @@ function printSection(button) {
 
                     // echo "<br>";
 
-                    ob_start();
-                    var_dump($resultado_pessoa_selecionada);
-                    salvarLog(ob_get_clean());
-
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
+                }
 
-                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
-                        $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
-                        $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
-                        $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
-                        $comando_busca_cargo->execute();
-                        $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
 
-                        // var_dump($resultado_cargo_selecionado);
+                    // var_dump($resultado_cargo_selecionado);
 
-                        // echo "<br>";
-
-                        ob_start();
-                        var_dump($resultado_cargo_selecionado);
-                        salvarLog(ob_get_clean());
-                    }
+                    // echo "<br>";
+                }
 
                 if ($recebe_exame === "mudanca") {
                     if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
@@ -1539,33 +1494,18 @@ function printSection(button) {
                     }
                 }
 
-                if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
-                    ob_start();
-                    echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
-                    salvarLog(ob_get_clean());
-
+                if (!empty($resultado_dados_kit["medico_coordenador_id"])) {
                     $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
                     $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
-                    $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
+                    $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $resultado_dados_kit["medico_coordenador_id"]);
                     $comando_busca_medico_coordenador->execute();
                     $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
-
-                    // var_dump($resultado_medico_coordenador_selecionado);
-
-                    ob_start();
-                    var_dump($resultado_medico_coordenador_selecionado);
-                    salvarLog(ob_get_clean());
                 }
 
-                if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
-                    ob_start();
-                    echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
-                    salvarLog(ob_get_clean());
-
-
+                if (!empty($resultado_dados_kit["medico_clinica_id"])) {
                     $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
                     $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
-                    $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
+                    $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $resultado_dados_kit["medico_clinica_id"]);
                     $comando_busca_medico_clinica->execute();
                     $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
 
@@ -1576,19 +1516,9 @@ function printSection(button) {
                     $comando_busca_medico_relacionado_clinica->execute();
                     $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
 
-                    // var_dump($resultado_medico_relacionado_clinica);
-
-                    // echo "<br>";
-
-                    ob_start();
-                    var_dump($resultado_medico_relacionado_clinica);
-                    salvarLog(ob_get_clean());
-
-                    //var_dump($resultado_medico_relacionado_clinica);
-
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $valor_id_kit);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -1596,9 +1526,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -1617,8 +1547,8 @@ function printSection(button) {
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
 
-                if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
-                    $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+                if (!empty($resultado_dados_kit["riscos_selecionados"])) {
+                    $data = json_decode($resultado_dados_kit["riscos_selecionados"], true);
 
                     // var_dump($data);
 
@@ -1655,15 +1585,13 @@ function printSection(button) {
 
 
 
-                // =====================================================================
-
                 // ===================== AJUSTE NAS APTIDÕES =====================
                 $aptidoesTabela = '';
 
                 // busca aptidões do banco
                 $instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
                 $comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
-                $comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
+                $comando_busca_aptidoes->bindValue(":recebe_empresa_id", $resultado_dados_kit["empresa_id_principal"]);
                 $comando_busca_aptidoes->execute();
                 $resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
 
@@ -1675,8 +1603,8 @@ function printSection(button) {
 
                 // transforma o JSON da sessão em array associativo
                 $aptidoesSelecionadas = [];
-                if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
-                    $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                if (!empty($resultado_dados_kit["aptidoes_selecionadas"])) {
+                    $dataApt = json_decode($resultado_dados_kit["aptidoes_selecionadas"], true);
                     if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
                         foreach ($dataApt as $apt) {
                             if (isset($apt['nome'])) {
@@ -1685,6 +1613,466 @@ function printSection(button) {
                         }
                     }
                 }
+
+                // função para marcar Sim/Não
+                // function marcarAptidao($nome, $aptidoesSelecionadas)
+                // {
+                //     $nomeLower = strtolower(trim($nome));
+                //     $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                //     $nao  = $sim === "X" ? " " : "X";
+                //     return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+                // }
+
+
+                // var_dump($resultado_dados_kit);
+            } else {
+
+
+
+                if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+                    salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
+                    salvarLog($_SESSION["exame_selecionado"]);
+
+                    // echo "id da clinica selecionada:" . $_SESSION["clinica_selecionado"] . "<br>";
+
+                    // echo $_SESSION["exame_selecionado"] . "<br>";
+
+                    $recebe_exame = $_SESSION["exame_selecionado"];
+
+                    $recebe_exame_exibicao;
+
+                    if ($recebe_exame === "admissional") {
+                        $recebe_exame_exibicao = "Admissional";
+                    } else if ($recebe_exame === "mudanca") {
+                        $recebe_exame_exibicao = "Mudança de função";
+                    }
+
+                    $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
+                    $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
+                    $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                    $comando_busca_exames_procedimentos_kit->execute();
+                    $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                    //var_dump($resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"]);
+
+                    // Pega os exames do resultado
+                    $examesJson = $resultado_busca_exames_procedimentos_kit[0]["exames_selecionados"] ?? "";
+                    $linhasExames = "";
+
+                    if (!empty($examesJson)) {
+                        $exames = json_decode($examesJson, true);
+                        if (is_array($exames)) {
+                            $coluna = 0;
+                            $linhasExames .= "<tr>";
+
+                            foreach ($exames as $exame) {
+                                $codigo = $exame['codigo'] ?? '';
+                                $nome   = $exame['nome'] ?? '';
+                                $dataExame = $dataAtual ?? "__/__/2025";
+
+                                $linhasExames .= "
+                                <td style='font-size:12px; line-height:1.4; width:50%;'>
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . "
+                                </td>
+                            ";
+
+                                $coluna++;
+
+                                // quando preencher 2 colunas, fecha a linha
+                                if ($coluna % 2 == 0) {
+                                    $linhasExames .= "</tr><tr>";
+                                }
+                            }
+
+                            // Se terminou com uma coluna só, fecha linha corretamente
+                            if ($coluna % 2 != 0) {
+                                $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                            } else {
+                                $linhasExames .= "</tr>";
+                            }
+                        }
+                    }
+
+                    $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                    $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                    $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                    $comando_busca_clinica->execute();
+                    $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // print_r($resultado_clinica_selecionada);
+
+                    // ----------------- BUSCA NA API DO IBGE -----------------
+                    $cidadeNome = '';
+                    $estadoSigla = '';
+
+                    if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                        $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                        $cidadeJson = @file_get_contents($urlCidade);
+                        if ($cidadeJson !== false) {
+                            $cidadeData = json_decode($cidadeJson, true);
+                            $cidadeNome = $cidadeData['nome'] ?? '';
+                        }
+                    }
+
+                    if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                        $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                        $estadoJson = @file_get_contents($urlEstado);
+                        if ($estadoJson !== false) {
+                            $estadoData = json_decode($estadoJson, true);
+                            $estadoSigla = $estadoData['sigla'] ?? '';
+                        }
+                    }
+
+                    // Exemplo: "ALTO ARAGUAIA - MT"
+                    $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                    salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+
+                    // Debug
+                    // print_r($resultado_clinica_selecionada);
+                    // echo "<br>Cidade/UF via IBGE: " . $recebe_cidade_uf;
+
+                    if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                        $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                        $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                        $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                        $comando_busca_empresa->execute();
+                        $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_empresa_selecionada);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_empresa_selecionada);
+                        salvarLog(ob_get_clean());
+                    }
+
+                    if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                        $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                        $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                        $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                        $comando_busca_pessoa->execute();
+                        $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                        $recebe_nascimento_colaborador = '';
+
+                        $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                        if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                            try {
+                                $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                            } catch (Exception $e) {
+                                $recebe_nascimento_colaborador = '';
+                            }
+
+                            // Converte para objeto DateTime
+                            $dtNascimento = new DateTime($raw);
+                            $dtHoje = new DateTime("now");
+
+                            // Calcula a diferença
+                            $idade = $dtHoje->diff($dtNascimento)->y;
+
+                            // echo "Idade: " . $idade . " anos";
+                        }
+
+                        // var_dump($resultado_pessoa_selecionada);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_pessoa_selecionada);
+                        salvarLog(ob_get_clean());
+
+                        $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
+                        $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
+                        $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
+                        $comando_busca_cargo_pessoa->execute();
+                        $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                        if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                            $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                            $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                            $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                            $comando_busca_cargo->execute();
+                            $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                            // var_dump($resultado_cargo_selecionado);
+
+                            // echo "<br>";
+
+                            ob_start();
+                            var_dump($resultado_cargo_selecionado);
+                            salvarLog(ob_get_clean());
+                        }
+
+                        if ($recebe_exame === "mudanca") {
+                            if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                                ob_start();
+                                echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                                salvarLog(ob_get_clean());
+
+                                $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                                $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                                $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                                $comando_busca_mudanca_cargo->execute();
+                                $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                                // var_dump($resultado_mudanca_cargo_selecionado);
+
+                                // echo "<br>";
+
+                                ob_start();
+                                var_dump($resultado_mudanca_cargo_selecionado);
+                                salvarLog(ob_get_clean());
+                            }
+                        }
+
+                        if (isset($_SESSION["medico_coordenador_selecionado"]) && $_SESSION["medico_coordenador_selecionado"] !== "") {
+                            ob_start();
+                            echo "ID Médico coordenador:" . $_SESSION["medico_coordenador_selecionado"];
+                            salvarLog(ob_get_clean());
+
+                            $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
+                            $comando_busca_medico_coordenador = $pdo->prepare($instrucao_busca_medico_coordenador);
+                            $comando_busca_medico_coordenador->bindValue(":recebe_id_medico_coordenador", $_SESSION["medico_coordenador_selecionado"]);
+                            $comando_busca_medico_coordenador->execute();
+                            $resultado_medico_coordenador_selecionado = $comando_busca_medico_coordenador->fetch(PDO::FETCH_ASSOC);
+
+                            // var_dump($resultado_medico_coordenador_selecionado);
+
+                            ob_start();
+                            var_dump($resultado_medico_coordenador_selecionado);
+                            salvarLog(ob_get_clean());
+                        }
+
+                        if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
+                            ob_start();
+                            echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
+                            salvarLog(ob_get_clean());
+
+
+                            $instrucao_busca_medico_clinica = "select medico_id from medicos_clinicas where id = :recebe_id_medico_clinica";
+                            $comando_busca_medico_clinica = $pdo->prepare($instrucao_busca_medico_clinica);
+                            $comando_busca_medico_clinica->bindValue(":recebe_id_medico_clinica", $_SESSION["medico_clinica_selecionado"]);
+                            $comando_busca_medico_clinica->execute();
+                            $resultado_medico_clinica_selecionado = $comando_busca_medico_clinica->fetch(PDO::FETCH_ASSOC);
+
+
+                            $instrucao_busca_medico_relacionado_clinica = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                            $comando_busca_medico_relacionado_clinica = $pdo->prepare($instrucao_busca_medico_relacionado_clinica);
+                            $comando_busca_medico_relacionado_clinica->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_medico_clinica_selecionado["medico_id"]);
+                            $comando_busca_medico_relacionado_clinica->execute();
+                            $resultado_medico_relacionado_clinica = $comando_busca_medico_relacionado_clinica->fetch(PDO::FETCH_ASSOC);
+
+                            // var_dump($resultado_medico_relacionado_clinica);
+
+                            // echo "<br>";
+
+                            ob_start();
+                            var_dump($resultado_medico_relacionado_clinica);
+                            salvarLog(ob_get_clean());
+
+                            //var_dump($resultado_medico_relacionado_clinica);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            //var_dump($resultado_verifica_marcacao_assinatura_digital);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                                $html_assinatura = "<img src='assinaturas/"
+                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+                            } else {
+                                $html_assinatura = "_______________________________";
+                            }
+                        }
+
+                        // ===================== AJUSTE APENAS NOS RISCOS =====================
+                        $riscosTabela = '';
+                        $grupos = [
+                            "acidente"   => "Acidentes / Mecânicos",
+                            "ergonomico" => "Ergonômicos",
+                            "fisico"     => "Físicos",
+                            "quimico"    => "Químicos",
+                            "biologico"  => "Biológicos"
+                        ];
+
+                        // Prepara array vazio para armazenar riscos por grupo
+                        $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
+
+                        if (isset($_SESSION["medico_risco_selecionado"]) && $_SESSION["medico_risco_selecionado"] !== "") {
+                            $data = json_decode($_SESSION["medico_risco_selecionado"], true);
+
+                            // var_dump($data);
+
+                            if (json_last_error() === JSON_ERROR_NONE) {
+                                for ($i = 0; $i < count($data); $i++) {
+                                    $grupo     = strtolower($data[$i]['grupo']);
+                                    $codigo    = $data[$i]['codigo'] ?? "";       // <-- Novo
+                                    $descricao = $data[$i]['descricao'] ?? "";
+
+                                    if (isset($riscosPorGrupo[$grupo])) {
+                                        // Exibir código + descrição
+                                        $texto = trim($codigo . " - " . $descricao);
+                                        $riscosPorGrupo[$grupo][] = $texto;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Monta a tabela de riscos
+                        $riscosTabela .= '
+                <table>
+                    <tr>
+                        <td colspan="2" class="section-title">DESCRIÇÃO DE FATOR DE RISCOS DE ACORDO PGR/PCMSO</td>
+                    </tr>';
+                        foreach ($grupos as $chave => $titulo) {
+                            $valores = !empty($riscosPorGrupo[$chave]) ? implode(", ", $riscosPorGrupo[$chave]) : "N/A";
+                            $riscosTabela .= "
+                    <tr>
+                        <th style='text-align:left; font-weight:bold; font-size:12px; font-family:Arial, sans-serif; padding:4px;width: 80px;'>{$titulo}</th>
+                        <td style='font-size:12px; font-family:Arial, sans-serif; padding:4px;'>{$valores}</td>
+                    </tr>";
+                        }
+                        $riscosTabela .= '</table>';
+
+
+
+                        // =====================================================================
+
+                        // ===================== AJUSTE NAS APTIDÕES =====================
+                        $aptidoesTabela = '';
+
+                        // busca aptidões do banco
+                        $instrucao_busca_aptidoes = "SELECT * FROM aptidao_extra WHERE empresa_id = :recebe_empresa_id";
+                        $comando_busca_aptidoes = $pdo->prepare($instrucao_busca_aptidoes);
+                        $comando_busca_aptidoes->bindValue(":recebe_empresa_id", $_SESSION["empresa_id"]);
+                        $comando_busca_aptidoes->execute();
+                        $resultado_busca_aptidoes = $comando_busca_aptidoes->fetchAll(PDO::FETCH_ASSOC);
+
+                        // cria lista de aptidões a partir do banco (id => nome)
+                        $listaAptidoes = [];
+                        foreach ($resultado_busca_aptidoes as $apt) {
+                            $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
+                        }
+
+                        // transforma o JSON da sessão em array associativo
+                        $aptidoesSelecionadas = [];
+                        if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
+                            $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
+                            if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
+                                foreach ($dataApt as $apt) {
+                                    if (isset($apt['nome'])) {
+                                        $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
+                                    }
+                                }
+                            }
+                        }
+
+                        // função para marcar Sim/Não
+                        // function marcarAptidao($nome, $aptidoesSelecionadas)
+                        // {
+                        //     $nomeLower = strtolower(trim($nome));
+                        //     $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                        //     $nao  = $sim === "X" ? " " : "X";
+                        //     return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+                        // }
+
+                        // gerar tabela apenas com as selecionadas
+                        //         $aptidoesTabela .= '
+                        // <table>
+                        //     <tr>
+                        //         <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
+                        //     </tr>';
+
+                        //         $aptidoesFiltradas = [];
+                        //         foreach ($listaAptidoes as $nome) {
+                        //             if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
+                        //                 $aptidoesFiltradas[] = $nome;
+                        //             }
+                        //         }
+
+                        //         // gerar com 2 colunas por linha
+                        //         for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
+                        //             $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
+
+                        //             $dir = "&nbsp;";
+                        //             if (isset($aptidoesFiltradas[$i + 1])) {
+                        //                 $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
+                        //             }
+
+                        //             $aptidoesTabela .= '
+                        //     <tr>
+                        //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                        //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                        //     </tr>';
+                        //         }
+
+                        //         $aptidoesTabela .= '
+                        // </table>';
+                    }
+                }
+            }
+
+            // Define o fuso horário do Brasil (evita diferenças)
+            date_default_timezone_set('America/Sao_Paulo');
+
+            // Data atual no formato brasileiro
+            $dataAtual = date('d/m/Y');
+
+            // Função helper para marcar
+            function marcar($valor, $tipoExame)
+            {
+                return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
+            }
+
+            // // função para marcar Sim/Não
+            // function marcarAptidao($nome, $aptidoesSelecionadas)
+            // {
+            //     $nomeLower = strtolower(trim($nome));
+            //     $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+            //     $nao  = $sim === "X" ? " " : "X";
+            //     return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+            // }
+
+            // // gerar tabela apenas com as selecionadas
+            // $aptidoesTabela .= '
+            //     <table>
+            //         <tr>
+            //             <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
+            //         </tr>';
+
+            // $aptidoesFiltradas = [];
+            // foreach ($listaAptidoes as $nome) {
+            //     if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
+            //         $aptidoesFiltradas[] = $nome;
+            //     }
+            // }
+
+            // // gerar com 2 colunas por linha
+            // for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
+            //     $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
+
+            //     $dir = "&nbsp;";
+            //     if (isset($aptidoesFiltradas[$i + 1])) {
+            //         $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
+            //     }
+
+            //     $aptidoesTabela .= '
+            //         <tr>
+            //             <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+            //             <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+            //         </tr>';
+            // }
+
+            // $aptidoesTabela .= '
+            //     </table>';
+
+            if (!empty($aptidoesSelecionadas) && is_array($aptidoesSelecionadas)) {
 
                 // função para marcar Sim/Não
                 function marcarAptidao($nome, $aptidoesSelecionadas)
@@ -1696,11 +2084,11 @@ function printSection(button) {
                 }
 
                 // gerar tabela apenas com as selecionadas
-                $aptidoesTabela .= '
-                <table>
-                    <tr>
-                        <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
-                    </tr>';
+                $aptidoesTabela  = '
+        <table>
+            <tr>
+                <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
+            </tr>';
 
                 $aptidoesFiltradas = [];
                 foreach ($listaAptidoes as $nome) {
@@ -1719,18 +2107,16 @@ function printSection(button) {
                     }
 
                     $aptidoesTabela .= '
-                    <tr>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                    </tr>';
+            <tr>
+                <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+            </tr>';
                 }
 
                 $aptidoesTabela .= '
-                </table>';
-
-
-                }
+        </table>';
             }
+
 
             echo '
         <style>
@@ -1882,8 +2268,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -1927,7 +2313,7 @@ function printSection(button) {
             </table>';
 
             if (
-                isset($resultado_mudanca_cargo_selecionado) 
+                isset($resultado_mudanca_cargo_selecionado)
                 && !empty($resultado_mudanca_cargo_selecionado)
             ) {
                 echo '
@@ -1937,15 +2323,15 @@ function printSection(button) {
                         </tr>
                         <tr>
                             <th style="font-size:12px; text-align:left;">Novo Cargo</th>
-                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
-                                htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . 
-                            '</td>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+                    htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") .
+                    '</td>
                         </tr>
                         <tr>
                             <th style="font-size:12px; text-align:left;">Novo CBO</th>
-                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
-                                htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . 
-                            '</td>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+                    htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") .
+                    '</td>
                         </tr>
                     </table>
                 ';
@@ -1983,22 +2369,21 @@ function printSection(button) {
                         Procedimentos e Exames a realizar
                     </td>
                 </tr>
-                    ' . $linhasExames .'
+                    ' . $linhasExames . '
             </table>
 
             ' . $aptidoesTabela . '
             
         </div>';
 
-        echo '
+            echo '
             <div class="actions">
                 <button class="btn btn-email" onclick="enviarClinica()">Enviar Email Clínica</button>
                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
                 <button class="btn btn-print" onclick="window.print()">Salvar</button>
             </div>
         ';
-        }else if($aso)
-        {
+        } else if ($aso) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -2023,7 +2408,7 @@ function printSection(button) {
 
                 $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
-                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                 $comando_busca_exames_procedimentos_kit->execute();
                 $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
 
@@ -2036,36 +2421,36 @@ function printSection(button) {
                 if (!empty($examesJson)) {
                     $exames = json_decode($examesJson, true);
                     if (is_array($exames)) {
-                    $coluna = 0;
-                    $linhasExames .= "<tr>";
-                    
-                    foreach ($exames as $exame) {
-                        $codigo = $exame['codigo'] ?? '';
-                        $nome   = $exame['nome'] ?? '';
-                        $dataExame = $dataAtual ?? "__/__/2025";
+                        $coluna = 0;
+                        $linhasExames .= "<tr>";
 
-                        $linhasExames .= "
+                        foreach ($exames as $exame) {
+                            $codigo = $exame['codigo'] ?? '';
+                            $nome   = $exame['nome'] ?? '';
+                            $dataExame = $dataAtual ?? "__/__/2025";
+
+                            $linhasExames .= "
                             <td style='font-size:12px; line-height:1.4; width:50%;'>
                                 (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . " " . htmlspecialchars($dataExame) . "
                             </td>
                         ";
 
-                        $coluna++;
+                            $coluna++;
 
-                        // quando preencher 2 colunas, fecha a linha
-                        if ($coluna % 2 == 0) {
-                            $linhasExames .= "</tr><tr>";
+                            // quando preencher 2 colunas, fecha a linha
+                            if ($coluna % 2 == 0) {
+                                $linhasExames .= "</tr><tr>";
+                            }
+                        }
+
+                        // Se terminou com uma coluna só, fecha linha corretamente
+                        if ($coluna % 2 != 0) {
+                            $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                        } else {
+                            $linhasExames .= "</tr>";
                         }
                     }
-
-                    // Se terminou com uma coluna só, fecha linha corretamente
-                    if ($coluna % 2 != 0) {
-                        $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
-                    } else {
-                        $linhasExames .= "</tr>";
-                    }
                 }
-            }
 
                 // Define o fuso horário do Brasil (evita diferenças)
                 date_default_timezone_set('America/Sao_Paulo');
@@ -2170,7 +2555,7 @@ function printSection(button) {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -2260,7 +2645,7 @@ function printSection(button) {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -2268,9 +2653,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -2558,8 +2943,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -2603,7 +2988,7 @@ function printSection(button) {
             </table>';
 
             if (
-                isset($resultado_mudanca_cargo_selecionado) 
+                isset($resultado_mudanca_cargo_selecionado)
                 && !empty($resultado_mudanca_cargo_selecionado)
             ) {
                 echo '
@@ -2613,15 +2998,15 @@ function printSection(button) {
                         </tr>
                         <tr>
                             <th style="font-size:12px; text-align:left;">Novo Cargo</th>
-                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
-                                htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . 
-                            '</td>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+                    htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") .
+                    '</td>
                         </tr>
                         <tr>
                             <th style="font-size:12px; text-align:left;">Novo CBO</th>
-                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
-                                htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . 
-                            '</td>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+                    htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") .
+                    '</td>
                         </tr>
                     </table>
                 ';
@@ -2659,7 +3044,7 @@ function printSection(button) {
                        Procedimentos e Exames realizados
                     </td>
                 </tr>
-                    ' . $linhasExames .'
+                    ' . $linhasExames . '
             </table>
 
             ' . $aptidoesTabela . '
@@ -2711,9 +3096,7 @@ function printSection(button) {
             </div>
         </div>
 ';
-
-        }else if($prontuario_medico)
-        {
+        } else if ($prontuario_medico) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -2837,7 +3220,7 @@ function printSection(button) {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -2927,7 +3310,7 @@ function printSection(button) {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -2935,9 +3318,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -3226,8 +3609,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -3271,7 +3654,7 @@ function printSection(button) {
             </table>';
 
             if (
-                isset($resultado_mudanca_cargo_selecionado) 
+                isset($resultado_mudanca_cargo_selecionado)
                 && !empty($resultado_mudanca_cargo_selecionado)
             ) {
                 echo '
@@ -3281,15 +3664,15 @@ function printSection(button) {
                         </tr>
                         <tr>
                             <th style="font-size:12px; text-align:left;">Novo Cargo</th>
-                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
-                                htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") . 
-                            '</td>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+                    htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") .
+                    '</td>
                         </tr>
                         <tr>
                             <th style="font-size:12px; text-align:left;">Novo CBO</th>
-                            <td style="font-size:12px; line-height:1.4; text-align:left;">' . 
-                                htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") . 
-                            '</td>
+                            <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+                    htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") .
+                    '</td>
                         </tr>
                     </table>
                 ';
@@ -3427,8 +3810,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -3585,8 +3968,7 @@ function printSection(button) {
             </div>
         </div>
 ';
-        }else if($acuidade_visual)
-        {
+        } else if ($acuidade_visual) {
 
             $informacoes_clinica;
 
@@ -3711,7 +4093,7 @@ function printSection(button) {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -3801,7 +4183,7 @@ function printSection(button) {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -3809,9 +4191,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -4100,8 +4482,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -4284,8 +4666,7 @@ function printSection(button) {
                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
                 <button class="btn btn-print" onclick="window.print()">Salvar</button>
             </div>';
-        }else if($psicosocial)
-        {
+        } else if ($psicosocial) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -4409,7 +4790,7 @@ function printSection(button) {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -4499,7 +4880,7 @@ function printSection(button) {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -4507,9 +4888,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -4798,8 +5179,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -5093,11 +5474,8 @@ function printSection(button) {
                         <button class="btn btn-print" onclick="window.print()">Salvar</button>
                     </div>
 
-            '
-            
-            ;
-        }else if($toxicologico)
-        {
+            ';
+        } else if ($toxicologico) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -5120,7 +5498,7 @@ function printSection(button) {
 
                 $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
-                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                 $comando_busca_exames_procedimentos_kit->execute();
                 $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
 
@@ -5135,7 +5513,7 @@ function printSection(button) {
                     if (is_array($exames)) {
                         $coluna = 0;
                         $linhasExames .= "<tr>";
-                        
+
                         foreach ($exames as $exame) {
                             $codigo = $exame['codigo'] ?? '';
                             $nome   = $exame['nome'] ?? '';
@@ -5143,7 +5521,7 @@ function printSection(button) {
 
                             $linhasExames .= "
                                 <td style='font-size:12px; line-height:1.4; width:50%;'>
-                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) ."
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . "
                                 </td>
                             ";
 
@@ -5267,7 +5645,7 @@ function printSection(button) {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -5357,7 +5735,7 @@ function printSection(button) {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -5365,9 +5743,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -5656,8 +6034,8 @@ function printSection(button) {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -5689,7 +6067,7 @@ function printSection(button) {
                 <tr>
                     <td colspan="2" class="section-title">Procedimento a realizar</td>
                 </tr>
-                ' . $linhasExames .'
+                ' . $linhasExames . '
                 
             </table>
 
@@ -5745,8 +6123,7 @@ function printSection(button) {
             </div>
         
         ';
-        }else if($audiometria)
-        {
+        } else if ($audiometria) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -5769,7 +6146,7 @@ function printSection(button) {
 
                 $instrucao_busca_exames_procedimentos_kit = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_exames_procedimentos_kit = $pdo->prepare($instrucao_busca_exames_procedimentos_kit);
-                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_exames_procedimentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                 $comando_busca_exames_procedimentos_kit->execute();
                 $resultado_busca_exames_procedimentos_kit = $comando_busca_exames_procedimentos_kit->fetchAll(PDO::FETCH_ASSOC);
 
@@ -5784,7 +6161,7 @@ function printSection(button) {
                     if (is_array($exames)) {
                         $coluna = 0;
                         $linhasExames .= "<tr>";
-                        
+
                         foreach ($exames as $exame) {
                             $codigo = $exame['codigo'] ?? '';
                             $nome   = $exame['nome'] ?? '';
@@ -5792,7 +6169,7 @@ function printSection(button) {
 
                             $linhasExames .= "
                                 <td style='font-size:12px; line-height:1.4; width:50%;'>
-                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) ."
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . "
                                 </td>
                             ";
 
@@ -5921,7 +6298,7 @@ function printSection(button) {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -6011,7 +6388,7 @@ function printSection(button) {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -6019,9 +6396,9 @@ function printSection(button) {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -6155,7 +6532,8 @@ function printSection(button) {
                 }
 
 
-                function gerarGraficoAudiometriaBase64($titulo) {
+                function gerarGraficoAudiometriaBase64($titulo)
+                {
                     $largura = 420;
                     $altura = 340;
                     $img = imagecreatetruecolor($largura, $altura);
@@ -6185,25 +6563,25 @@ function printSection(button) {
                     for ($i = 0; $i < count($freqs); $i++) {
                         $x = $margemEsq + ($graficoLarg / $colunas) * $i;
                         for ($y = $margemSup; $y < $altura - $margemInf; $y += 6) {
-                            imageline($img, $x, $y, $x, $y+3, $cinza);
+                            imageline($img, $x, $y, $x, $y + 3, $cinza);
                         }
                         // Texto em cima
-                        imagestring($img, 2, $x-10, 10, $freqs[$i], $preto);
+                        imagestring($img, 2, $x - 10, 10, $freqs[$i], $preto);
                     }
 
                     // Grade horizontal (0 a 120 dB)
                     for ($i = 0; $i <= 12; $i++) {
                         $y = $margemSup + ($graficoAlt / 12) * $i;
                         for ($x = $margemEsq; $x < $largura - $margemDir; $x += 6) {
-                            imageline($img, $x, $y, $x+3, $y, $cinza);
+                            imageline($img, $x, $y, $x + 3, $y, $cinza);
                         }
-                        imagestring($img, 2, 35, $y-7, $i*10, $preto);
+                        imagestring($img, 2, 35, $y - 7, $i * 10, $preto);
                     }
 
                     // Texto lateral (vertical) → precisa de fonte TTF
                     $fonte = __DIR__ . "/arial.ttf"; // coloque arial.ttf no mesmo diretório
                     if (file_exists($fonte)) {
-                        imagettftext($img, 10, 90, 20, $altura/2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
+                        imagettftext($img, 10, 90, 20, $altura / 2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
                     }
 
                     // Exporta em Base64
@@ -6215,7 +6593,7 @@ function printSection(button) {
                     return 'data:image/png;base64,' . base64_encode($conteudo);
                 }
 
-                            $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
+                $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
                 $graficoOE = gerarGraficoAudiometriaBase64("Orelha Esquerda", "blue");
             }
 
@@ -6377,8 +6755,8 @@ table.no-break strong {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -6672,8 +7050,7 @@ table.no-break strong {
                 <button class="btn btn-print" onclick="window.print()">Salvar</button>
             </div>
         ';
-        }else if($resumo_laudo)
-        {
+        } else if ($resumo_laudo) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -6797,7 +7174,7 @@ table.no-break strong {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -6887,7 +7264,7 @@ table.no-break strong {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -6895,9 +7272,9 @@ table.no-break strong {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -7031,7 +7408,8 @@ table.no-break strong {
                 }
 
 
-                function gerarGraficoAudiometriaBase64($titulo) {
+                function gerarGraficoAudiometriaBase64($titulo)
+                {
                     $largura = 420;
                     $altura = 340;
                     $img = imagecreatetruecolor($largura, $altura);
@@ -7061,25 +7439,25 @@ table.no-break strong {
                     for ($i = 0; $i < count($freqs); $i++) {
                         $x = $margemEsq + ($graficoLarg / $colunas) * $i;
                         for ($y = $margemSup; $y < $altura - $margemInf; $y += 6) {
-                            imageline($img, $x, $y, $x, $y+3, $cinza);
+                            imageline($img, $x, $y, $x, $y + 3, $cinza);
                         }
                         // Texto em cima
-                        imagestring($img, 2, $x-10, 10, $freqs[$i], $preto);
+                        imagestring($img, 2, $x - 10, 10, $freqs[$i], $preto);
                     }
 
                     // Grade horizontal (0 a 120 dB)
                     for ($i = 0; $i <= 12; $i++) {
                         $y = $margemSup + ($graficoAlt / 12) * $i;
                         for ($x = $margemEsq; $x < $largura - $margemDir; $x += 6) {
-                            imageline($img, $x, $y, $x+3, $y, $cinza);
+                            imageline($img, $x, $y, $x + 3, $y, $cinza);
                         }
-                        imagestring($img, 2, 35, $y-7, $i*10, $preto);
+                        imagestring($img, 2, 35, $y - 7, $i * 10, $preto);
                     }
 
                     // Texto lateral (vertical) → precisa de fonte TTF
                     $fonte = __DIR__ . "/arial.ttf"; // coloque arial.ttf no mesmo diretório
                     if (file_exists($fonte)) {
-                        imagettftext($img, 10, 90, 20, $altura/2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
+                        imagettftext($img, 10, 90, 20, $altura / 2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
                     }
 
                     // Exporta em Base64
@@ -7091,7 +7469,7 @@ table.no-break strong {
                     return 'data:image/png;base64,' . base64_encode($conteudo);
                 }
 
-                            $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
+                $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
                 $graficoOE = gerarGraficoAudiometriaBase64("Orelha Esquerda", "blue");
             }
 
@@ -7280,8 +7658,8 @@ table.no-break strong {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -7414,8 +7792,8 @@ table.no-break strong {
 
     <!-- Linhas dinâmicas -->
     ' . (isset($resultado_colaboradores) && is_array($resultado_colaboradores) && count($resultado_colaboradores) > 0
-        ? implode("", array_map(function($colab) {
-            return "
+                ? implode("", array_map(function ($colab) {
+                    return "
             <tr style=\"text-align:center; font-size:12px;\">
                 <td>" . htmlspecialchars($colab["nome"] ?? "") . "</td>
                 <td>" . htmlspecialchars($colab["funcao"] ?? "") . "<br>" . htmlspecialchars($colab["cbo"] ?? "") . "</td>
@@ -7428,8 +7806,8 @@ table.no-break strong {
                 <td>" . htmlspecialchars($colab["ocorrencia_sefip"] ?? "") . "</td>
                 <td>" . htmlspecialchars($colab["treinamentos_obrigatorios"] ?? "") . "</td>
             </tr>";
-        }, $resultado_colaboradores))
-        : "") . '
+                }, $resultado_colaboradores))
+                : "") . '
 </table>
 
         </div>
@@ -7439,8 +7817,7 @@ table.no-break strong {
                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Empresa (WhatsApp)</button>
                 <button class="btn btn-print" onclick="window.print()">Salvar</button>
             </div>';
-        }else if($teste_romberg)
-        {
+        } else if ($teste_romberg) {
             $informacoes_clinica;
 
             if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -7564,7 +7941,7 @@ table.no-break strong {
 
                     $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
                     $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
-                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa",$resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
                     $comando_busca_cargo_pessoa->execute();
                     $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
                 }
@@ -7654,7 +8031,7 @@ table.no-break strong {
 
                     $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                     $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
-                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                    $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
@@ -7662,9 +8039,9 @@ table.no-break strong {
 
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                        $html_assinatura = "<img src='assinaturas/" 
-                        . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '') 
-                        . "' alt='Assinatura do Médico' class='assinatura'>";
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>";
                     } else {
                         $html_assinatura = "_______________________________";
                     }
@@ -7798,7 +8175,8 @@ table.no-break strong {
                 }
 
 
-                function gerarGraficoAudiometriaBase64($titulo) {
+                function gerarGraficoAudiometriaBase64($titulo)
+                {
                     $largura = 420;
                     $altura = 340;
                     $img = imagecreatetruecolor($largura, $altura);
@@ -7828,25 +8206,25 @@ table.no-break strong {
                     for ($i = 0; $i < count($freqs); $i++) {
                         $x = $margemEsq + ($graficoLarg / $colunas) * $i;
                         for ($y = $margemSup; $y < $altura - $margemInf; $y += 6) {
-                            imageline($img, $x, $y, $x, $y+3, $cinza);
+                            imageline($img, $x, $y, $x, $y + 3, $cinza);
                         }
                         // Texto em cima
-                        imagestring($img, 2, $x-10, 10, $freqs[$i], $preto);
+                        imagestring($img, 2, $x - 10, 10, $freqs[$i], $preto);
                     }
 
                     // Grade horizontal (0 a 120 dB)
                     for ($i = 0; $i <= 12; $i++) {
                         $y = $margemSup + ($graficoAlt / 12) * $i;
                         for ($x = $margemEsq; $x < $largura - $margemDir; $x += 6) {
-                            imageline($img, $x, $y, $x+3, $y, $cinza);
+                            imageline($img, $x, $y, $x + 3, $y, $cinza);
                         }
-                        imagestring($img, 2, 35, $y-7, $i*10, $preto);
+                        imagestring($img, 2, 35, $y - 7, $i * 10, $preto);
                     }
 
                     // Texto lateral (vertical) → precisa de fonte TTF
                     $fonte = __DIR__ . "/arial.ttf"; // coloque arial.ttf no mesmo diretório
                     if (file_exists($fonte)) {
-                        imagettftext($img, 10, 90, 20, $altura/2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
+                        imagettftext($img, 10, 90, 20, $altura / 2 + 50, $preto, $fonte, "Nível de audição em decibéis (dB)");
                     }
 
                     // Exporta em Base64
@@ -7858,7 +8236,7 @@ table.no-break strong {
                     return 'data:image/png;base64,' . base64_encode($conteudo);
                 }
 
-                            $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
+                $graficoOD = gerarGraficoAudiometriaBase64("Orelha Direita", "red");
                 $graficoOE = gerarGraficoAudiometriaBase64("Orelha Esquerda", "blue");
             }
 
@@ -8047,8 +8425,8 @@ table.no-break strong {
                 <tr>
                     <td class="dados-hospital" colspan="2">
                         ' . (!empty($resultado_empresa_selecionada['nome'])
-                            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-                            : '') . '
+                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+                : '') . '
                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
@@ -8479,7 +8857,7 @@ table.no-break strong {
 
             $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
             $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
-            $comando_busca_dados_bancarios->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+            $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
             $comando_busca_dados_bancarios->execute();
             $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
 
@@ -8669,8 +9047,7 @@ table.no-break strong {
             <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
             ';
 
-            if($exames_procedimentos === true && $treinamentos === true && $epi_epc === true && $faturamento === true)
-            {
+            if ($exames_procedimentos === true && $treinamentos === true && $epi_epc === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -8929,23 +9306,23 @@ table.no-break strong {
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -8954,34 +9331,34 @@ table.no-break strong {
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-    echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -8993,8 +9370,7 @@ table.no-break strong {
 
 
                 echo '</div>';
-            }else if($exames_procedimentos === true && $treinamentos === true && $faturamento === true)
-            {
+            } else if ($exames_procedimentos === true && $treinamentos === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -9170,57 +9546,57 @@ table.no-break strong {
                     } else {
 
                         // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
+                            // Coluna esquerda (QR Code)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                    echo '
+                                echo '
                         <div style="text-align:center;">
                             <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
                             <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
                         </div>
                     ';
-                }
+                            }
 
 
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
+                            // Coluna direita → PIX e Agência/Conta lado a lado
+                            echo '<div style="display:flex; gap:40px; font-size:13px;">';
 
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                             <div>
                                 <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
                                 <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                             </div>';
-                    }
+                            }
 
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div>
                                 <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
-                        }
-                        echo '</div>';
-                    }
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div>';
+                            }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                            echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
+                            echo '</div>'; // fecha container
+                        }
+                    }
                 }
-            }
-        }
-        echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -9232,8 +9608,7 @@ table.no-break strong {
 
 
                 echo '</div>';
-            }else if($exames_procedimentos === true && $epi_epc === true && $faturamento === true)
-            {
+            } else if ($exames_procedimentos === true && $epi_epc === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -9411,23 +9786,23 @@ table.no-break strong {
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -9436,35 +9811,35 @@ table.no-break strong {
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
 
-        echo '</div>
+                echo '</div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -9474,8 +9849,7 @@ table.no-break strong {
         </div>';
 
                 echo '</div>';
-            }else if($treinamentos === true && $epi_epc === true && $faturamento === true)
-            {
+            } else if ($treinamentos === true && $epi_epc === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
                 $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -9661,57 +10035,57 @@ table.no-break strong {
                     } else {
 
                         // Verifica quais dados exibir
-                $temQrCode = in_array('qrcode', $tipos);
-                $temPix = in_array('pix', $tipos);
-                $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                if ($temQrCode || $temPix || $temAgenciaConta) {
-                    echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
 
-                    // Coluna esquerda (QR Code)
-                if ($temQrCode) {
-                    $chave = '(64) 99606-5577'; // ou busca no banco
-                    ob_start();
-                    QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-                    $imageString = base64_encode(ob_get_contents());
-                    ob_end_clean();
+                            // Coluna esquerda (QR Code)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                    echo '
+                                echo '
                         <div style="text-align:center;">
                             <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
                             <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
                         </div>
                     ';
-                }
+                            }
 
 
-                    // Coluna direita → PIX e Agência/Conta lado a lado
-                    echo '<div style="display:flex; gap:40px; font-size:13px;">';
+                            // Coluna direita → PIX e Agência/Conta lado a lado
+                            echo '<div style="display:flex; gap:40px; font-size:13px;">';
 
-                    if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                        echo '
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                             <div>
                                 <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
                                 <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                             </div>';
-                    }
+                            }
 
-                    if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                        $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                        echo '<div>
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div>
                                 <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-                        foreach ($dados as $dado) {
-                            echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
-                        }
-                        echo '</div>';
-                    }
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div>';
+                            }
 
-                    echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-                    echo '</div>'; // fecha container
+                            echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
+                            echo '</div>'; // fecha container
+                        }
+                    }
                 }
-            }
-        }
-echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -9723,8 +10097,7 @@ echo '
 
 
                 echo '</div>';
-            }else if($exames_procedimentos === true && $faturamento === true)
-            {
+            } else if ($exames_procedimentos === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -9805,7 +10178,7 @@ echo '
                 <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-               if (!empty($resultado_busca_dados_bancarios)) {
+                if (!empty($resultado_busca_dados_bancarios)) {
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
@@ -9817,23 +10190,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -9842,35 +10215,35 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
 
-            echo '</div>
+                echo '</div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -9880,8 +10253,7 @@ echo '
         </div>';
 
                 echo '</div>';
-            }else if($treinamentos === true && $faturamento === true)
-            {
+            } else if ($treinamentos === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
                 $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -9982,23 +10354,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -10007,35 +10379,35 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-            
-            echo '    </div>
+
+                echo '    </div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -10046,8 +10418,7 @@ echo '
 
 
                 echo '</div>';
-            }else if($epi_epc === true && $faturamento === true)
-            {
+            } else if ($epi_epc === true && $faturamento === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
         03 - EPIs / EPCs
     </h4>';
@@ -10151,23 +10522,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -10176,34 +10547,34 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-         echo '       
+                echo '       
             </div>
 
         <!-- 🔹 Botões -->
@@ -10214,7 +10585,7 @@ echo '
         </div>';
 
                 echo '</div>';
-            }else if ($exames_procedimentos === true && $treinamentos === true && $epi_epc === true) {
+            } else if ($exames_procedimentos === true && $treinamentos === true && $epi_epc === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -10473,23 +10844,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -10498,34 +10869,34 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-    echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -10712,23 +11083,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -10737,34 +11108,34 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-        echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -10954,23 +11325,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -10979,35 +11350,35 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
 
-        echo '</div>
+                echo '</div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -11017,8 +11388,7 @@ echo '
         </div>';
 
                 echo '</div>';
-            }else if($treinamentos === true && $epi_epc === true)
-            {
+            } else if ($treinamentos === true && $epi_epc === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
                 $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -11203,23 +11573,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -11228,34 +11598,34 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -11267,8 +11637,7 @@ echo '
 
 
                 echo '</div>';
-            }else if($exames_procedimentos === true)
-            {
+            } else if ($exames_procedimentos === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
                 $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -11349,7 +11718,7 @@ echo '
                 <div class="top-bar" style="margin-top:20px;"></div>';
 
 
-               if (!empty($resultado_busca_dados_bancarios)) {
+                if (!empty($resultado_busca_dados_bancarios)) {
                     $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
 
                     if (!is_array($tipos)) {
@@ -11361,23 +11730,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -11386,33 +11755,33 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
 
 
 
@@ -11423,7 +11792,7 @@ echo '
 
 
 
-            echo '</div>
+                echo '</div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -11433,8 +11802,7 @@ echo '
         </div>';
 
                 echo '</div>';
-            }else if($treinamentos === true)
-            {
+            } else if ($treinamentos === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
                 $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
 
@@ -11535,23 +11903,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -11560,35 +11928,35 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-            
-            echo '    </div>
+
+                echo '    </div>
 
         <!-- 🔹 Botões -->
         <div class="actions">
@@ -11599,8 +11967,7 @@ echo '
 
 
                 echo '</div>';
-            }else if($epi_epc === true)
-            {
+            } else if ($epi_epc === true) {
                 echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
         03 - EPIs / EPCs
     </h4>';
@@ -11704,23 +12071,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -11729,34 +12096,34 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-         echo '       
+                echo '       
             </div>
 
         <!-- 🔹 Botões -->
@@ -11942,23 +12309,23 @@ echo '
                                 <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
                             </p>';
                     } else {
-                    $temQrCode = in_array('qrcode', $tipos);
-                    $temPix = in_array('pix', $tipos);
-                    $temAgenciaConta = in_array('agencia-conta', $tipos);
+                        $temQrCode = in_array('qrcode', $tipos);
+                        $temPix = in_array('pix', $tipos);
+                        $temAgenciaConta = in_array('agencia-conta', $tipos);
 
-                    if ($temQrCode || $temPix || $temAgenciaConta) {
-                        // Container principal
-                        echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+                        if ($temQrCode || $temPix || $temAgenciaConta) {
+                            // Container principal
+                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-                        // Bloco QR Code (imagem + texto ao lado)
-                        if ($temQrCode) {
-                            $chave = '(64) 99606-5577'; // ou busca no banco
-                            ob_start();
-                            QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                            $imageString = base64_encode(ob_get_contents());
-                            ob_end_clean();
+                            // Bloco QR Code (imagem + texto ao lado)
+                            if ($temQrCode) {
+                                $chave = '(64) 99606-5577'; // ou busca no banco
+                                ob_start();
+                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+                                $imageString = base64_encode(ob_get_contents());
+                                ob_end_clean();
 
-                            echo '
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
                                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
                                     <div>
@@ -11967,34 +12334,34 @@ echo '
                                     </div>
                                 </div>
                             ';
-                        }
+                            }
 
-                        // Bloco PIX
-                        if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                            echo '
+                            // Bloco PIX
+                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+                                echo '
                                 <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                                     <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
                                 </div>';
-                        }
+                            }
 
-                        // Bloco Agência e Conta
-                        if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                            $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                            echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+                            // Bloco Agência e Conta
+                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
                                     <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                                     <div>';
-                            foreach ($dados as $dado) {
-                                echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                foreach ($dados as $dado) {
+                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+                                }
+                                echo '</div></div>';
                             }
-                            echo '</div></div>';
-                        }
 
-                        echo '</div>'; // fecha container principal
+                            echo '</div>'; // fecha container principal
+                        }
                     }
                 }
-        }
-        echo '
+                echo '
             </div>
 
         <!-- 🔹 Botões -->
@@ -12019,4 +12386,3 @@ echo '
     // ) {
     // }
 }
-?>
