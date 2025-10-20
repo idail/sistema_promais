@@ -1350,6 +1350,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 exames_selecionados = :recebe_exames_selecionado,
                 tipo_orcamento = :recebe_tipo_orcamento_selecionado,
                 assinatura_digital = :recebe_assinatura_digital_selecionada,
+                tipo_dado_bancario = :recebe_tipo_dado_bancario_selecionado,
                 status = :recebe_status_kit
             WHERE id = :recebe_kit_id
         ";
@@ -1405,6 +1406,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_tipo_orcamento = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_orcamento", "tipo_orcamento", ":recebe_tipo_orcamento_selecionado", "tipo_orcamento");
 
         $bind_requer_assinatura = bindCondicionalSession($instrucao_atualizar_kit, "requer_assinatura", "assinatura_digital", ":recebe_assinatura_digital_selecionada", "assinatura");
+
+        $bind_tipo_dado_bancario = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_dado_bancario", "tipo_dado_bancario", ":recebe_tipo_dado_bancario_selecionado", "tipo_dado_bancario");
 
         // 🔹 Prepara o comando APENAS UMA VEZ
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -1619,9 +1622,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $comando_atualizar_kit->bindValue(":recebe_assinatura_digital_selecionada", $_POST["requer_assinatura"], PDO::PARAM_STR);
         }
 
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_tipo_dado_bancario) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado", $_POST["valor_tipo_dado_bancario"], PDO::PARAM_STR);
+        }
+
 
         // 🔹 Campos obrigatórios
         $recebe_status_kit_bind = "RASCUNHO";
+
+        if (isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]) {
+            $recebe_status_kit_bind = "FINALIZADO";
+        }
+
         $comando_atualizar_kit->bindValue(":recebe_status_kit", $recebe_status_kit_bind, PDO::PARAM_STR);
 
         // 🔹 ID do kit (obrigatório)
