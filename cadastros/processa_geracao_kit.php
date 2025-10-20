@@ -63,7 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "agente_nocivo_selecionado",
             "agente_ocorrencia_selecionado",
             "aptidao_selecionado",
-            "exames_selecionado"
+            "exames_selecionado",
+            "assinatura",
         ];
 
         foreach ($sess_to_clear as $sk) {
@@ -77,637 +78,499 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION["codigo_kit"] = $recebe_codigo_gerado_kit;
         echo json_encode($recebe_codigo_gerado_kit);
     } else if ($recebe_processo_geracao_kit === "incluir_valores_kit") {
-        // EXAME
-        // ... (seu código anterior, começando nos blocos de POST que você enviou)
-        // if (isset($_POST["valor_exame"]) && $_POST["valor_exame"] !== "") {
-        //     $recebe_exame_selecionado = $_POST["valor_exame"];
+        
 
+        // EXAME
+        // $valor_exame_bind = null;
+        // if (isset($_POST["valor_exame"])) {
+        //     $recebe_exame_selecionado = $_POST["valor_exame"] !== "" ? $_POST["valor_exame"] : null;
         //     if (!isset($_SESSION["exame_selecionado"]) || $_SESSION["exame_selecionado"] !== $recebe_exame_selecionado) {
         //         $_SESSION["exame_selecionado"] = $recebe_exame_selecionado;
         //     }
         // }
-        // $valor_exame_bind = isset($_SESSION["exame_selecionado"]) ? $_SESSION["exame_selecionado"] : null;
-
-        // EXAME
-        $valor_exame_bind = null;
-        if (isset($_POST["valor_exame"])) {
-            $recebe_exame_selecionado = $_POST["valor_exame"] !== "" ? $_POST["valor_exame"] : null;
-            if (!isset($_SESSION["exame_selecionado"]) || $_SESSION["exame_selecionado"] !== $recebe_exame_selecionado) {
-                $_SESSION["exame_selecionado"] = $recebe_exame_selecionado;
-            }
-        }
-        if (isset($_SESSION["exame_selecionado"])) {
-            $valor_exame_bind = $_SESSION["exame_selecionado"];
-        }
+        // if (isset($_SESSION["exame_selecionado"])) {
+        //     $valor_exame_bind = $_SESSION["exame_selecionado"];
+        // }
 
 
-        // EMPRESA
-        // if (isset($_POST["valor_empresa"]) && $_POST["valor_empresa"] !== "") {
-        //     $recebe_empresa_selecionado = $_POST["valor_empresa"];
+        
 
+        // // EMPRESA
+        // $valor_empresa_bind = null;
+        // if (isset($_POST["valor_empresa"])) {
+        //     $recebe_empresa_selecionado = $_POST["valor_empresa"] !== "" ? $_POST["valor_empresa"] : null;
         //     if (!isset($_SESSION["empresa_selecionado"]) || $_SESSION["empresa_selecionado"] !== $recebe_empresa_selecionado) {
         //         $_SESSION["empresa_selecionado"] = $recebe_empresa_selecionado;
         //     }
         // }
-        // $valor_empresa_bind = isset($_SESSION["empresa_selecionado"]) ? $_SESSION["empresa_selecionado"] : null;
-
-        // EMPRESA
-        $valor_empresa_bind = null;
-        if (isset($_POST["valor_empresa"])) {
-            $recebe_empresa_selecionado = $_POST["valor_empresa"] !== "" ? $_POST["valor_empresa"] : null;
-            if (!isset($_SESSION["empresa_selecionado"]) || $_SESSION["empresa_selecionado"] !== $recebe_empresa_selecionado) {
-                $_SESSION["empresa_selecionado"] = $recebe_empresa_selecionado;
-            }
-        }
-        if (isset($_SESSION["empresa_selecionado"])) {
-            $valor_empresa_bind = $_SESSION["empresa_selecionado"];
-        }
+        // if (isset($_SESSION["empresa_selecionado"])) {
+        //     $valor_empresa_bind = $_SESSION["empresa_selecionado"];
+        // }
 
 
-        // CLÍNICA
-        // if (isset($_POST["valor_clinica"]) && $_POST["valor_clinica"] !== "") {
-        //     $recebe_clinica_selecionado = $_POST["valor_clinica"];
+        
 
+        // // CLÍNICA
+        // $valor_clinica_bind = null;
+        // if (isset($_POST["valor_clinica"])) {
+        //     $recebe_clinica_selecionado = $_POST["valor_clinica"] !== "" ? $_POST["valor_clinica"] : null;
         //     if (!isset($_SESSION["clinica_selecionado"]) || $_SESSION["clinica_selecionado"] !== $recebe_clinica_selecionado) {
         //         $_SESSION["clinica_selecionado"] = $recebe_clinica_selecionado;
         //     }
         // }
-        // $valor_clinica_bind = isset($_SESSION["clinica_selecionado"]) ? $_SESSION["clinica_selecionado"] : null;
-
-        // CLÍNICA
-        $valor_clinica_bind = null;
-        if (isset($_POST["valor_clinica"])) {
-            $recebe_clinica_selecionado = $_POST["valor_clinica"] !== "" ? $_POST["valor_clinica"] : null;
-            if (!isset($_SESSION["clinica_selecionado"]) || $_SESSION["clinica_selecionado"] !== $recebe_clinica_selecionado) {
-                $_SESSION["clinica_selecionado"] = $recebe_clinica_selecionado;
-            }
-        }
-        if (isset($_SESSION["clinica_selecionado"])) {
-            $valor_clinica_bind = $_SESSION["clinica_selecionado"];
-        }
+        // if (isset($_SESSION["clinica_selecionado"])) {
+        //     $valor_clinica_bind = $_SESSION["clinica_selecionado"];
+        // }
 
 
-        // COLABORADOR
-        // if (isset($_POST["valor_colaborador"]) && $_POST["valor_colaborador"] !== "") {
-        //     $recebe_colaborador_selecionado = $_POST["valor_colaborador"];
+       
 
+        // // COLABORADOR
+        // $valor_colaborador_bind = null;
+        // if (isset($_POST["valor_colaborador"])) {
+        //     $recebe_colaborador_selecionado = $_POST["valor_colaborador"] !== "" ? $_POST["valor_colaborador"] : null;
         //     if (!isset($_SESSION["colaborador_selecionado"]) || $_SESSION["colaborador_selecionado"] !== $recebe_colaborador_selecionado) {
         //         $_SESSION["colaborador_selecionado"] = $recebe_colaborador_selecionado;
         //     }
         // }
-        // $valor_colaborador_bind = isset($_SESSION["colaborador_selecionado"]) ? $_SESSION["colaborador_selecionado"] : null;
-
-        // COLABORADOR
-        $valor_colaborador_bind = null;
-        if (isset($_POST["valor_colaborador"])) {
-            $recebe_colaborador_selecionado = $_POST["valor_colaborador"] !== "" ? $_POST["valor_colaborador"] : null;
-            if (!isset($_SESSION["colaborador_selecionado"]) || $_SESSION["colaborador_selecionado"] !== $recebe_colaborador_selecionado) {
-                $_SESSION["colaborador_selecionado"] = $recebe_colaborador_selecionado;
-            }
-        }
-        if (isset($_SESSION["colaborador_selecionado"])) {
-            $valor_colaborador_bind = $_SESSION["colaborador_selecionado"];
-        }
+        // if (isset($_SESSION["colaborador_selecionado"])) {
+        //     $valor_colaborador_bind = $_SESSION["colaborador_selecionado"];
+        // }
 
 
-        // CARGO
-        // if (isset($_POST["valor_cargo"]) && $_POST["valor_cargo"] !== "") {
-        //     $recebe_cargo_selecionado = $_POST["valor_cargo"];
+        
 
+        // // CARGO
+        // $valor_cargo_bind = null;
+        // if (isset($_POST["valor_cargo"])) {
+        //     $recebe_cargo_selecionado = $_POST["valor_cargo"] !== "" ? $_POST["valor_cargo"] : null;
         //     if (!isset($_SESSION["cargo_selecionado"]) || $_SESSION["cargo_selecionado"] !== $recebe_cargo_selecionado) {
         //         $_SESSION["cargo_selecionado"] = $recebe_cargo_selecionado;
         //     }
         // }
-        // $valor_cargo_bind = isset($_SESSION["cargo_selecionado"]) ? $_SESSION["cargo_selecionado"] : null;
-
-        // CARGO
-        $valor_cargo_bind = null;
-        if (isset($_POST["valor_cargo"])) {
-            $recebe_cargo_selecionado = $_POST["valor_cargo"] !== "" ? $_POST["valor_cargo"] : null;
-            if (!isset($_SESSION["cargo_selecionado"]) || $_SESSION["cargo_selecionado"] !== $recebe_cargo_selecionado) {
-                $_SESSION["cargo_selecionado"] = $recebe_cargo_selecionado;
-            }
-        }
-        if (isset($_SESSION["cargo_selecionado"])) {
-            $valor_cargo_bind = $_SESSION["cargo_selecionado"];
-        }
+        // if (isset($_SESSION["cargo_selecionado"])) {
+        //     $valor_cargo_bind = $_SESSION["cargo_selecionado"];
+        // }
 
 
-        // MOTORISTA
-        // if (isset($_POST["valor_motorista"]) && $_POST["valor_motorista"] !== "") {
-        //     $recebe_motorista_selecionado = $_POST["valor_motorista"];
+        
 
+
+        // // MOTORISTA
+        // $valor_motorista_bind = null;
+        // if (isset($_POST["valor_motorista"])) {
+        //     $recebe_motorista_selecionado = $_POST["valor_motorista"] !== "" ? $_POST["valor_motorista"] : null;
         //     if (!isset($_SESSION["motorista_selecionado"]) || $_SESSION["motorista_selecionado"] !== $recebe_motorista_selecionado) {
         //         $_SESSION["motorista_selecionado"] = $recebe_motorista_selecionado;
         //     }
         // }
-        // $valor_motorista_bind = isset($_SESSION["motorista_selecionado"]) ? $_SESSION["motorista_selecionado"] : null;
+
+        // if (isset($_SESSION["motorista_selecionado"])) {
+        //     $valor_motorista_bind = $_SESSION["motorista_selecionado"];
+        // }
 
 
-        // MOTORISTA
-        $valor_motorista_bind = null;
-        if (isset($_POST["valor_motorista"])) {
-            $recebe_motorista_selecionado = $_POST["valor_motorista"] !== "" ? $_POST["valor_motorista"] : null;
-            if (!isset($_SESSION["motorista_selecionado"]) || $_SESSION["motorista_selecionado"] !== $recebe_motorista_selecionado) {
-                $_SESSION["motorista_selecionado"] = $recebe_motorista_selecionado;
-            }
-        }
-
-        if (isset($_SESSION["motorista_selecionado"])) {
-            $valor_motorista_bind = $_SESSION["motorista_selecionado"];
-        }
+        
 
 
-        // MEDICO COORDENADOR
-        // if (isset($_POST["valor_medico_coordenador_id"]) && $_POST["valor_medico_coordenador_id"] !== "") {
-        //     $recebe_medico_coordenador_selecionado = $_POST["valor_medico_coordenador_id"];
-
+        // // MÉDICO COORDENADOR
+        // $valor_medico_coordenador_bind = null;
+        // if (isset($_POST["valor_medico_coordenador_id"])) {
+        //     $recebe_medico_coordenador_selecionado = $_POST["valor_medico_coordenador_id"] !== "" ? $_POST["valor_medico_coordenador_id"] : null;
         //     if (!isset($_SESSION["medico_coordenador_selecionado"]) || $_SESSION["medico_coordenador_selecionado"] !== $recebe_medico_coordenador_selecionado) {
         //         $_SESSION["medico_coordenador_selecionado"] = $recebe_medico_coordenador_selecionado;
         //     }
         // }
-        // $valor_medico_coordenador_bind = isset($_SESSION["medico_coordenador_selecionado"]) ? $_SESSION["medico_coordenador_selecionado"] : null;
+        // if (isset($_SESSION["medico_coordenador_selecionado"])) {
+        //     $valor_medico_coordenador_bind = $_SESSION["medico_coordenador_selecionado"];
+        // }
 
 
-        // MÉDICO COORDENADOR
-        $valor_medico_coordenador_bind = null;
-        if (isset($_POST["valor_medico_coordenador_id"])) {
-            $recebe_medico_coordenador_selecionado = $_POST["valor_medico_coordenador_id"] !== "" ? $_POST["valor_medico_coordenador_id"] : null;
-            if (!isset($_SESSION["medico_coordenador_selecionado"]) || $_SESSION["medico_coordenador_selecionado"] !== $recebe_medico_coordenador_selecionado) {
-                $_SESSION["medico_coordenador_selecionado"] = $recebe_medico_coordenador_selecionado;
-            }
-        }
-        if (isset($_SESSION["medico_coordenador_selecionado"])) {
-            $valor_medico_coordenador_bind = $_SESSION["medico_coordenador_selecionado"];
-        }
+        
 
 
-        // MEDICO CLINICA
-        // if (isset($_POST["valor_medico_clinica_id"]) && $_POST["valor_medico_clinica_id"] !== "") {
-        //     $recebe_medico_clinica_selecionado = $_POST["valor_medico_clinica_id"];
-
+        // // MÉDICO CLÍNICA
+        // $valor_medico_clinica_bind = null;
+        // if (isset($_POST["valor_medico_clinica_id"])) {
+        //     $recebe_medico_clinica_selecionado = $_POST["valor_medico_clinica_id"] !== "" ? $_POST["valor_medico_clinica_id"] : null;
         //     if (!isset($_SESSION["medico_clinica_selecionado"]) || $_SESSION["medico_clinica_selecionado"] !== $recebe_medico_clinica_selecionado) {
         //         $_SESSION["medico_clinica_selecionado"] = $recebe_medico_clinica_selecionado;
         //     }
         // }
-        // $valor_medico_clinica_bind = isset($_SESSION["medico_clinica_selecionado"]) ? $_SESSION["medico_clinica_selecionado"] : null;
+        // if (isset($_SESSION["medico_clinica_selecionado"])) {
+        //     $valor_medico_clinica_bind = $_SESSION["medico_clinica_selecionado"];
+        // }
 
 
-        // MÉDICO CLÍNICA
-        $valor_medico_clinica_bind = null;
-        if (isset($_POST["valor_medico_clinica_id"])) {
-            $recebe_medico_clinica_selecionado = $_POST["valor_medico_clinica_id"] !== "" ? $_POST["valor_medico_clinica_id"] : null;
-            if (!isset($_SESSION["medico_clinica_selecionado"]) || $_SESSION["medico_clinica_selecionado"] !== $recebe_medico_clinica_selecionado) {
-                $_SESSION["medico_clinica_selecionado"] = $recebe_medico_clinica_selecionado;
-            }
-        }
-        if (isset($_SESSION["medico_clinica_selecionado"])) {
-            $valor_medico_clinica_bind = $_SESSION["medico_clinica_selecionado"];
-        }
+        
 
 
-        // RISCOS
-        // if (isset($_POST["valor_riscos"]) && $_POST["valor_riscos"] !== "") {
-        //     $recebe_riscos_selecionado = $_POST["valor_riscos"];
-
+        // // RISCOS
+        // $valor_risco_selecionado_bind = null;
+        // if (isset($_POST["valor_riscos"])) {
+        //     $recebe_riscos_selecionado = $_POST["valor_riscos"] !== "" ? $_POST["valor_riscos"] : null;
         //     if (!isset($_SESSION["medico_risco_selecionado"]) || $_SESSION["medico_risco_selecionado"] !== $recebe_riscos_selecionado) {
         //         $_SESSION["medico_risco_selecionado"] = $recebe_riscos_selecionado;
         //     }
         // }
-        // $valor_risco_selecionado_bind = isset($_SESSION["medico_risco_selecionado"]) ? $_SESSION["medico_risco_selecionado"] : null;
+        // if (isset($_SESSION["medico_risco_selecionado"])) {
+        //     $valor_risco_selecionado_bind = $_SESSION["medico_risco_selecionado"];
+        // }
 
 
-        // RISCOS
-        $valor_risco_selecionado_bind = null;
-        if (isset($_POST["valor_riscos"])) {
-            $recebe_riscos_selecionado = $_POST["valor_riscos"] !== "" ? $_POST["valor_riscos"] : null;
-            if (!isset($_SESSION["medico_risco_selecionado"]) || $_SESSION["medico_risco_selecionado"] !== $recebe_riscos_selecionado) {
-                $_SESSION["medico_risco_selecionado"] = $recebe_riscos_selecionado;
-            }
-        }
-        if (isset($_SESSION["medico_risco_selecionado"])) {
-            $valor_risco_selecionado_bind = $_SESSION["medico_risco_selecionado"];
-        }
+        
 
-
-        // TREINAMENTOS
-        // if (isset($_POST["valor_treinamentos"]) && $_POST["valor_treinamentos"] !== "") {
-        //     $recebe_treinamento_selecionado = $_POST["valor_treinamentos"];
-
+        // // TREINAMENTOS
+        // $valor_treinamento_selecionado_bind = null;
+        // if (isset($_POST["valor_treinamentos"])) {
+        //     $recebe_treinamento_selecionado = $_POST["valor_treinamentos"] !== "" ? $_POST["valor_treinamentos"] : null;
         //     if (!isset($_SESSION["medico_treinamento_selecionado"]) || $_SESSION["medico_treinamento_selecionado"] !== $recebe_treinamento_selecionado) {
         //         $_SESSION["medico_treinamento_selecionado"] = $recebe_treinamento_selecionado;
         //     }
         // }
-        // $valor_treinamento_selecionado_bind = isset($_SESSION["medico_treinamento_selecionado"]) ? $_SESSION["medico_treinamento_selecionado"] : null;
-
-        // TREINAMENTOS
-        $valor_treinamento_selecionado_bind = null;
-        if (isset($_POST["valor_treinamentos"])) {
-            $recebe_treinamento_selecionado = $_POST["valor_treinamentos"] !== "" ? $_POST["valor_treinamentos"] : null;
-            if (!isset($_SESSION["medico_treinamento_selecionado"]) || $_SESSION["medico_treinamento_selecionado"] !== $recebe_treinamento_selecionado) {
-                $_SESSION["medico_treinamento_selecionado"] = $recebe_treinamento_selecionado;
-            }
-        }
-        if (isset($_SESSION["medico_treinamento_selecionado"])) {
-            $valor_treinamento_selecionado_bind = $_SESSION["medico_treinamento_selecionado"];
-        }
-
-
-        if (
-            isset($_POST["valor_laudo_selecionado"]) && $_POST["valor_laudo_selecionado"] !== ""
-            && isset($_POST["valor_selecionado"]) && $_POST["valor_selecionado"] !== ""
-        ) {
-
-            $valor_selecionado = $_POST["valor_selecionado"] !== "" ? $_POST["valor_selecionado"] : null;
-
-            switch ($_POST["valor_laudo_selecionado"]) {
-                case "insalubridade":
-                    if (!isset($_SESSION["insalubridade_selecionado"]) || $_SESSION["insalubridade_selecionado"] !== $valor_selecionado) {
-                        $_SESSION["insalubridade_selecionado"] = $valor_selecionado;
-                    }
-                    break;
-                case "porcentagem":
-                    if (!isset($_SESSION["porcentagem_selecionado"]) || $_SESSION["porcentagem_selecionado"] !== $valor_selecionado) {
-                        $_SESSION["porcentagem_selecionado"] = $valor_selecionado;
-                    }
-                    break;
-                case "periculosidade 30%":
-                    if (!isset($_SESSION["periculosidade_selecionado"]) || $_SESSION["periculosidade_selecionado"] !== $valor_selecionado) {
-                        $_SESSION["periculosidade_selecionado"] = $valor_selecionado;
-                    }
-                    break;
-                case "aposent. especial":
-                    if (!isset($_SESSION["aposentado_selecionado"]) || $_SESSION["aposentado_selecionado"] !== $valor_selecionado) {
-                        $_SESSION["aposentado_selecionado"] = $valor_selecionado;
-                    }
-                    break;
-                case "agente nocivo":
-                    if (!isset($_SESSION["agente_nocivo_selecionado"]) || $_SESSION["agente_nocivo_selecionado"] !== $valor_selecionado) {
-                        $_SESSION["agente_nocivo_selecionado"] = $valor_selecionado;
-                    }
-                    break;
-                case "ocorrência gfip":
-                    if (!isset($_SESSION["agente_ocorrencia_selecionado"]) || $_SESSION["agente_ocorrencia_selecionado"] !== $valor_selecionado) {
-                        $_SESSION["agente_ocorrencia_selecionado"] = $valor_selecionado;
-                    }
-                    break;
-            }
-        }
-
-        // Valores para bind
-        $valor_insalubridade_selecionado_bind = $_SESSION["insalubridade_selecionado"] ?? null;
-        $valor_porcentagem_selecionado_bind = $_SESSION["porcentagem_selecionado"] ?? null;
-        $valor_periculosidade_selecionado_bind = $_SESSION["periculosidade_selecionado"] ?? null;
-        $valor_aposentado_selecionado_bind = $_SESSION["aposentado_selecionado"] ?? null;
-        $valor_agente_nocivo_selecionado_bind = $_SESSION["agente_nocivo_selecionado"] ?? null;
-        $valor_ocorrencia_selecionado_bind = $_SESSION["agente_ocorrencia_selecionado"] ?? null;
-
+        // if (isset($_SESSION["medico_treinamento_selecionado"])) {
+        //     $valor_treinamento_selecionado_bind = $_SESSION["medico_treinamento_selecionado"];
+        // }
 
 
         // if (
         //     isset($_POST["valor_laudo_selecionado"]) && $_POST["valor_laudo_selecionado"] !== ""
         //     && isset($_POST["valor_selecionado"]) && $_POST["valor_selecionado"] !== ""
         // ) {
-        //     if ($_POST["valor_laudo_selecionado"] === "insalubridade") {
-        //         if (!empty($_POST["valor_selecionado"]))
-        //             $recebe_valor_insalubridade = $_POST["valor_selecionado"];
-        //     } else if ($_POST["valor_laudo_selecionado"] === "porcentagem") {
-        //         if (!empty($_POST["valor_selecionado"]))
-        //             $recebe_valor_laudo = $_POST["valor_selecionado"];
-        //     } else if ($_POST["valor_laudo_selecionado"] === "periculosidade 30%") {
-        //         if (!empty($_POST["valor_laudo_selecionado"]))
-        //             $recebe_valor_periculosidade = $_POST["valor_selecionado"];
-        //     } else if ($_POST["valor_laudo_selecionado"] === "aposent. especial") {
-        //         if (!empty($_POST["valor_laudo_selecionado"]))
-        //             $recebe_valor_aposentado = $_POST["valor_selecionado"];
-        //     } else if ($_POST["valor_laudo_selecionado"] === "agente nocivo") {
-        //         if (!empty($_POST["valor_laudo_selecionado"]))
-        //             $recebe_valor_agente = $_POST["valor_selecionado"];
-        //     } else if ($_POST["valor_laudo_selecionado"] === "ocorrência gfip") {
-        //         if (!empty($_POST["valor_laudo_selecionado"]))
-        //             $recebe_valor_ocorrencia = $_POST["valor_selecionado"];
-        //     }
 
-        //     if (!empty($recebe_valor_insalubridade)) {
-        //         if (!isset($_SESSION["insalubridade_selecionado"]) || $_SESSION["insalubridade_selecionado"] !== $recebe_valor_insalubridade) {
-        //             $_SESSION["insalubridade_selecionado"] = $recebe_valor_insalubridade;
-        //         }
-        //     }
+        //     $valor_selecionado = $_POST["valor_selecionado"] !== "" ? $_POST["valor_selecionado"] : null;
 
-        //     if (!empty($recebe_valor_laudo)) {
-        //         if (!isset($_SESSION["porcentagem_selecionado"]) || $_SESSION["porcentagem_selecionado"] !== $recebe_valor_laudo) {
-        //             $_SESSION["porcentagem_selecionado"] = $recebe_valor_laudo;
-        //         }
-        //     }
-
-        //     if (!empty($recebe_valor_periculosidade)) {
-        //         if (!isset($_SESSION["periculosidade_selecionado"]) || $_SESSION["periculosidade_selecionado"] !== $recebe_valor_periculosidade) {
-        //             $_SESSION["periculosidade_selecionado"] = $recebe_valor_periculosidade;
-        //         }
-        //     }
-
-        //     if (!empty($recebe_valor_aposentado)) {
-        //         if (!isset($_SESSION["aposentado_selecionado"]) || $_SESSION["aposentado_selecionado"] !== $recebe_valor_aposentado) {
-        //             $_SESSION["aposentado_selecionado"] = $recebe_valor_aposentado;
-        //         }
-        //     }
-
-        //     if (!empty($recebe_valor_agente)) {
-        //         if (!isset($_SESSION["agente_nocivo_selecionado"]) || $_SESSION["agente_nocivo_selecionado"] !== $recebe_valor_agente) {
-        //             $_SESSION["agente_nocivo_selecionado"] = $recebe_valor_agente;
-        //         }
-        //     }
-
-        //     if (!empty($recebe_valor_ocorrencia)) {
-        //         if (!isset($_SESSION["agente_ocorrencia_selecionado"]) || $_SESSION["agente_ocorrencia_selecionado"] !== $recebe_valor_ocorrencia) {
-        //             $_SESSION["agente_ocorrencia_selecionado"] = $recebe_valor_ocorrencia;
-        //         }
+        //     switch ($_POST["valor_laudo_selecionado"]) {
+        //         case "insalubridade":
+        //             if (!isset($_SESSION["insalubridade_selecionado"]) || $_SESSION["insalubridade_selecionado"] !== $valor_selecionado) {
+        //                 $_SESSION["insalubridade_selecionado"] = $valor_selecionado;
+        //             }
+        //             break;
+        //         case "porcentagem":
+        //             if (!isset($_SESSION["porcentagem_selecionado"]) || $_SESSION["porcentagem_selecionado"] !== $valor_selecionado) {
+        //                 $_SESSION["porcentagem_selecionado"] = $valor_selecionado;
+        //             }
+        //             break;
+        //         case "periculosidade 30%":
+        //             if (!isset($_SESSION["periculosidade_selecionado"]) || $_SESSION["periculosidade_selecionado"] !== $valor_selecionado) {
+        //                 $_SESSION["periculosidade_selecionado"] = $valor_selecionado;
+        //             }
+        //             break;
+        //         case "aposent. especial":
+        //             if (!isset($_SESSION["aposentado_selecionado"]) || $_SESSION["aposentado_selecionado"] !== $valor_selecionado) {
+        //                 $_SESSION["aposentado_selecionado"] = $valor_selecionado;
+        //             }
+        //             break;
+        //         case "agente nocivo":
+        //             if (!isset($_SESSION["agente_nocivo_selecionado"]) || $_SESSION["agente_nocivo_selecionado"] !== $valor_selecionado) {
+        //                 $_SESSION["agente_nocivo_selecionado"] = $valor_selecionado;
+        //             }
+        //             break;
+        //         case "ocorrência gfip":
+        //             if (!isset($_SESSION["agente_ocorrencia_selecionado"]) || $_SESSION["agente_ocorrencia_selecionado"] !== $valor_selecionado) {
+        //                 $_SESSION["agente_ocorrencia_selecionado"] = $valor_selecionado;
+        //             }
+        //             break;
         //     }
         // }
 
-        // $valor_insalubridade_selecionado_bind = isset($_SESSION["insalubridade_selecionado"]) ? $_SESSION["insalubridade_selecionado"] : null;
-        // $valor_porcentagem_selecionado_bind = isset($_SESSION["porcentagem_selecionado"]) ? $_SESSION["porcentagem_selecionado"] : null;
-        // $valor_periculosidade_selecionado_bind = isset($_SESSION["periculosidade_selecionado"]) ? $_SESSION["periculosidade_selecionado"] : null;
-        // $valor_aposentado_selecionado_bind = isset($_SESSION["aposentado_selecionado"]) ? $_SESSION["aposentado_selecionado"] : null;
-        // $valor_agente_nocivo_selecionado_bind = isset($_SESSION["agente_nocivo_selecionado"]) ? $_SESSION["agente_nocivo_selecionado"] : null;
-        // $valor_ocorrencia_selecionado_bind = isset($_SESSION["agente_ocorrencia_selecionado"]) ? $_SESSION["agente_ocorrencia_selecionado"] : null;
+        // // Valores para bind
+        // $valor_insalubridade_selecionado_bind = $_SESSION["insalubridade_selecionado"] ?? null;
+        // $valor_porcentagem_selecionado_bind = $_SESSION["porcentagem_selecionado"] ?? null;
+        // $valor_periculosidade_selecionado_bind = $_SESSION["periculosidade_selecionado"] ?? null;
+        // $valor_aposentado_selecionado_bind = $_SESSION["aposentado_selecionado"] ?? null;
+        // $valor_agente_nocivo_selecionado_bind = $_SESSION["agente_nocivo_selecionado"] ?? null;
+        // $valor_ocorrencia_selecionado_bind = $_SESSION["agente_ocorrencia_selecionado"] ?? null;
+
 
         // // APTIDOES
-        // if (isset($_POST["valor_aptidoes"]) && $_POST["valor_aptidoes"] !== "") {
-        //     $recebe_aptidao_selecionado = $_POST["valor_aptidoes"];
+        // $valor_aptidao_selecionado_bind = null; // garante que existe
 
+        // if (isset($_POST["valor_aptidoes"])) {
+        //     // Se vier valor do POST, trata "" como null
+        //     $recebe_aptidao_selecionado = $_POST["valor_aptidoes"] !== "" ? $_POST["valor_aptidoes"] : null;
+
+        //     // Atualiza a sessão somente se o valor for diferente do atual
         //     if (!isset($_SESSION["aptidao_selecionado"]) || $_SESSION["aptidao_selecionado"] !== $recebe_aptidao_selecionado) {
         //         $_SESSION["aptidao_selecionado"] = $recebe_aptidao_selecionado;
         //     }
         // }
-        // $valor_aptidao_selecionado_bind = isset($_SESSION["aptidao_selecionado"]) ? $_SESSION["aptidao_selecionado"] : null;
 
-        // APTIDOES
-        $valor_aptidao_selecionado_bind = null; // garante que existe
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["aptidao_selecionado"])) {
+        //     $valor_aptidao_selecionado_bind = $_SESSION["aptidao_selecionado"];
+        // }
 
-        if (isset($_POST["valor_aptidoes"])) {
-            // Se vier valor do POST, trata "" como null
-            $recebe_aptidao_selecionado = $_POST["valor_aptidoes"] !== "" ? $_POST["valor_aptidoes"] : null;
+        
 
-            // Atualiza a sessão somente se o valor for diferente do atual
-            if (!isset($_SESSION["aptidao_selecionado"]) || $_SESSION["aptidao_selecionado"] !== $recebe_aptidao_selecionado) {
-                $_SESSION["aptidao_selecionado"] = $recebe_aptidao_selecionado;
-            }
-        }
+        // // EXAMES SELECIONADOS
+        // $valor_exames_selecionado_bind = null; // garante que existe
 
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["aptidao_selecionado"])) {
-            $valor_aptidao_selecionado_bind = $_SESSION["aptidao_selecionado"];
-        }
+        // if (isset($_POST["valor_exames_selecionados"])) {
+        //     // Se vier valor do POST, trata "" como null
+        //     $recebe_exames_selecionado = $_POST["valor_exames_selecionados"] !== "" ? $_POST["valor_exames_selecionados"] : null;
 
-        // EXAMES SELECIONADOS
-        // if (isset($_POST["valor_exames_selecionados"]) && $_POST["valor_exames_selecionados"] !== "") {
-        //     $recebe_exames_selecionado = $_POST["valor_exames_selecionados"];
-
+        //     // Atualiza a sessão somente se o valor for diferente do atual
         //     if (!isset($_SESSION["exames_selecionado"]) || $_SESSION["exames_selecionado"] !== $recebe_exames_selecionado) {
         //         $_SESSION["exames_selecionado"] = $recebe_exames_selecionado;
         //     }
         // }
-        // $valor_exames_selecionado_bind = isset($_SESSION["exames_selecionado"]) ? $_SESSION["exames_selecionado"] : null;
 
-        // EXAMES SELECIONADOS
-        $valor_exames_selecionado_bind = null; // garante que existe
-
-        if (isset($_POST["valor_exames_selecionados"])) {
-            // Se vier valor do POST, trata "" como null
-            $recebe_exames_selecionado = $_POST["valor_exames_selecionados"] !== "" ? $_POST["valor_exames_selecionados"] : null;
-
-            // Atualiza a sessão somente se o valor for diferente do atual
-            if (!isset($_SESSION["exames_selecionado"]) || $_SESSION["exames_selecionado"] !== $recebe_exames_selecionado) {
-                $_SESSION["exames_selecionado"] = $recebe_exames_selecionado;
-            }
-        }
-
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["exames_selecionado"])) {
-            $valor_exames_selecionado_bind = $_SESSION["exames_selecionado"];
-        }
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["exames_selecionado"])) {
+        //     $valor_exames_selecionado_bind = $_SESSION["exames_selecionado"];
+        // }
 
 
 
-        //TIPO ORCAMENTO
-        // if (isset($_POST["valor_tipo_orcamento"]) && $_POST["valor_tipo_orcamento"]) {
-        //     $recebe_tipo_orcamento = $_POST["valor_tipo_orcamento"];
+        
 
+
+        // //TIPO ORCAMENTO
+        // $valor_tipo_orcamento_bind = null; // garante que existe
+
+        // if (isset($_POST["valor_tipo_orcamento"])) {
+        //     // Se vier valor do POST, trata "" como null
+        //     $recebe_tipo_orcamento = $_POST["valor_tipo_orcamento"] !== "" ? $_POST["valor_tipo_orcamento"] : null;
+
+        //     // Atualiza a sessão somente se o valor for diferente do atual
         //     if (!isset($_SESSION["tipo_orcamento"]) || $_SESSION["tipo_orcamento"] !== $recebe_tipo_orcamento) {
         //         $_SESSION["tipo_orcamento"] = $recebe_tipo_orcamento;
         //     }
         // }
-        // $valor_tipo_orcamento_bind = isset($_SESSION["tipo_orcamento"]) ? $_SESSION["tipo_orcamento"] : null;
+
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["tipo_orcamento"])) {
+        //     $valor_tipo_orcamento_bind = $_SESSION["tipo_orcamento"];
+        // }
 
 
-        //TIPO ORCAMENTO
-        $valor_tipo_orcamento_bind = null; // garante que existe
-
-        if (isset($_POST["valor_tipo_orcamento"])) {
-            // Se vier valor do POST, trata "" como null
-            $recebe_tipo_orcamento = $_POST["valor_tipo_orcamento"] !== "" ? $_POST["valor_tipo_orcamento"] : null;
-
-            // Atualiza a sessão somente se o valor for diferente do atual
-            if (!isset($_SESSION["tipo_orcamento"]) || $_SESSION["tipo_orcamento"] !== $recebe_tipo_orcamento) {
-                $_SESSION["tipo_orcamento"] = $recebe_tipo_orcamento;
-            }
-        }
-
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["tipo_orcamento"])) {
-            $valor_tipo_orcamento_bind = $_SESSION["tipo_orcamento"];
-        }
+        
 
 
-        // if(isset($_POST["valor_tipo_dado_bancario"]) && $_POST["valor_tipo_dado_bancario"])
-        // {
-        //     $recebe_tipo_dado_bancario = $_POST["valor_tipo_dado_bancario"];
+        // //TIPO DADO BANCARIO
+        // $valor_tipo_dado_bancario_bind = null; // garante que existe
 
-        //     if(!isset($_SESSION["tipo_dado_bancario"]) || $_SESSION["tipo_dado_bancario"] !== $recebe_tipo_dado_bancario)
-        //     {
-        //         $_SESSION["tipo_dado_bancario"] = $recebe_tipo_dado_bancario;
+        // if (isset($_POST["valor_tipo_dado_bancario"])) {
+        //     // Se vier valor do POST, trata "" como null
+        //     $recebe_tipo_orcamento = $_POST["valor_tipo_dado_bancario"] !== "" ? $_POST["valor_tipo_dado_bancario"] : null;
+
+        //     // Atualiza a sessão somente se o valor for diferente do atual
+        //     if (!isset($_SESSION["tipo_dado_bancario"]) || $_SESSION["tipo_dado_bancario"] !== $recebe_tipo_orcamento) {
+        //         $_SESSION["tipo_dado_bancario"] = $recebe_tipo_orcamento;
         //     }
         // }
-        // $valor_tipo_dado_bancario_bind = isset($_SESSION["tipo_dado_bancario"]) ? $_SESSION["tipo_dado_bancario"] : null;
 
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["tipo_dado_bancario"])) {
+        //     $valor_tipo_dado_bancario_bind = $_SESSION["tipo_dado_bancario"];
+        // }
 
-        //TIPO DADO BANCARIO
-        $valor_tipo_dado_bancario_bind = null; // garante que existe
+        
 
-        if (isset($_POST["valor_tipo_dado_bancario"])) {
-            // Se vier valor do POST, trata "" como null
-            $recebe_tipo_orcamento = $_POST["valor_tipo_dado_bancario"] !== "" ? $_POST["valor_tipo_dado_bancario"] : null;
+        // // Agência/Conta
+        // $valor_dado_bancario_agencia_conta_bind = null; // garante que existe
 
-            // Atualiza a sessão somente se o valor for diferente do atual
-            if (!isset($_SESSION["tipo_dado_bancario"]) || $_SESSION["tipo_dado_bancario"] !== $recebe_tipo_orcamento) {
-                $_SESSION["tipo_dado_bancario"] = $recebe_tipo_orcamento;
-            }
-        }
+        // if (isset($_POST["valor_agencia_conta"])) {
+        //     // Se vier valor do POST, trata "" como null
+        //     $recebe_agencia_conta = $_POST["valor_agencia_conta"] !== "" ? $_POST["valor_agencia_conta"] : null;
 
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["tipo_dado_bancario"])) {
-            $valor_tipo_dado_bancario_bind = $_SESSION["tipo_dado_bancario"];
-        }
-
-        // if(isset($_POST["valor_agencia_conta"]) && $_POST["valor_agencia_conta"])
-        // {
-        //     $recebe_agencia_conta = $_POST["valor_agencia_conta"];
-
-        //     if(!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta)
-        //     {
+        //     // Atualiza a sessão somente se o valor for diferente do atual
+        //     if (!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta) {
         //         $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
         //     }
         // }
-        // $valor_dado_bancario_agencia_conta_bind = isset($_SESSION["dado_bancario_agencia_conta"]) ? $_SESSION["dado_bancario_agencia_conta"] : null;
 
-        // Agência/Conta
-        $valor_dado_bancario_agencia_conta_bind = null; // garante que existe
-
-        if (isset($_POST["valor_agencia_conta"])) {
-            // Se vier valor do POST, trata "" como null
-            $recebe_agencia_conta = $_POST["valor_agencia_conta"] !== "" ? $_POST["valor_agencia_conta"] : null;
-
-            // Atualiza a sessão somente se o valor for diferente do atual
-            if (!isset($_SESSION["dado_bancario_agencia_conta"]) || $_SESSION["dado_bancario_agencia_conta"] !== $recebe_agencia_conta) {
-                $_SESSION["dado_bancario_agencia_conta"] = $recebe_agencia_conta;
-            }
-        }
-
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["dado_bancario_agencia_conta"])) {
-            $valor_dado_bancario_agencia_conta_bind = $_SESSION["dado_bancario_agencia_conta"];
-        }
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["dado_bancario_agencia_conta"])) {
+        //     $valor_dado_bancario_agencia_conta_bind = $_SESSION["dado_bancario_agencia_conta"];
+        // }
 
 
 
-        // if(isset($_POST["valor_pix"]) && $_POST["valor_pix"])
-        // {
-        //     $recebe_pix = $_POST["valor_pix"];
+        
 
-        //     if(!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix)
-        //     {
+        // // PIX
+        // $valor_dado_bancario_pix_bind = null; // garante que existe
+
+        // if (isset($_POST["valor_pix"])) {
+        //     // Trata "" como null
+        //     $recebe_pix = $_POST["valor_pix"] !== "" ? $_POST["valor_pix"] : null;
+
+        //     // Atualiza a sessão somente se for diferente do valor atual
+        //     if (!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix) {
         //         $_SESSION["dado_bancario_pix"] = $recebe_pix;
         //     }
         // }
-        // $valor_dado_bancario_pix_bind = isset($_SESSION["dado_bancario_pix"]) ? $_SESSION["dado_bancario_pix"] : null;
 
-        // PIX
-        $valor_dado_bancario_pix_bind = null; // garante que existe
-
-        if (isset($_POST["valor_pix"])) {
-            // Trata "" como null
-            $recebe_pix = $_POST["valor_pix"] !== "" ? $_POST["valor_pix"] : null;
-
-            // Atualiza a sessão somente se for diferente do valor atual
-            if (!isset($_SESSION["dado_bancario_pix"]) || $_SESSION["dado_bancario_pix"] !== $recebe_pix) {
-                $_SESSION["dado_bancario_pix"] = $recebe_pix;
-            }
-        }
-
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["dado_bancario_pix"])) {
-            $valor_dado_bancario_pix_bind = $_SESSION["dado_bancario_pix"];
-        }
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["dado_bancario_pix"])) {
+        //     $valor_dado_bancario_pix_bind = $_SESSION["dado_bancario_pix"];
+        // }
 
 
-        //DOCUMENTO
-        // if (isset($_POST["valor_documento"]) && $_POST["valor_documento"]) {
-        //     $recebe_documento = $_POST["valor_documento"];
+        // // DOCUMENTO
+        // $valor_documento_bind = null; // garante que existe
 
+        // if (isset($_POST["valor_documento"])) {
+        //     // Trata "" como null
+        //     $recebe_documento = $_POST["valor_documento"] !== "" ? $_POST["valor_documento"] : null;
+
+        //     // Atualiza a sessão somente se for diferente do valor atual
         //     if (!isset($_SESSION["documento"]) || $_SESSION["documento"] !== $recebe_documento) {
         //         $_SESSION["documento"] = $recebe_documento;
         //     }
         // }
-        // $valor_documento_bind = isset($_SESSION["documento"]) ? $_SESSION["documento"] : null;
+
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["documento"])) {
+        //     $valor_documento_bind = $_SESSION["documento"];
+        // }
 
 
-        // DOCUMENTO
-        $valor_documento_bind = null; // garante que existe
+        
 
-        if (isset($_POST["valor_documento"])) {
-            // Trata "" como null
-            $recebe_documento = $_POST["valor_documento"] !== "" ? $_POST["valor_documento"] : null;
+        // // TOTAL
+        // $valor_total_bind = null; // garante que existe
 
-            // Atualiza a sessão somente se for diferente do valor atual
-            if (!isset($_SESSION["documento"]) || $_SESSION["documento"] !== $recebe_documento) {
-                $_SESSION["documento"] = $recebe_documento;
-            }
-        }
+        // if (isset($_POST["valor_total"])) {
+        //     // Trata "" como null
+        //     $recebe_total = $_POST["valor_total"] !== "" ? $_POST["valor_total"] : null;
 
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["documento"])) {
-            $valor_documento_bind = $_SESSION["documento"];
-        }
-
-
-        //TOTAL
-        // if (isset($_POST["valor_total"]) && $_POST["valor_total"]) {
-        //     $recebe_total = $_POST["valor_total"];
-
+        //     // Atualiza a sessão somente se for diferente do valor atual
         //     if (!isset($_SESSION["total"]) || $_SESSION["total"] !== $recebe_total) {
         //         $_SESSION["total"] = $recebe_total;
         //     }
         // }
-        // $valor_total_bind = isset($_SESSION["total"]) ? $_SESSION["total"] : null;
 
-        // TOTAL
-        $valor_total_bind = null; // garante que existe
+        // // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
+        // if (isset($_SESSION["total"])) {
+        //     $valor_total_bind = $_SESSION["total"];
+        // }
 
-        if (isset($_POST["valor_total"])) {
-            // Trata "" como null
-            $recebe_total = $_POST["valor_total"] !== "" ? $_POST["valor_total"] : null;
 
-            // Atualiza a sessão somente se for diferente do valor atual
-            if (!isset($_SESSION["total"]) || $_SESSION["total"] !== $recebe_total) {
-                $_SESSION["total"] = $recebe_total;
+        // $recebe_status_kit_bind = "RASCUNHO";
+        // //FINALIZACAO
+
+        // if (isset($_POST["requer_assinatura"]) && $_POST["requer_assinatura"]) {
+        //     $recebe_requer_assinatura = isset($_POST["requer_assinatura"]) ? $_POST["requer_assinatura"] : null;
+
+        //     // Converte para booleano de forma segura
+        //     $recebe_bool_requer_assinatura = filter_var($recebe_requer_assinatura, FILTER_VALIDATE_BOOLEAN);
+
+        //     // Agora trata como Sim / Nao
+        //     $recebe_final_requer_assinatura = $recebe_bool_requer_assinatura ? "Sim" : "Nao";
+
+        //     // Atualiza sessão somente se não existir ainda ou se já existir
+        //     if (!isset($_SESSION["assinatura"]) || $_SESSION["assinatura"]) {
+        //         $_SESSION["assinatura"] = $recebe_final_requer_assinatura;
+        //     }
+        // }
+
+        // // ASSINATURA
+        // $valor_assinatura_bind = null; // garante que existe
+
+        // if (isset($_POST["requer_assinatura"])) {
+        //     // Trata "" como null
+        //     $recebe_requer_assinatura = $_POST["requer_assinatura"] !== "" ? $_POST["requer_assinatura"] : null;
+
+        //     // Converte para booleano de forma segura
+        //     $recebe_bool_requer_assinatura = filter_var($recebe_requer_assinatura, FILTER_VALIDATE_BOOLEAN);
+
+        //     // Agora trata como Sim / Nao
+        //     $recebe_final_requer_assinatura = $recebe_bool_requer_assinatura ? "Sim" : "Nao";
+
+        //     // Atualiza a sessão somente se for diferente do valor atual
+        //     if (!isset($_SESSION["assinatura"]) || $_SESSION["assinatura"] !== $recebe_requer_assinatura) {
+        //         $_SESSION["assinatura"] = $recebe_final_requer_assinatura;
+        //     }
+        // }
+
+
+        function bindCondicionalSession(&$sql, $campoPost, $nomeCampoBanco, $parametroPDO, $nomeSessao = null)
+        {
+            // Se o campo não veio no POST ou está vazio, mantém o valor atual
+            if (!isset($_POST[$campoPost]) || $_POST[$campoPost] === "") {
+                $sql = str_replace(
+                    "$nomeCampoBanco = $parametroPDO,",
+                    "$nomeCampoBanco = $nomeCampoBanco,",
+                    $sql
+                );
+                return false; // não vai bindar
             }
-        }
 
-        // Se não veio POST, ou veio mas é igual ao que já estava, pega o valor da sessão
-        if (isset($_SESSION["total"])) {
-            $valor_total_bind = $_SESSION["total"];
-        }
+            $valor = $_POST[$campoPost];
 
-
-        $recebe_status_kit_bind = "RASCUNHO";
-        //FINALIZACAO
-
-        if (isset($_POST["requer_assinatura"]) && $_POST["requer_assinatura"]) {
-            $recebe_requer_assinatura = isset($_POST["requer_assinatura"]) ? $_POST["requer_assinatura"] : null;
-
-            // Converte para booleano de forma segura
-            $recebe_bool_requer_assinatura = filter_var($recebe_requer_assinatura, FILTER_VALIDATE_BOOLEAN);
-
-            // Agora trata como Sim / Nao
-            $recebe_final_requer_assinatura = $recebe_bool_requer_assinatura ? "Sim" : "Nao";
-
-            // Atualiza sessão somente se não existir ainda ou se já existir
-            if (!isset($_SESSION["assinatura"]) || $_SESSION["assinatura"]) {
-                $_SESSION["assinatura"] = $recebe_final_requer_assinatura;
+            // 🔹 Se for booleano (true/false), converte para "Sim"/"Não"
+            if (is_bool($valor) || $valor === "true" || $valor === "false") {
+                $valor = ($valor === true || $valor === "true") ? "Sim" : "Não";
+                $_POST[$campoPost] = $valor; // atualiza o POST para refletir o valor convertido
             }
-        }
 
-        // ASSINATURA
-        $valor_assinatura_bind = null; // garante que existe
-
-        if (isset($_POST["requer_assinatura"])) {
-            // Trata "" como null
-            $recebe_requer_assinatura = $_POST["requer_assinatura"] !== "" ? $_POST["requer_assinatura"] : null;
-
-            // Converte para booleano de forma segura
-            $recebe_bool_requer_assinatura = filter_var($recebe_requer_assinatura, FILTER_VALIDATE_BOOLEAN);
-
-            // Agora trata como Sim / Nao
-            $recebe_final_requer_assinatura = $recebe_bool_requer_assinatura ? "Sim" : "Nao";
-
-            // Atualiza a sessão somente se for diferente do valor atual
-            if (!isset($_SESSION["assinatura"]) || $_SESSION["assinatura"] !== $recebe_requer_assinatura) {
-                $_SESSION["assinatura"] = $recebe_final_requer_assinatura;
+            // 🔹 Atualiza a sessão se o nome da sessão foi informado
+            if ($nomeSessao) {
+                if (!isset($_SESSION[$nomeSessao]) || $_SESSION[$nomeSessao] !== $valor) {
+                    $_SESSION[$nomeSessao] = $valor;
+                }
             }
+
+            return true; // vai bindar
         }
 
-        $valor_assinatura_bind = isset($_SESSION["assinatura"]) ? $_SESSION["assinatura"] : null;
+
+        function bindCondicionalLaudo(&$sql, $campoLaudo, $campoValor, $nomeCampoBanco, $parametroPDO)
+        {
+            if (
+                !isset($_POST[$campoLaudo]) || $_POST[$campoLaudo] === "" ||
+                !isset($_POST[$campoValor]) || $_POST[$campoValor] === ""
+            ) {
+                // Mantém o valor atual no banco
+                $sql = str_replace(
+                    "$nomeCampoBanco = $parametroPDO,",
+                    "$nomeCampoBanco = $nomeCampoBanco,",
+                    $sql
+                );
+                return false; // não vai bindar
+            }
+
+            $tipo_laudo = strtolower(trim($_POST[$campoLaudo]));
+            $valor_selecionado = $_POST[$campoValor];
+
+            // Só faz bind se o campo atual corresponder ao tipo de laudo do banco
+            $mapa = [
+                "insalubridade" => "insalubridade",
+                "porcentagem" => "porcentagem",
+                "periculosidade 30%" => "periculosidade",
+                "aposent. especial" => "aposentado_especial",
+                "agente nocivo" => "agente_nocivo",
+                "ocorrência gfip" => "ocorrencia_gfip",
+            ];
+
+            if (!isset($mapa[$tipo_laudo])) {
+                // Tipo de laudo não reconhecido
+                return false;
+            }
+
+            // Se o tipo do POST for diferente do campo de banco, não faz bind
+            if ($mapa[$tipo_laudo] !== $nomeCampoBanco) {
+                // Mantém o valor atual
+                $sql = str_replace(
+                    "$nomeCampoBanco = $parametroPDO,",
+                    "$nomeCampoBanco = $nomeCampoBanco,",
+                    $sql
+                );
+                return false;
+            }
+
+            // Atualiza a sessão conforme o tipo
+            $_SESSION[$mapa[$tipo_laudo] . "_selecionado"] = $valor_selecionado;
+
+            return true; // vai bindar
+        }
+
+
+
+        // $valor_assinatura_bind = isset($_SESSION["assinatura"]) ? $_SESSION["assinatura"] : null;
 
 
         if (isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]) {
@@ -751,9 +614,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }   
 
 
-        if (isset($_POST['acao']) && $_POST['acao'] === 'gerar_pdf') {
-            // gerar_pdf_basico();
-        }
+        // if (isset($_POST['acao']) && $_POST['acao'] === 'gerar_pdf') {
+        //     // gerar_pdf_basico();
+        // }
 
         // Atualização
         $instrucao_atualizar_kit = "UPDATE kits SET 
@@ -787,147 +650,481 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
 
-        // Binds
-        // $comando_atualizar_kit->bindValue(":recebe_tipo_exame",   $valor_exame_bind,      $valor_exame_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
-        $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame_bind, $valor_exame_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        // 🔹 Ajusta o SQL para campos opcionais
+        $bind_tipo_exame = bindCondicionalSession($instrucao_atualizar_kit, "valor_exame", "tipo_exame", ":recebe_tipo_exame", "exame_selecionado");
+        $bind_empresa_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id", "empresa_selecionado");
+        $bind_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id", "clinica_selecionado");
+        $bind_pessoa_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id", "colaborador_selecionado");
+        $bind_motorista = bindCondicionalSession($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista", "motorista_selecionado");
+        $bind_cargo = bindCondicionalSession($instrucao_atualizar_kit, "valor_cargo", "cargo_id", ":recebe_cargo_id", "cargo_selecionado");
+        $bind_medico_coordenador_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_coordenador_id", "medico_coordenador_id", ":recebe_medico_coordenador_id", "medico_coordenador_selecionado");
+        $bind_medico_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_clinica_selecionado");
+        $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
+        $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
 
+        
 
-        // $comando_atualizar_kit->bindValue(":recebe_empresa_id",   $valor_empresa_bind,    $valor_empresa_bind    === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_empresa_id", $valor_empresa_bind, $valor_empresa_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_clinica_id",   $valor_clinica_bind,    $valor_clinica_bind    === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_clinica_id", $valor_clinica_bind, $valor_clinica_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_pessoa_id",    $valor_colaborador_bind, $valor_colaborador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $valor_colaborador_bind, $valor_colaborador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_cargo_id",     $valor_cargo_bind,      $valor_cargo_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_cargo_id", $valor_cargo_bind, $valor_cargo_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_motorista",    $valor_motorista_bind,  $valor_motorista_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_motorista", $valor_motorista_bind, $valor_motorista_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id",    $valor_medico_coordenador_bind,  $valor_medico_coordenador_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id", $valor_medico_coordenador_bind, $valor_medico_coordenador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id",    $valor_medico_clinica_bind,  $valor_medico_clinica_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_bind, $valor_medico_clinica_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados",    $valor_risco_selecionado_bind,  $valor_risco_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados", $valor_risco_selecionado_bind, $valor_risco_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados",    $valor_treinamento_selecionado_bind,  $valor_treinamento_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados", $valor_treinamento_selecionado_bind, $valor_treinamento_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado",    $valor_insalubridade_selecionado_bind,  $valor_insalubridade_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado", $valor_insalubridade_selecionado_bind, $valor_insalubridade_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        // $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado",    $valor_porcentagem_selecionado_bind,  $valor_porcentagem_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado", $valor_porcentagem_selecionado_bind, $valor_porcentagem_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        // $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado",    $valor_periculosidade_selecionado_bind,  $valor_periculosidade_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado", $valor_periculosidade_selecionado_bind, $valor_periculosidade_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        // $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado",    $valor_aposentado_selecionado_bind,  $valor_aposentado_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado", $valor_aposentado_selecionado_bind, $valor_aposentado_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado",    $valor_agente_nocivo_selecionado_bind,  $valor_agente_nocivo_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado", $valor_agente_nocivo_selecionado_bind, $valor_agente_nocivo_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado",    $valor_ocorrencia_selecionado_bind,  $valor_ocorrencia_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado", $valor_ocorrencia_selecionado_bind, $valor_ocorrencia_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-
-        // $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado",    $valor_aptidao_selecionado_bind,  $valor_aptidao_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(
-            ":recebe_aptidao_selecionado",
-            $valor_aptidao_selecionado_bind,
-            $valor_aptidao_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        $bind_insalubridade = bindCondicionalLaudo(
+            $instrucao_atualizar_kit,
+            "valor_laudo_selecionado",
+            "valor_selecionado",
+            "insalubridade",
+            ":recebe_insalubridade_selecionado"
         );
 
-        // $comando_atualizar_kit->bindValue(":recebe_exames_selecionado",    $valor_exames_selecionado_bind,  $valor_exames_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-        $comando_atualizar_kit->bindValue(
-            ":recebe_exames_selecionado",
-            $valor_exames_selecionado_bind,
-            $valor_exames_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        $bind_porcentagem = bindCondicionalLaudo(
+            $instrucao_atualizar_kit,
+            "valor_laudo_selecionado",
+            "valor_selecionado",
+            "porcentagem",
+            ":recebe_porcentagem_selecionado"
         );
 
-        // $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado",    $valor_tipo_dado_bancario_bind,  $valor_tipo_dado_bancario_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $bind_periculosidade = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado", "periculosidade", ":recebe_periculosidade_selecionado");
 
-        $comando_atualizar_kit->bindValue(
-            ":recebe_tipo_dado_bancario_selecionado",
-            $valor_tipo_dado_bancario_bind,
-            $valor_tipo_dado_bancario_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        );
+        $bind_aposentado_especial = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado", "aposentado_especial", ":recebe_aposentado_especial_selecionado");
 
-        // Bind no PDO
-        $comando_atualizar_kit->bindValue(
-            ":recebe_dado_bancario_agencia_conta_selecionado",
-            $valor_dado_bancario_agencia_conta_bind,
-            $valor_dado_bancario_agencia_conta_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        );
+        $bind_agente_nocivo = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado", "agente_nocivo", ":recebe_agente_nocivo_selecionado");
 
-        $comando_atualizar_kit->bindValue(
-            ":recebe_dado_bancario_pix_selecionado",
-            $valor_dado_bancario_pix_bind,
-            $valor_dado_bancario_pix_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        );
-        $comando_atualizar_kit->bindValue(":recebe_assinatura_digital_selecionada",    $valor_assinatura_bind,  $valor_assinatura_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $bind_ocorrencia = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado", "ocorrencia_gfip", ":recebe_ocorrencia_gfip_selecionado");
 
-        // $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado",    $valor_tipo_orcamento_bind,  $valor_tipo_orcamento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $bind_aptidoes = bindCondicionalSession($instrucao_atualizar_kit, "valor_aptidoes", "aptidoes_selecionadas", ":recebe_aptidao_selecionado", "aptidao_selecionado");
 
-        $comando_atualizar_kit->bindValue(
-            ":recebe_tipo_orcamento_selecionado",
-            $valor_tipo_orcamento_bind,
-            $valor_tipo_orcamento_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        );
+        $bind_exames = bindCondicionalSession($instrucao_atualizar_kit, "valor_exames_selecionados", "exames_selecionados", ":recebe_exames_selecionado", "exames_selecionado");
 
-        // $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado",    $valor_documento_bind,  $valor_documento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $bind_tipo_orcamento = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_orcamento", "tipo_orcamento", ":recebe_tipo_orcamento_selecionado", "tipo_orcamento");
 
-        $comando_atualizar_kit->bindValue(
-            ":recebe_documentos_selecionado",
-            $valor_documento_bind,
-            $valor_documento_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        );
+        $bind_requer_assinatura = bindCondicionalSession($instrucao_atualizar_kit, "requer_assinatura", "assinatura_digital", ":recebe_assinatura_digital_selecionada", "assinatura");
 
-        // $comando_atualizar_kit->bindValue(":recebe_total",    $valor_total_bind,  $valor_total_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $bind_tipo_dado_bancario = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_dado_bancario", "tipo_dado_bancario", ":recebe_tipo_dado_bancario_selecionado", "tipo_dado_bancario");
 
-        $comando_atualizar_kit->bindValue(
-            ":recebe_total",
-            $valor_total_bind,
-            $valor_total_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-        );
+        $bind_dado_bancario_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "dado_bancario_agencia_conta", ":recebe_dado_bancario_agencia_conta_selecionado", "dado_bancario_agencia_conta");
 
-        $comando_atualizar_kit->bindValue(":recebe_status_kit",    $recebe_status_kit_bind,  $recebe_status_kit_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $bind_dado_bancario_pix = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "dado_bancario_pix", ":recebe_dado_bancario_pix_selecionado", "dado_bancario_pix");
+
+        $bind_documentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_documento", "modelos_selecionados", ":recebe_documentos_selecionado", "documento");
+
+        $bind_valor_total = bindCondicionalSession($instrucao_atualizar_kit, "valor_total", "valor_total", ":recebe_total", "total");
+
+        // 🔹 Prepara o comando APENAS UMA VEZ
+        $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_tipo_exame) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $_POST["valor_exame"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_empresa_id) {
+            // $valor_empresa = $_POST["valor_empresa"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["empresa_selecionado"] = $valor_empresa;
+
+            $comando_atualizar_kit->bindValue(":recebe_empresa_id", $_POST["valor_empresa"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_clinica_id) {
+            // $valor_clinica = $_POST["valor_clinica"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["clinica_selecionado"] = $valor_clinica;
+
+            // $comando_atualizar_kit->bindValue(":recebe_clinica_id", $valor_clinica, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_clinica_id", $_POST["valor_clinica"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_pessoa_id) {
+            // $valor_colaborador = $_POST["valor_colaborador"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["colaborador_selecionado"] = $valor_colaborador;
+
+            // $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $valor_colaborador, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $_POST["valor_colaborador"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_motorista) {
+            // $valor_motorista = $_POST["valor_motorista"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["motorista_selecionado"] = $valor_motorista;
+
+            $comando_atualizar_kit->bindValue(":recebe_motorista", $_POST["valor_motorista"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_cargo) {
+            // $valor_cargo = $_POST["valor_cargo"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["cargo_selecionado"] = $valor_cargo;
+
+            // $comando_atualizar_kit->bindValue(":recebe_cargo_id", $valor_cargo, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_cargo_id", $_POST["valor_cargo"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_medico_coordenador_id) {
+            // $valor_medico_coordenador_id = $_POST["valor_medico_coordenador_id"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_coordenador_selecionado"] = $valor_medico_coordenador_id;
+
+            $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id", $_POST["valor_medico_coordenador_id"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_medico_clinica_id) {
+            // $valor_medico_clinica_id = $_POST["valor_medico_clinica_id"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_clinica_selecionado"] = $valor_medico_clinica_id;
+
+            // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_id, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $_POST["valor_medico_clinica_id"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_riscos) {
+            // $valor_riscos = $_POST["valor_riscos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_risco_selecionado"] = $valor_riscos;
+
+            // $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados", $valor_riscos, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados", $_POST["valor_riscos"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_treinamentos) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados", $_POST["valor_treinamentos"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_insalubridade) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_porcentagem) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_periculosidade) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_aposentado_especial) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_agente_nocivo) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_ocorrencia) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_aptidoes) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado", $_POST["valor_aptidoes"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_exames) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_exames_selecionado", $_POST["valor_exames_selecionados"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_tipo_orcamento) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado", $_POST["valor_tipo_orcamento"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_requer_assinatura) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_assinatura_digital_selecionada", $_POST["requer_assinatura"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_tipo_dado_bancario) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado", $_POST["valor_tipo_dado_bancario"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_dado_bancario_agencia_conta) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_selecionado", $_POST["valor_agencia_conta"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_dado_bancario_pix) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_selecionado", $_POST["valor_pix"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_documentos) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado", $_POST["valor_documento"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_valor_total) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_total", $_POST["valor_total"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Campos obrigatórios
+        $recebe_status_kit_bind = "RASCUNHO";
+
+        if (isset($_POST["valor_finalizamento"]) && $_POST["valor_finalizamento"]) {
+            $recebe_status_kit_bind = "FINALIZADO";
+        }
+
+        $comando_atualizar_kit->bindValue(":recebe_status_kit", $recebe_status_kit_bind, PDO::PARAM_STR);
+
+        // // Binds
+        // // $comando_atualizar_kit->bindValue(":recebe_tipo_exame",   $valor_exame_bind,      $valor_exame_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame_bind, $valor_exame_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_empresa_id",   $valor_empresa_bind,    $valor_empresa_bind    === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_empresa_id", $valor_empresa_bind, $valor_empresa_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_clinica_id",   $valor_clinica_bind,    $valor_clinica_bind    === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_clinica_id", $valor_clinica_bind, $valor_clinica_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_pessoa_id",    $valor_colaborador_bind, $valor_colaborador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $valor_colaborador_bind, $valor_colaborador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_cargo_id",     $valor_cargo_bind,      $valor_cargo_bind      === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_cargo_id", $valor_cargo_bind, $valor_cargo_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_motorista",    $valor_motorista_bind,  $valor_motorista_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_motorista", $valor_motorista_bind, $valor_motorista_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id",    $valor_medico_coordenador_bind,  $valor_medico_coordenador_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id", $valor_medico_coordenador_bind, $valor_medico_coordenador_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id",    $valor_medico_clinica_bind,  $valor_medico_clinica_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_bind, $valor_medico_clinica_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados",    $valor_risco_selecionado_bind,  $valor_risco_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados", $valor_risco_selecionado_bind, $valor_risco_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados",    $valor_treinamento_selecionado_bind,  $valor_treinamento_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados", $valor_treinamento_selecionado_bind, $valor_treinamento_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado",    $valor_insalubridade_selecionado_bind,  $valor_insalubridade_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado", $valor_insalubridade_selecionado_bind, $valor_insalubridade_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // // $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado",    $valor_porcentagem_selecionado_bind,  $valor_porcentagem_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado", $valor_porcentagem_selecionado_bind, $valor_porcentagem_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // // $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado",    $valor_periculosidade_selecionado_bind,  $valor_periculosidade_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado", $valor_periculosidade_selecionado_bind, $valor_periculosidade_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // // $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado",    $valor_aposentado_selecionado_bind,  $valor_aposentado_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado", $valor_aposentado_selecionado_bind, $valor_aposentado_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado",    $valor_agente_nocivo_selecionado_bind,  $valor_agente_nocivo_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado", $valor_agente_nocivo_selecionado_bind, $valor_agente_nocivo_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado",    $valor_ocorrencia_selecionado_bind,  $valor_ocorrencia_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado", $valor_ocorrencia_selecionado_bind, $valor_ocorrencia_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+
+        // // $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado",    $valor_aptidao_selecionado_bind,  $valor_aptidao_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_aptidao_selecionado",
+        //     $valor_aptidao_selecionado_bind,
+        //     $valor_aptidao_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // // $comando_atualizar_kit->bindValue(":recebe_exames_selecionado",    $valor_exames_selecionado_bind,  $valor_exames_selecionado_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_exames_selecionado",
+        //     $valor_exames_selecionado_bind,
+        //     $valor_exames_selecionado_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // // $comando_atualizar_kit->bindValue(":recebe_tipo_dado_bancario_selecionado",    $valor_tipo_dado_bancario_bind,  $valor_tipo_dado_bancario_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_tipo_dado_bancario_selecionado",
+        //     $valor_tipo_dado_bancario_bind,
+        //     $valor_tipo_dado_bancario_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // // Bind no PDO
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_dado_bancario_agencia_conta_selecionado",
+        //     $valor_dado_bancario_agencia_conta_bind,
+        //     $valor_dado_bancario_agencia_conta_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_dado_bancario_pix_selecionado",
+        //     $valor_dado_bancario_pix_bind,
+        //     $valor_dado_bancario_pix_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+        // $comando_atualizar_kit->bindValue(":recebe_assinatura_digital_selecionada",    $valor_assinatura_bind,  $valor_assinatura_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // // $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado",    $valor_tipo_orcamento_bind,  $valor_tipo_orcamento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_tipo_orcamento_selecionado",
+        //     $valor_tipo_orcamento_bind,
+        //     $valor_tipo_orcamento_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // // $comando_atualizar_kit->bindValue(":recebe_documentos_selecionado",    $valor_documento_bind,  $valor_documento_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_documentos_selecionado",
+        //     $valor_documento_bind,
+        //     $valor_documento_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // // $comando_atualizar_kit->bindValue(":recebe_total",    $valor_total_bind,  $valor_total_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+        // $comando_atualizar_kit->bindValue(
+        //     ":recebe_total",
+        //     $valor_total_bind,
+        //     $valor_total_bind === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        // );
+
+        // $comando_atualizar_kit->bindValue(":recebe_status_kit",    $recebe_status_kit_bind,  $recebe_status_kit_bind  === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
 
         // Kit ID
@@ -938,6 +1135,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if ($resultado_atualizar_kit) {
             echo json_encode("KIT atualizado com sucesso");
+
+            // 🔹 Limpa todas as sessões relacionadas ao kit atual
+            // unset(
+            //     $_SESSION["exame_selecionado"],
+            //     $_SESSION["empresa_selecionado"],
+            //     $_SESSION["clinica_selecionado"],
+            //     $_SESSION["colaborador_selecionado"],
+            //     $_SESSION["cargo_selecionado"],
+            //     $_SESSION["motorista_selecionado"],
+            //     $_SESSION["medico_coordenador_selecionado"],
+            //     $_SESSION["medico_clinica_selecionado"],
+            //     $_SESSION["medico_risco_selecionado"],
+            //     $_SESSION["medico_treinamento_selecionado"],
+            //     $_SESSION["insalubridade_selecionado"],
+            //     $_SESSION["porcentagem_selecionado"],
+            //     $_SESSION["periculosidade_selecionado"],
+            //     $_SESSION["aposentado_selecionado"],
+            //     $_SESSION["agente_nocivo_selecionado"],
+            //     $_SESSION["agente_ocorrencia_selecionado"],
+            //     $_SESSION["aptidao_selecionado"],
+            //     $_SESSION["exames_selecionado"],
+            //     $_SESSION["tipo_orcamento"],
+            //     $_SESSION["tipo_dado_bancario"],
+            //     $_SESSION["dado_bancario_agencia_conta"],
+            //     $_SESSION["dado_bancario_pix"],
+            //     $_SESSION["documento"],
+            //     $_SESSION["total"]
+            // );
+
+            // // 🔹 (opcional) também remove qualquer session vazia
+            // session_write_close();
         } else {
             echo json_encode("KIT não foi atualizado com sucesso");
         }
@@ -1371,16 +1599,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
         $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
 
-        // $bind_empresa_id = bindCondicional($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id");
-        // $bind_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id");
-        // $bind_pessoa_id = bindCondicional($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id");
-        // $bind_motorista = bindCondicional($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista");
-        // $bind_cargo = bindCondicional($instrucao_atualizar_kit, "valor_cargo", "cargo_id", ":recebe_cargo_id");
-        // $bind_medico_coordenador_id = bindCondicional($instrucao_atualizar_kit, "valor_medico_coordenador_id", "medico_coordenador_id", ":recebe_medico_coordenador_id");
-        // $bind_medico_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id");
-        // $bind_riscos = bindCondicional($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados");
-        // $bind_treinamentos = bindCondicional($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados");
         
+
         $bind_insalubridade = bindCondicionalLaudo(
             $instrucao_atualizar_kit,
             "valor_laudo_selecionado",
@@ -1658,7 +1878,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_selecionado", $_POST["valor_agencia_conta"], PDO::PARAM_STR);
         }
 
-         // 🔹 Faz bind dos campos opcionais se vierem
+        // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_dado_bancario_pix) {
             // $valor_exame = $_POST["valor_exame"];
 
