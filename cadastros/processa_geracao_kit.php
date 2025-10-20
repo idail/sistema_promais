@@ -1316,6 +1316,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado,
                 aptidoes_selecionadas = :recebe_aptidao_selecionado,
                 exames_selecionados = :recebe_exames_selecionado,
+                tipo_orcamento = :recebe_tipo_orcamento_selecionado,
                 status = :recebe_status_kit
             WHERE id = :recebe_kit_id
         ";
@@ -1331,6 +1332,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_medico_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_clinica_selecionado");
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
         $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
+        $bind_tipo_orcamento = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_orcamento", "tipo_orcamento", ":recebe_tipo_orcamento_selecionado", "tipo_orcamento");
         // $bind_empresa_id = bindCondicional($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id");
         // $bind_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id");
         // $bind_pessoa_id = bindCondicional($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id");
@@ -1367,6 +1369,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_aptidoes = bindCondicionalSession($instrucao_atualizar_kit, "valor_aptidoes", "aptidoes_selecionadas", ":recebe_aptidao_selecionado", "aptidao_selecionado");
 
         $bind_exames = bindCondicionalSession($instrucao_atualizar_kit, "valor_exames_selecionados", "exames_selecionados", ":recebe_exames_selecionado", "exames_selecionado");
+
+        $bind_tipo_orcamento = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_orcamento", "tipo_orcamento", ":recebe_tipo_orcamento_selecionado", "tipo_orcamento");
 
         // 🔹 Prepara o comando APENAS UMA VEZ
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
@@ -1557,6 +1561,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
             $comando_atualizar_kit->bindValue(":recebe_exames_selecionado", $_POST["valor_exames_selecionados"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_tipo_orcamento) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_tipo_orcamento_selecionado", $_POST["valor_tipo_orcamento"], PDO::PARAM_STR);
         }
 
         // 🔹 Campos obrigatórios
