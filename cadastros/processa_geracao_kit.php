@@ -1089,8 +1089,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //         echo json_encode("KIT não foi atualizado com sucesso");
         //     }
 
-        // 🔹 Função auxiliar para bind condicional
-        function bindCondicional(&$sql, $campoPost, $nomeCampoBanco, $parametroPDO)
+        // // 🔹 Função auxiliar para bind condicional
+        // function bindCondicional(&$sql, $campoPost, $nomeCampoBanco, $parametroPDO)
+        // {
+        //     if (!isset($_POST[$campoPost]) || $_POST[$campoPost] === "") {
+        //         // Mantém o valor atual no banco (não altera)
+        //         $sql = str_replace(
+        //             "$nomeCampoBanco = $parametroPDO,",
+        //             "$nomeCampoBanco = $nomeCampoBanco,",
+        //             $sql
+        //         );
+        //         return false; // não vai bindar
+        //     }
+        //     return true; // vai bindar
+        // }
+
+        // 🔹 Função auxiliar para bind condicional e atualização de sessão
+        function bindCondicionalSession(&$sql, $campoPost, $nomeCampoBanco, $parametroPDO, $nomeSessao = null)
         {
             if (!isset($_POST[$campoPost]) || $_POST[$campoPost] === "") {
                 // Mantém o valor atual no banco (não altera)
@@ -1101,8 +1116,184 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 );
                 return false; // não vai bindar
             }
+
+            $valor = $_POST[$campoPost];
+
+            // Atualiza a sessão se $nomeSessao for informado
+            if ($nomeSessao) {
+                if (!isset($_SESSION[$nomeSessao]) || $_SESSION[$nomeSessao] !== $valor) {
+                    $_SESSION[$nomeSessao] = $valor;
+                }
+            }
+
             return true; // vai bindar
         }
+
+
+        // 🔹 Função auxiliar para bind condicional e atualização de sessão
+        // function bindCondicionalSession(&$sql, $campoPost, $nomeCampoBanco, $parametroPDO, $nomeSessao = null)
+        // {
+        //     if (!isset($_POST[$campoPost]) || $_POST[$campoPost] === "") {
+        //         // Remove o placeholder inteiro da instrução
+        //         $sql = preg_replace(
+        //             "/\s*$nomeCampoBanco\s*=\s*$parametroPDO\s*,?/",
+        //             "$nomeCampoBanco = $nomeCampoBanco,",
+        //             $sql
+        //         );
+        //         return false; // não vai bindar
+        //     }
+
+        //     $valor = $_POST[$campoPost];
+
+        //     // Atualiza a sessão se $nomeSessao for informado
+        //     if ($nomeSessao) {
+        //         if (!isset($_SESSION[$nomeSessao]) || $_SESSION[$nomeSessao] !== $valor) {
+        //             $_SESSION[$nomeSessao] = $valor;
+        //         }
+        //     }
+
+        //     return true; // vai bindar
+        // }
+
+
+        // 🔹 Função para bind condicional de laudos
+        // function bindCondicionalLaudo(&$sql, $campoLaudo, $campoValor, $nomeCampoBanco, $parametroPDO)
+        // {
+        //     if (
+        //         !isset($_POST[$campoLaudo]) || $_POST[$campoLaudo] === "" ||
+        //         !isset($_POST[$campoValor]) || $_POST[$campoValor] === ""
+        //     ) {
+        //         // Mantém o valor atual no banco
+        //         $sql = str_replace(
+        //             "$nomeCampoBanco = $parametroPDO,",
+        //             "$nomeCampoBanco = $nomeCampoBanco,",
+        //             $sql
+        //         );
+        //         return false; // não vai bindar
+        //     }
+
+        //     $valor_selecionado = $_POST[$campoValor];
+
+        //     // Atualiza a sessão conforme o tipo de laudo
+        //     switch ($_POST[$campoLaudo]) {
+        //         case "insalubridade":
+        //             $_SESSION["insalubridade_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "porcentagem":
+        //             $_SESSION["porcentagem_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "periculosidade 30%":
+        //             $_SESSION["periculosidade_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "aposent. especial":
+        //             $_SESSION["aposentado_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "agente nocivo":
+        //             $_SESSION["agente_nocivo_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "ocorrência gfip":
+        //             $_SESSION["agente_ocorrencia_selecionado"] = $valor_selecionado;
+        //             break;
+        //     }
+
+        //     return true; // vai bindar
+        // }
+
+
+        function bindCondicionalLaudo(&$sql, $campoLaudo, $campoValor, $nomeCampoBanco, $parametroPDO)
+        {
+            if (
+                !isset($_POST[$campoLaudo]) || $_POST[$campoLaudo] === "" ||
+                !isset($_POST[$campoValor]) || $_POST[$campoValor] === ""
+            ) {
+                // Mantém o valor atual no banco
+                $sql = str_replace(
+                    "$nomeCampoBanco = $parametroPDO,",
+                    "$nomeCampoBanco = $nomeCampoBanco,",
+                    $sql
+                );
+                return false; // não vai bindar
+            }
+
+            $tipo_laudo = strtolower(trim($_POST[$campoLaudo]));
+            $valor_selecionado = $_POST[$campoValor];
+
+            // Só faz bind se o campo atual corresponder ao tipo de laudo do banco
+            $mapa = [
+                "insalubridade" => "insalubridade",
+                "porcentagem" => "porcentagem",
+                "periculosidade 30%" => "periculosidade",
+                "aposent. especial" => "aposentado_especial",
+                "agente nocivo" => "agente_nocivo",
+                "ocorrência gfip" => "ocorrencia_gfip",
+            ];
+
+            if (!isset($mapa[$tipo_laudo])) {
+                // Tipo de laudo não reconhecido
+                return false;
+            }
+
+            // Se o tipo do POST for diferente do campo de banco, não faz bind
+            if ($mapa[$tipo_laudo] !== $nomeCampoBanco) {
+                // Mantém o valor atual
+                $sql = str_replace(
+                    "$nomeCampoBanco = $parametroPDO,",
+                    "$nomeCampoBanco = $nomeCampoBanco,",
+                    $sql
+                );
+                return false;
+            }
+
+            // Atualiza a sessão conforme o tipo
+            $_SESSION[$mapa[$tipo_laudo] . "_selecionado"] = $valor_selecionado;
+
+            return true; // vai bindar
+        }
+
+
+        // 🔹 Função para bind condicional de laudos
+        // function bindCondicionalLaudo(&$sql, $campoLaudo, $campoValor, $nomeCampoBanco, $parametroPDO)
+        // {
+        //     if (
+        //         !isset($_POST[$campoLaudo]) || $_POST[$campoLaudo] === "" ||
+        //         !isset($_POST[$campoValor]) || $_POST[$campoValor] === ""
+        //     ) {
+        //         // Remove o placeholder inteiro da instrução
+        //         $sql = preg_replace(
+        //             "/\s*$nomeCampoBanco\s*=\s*$parametroPDO\s*,?/",
+        //             "$nomeCampoBanco = $nomeCampoBanco,",
+        //             $sql
+        //         );
+        //         return false;
+        //     }
+
+        //     $valor_selecionado = $_POST[$campoValor];
+
+        //     // Atualiza a sessão conforme o tipo de laudo
+        //     switch ($_POST[$campoLaudo]) {
+        //         case "insalubridade":
+        //             $_SESSION["insalubridade_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "porcentagem":
+        //             $_SESSION["porcentagem_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "periculosidade 30%":
+        //             $_SESSION["periculosidade_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "aposent. especial":
+        //             $_SESSION["aposentado_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "agente nocivo":
+        //             $_SESSION["agente_nocivo_selecionado"] = $valor_selecionado;
+        //             break;
+        //         case "ocorrência gfip":
+        //             $_SESSION["agente_ocorrencia_selecionado"] = $valor_selecionado;
+        //             break;
+        //     }
+
+        //     return true; // vai bindar
+        // }
+
 
         // 🔹 SQL Base
         $instrucao_atualizar_kit = "
@@ -1112,68 +1303,260 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 clinica_id = :recebe_clinica_id,
                 pessoa_id = :recebe_pessoa_id,
                 motorista = :recebe_motorista,
+                cargo_id = :recebe_cargo_id,
+                medico_coordenador_id = :recebe_medico_coordenador_id,
+                medico_clinica_id = :recebe_medico_clinica_id,
+                riscos_selecionados = :recebe_riscos_selecionados,
+                treinamentos_selecionados = :recebe_treinamentos_selecionados,
+                insalubridade = :recebe_insalubridade_selecionado,
+                porcentagem = :recebe_porcentagem_selecionado,
+                periculosidade = :recebe_periculosidade_selecionado,
+                aposentado_especial = :recebe_aposentado_especial_selecionado,
+                agente_nocivo = :recebe_agente_nocivo_selecionado,
+                ocorrencia_gfip = :recebe_ocorrencia_gfip_selecionado,
+                aptidoes_selecionadas = :recebe_aptidao_selecionado,
+                exames_selecionados = :recebe_exames_selecionado,
                 status = :recebe_status_kit
             WHERE id = :recebe_kit_id
         ";
 
         // 🔹 Ajusta o SQL para campos opcionais
-        $bind_tipo_exame = bindCondicional($instrucao_atualizar_kit, "valor_exame", "tipo_exame", ":recebe_tipo_exame");
-        $bind_empresa_id = bindCondicional($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id");
-        $bind_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id");
-        $bind_pessoa_id = bindCondicional($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id");
-        $bind_motorista = bindCondicional($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista");
+        $bind_tipo_exame = bindCondicionalSession($instrucao_atualizar_kit, "valor_exame", "tipo_exame", ":recebe_tipo_exame", "exame_selecionado");
+        $bind_empresa_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id", "empresa_selecionado");
+        $bind_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id", "clinica_selecionado");
+        $bind_pessoa_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id", "colaborador_selecionado");
+        $bind_motorista = bindCondicionalSession($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista", "motorista_selecionado");
+        $bind_cargo = bindCondicionalSession($instrucao_atualizar_kit, "valor_cargo", "cargo_id", ":recebe_cargo_id", "cargo_selecionado");
+        $bind_medico_coordenador_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_coordenador_id", "medico_coordenador_id", ":recebe_medico_coordenador_id", "medico_coordenador_selecionado");
+        $bind_medico_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_clinica_selecionado");
+        $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
+        $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
+        // $bind_empresa_id = bindCondicional($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id");
+        // $bind_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id");
+        // $bind_pessoa_id = bindCondicional($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id");
+        // $bind_motorista = bindCondicional($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista");
+        // $bind_cargo = bindCondicional($instrucao_atualizar_kit, "valor_cargo", "cargo_id", ":recebe_cargo_id");
+        // $bind_medico_coordenador_id = bindCondicional($instrucao_atualizar_kit, "valor_medico_coordenador_id", "medico_coordenador_id", ":recebe_medico_coordenador_id");
+        // $bind_medico_clinica_id = bindCondicional($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id");
+        // $bind_riscos = bindCondicional($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados");
+        // $bind_treinamentos = bindCondicional($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados");
+        $bind_insalubridade = bindCondicionalLaudo(
+            $instrucao_atualizar_kit,
+            "valor_laudo_selecionado",
+            "valor_selecionado",
+            "insalubridade",
+            ":recebe_insalubridade_selecionado"
+        );
+
+        $bind_porcentagem = bindCondicionalLaudo(
+            $instrucao_atualizar_kit,
+            "valor_laudo_selecionado",
+            "valor_selecionado",
+            "porcentagem",
+            ":recebe_porcentagem_selecionado"
+        );
+
+        $bind_periculosidade = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado","periculosidade", ":recebe_periculosidade_selecionado");
+
+        $bind_aposentado_especial = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado","aposentado_especial", ":recebe_aposentado_especial_selecionado");
+
+        $bind_agente_nocivo = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado","agente_nocivo", ":recebe_agente_nocivo_selecionado");
+
+        $bind_ocorrencia = bindCondicionalLaudo($instrucao_atualizar_kit, "valor_laudo_selecionado", "valor_selecionado","ocorrencia_gfip", ":recebe_ocorrencia_gfip_selecionado");
+
+        $bind_aptidoes = bindCondicionalSession($instrucao_atualizar_kit, "valor_aptidoes", "aptidoes_selecionadas", ":recebe_aptidao_selecionado", "aptidao_selecionado");
+
+        $bind_exames = bindCondicionalSession($instrucao_atualizar_kit, "valor_exames_selecionados", "exames_selecionados", ":recebe_exames_selecionado", "exames_selecionado");
 
         // 🔹 Prepara o comando APENAS UMA VEZ
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_tipo_exame) {
-            $valor_exame = $_POST["valor_exame"];
+            // $valor_exame = $_POST["valor_exame"];
 
-            // Atualiza a sessão com o valor que veio do POST
-            $_SESSION["exame_selecionado"] = $valor_exame;
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
 
-            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $_POST["valor_exame"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_empresa_id) {
-            $valor_empresa = $_POST["valor_empresa"];
+            // $valor_empresa = $_POST["valor_empresa"];
 
-            // Atualiza a sessão com o valor que veio do POST
-            $_SESSION["empresa_selecionado"] = $valor_empresa;
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["empresa_selecionado"] = $valor_empresa;
 
-            $comando_atualizar_kit->bindValue(":recebe_empresa_id", $valor_empresa, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_empresa_id", $_POST["valor_empresa"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_clinica_id) {
-            $valor_clinica = $_POST["valor_clinica"];
+            // $valor_clinica = $_POST["valor_clinica"];
 
-            // Atualiza a sessão com o valor que veio do POST
-            $_SESSION["clinica_selecionado"] = $valor_clinica;
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["clinica_selecionado"] = $valor_clinica;
 
-            $comando_atualizar_kit->bindValue(":recebe_clinica_id", $valor_clinica, PDO::PARAM_STR);
+            // $comando_atualizar_kit->bindValue(":recebe_clinica_id", $valor_clinica, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_clinica_id", $_POST["valor_clinica"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_pessoa_id) {
-            $valor_colaborador = $_POST["valor_colaborador"];
+            // $valor_colaborador = $_POST["valor_colaborador"];
 
-            // Atualiza a sessão com o valor que veio do POST
-            $_SESSION["colaborador_selecionado"] = $valor_colaborador;
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["colaborador_selecionado"] = $valor_colaborador;
 
-            $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $valor_colaborador, PDO::PARAM_STR);
+            // $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $valor_colaborador, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_pessoa_id", $_POST["valor_colaborador"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_motorista) {
-            $valor_motorista = $_POST["valor_motorista"];
+            // $valor_motorista = $_POST["valor_motorista"];
 
-            // Atualiza a sessão com o valor que veio do POST
-            $_SESSION["motorista_selecionado"] = $valor_motorista;
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["motorista_selecionado"] = $valor_motorista;
 
-            $comando_atualizar_kit->bindValue(":recebe_motorista", $valor_motorista, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_motorista", $_POST["valor_motorista"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_cargo) {
+            // $valor_cargo = $_POST["valor_cargo"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["cargo_selecionado"] = $valor_cargo;
+
+            // $comando_atualizar_kit->bindValue(":recebe_cargo_id", $valor_cargo, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_cargo_id", $_POST["valor_cargo"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_medico_coordenador_id) {
+            // $valor_medico_coordenador_id = $_POST["valor_medico_coordenador_id"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_coordenador_selecionado"] = $valor_medico_coordenador_id;
+
+            $comando_atualizar_kit->bindValue(":recebe_medico_coordenador_id", $_POST["valor_medico_coordenador_id"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_medico_clinica_id) {
+            // $valor_medico_clinica_id = $_POST["valor_medico_clinica_id"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_clinica_selecionado"] = $valor_medico_clinica_id;
+
+            // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_id, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $_POST["valor_medico_clinica_id"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_riscos) {
+            // $valor_riscos = $_POST["valor_riscos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_risco_selecionado"] = $valor_riscos;
+
+            // $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados", $valor_riscos, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_riscos_selecionados", $_POST["valor_riscos"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_treinamentos) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_treinamentos_selecionados", $_POST["valor_treinamentos"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_insalubridade) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_insalubridade_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_porcentagem) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_porcentagem_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_periculosidade) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_periculosidade_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_aposentado_especial) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_aposentado_especial_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_agente_nocivo) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_agente_nocivo_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_ocorrencia) {
+            // $valor_treinamentos = $_POST["valor_treinamentos"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_treinamento_selecionado"] = $valor_treinamentos;
+
+            $comando_atualizar_kit->bindValue(":recebe_ocorrencia_gfip_selecionado", $_POST["valor_selecionado"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_aptidoes) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_aptidao_selecionado", $_POST["valor_aptidoes"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_exames) {
+            // $valor_exame = $_POST["valor_exame"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["exame_selecionado"] = $valor_exame;
+
+            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_exames_selecionado", $_POST["valor_exames_selecionados"], PDO::PARAM_STR);
         }
 
         // 🔹 Campos obrigatórios

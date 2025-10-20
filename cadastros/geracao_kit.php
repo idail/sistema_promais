@@ -14538,22 +14538,83 @@ if (!documentosSelecionadosCount) {
           if (btnAplicar) {
             btnAplicar.style.display = 'inline-flex';
           }
+
+          //console.log("valor treinamento:",treinamento);
+
           
-          // Renderiza a lista de treinamentos sem mostrar o valor individual
-          listaTreinamentos.innerHTML = treinamentos.map(treinamento => `
-            <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
-              <input type="checkbox" value="${treinamento.codigo}" 
-                     data-nome="${treinamento.nome}" 
-                     data-valor="${treinamento.valor}" 
-                     style="margin-right: 10px; cursor: pointer;">
-              <div style="flex: 1; cursor: pointer;">
+          
+          // 🔹 Garante que o container existe
+// if (typeof listaTreinamentos !== 'undefined' && listaTreinamentos !== null) {
+
+//     // 🔹 Verifica se 'treinamento' existe e é um array com itens
+//     if (typeof treinamento !== 'undefined' && Array.isArray(treinamento) && treinamento.length > 0) {
+//         listaTreinamentos.innerHTML = treinamento.map(item => `
+//             <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
+//                 <input type="checkbox" value="${item.codigo}" 
+//                        data-nome="${item.nome}" 
+//                        data-valor="${item.valor}" 
+//                        style="margin-right: 10px; cursor: pointer;">
+//                 <div style="flex: 1; cursor: pointer;">
+//                     <div style="font-weight: 500;">${item.nome}</div>
+//                     <div style="font-size: 12px; color: #6c757d;">
+//                         Código: ${item.codigo}
+//                     </div>
+//                 </div>
+//             </div>
+//         `).join('');
+//     } else {
+//         // 🔹 Caso 'treinamento' não exista ou esteja vazio
+//         listaTreinamentos.innerHTML = `
+//             <div style="padding: 10px; color: #777;">
+//                 Nenhum treinamento disponível.
+//             </div>
+//         `;
+//     }
+
+// } else {
+//     console.warn("Elemento listaTreinamentos não encontrado no DOM.");
+// }
+
+// listaTreinamentos.innerHTML = treinamentos.map(treinamento => `
+//             <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
+//                 <input type="checkbox" value="${treinamento.codigo}" 
+//                        data-nome="${treinamento.nome}" 
+//                        data-valor="${treinamento.valor}" 
+//                        style="margin-right: 10px; cursor: pointer;">
+//                 <div style="flex: 1; cursor: pointer;">
+//                     <div style="font-weight: 500;">${treinamento.nome}</div>
+//                     <div style="font-size: 12px; color: #6c757d;">
+//                         Código: ${treinamento.codigo}
+//                     </div>
+//                 </div>
+//             </div>
+//         `).join('');
+
+if (listaTreinamentos !== null && Array.isArray(treinamentos) && treinamentos.length > 0) {
+    listaTreinamentos.innerHTML = treinamentos.map(treinamento => `
+        <div class="treinamento-item" style="padding: 8px 12px; border-bottom: 1px solid #e9ecef; display: flex; align-items: center;">
+            <input type="checkbox" value="${treinamento.codigo}" 
+                   data-nome="${treinamento.nome}" 
+                   data-valor="${treinamento.valor}" 
+                   style="margin-right: 10px; cursor: pointer;">
+            <div style="flex: 1; cursor: pointer;">
                 <div style="font-weight: 500;">${treinamento.nome}</div>
                 <div style="font-size: 12px; color: #6c757d;">
-                  Código: ${treinamento.codigo}
+                    Código: ${treinamento.codigo}
                 </div>
-              </div>
             </div>
-          `).join('');
+        </div>
+    `).join('');
+} else if (listaTreinamentos !== null) {
+    // Caso não haja dados, exibe mensagem amigável
+    listaTreinamentos.innerHTML = `
+        <div style="padding: 10px; color: #777;">
+            Nenhum treinamento disponível.
+        </div>
+    `;
+}
+
+
         }
       }
 
@@ -17492,7 +17553,7 @@ if (tipo === "aptidao") {
               type: "POST",
               dataType: "json",
               data: {
-                processo_geracao_kit: "incluir_valores_kit",
+                processo_geracao_kit: "atualizar_kit",
                 valor_exames_selecionados: json_exames,
                 valor_id_kit:window.recebe_id_kit
               },
