@@ -2011,6 +2011,8 @@ function printSection(button) {
 
                 $recebe_exame = $_SESSION["exame_selecionado"];
 
+                var_dump($recebe_exame);
+
                 $recebe_exame_exibicao;
 
                 if ($recebe_exame === "admissional") {
