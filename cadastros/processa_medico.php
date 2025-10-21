@@ -128,6 +128,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_sexo_medico = !empty($_POST["valor_sexo_medico"]) ? $_POST["valor_sexo_medico"] : null;
         $recebe_contato_medico = !empty($_POST["valor_contato_medico"]) ? $_POST["valor_contato_medico"] : null;
         $recebe_empresa_id_medico = $_SESSION["empresa_id"];
+        $recebe_categoria = !empty($_POST["valor_categoria"]) ? $_POST["valor_categoria"] : null;
         
         // $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
         // $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
@@ -140,10 +141,10 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         
 
         $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,nascimento,sexo,
-        especialidade,crm,uf_crm,rqe,uf_rqe,contato,status,created_at,updated_at)
+        especialidade,crm,uf_crm,rqe,uf_rqe,contato,status,categoria,created_at,updated_at)
         values(:recebe_empresa_id,:recebe_nome,:recebe_cpf,:recebe_nascimento,:recebe_sexo,:recebe_especialidade,
         :recebe_crm,:recebe_uf_crm,:recebe_rqe,:recebe_uf_rqe,:recebe_contato,
-        :recebe_status,:recebe_created_at,:recebe_updated_at)";
+        :recebe_status,:recebe_categoria,:recebe_created_at,:recebe_updated_at)";
         $comando_cadastra_medico = $pdo->prepare($instrucao_cadastra_medico);
         $comando_cadastra_medico->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico);
         $comando_cadastra_medico->bindValue(":recebe_nome",$recebe_nome_medico);
@@ -164,6 +165,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $comando_cadastra_medico->bindValue(":recebe_uf_rqe",$recebe_uf_rqe_medico);
         $comando_cadastra_medico->bindValue(":recebe_contato",$recebe_contato_medico);
         $comando_cadastra_medico->bindValue(":recebe_status","Ativo");
+        $comando_cadastra_medico->bindValue(":recebe_categoria",$recebe_categoria);
         $comando_cadastra_medico->bindValue(":recebe_created_at",$recebe_data_cadastro_medico);
         $comando_cadastra_medico->bindValue(":recebe_updated_at",$recebe_data_cadastro_medico);
         $comando_cadastra_medico->execute();

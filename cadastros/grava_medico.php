@@ -52,22 +52,22 @@
 
                                 <select id="crm" name="crm" class="form-control">
                                     <option value="selecione">Selecione</option>
-                                    <option value="medico">CAU</option>
-                                    <option value="fonoaudiologo">COREN</option>
-                                    <option value="psicologo">CRM</option>
-                                    <option value="radiologista">CREA</option>
-                                    <option value="fisioterapeuta">CRFa</option>
-                                    <option value="enfermeiro">CFFa</option>
-                                    <option value="enfermeiro">CREFITO</option>
-                                    <option value="enfermeiro">CRO</option>
-                                    <option value="enfermeiro">CRP</option>
-                                    <option value="enfermeiro">CRQ</option>
-                                    <option value="enfermeiro">CRTR</option>
-                                    <option value="enfermeiro">RMS</option>
-                                    <option value="enfermeiro">Registro no MTE</option>
-                                    <option value="enfermeiro">CRC</option>
-                                    <option value="enfermeiro">CRBM</option>
-                                    <option value="enfermeiro">CFT</option>
+                                    <option value="cau">CAU</option>
+                                    <option value="coren">COREN</option>
+                                    <option value="crm">CRM</option>
+                                    <option value="crea">CREA</option>
+                                    <option value="crfa">CRFa</option>
+                                    <option value="cffa">CFFa</option>
+                                    <option value="crefito">CREFITO</option>
+                                    <option value="cro">CRO</option>
+                                    <option value="crp">CRP</option>
+                                    <option value="crq">CRQ</option>
+                                    <option value="crtr">CRTR</option>
+                                    <option value="rms">RMS</option>
+                                    <option value="registro_mte">Registro no MTE</option>
+                                    <option value="crc">CRC</option>
+                                    <option value="crbm">CRBM</option>
+                                    <option value="cft">CFT</option>
                                 </select>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                             <label for="sexo-medico">Categoria:</label>
                             <div class="input-with-icon" style="width: 19%;">
                                 <i class="fas fa-stethoscope"></i>
-                                <select id="sexo_medico" name="sexo_medico" class="form-control">
+                                <select id="categoria" name="categoria" class="form-control">
                                     <option value="selecione">Selecione</option>
                                     <option value="medico">Médico</option>
                                     <option value="fonoaudiologo">Fonoaudiólogo</option>
@@ -670,6 +670,7 @@
         let recebe_sexo_medico = $("#sexo_medico").val();
         let recebe_contato_medico = $("#contato").val();
         let recebe_empresa_id_medico = $("#empresa_id").val();
+        let recebe_categoria = $("#categoria").val();
 
 
         // let recebe_numero_rg_medico = $("#numero_rg").val();
@@ -736,14 +737,14 @@
                         valor_contato_medico: recebe_contato_medico,
 
                         valor_empresa_id_medico: recebe_empresa_id_medico,
-                        valor_id_medico: $("#medico_id_alteracao").val(),
+                        valor_id_medico: $("#medico_id_alteracao").val()
                     },
                     success: function(retorno_pessoa) {
                         debugger;
 
                         console.log(retorno_pessoa);
                         if (retorno_pessoa) {
-                            console.log("Pessoa alterada com sucesso");
+                            console.log("Profissional da medicina alterada com sucesso");
                             window.location.href = "painel.php?pg=medicos";
                         }
                     },
@@ -771,6 +772,7 @@
                         valor_contato_medico: recebe_contato_medico,
 
                         valor_empresa_id_medico: recebe_empresa_id_medico,
+                        valor_categoria:recebe_categoria
 
                         // valor_pcmso_medico: recebe_pcmso_medico,
                         // valor_numero_rg_medico: recebe_numero_rg_medico,
@@ -798,7 +800,7 @@
                         console.log(retorno_medico);
 
                         if (retorno_medico) {
-                            console.log("Médico cadastrada com sucesso");
+                            console.log("Profissional da medicina cadastrada com sucesso");
                             window.location.href = "painel.php?pg=medicos";
                         }
                     },
