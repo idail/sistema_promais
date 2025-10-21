@@ -10707,12 +10707,19 @@ modal.innerHTML = `
 
       let url = window.location.href;
 
-      // Verifica se já existe algum parâmetro na URL
+      // Remove qualquer parâmetro anterior de id e acao (se existirem)
+      url = url
+        .replace(/(&|\?)id=\d+/g, '')
+        .replace(/(&|\?)acao=editar/g, '')
+        .replace(/[?&]+$/, ''); // remove ? ou & sobrando no final
+
+      // Adiciona os novos parâmetros corretamente
       if (url.includes("?")) {
         window.location.href = `${url}&id=${kitId}&acao=editar`;
       } else {
         window.location.href = `${url}?id=${kitId}&acao=editar`;
       }
+
       //fecharModal('modalDetalhesKit');
     }
 
