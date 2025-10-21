@@ -10437,23 +10437,23 @@ table.no-break strong {
                     //     ["Espaço Confinado", "Inspeções e Manutenções"]
                     // ];
 
-                //     $aptidoesTabela .= '
-                // <table>
-                //     <tr>
-                //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-                //     </tr>';
-                //     foreach ($linhas as $par) {
-                //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
-                //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+                    //     $aptidoesTabela .= '
+                    // <table>
+                    //     <tr>
+                    //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    //     </tr>';
+                    //     foreach ($linhas as $par) {
+                    //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
 
-                //         $aptidoesTabela .= '
-                //     <tr>
-                //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                //     </tr>';
-                //     }
-                //     $aptidoesTabela .= '
-                // </table>';
+                    //         $aptidoesTabela .= '
+                    //     <tr>
+                    //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                    //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    //     </tr>';
+                    //     }
+                    //     $aptidoesTabela .= '
+                    // </table>';
 
                     // =====================================================================
 
@@ -10961,249 +10961,539 @@ table.no-break strong {
         ';
         } else if ($exames_procedimentos === true || $treinamentos === true || $epi_epc === true || $faturamento === true) {
 
-            if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+            if (isset($_POST['valor_id_kit'])) {
+                $valor_id_kit = $_POST['valor_id_kit'];
 
-                $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
-                $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
-                $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
-                $comando_busca_clinica->execute();
-                $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+                $instrucao_busca_dados_kit = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_dados_kit = $pdo->prepare($instrucao_busca_dados_kit);
+                $comando_busca_dados_kit->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_dados_kit->execute();
+                $resultado_dados_kit = $comando_busca_dados_kit->fetch(PDO::FETCH_ASSOC);
 
-                // print_r($resultado_clinica_selecionada);
+                $recebe_exame;
+                if (!empty($resultado_dados_kit["tipo_exame"])) {
+                    // Tem valor válido (não nulo, não vazio, não zero)
+                    $recebe_exame = $resultado_dados_kit["tipo_exame"];
+                }
 
-                // ----------------- BUSCA NA API DO IBGE -----------------
-                $cidadeNome = '';
-                $estadoSigla = '';
+                if (!empty($resultado_dados_kit["exames_selecionados"])) {
+                    // Pega os exames do resultado
+                    $examesJson = $resultado_dados_kit["exames_selecionados"] ?? "";
+                    $linhasExames = "";
 
-                if (!empty($resultado_clinica_selecionada['cidade_id'])) {
-                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
-                    $cidadeJson = @file_get_contents($urlCidade);
-                    if ($cidadeJson !== false) {
-                        $cidadeData = json_decode($cidadeJson, true);
-                        $cidadeNome = $cidadeData['nome'] ?? '';
+                    if (!empty($examesJson)) {
+                        $exames = json_decode($examesJson, true);
+                        if (is_array($exames)) {
+                            $coluna = 0;
+                            $linhasExames .= "<tr>";
+
+                            foreach ($exames as $exame) {
+                                $codigo = $exame['codigo'] ?? '';
+                                $nome   = $exame['nome'] ?? '';
+                                $dataExame = $dataAtual ?? "__/__/2025";
+
+                                $linhasExames .= "
+                                <td style='font-size:12px; line-height:1.4; width:50%;'>
+                                    (" . htmlspecialchars($codigo) . ") " . htmlspecialchars($nome) . "
+                                </td>
+                            ";
+
+                                $coluna++;
+
+                                // quando preencher 2 colunas, fecha a linha
+                                if ($coluna % 2 == 0) {
+                                    $linhasExames .= "</tr><tr>";
+                                }
+                            }
+
+                            // Se terminou com uma coluna só, fecha linha corretamente
+                            if ($coluna % 2 != 0) {
+                                $linhasExames .= "<td style='width:50%;'>&nbsp;</td></tr>";
+                            } else {
+                                $linhasExames .= "</tr>";
+                            }
+                        }
                     }
                 }
 
-                if (!empty($resultado_clinica_selecionada['id_estado'])) {
-                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
-                    $estadoJson = @file_get_contents($urlEstado);
-                    if ($estadoJson !== false) {
-                        $estadoData = json_decode($estadoJson, true);
-                        $estadoSigla = $estadoData['sigla'] ?? '';
+                if (!empty($resultado_dados_kit["clinica_id"])) {
+                    $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                    $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                    $comando_busca_clinica->bindValue(":recebe_clinica_id", $resultado_dados_kit["clinica_id"]);
+                    $comando_busca_clinica->execute();
+                    $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // print_r($resultado_clinica_selecionada);
+
+                    // ----------------- BUSCA NA API DO IBGE -----------------
+                    $cidadeNome = '';
+                    $estadoSigla = '';
+
+                    if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                        $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                        $cidadeJson = @file_get_contents($urlCidade);
+                        if ($cidadeJson !== false) {
+                            $cidadeData = json_decode($cidadeJson, true);
+                            $cidadeNome = $cidadeData['nome'] ?? '';
+                        }
+                    }
+
+                    if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                        $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                        $estadoJson = @file_get_contents($urlEstado);
+                        if ($estadoJson !== false) {
+                            $estadoData = json_decode($estadoJson, true);
+                            $estadoSigla = $estadoData['sigla'] ?? '';
+                        }
+                    }
+
+                    // Exemplo: "ALTO ARAGUAIA - MT"
+                    $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                }
+
+                if (!empty($resultado_dados_kit["empresa_id"])) {
+                    $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                    $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $resultado_dados_kit["empresa_id"]);
+                    $comando_busca_empresa->execute();
+                    $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+                }
+
+                if (!empty($resultado_dados_kit["pessoa_id"])) {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $resultado_dados_kit["pessoa_id"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                    $recebe_nascimento_colaborador = '';
+
+                    $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                    if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                        try {
+                            $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                        } catch (Exception $e) {
+                            $recebe_nascimento_colaborador = '';
+                        }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
+                    }
+
+                    // var_dump($resultado_pessoa_selecionada);
+
+                    // echo "<br>";
+
+                    $instrucao_busca_cargo_pessoa = "select * from cargo where id_pessoa = :recebe_id_pessoa";
+                    $comando_busca_cargo_pessoa = $pdo->prepare($instrucao_busca_cargo_pessoa);
+                    $comando_busca_cargo_pessoa->bindValue(":recebe_id_pessoa", $resultado_pessoa_selecionada["id"]);
+                    $comando_busca_cargo_pessoa->execute();
+                    $resultado_busca_cargo_pessoa = $comando_busca_cargo_pessoa->fetch(PDO::FETCH_ASSOC);
+                }
+
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                    // var_dump($resultado_cargo_selecionado);
+
+                    // echo "<br>";
+                }
+
+                if ($recebe_exame === "mudanca") {
+                    if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                        ob_start();
+                        echo "Cargo:" . $_SESSION["cargo_selecionado"] . "<br>";
+                        salvarLog(ob_get_clean());
+
+                        $instrucao_busca_mudanca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                        $comando_busca_mudanca_cargo = $pdo->prepare($instrucao_busca_mudanca_cargo);
+                        $comando_busca_mudanca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                        $comando_busca_mudanca_cargo->execute();
+                        $resultado_mudanca_cargo_selecionado = $comando_busca_mudanca_cargo->fetch(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_mudanca_cargo_selecionado);
+
+                        // echo "<br>";
+
+                        ob_start();
+                        var_dump($resultado_mudanca_cargo_selecionado);
+                        salvarLog(ob_get_clean());
                     }
                 }
 
-                // Exemplo: "ALTO ARAGUAIA - MT"
-                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
-                salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
-            }
 
+                $valores_pedidos = [];
 
-            if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
-                $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
-                $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
-                $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
-                $comando_busca_empresa->execute();
-                $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+                // -------------------
+                // Buscar EPIs (Produtos)
+                // -------------------
+                $instrucao_busca_pedidos = "SELECT * FROM produto WHERE id_kit = :recebe_id_kit";
+                $comando_busca_pedidos = $pdo->prepare($instrucao_busca_pedidos);
+                $comando_busca_pedidos->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_pedidos->execute();
+                $resultado_busca_pedidos = $comando_busca_pedidos->fetchAll(PDO::FETCH_ASSOC);
 
-                $cidadeNome = '';
-                $estadoSigla = '';
+                for ($i = 0; $i < count($resultado_busca_pedidos); $i++) {
+                    $item = $resultado_busca_pedidos[$i];
+                    $valores_pedidos[] = [
+                        "tipo"       => "epi",
+                        "nome"       => $item["nome"] ?? "Sem nome",
+                        "quantidade" => $item["quantidade"] ?? 1,
+                        "valor"      => (float) ($item["valor"] ?? 0),
+                        "codigo"     => $item["id"]
+                    ];
+                }
 
-                if (!empty($resultado_empresa_selecionada['id_cidade'])) {
-                    $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_empresa_selecionada['id_cidade'];
-                    $cidadeJson = @file_get_contents($urlCidade);
-                    if ($cidadeJson !== false) {
-                        $cidadeData = json_decode($cidadeJson, true);
-                        $cidadeNome = $cidadeData['nome'] ?? '';
+                // -------------------
+                // Buscar Treinamentos
+                // -------------------
+                $instrucao_busca_treinamentos_kit = "SELECT treinamentos_selecionados FROM kits WHERE id = :recebe_id_kit";
+                $comando_busca_treinamentos_kit = $pdo->prepare($instrucao_busca_treinamentos_kit);
+                $comando_busca_treinamentos_kit->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_treinamentos_kit->execute();
+                $resultado_busca_treinamentos_kit = $comando_busca_treinamentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                // Contador associativo para treinamentos
+                $treinamentos_count = [];
+
+                for ($i = 0; $i < count($resultado_busca_treinamentos_kit); $i++) {
+                    $registro = $resultado_busca_treinamentos_kit[$i];
+                    if (!empty($registro["treinamentos_selecionados"])) {
+                        $treinamentos_recebidos = json_decode($registro["treinamentos_selecionados"], true);
+                        if (is_array($treinamentos_recebidos)) {
+                            for ($j = 0; $j < count($treinamentos_recebidos); $j++) {
+                                $treinamento = $treinamentos_recebidos[$j];
+                                $codigo = $treinamento["codigo"];
+                                $nome = $treinamento["nome"] ?? "Sem nome";
+                                $valor = (float) str_replace(",", ".", $treinamento["valor"] ?? 0);
+                                $descricao = $treinamento["descricao"];
+
+                                if (isset($treinamentos_count[$nome])) {
+                                    $treinamentos_count[$nome]["quantidade"]++;
+                                } else {
+                                    $treinamentos_count[$nome] = [
+                                        "tipo"       => "treinamento",
+                                        "nome"       => $descricao,
+                                        "quantidade" => 1,
+                                        "valor"      => $valor,
+                                        "codigo"     => $codigo
+                                    ];
+                                }
+                            }
+                        }
                     }
                 }
 
-                if (!empty($resultado_empresa_selecionada['id_estado'])) {
-                    $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_empresa_selecionada['id_estado'];
-                    $estadoJson = @file_get_contents($urlEstado);
-                    if ($estadoJson !== false) {
-                        $estadoData = json_decode($estadoJson, true);
-                        $estadoSigla = $estadoData['sigla'] ?? '';
+                // Adiciona os treinamentos ao array final
+                foreach ($treinamentos_count as $treinamento) {
+                    $valores_pedidos[] = $treinamento;
+                }
+
+                // -------------------
+                // Buscar Exames
+                // -------------------
+                $instrucao_busca_exames_kit = "SELECT exames_selecionados FROM kits WHERE id = :recebe_id_kit";
+                $comando_busca_exames_kit = $pdo->prepare($instrucao_busca_exames_kit);
+                $comando_busca_exames_kit->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_exames_kit->execute();
+                $resultado_busca_exames_kit = $comando_busca_exames_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                // Contador associativo para exames
+                $exames_count = [];
+
+                for ($i = 0; $i < count($resultado_busca_exames_kit); $i++) {
+                    $registro = $resultado_busca_exames_kit[$i];
+                    if (!empty($registro["exames_selecionados"])) {
+                        $exames = json_decode($registro["exames_selecionados"], true);
+                        if (is_array($exames)) {
+                            for ($j = 0; $j < count($exames); $j++) {
+                                $exame = $exames[$j];
+                                $codigo = $exame["codigo"];
+                                $nome = $exame["nome"] ?? "Sem nome";
+                                $valor = (float) str_replace(",", ".", $exame["valor"] ?? 0);
+
+                                if (isset($exames_count[$nome])) {
+                                    $exames_count[$nome]["quantidade"]++;
+                                } else {
+                                    $exames_count[$nome] = [
+                                        "tipo"       => "exame",
+                                        "codigo"     => $codigo,
+                                        "nome"       => $nome,
+                                        "quantidade" => 1,
+                                        "valor"      => $valor
+                                    ];
+                                }
+                            }
+                        }
                     }
                 }
 
-                // Exemplo: "ALTO ARAGUAIA - MT"
-                $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                // Adiciona os exames ao array final
+                foreach ($exames_count as $exame) {
+                    $valores_pedidos[] = $exame;
+                }
 
-                // var_dump($resultado_empresa_selecionada);
 
-                // echo "<br>";
+                $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
+                $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
+                $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_dados_bancarios->execute();
+                $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
+
+                    $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
+                    $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
+                    $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                    $comando_busca_clinica->execute();
+                    $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
+
+                    // print_r($resultado_clinica_selecionada);
+
+                    // ----------------- BUSCA NA API DO IBGE -----------------
+                    $cidadeNome = '';
+                    $estadoSigla = '';
+
+                    if (!empty($resultado_clinica_selecionada['cidade_id'])) {
+                        $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_clinica_selecionada['cidade_id'];
+                        $cidadeJson = @file_get_contents($urlCidade);
+                        if ($cidadeJson !== false) {
+                            $cidadeData = json_decode($cidadeJson, true);
+                            $cidadeNome = $cidadeData['nome'] ?? '';
+                        }
+                    }
+
+                    if (!empty($resultado_clinica_selecionada['id_estado'])) {
+                        $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_clinica_selecionada['id_estado'];
+                        $estadoJson = @file_get_contents($urlEstado);
+                        if ($estadoJson !== false) {
+                            $estadoData = json_decode($estadoJson, true);
+                            $estadoSigla = $estadoData['sigla'] ?? '';
+                        }
+                    }
+
+                    // Exemplo: "ALTO ARAGUAIA - MT"
+                    $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+                    salvarLog("Cidade/UF via IBGE: " . $recebe_cidade_uf);
+                }
+
+
+                if (isset($_SESSION['empresa_selecionado']) && $_SESSION['empresa_selecionado'] !== '') {
+                    $instrucao_busca_empresa = "select * from empresas_novas where id = :recebe_id_empresa";
+                    $comando_busca_empresa = $pdo->prepare($instrucao_busca_empresa);
+                    $comando_busca_empresa->bindValue(":recebe_id_empresa", $_SESSION["empresa_selecionado"]);
+                    $comando_busca_empresa->execute();
+                    $resultado_empresa_selecionada = $comando_busca_empresa->fetch(PDO::FETCH_ASSOC);
+
+                    $cidadeNome = '';
+                    $estadoSigla = '';
+
+                    if (!empty($resultado_empresa_selecionada['id_cidade'])) {
+                        $urlCidade = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/" . $resultado_empresa_selecionada['id_cidade'];
+                        $cidadeJson = @file_get_contents($urlCidade);
+                        if ($cidadeJson !== false) {
+                            $cidadeData = json_decode($cidadeJson, true);
+                            $cidadeNome = $cidadeData['nome'] ?? '';
+                        }
+                    }
+
+                    if (!empty($resultado_empresa_selecionada['id_estado'])) {
+                        $urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" . $resultado_empresa_selecionada['id_estado'];
+                        $estadoJson = @file_get_contents($urlEstado);
+                        if ($estadoJson !== false) {
+                            $estadoData = json_decode($estadoJson, true);
+                            $estadoSigla = $estadoData['sigla'] ?? '';
+                        }
+                    }
+
+                    // Exemplo: "ALTO ARAGUAIA - MT"
+                    $recebe_cidade_uf = trim($cidadeNome . ' - ' . $estadoSigla);
+
+                    // var_dump($resultado_empresa_selecionada);
+
+                    // echo "<br>";
+
+                    ob_start();
+                    var_dump($resultado_empresa_selecionada);
+                    salvarLog(ob_get_clean());
+                }
+
+                if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
+                    $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
+                    $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
+                    $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
+                    $comando_busca_pessoa->execute();
+                    $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
+
+                    $recebe_nascimento_colaborador = '';
+
+                    $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
+                    if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
+                        try {
+                            $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
+                        } catch (Exception $e) {
+                            $recebe_nascimento_colaborador = '';
+                        }
+
+                        // Converte para objeto DateTime
+                        $dtNascimento = new DateTime($raw);
+                        $dtHoje = new DateTime("now");
+
+                        // Calcula a diferença
+                        $idade = $dtHoje->diff($dtNascimento)->y;
+
+                        // echo "Idade: " . $idade . " anos";
+                    }
+                }
+
+                if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
+                    $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
+                    $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
+                    $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
+                    $comando_busca_cargo->execute();
+                    $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
+                }
+
+                $valores_pedidos = [];
+
+                // -------------------
+                // Buscar EPIs (Produtos)
+                // -------------------
+                $instrucao_busca_pedidos = "SELECT * FROM produto WHERE id_kit = :recebe_id_kit";
+                $comando_busca_pedidos = $pdo->prepare($instrucao_busca_pedidos);
+                $comando_busca_pedidos->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                $comando_busca_pedidos->execute();
+                $resultado_busca_pedidos = $comando_busca_pedidos->fetchAll(PDO::FETCH_ASSOC);
+
+                for ($i = 0; $i < count($resultado_busca_pedidos); $i++) {
+                    $item = $resultado_busca_pedidos[$i];
+                    $valores_pedidos[] = [
+                        "tipo"       => "epi",
+                        "nome"       => $item["nome"] ?? "Sem nome",
+                        "quantidade" => $item["quantidade"] ?? 1,
+                        "valor"      => (float) ($item["valor"] ?? 0),
+                        "codigo"     => $item["id"]
+                    ];
+                }
+
+                // -------------------
+                // Buscar Treinamentos
+                // -------------------
+                $instrucao_busca_treinamentos_kit = "SELECT treinamentos_selecionados FROM kits WHERE id = :recebe_id_kit";
+                $comando_busca_treinamentos_kit = $pdo->prepare($instrucao_busca_treinamentos_kit);
+                $comando_busca_treinamentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                $comando_busca_treinamentos_kit->execute();
+                $resultado_busca_treinamentos_kit = $comando_busca_treinamentos_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                // Contador associativo para treinamentos
+                $treinamentos_count = [];
+
+                for ($i = 0; $i < count($resultado_busca_treinamentos_kit); $i++) {
+                    $registro = $resultado_busca_treinamentos_kit[$i];
+                    if (!empty($registro["treinamentos_selecionados"])) {
+                        $treinamentos_recebidos = json_decode($registro["treinamentos_selecionados"], true);
+                        if (is_array($treinamentos_recebidos)) {
+                            for ($j = 0; $j < count($treinamentos_recebidos); $j++) {
+                                $treinamento = $treinamentos_recebidos[$j];
+                                $codigo = $treinamento["codigo"];
+                                $nome = $treinamento["nome"] ?? "Sem nome";
+                                $valor = (float) str_replace(",", ".", $treinamento["valor"] ?? 0);
+                                $descricao = $treinamento["descricao"];
+
+                                if (isset($treinamentos_count[$nome])) {
+                                    $treinamentos_count[$nome]["quantidade"]++;
+                                } else {
+                                    $treinamentos_count[$nome] = [
+                                        "tipo"       => "treinamento",
+                                        "nome"       => $descricao,
+                                        "quantidade" => 1,
+                                        "valor"      => $valor,
+                                        "codigo"     => $codigo
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Adiciona os treinamentos ao array final
+                foreach ($treinamentos_count as $treinamento) {
+                    $valores_pedidos[] = $treinamento;
+                }
+
+                // -------------------
+                // Buscar Exames
+                // -------------------
+                $instrucao_busca_exames_kit = "SELECT exames_selecionados FROM kits WHERE id = :recebe_id_kit";
+                $comando_busca_exames_kit = $pdo->prepare($instrucao_busca_exames_kit);
+                $comando_busca_exames_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                $comando_busca_exames_kit->execute();
+                $resultado_busca_exames_kit = $comando_busca_exames_kit->fetchAll(PDO::FETCH_ASSOC);
+
+                // Contador associativo para exames
+                $exames_count = [];
+
+                for ($i = 0; $i < count($resultado_busca_exames_kit); $i++) {
+                    $registro = $resultado_busca_exames_kit[$i];
+                    if (!empty($registro["exames_selecionados"])) {
+                        $exames = json_decode($registro["exames_selecionados"], true);
+                        if (is_array($exames)) {
+                            for ($j = 0; $j < count($exames); $j++) {
+                                $exame = $exames[$j];
+                                $codigo = $exame["codigo"];
+                                $nome = $exame["nome"] ?? "Sem nome";
+                                $valor = (float) str_replace(",", ".", $exame["valor"] ?? 0);
+
+                                if (isset($exames_count[$nome])) {
+                                    $exames_count[$nome]["quantidade"]++;
+                                } else {
+                                    $exames_count[$nome] = [
+                                        "tipo"       => "exame",
+                                        "codigo"     => $codigo,
+                                        "nome"       => $nome,
+                                        "quantidade" => 1,
+                                        "valor"      => $valor
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Adiciona os exames ao array final
+                foreach ($exames_count as $exame) {
+                    $valores_pedidos[] = $exame;
+                }
+
+                // -------------------
+                // Log final do array
+                // -------------------
+                ob_start();
+                var_dump($valores_pedidos);
+                salvarLog(ob_get_clean());
+
+
 
                 ob_start();
-                var_dump($resultado_empresa_selecionada);
+                var_dump($resultado_busca_exames_kit);
                 salvarLog(ob_get_clean());
+
+                $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
+                $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
+                $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                $comando_busca_dados_bancarios->execute();
+                $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
             }
-
-            if (isset($_SESSION['colaborador_selecionado']) && $_SESSION['colaborador_selecionado'] !== '') {
-                $instrucao_busca_pessoa = "select * from pessoas where id = :recebe_id_pessoa";
-                $comando_busca_pessoa = $pdo->prepare($instrucao_busca_pessoa);
-                $comando_busca_pessoa->bindValue(":recebe_id_pessoa", $_SESSION["colaborador_selecionado"]);
-                $comando_busca_pessoa->execute();
-                $resultado_pessoa_selecionada = $comando_busca_pessoa->fetch(PDO::FETCH_ASSOC);
-
-                $recebe_nascimento_colaborador = '';
-
-                $raw = $resultado_pessoa_selecionada['nascimento'] ?? '';
-                if (!empty($raw) && $raw !== '0000-00-00' && $raw !== '0000-00-00 00:00:00') {
-                    try {
-                        $recebe_nascimento_colaborador = (new DateTime($raw))->format('d/m/Y');
-                    } catch (Exception $e) {
-                        $recebe_nascimento_colaborador = '';
-                    }
-
-                    // Converte para objeto DateTime
-                    $dtNascimento = new DateTime($raw);
-                    $dtHoje = new DateTime("now");
-
-                    // Calcula a diferença
-                    $idade = $dtHoje->diff($dtNascimento)->y;
-
-                    // echo "Idade: " . $idade . " anos";
-                }
-            }
-
-            if (isset($_SESSION["cargo_selecionado"]) && $_SESSION["cargo_selecionado"] !== "") {
-                $instrucao_busca_cargo = "select * from cargo where id = :recebe_id_cargo";
-                $comando_busca_cargo = $pdo->prepare($instrucao_busca_cargo);
-                $comando_busca_cargo->bindValue(":recebe_id_cargo", $_SESSION["cargo_selecionado"]);
-                $comando_busca_cargo->execute();
-                $resultado_cargo_selecionado = $comando_busca_cargo->fetch(PDO::FETCH_ASSOC);
-            }
-
-            $valores_pedidos = [];
-
-            // -------------------
-            // Buscar EPIs (Produtos)
-            // -------------------
-            $instrucao_busca_pedidos = "SELECT * FROM produto WHERE id_kit = :recebe_id_kit";
-            $comando_busca_pedidos = $pdo->prepare($instrucao_busca_pedidos);
-            $comando_busca_pedidos->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
-            $comando_busca_pedidos->execute();
-            $resultado_busca_pedidos = $comando_busca_pedidos->fetchAll(PDO::FETCH_ASSOC);
-
-            for ($i = 0; $i < count($resultado_busca_pedidos); $i++) {
-                $item = $resultado_busca_pedidos[$i];
-                $valores_pedidos[] = [
-                    "tipo"       => "epi",
-                    "nome"       => $item["nome"] ?? "Sem nome",
-                    "quantidade" => $item["quantidade"] ?? 1,
-                    "valor"      => (float) ($item["valor"] ?? 0),
-                    "codigo"     => $item["id"]
-                ];
-            }
-
-            // -------------------
-            // Buscar Treinamentos
-            // -------------------
-            $instrucao_busca_treinamentos_kit = "SELECT treinamentos_selecionados FROM kits WHERE id = :recebe_id_kit";
-            $comando_busca_treinamentos_kit = $pdo->prepare($instrucao_busca_treinamentos_kit);
-            $comando_busca_treinamentos_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
-            $comando_busca_treinamentos_kit->execute();
-            $resultado_busca_treinamentos_kit = $comando_busca_treinamentos_kit->fetchAll(PDO::FETCH_ASSOC);
-
-            // Contador associativo para treinamentos
-            $treinamentos_count = [];
-
-            for ($i = 0; $i < count($resultado_busca_treinamentos_kit); $i++) {
-                $registro = $resultado_busca_treinamentos_kit[$i];
-                if (!empty($registro["treinamentos_selecionados"])) {
-                    $treinamentos_recebidos = json_decode($registro["treinamentos_selecionados"], true);
-                    if (is_array($treinamentos_recebidos)) {
-                        for ($j = 0; $j < count($treinamentos_recebidos); $j++) {
-                            $treinamento = $treinamentos_recebidos[$j];
-                            $codigo = $treinamento["codigo"];
-                            $nome = $treinamento["nome"] ?? "Sem nome";
-                            $valor = (float) str_replace(",", ".", $treinamento["valor"] ?? 0);
-                            $descricao = $treinamento["descricao"];
-
-                            if (isset($treinamentos_count[$nome])) {
-                                $treinamentos_count[$nome]["quantidade"]++;
-                            } else {
-                                $treinamentos_count[$nome] = [
-                                    "tipo"       => "treinamento",
-                                    "nome"       => $descricao,
-                                    "quantidade" => 1,
-                                    "valor"      => $valor,
-                                    "codigo"     => $codigo
-                                ];
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Adiciona os treinamentos ao array final
-            foreach ($treinamentos_count as $treinamento) {
-                $valores_pedidos[] = $treinamento;
-            }
-
-            // -------------------
-            // Buscar Exames
-            // -------------------
-            $instrucao_busca_exames_kit = "SELECT exames_selecionados FROM kits WHERE id = :recebe_id_kit";
-            $comando_busca_exames_kit = $pdo->prepare($instrucao_busca_exames_kit);
-            $comando_busca_exames_kit->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
-            $comando_busca_exames_kit->execute();
-            $resultado_busca_exames_kit = $comando_busca_exames_kit->fetchAll(PDO::FETCH_ASSOC);
-
-            // Contador associativo para exames
-            $exames_count = [];
-
-            for ($i = 0; $i < count($resultado_busca_exames_kit); $i++) {
-                $registro = $resultado_busca_exames_kit[$i];
-                if (!empty($registro["exames_selecionados"])) {
-                    $exames = json_decode($registro["exames_selecionados"], true);
-                    if (is_array($exames)) {
-                        for ($j = 0; $j < count($exames); $j++) {
-                            $exame = $exames[$j];
-                            $codigo = $exame["codigo"];
-                            $nome = $exame["nome"] ?? "Sem nome";
-                            $valor = (float) str_replace(",", ".", $exame["valor"] ?? 0);
-
-                            if (isset($exames_count[$nome])) {
-                                $exames_count[$nome]["quantidade"]++;
-                            } else {
-                                $exames_count[$nome] = [
-                                    "tipo"       => "exame",
-                                    "codigo"     => $codigo,
-                                    "nome"       => $nome,
-                                    "quantidade" => 1,
-                                    "valor"      => $valor
-                                ];
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Adiciona os exames ao array final
-            foreach ($exames_count as $exame) {
-                $valores_pedidos[] = $exame;
-            }
-
-            // -------------------
-            // Log final do array
-            // -------------------
-            ob_start();
-            var_dump($valores_pedidos);
-            salvarLog(ob_get_clean());
-
-
-
-            ob_start();
-            var_dump($resultado_busca_exames_kit);
-            salvarLog(ob_get_clean());
-
-            $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
-            $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
-            $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
-            $comando_busca_dados_bancarios->execute();
-            $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
 
             //var_dump($resultado_busca_dados_bancarios);
 
