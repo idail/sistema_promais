@@ -10703,7 +10703,7 @@ modal.innerHTML = `
     function editarKit(kitId) {
       debugger;
       // Implementar lógica de edição
-      alert(`Editando kit ${kitId}...`);
+      //alert(`Editando kit ${kitId}...`);
 
       let url = window.location.href;
 
@@ -19419,162 +19419,179 @@ function initFatDescricaoLiveSearch(){
     let recebe_quantidade_produto;
   // Função para adicionar produto (assíncrona, com gravação)
   window.fatAdicionarProduto = async function() {
-    debugger;
-    // Trava simples para evitar chamadas duplas em cliques rápidos
-    if (window._fatSaving) return;
-    window._fatSaving = true;
-    try {
+  debugger;
+  if (window._fatSaving) return;
+  window._fatSaving = true;
+
+  try {
     const descricao = document.getElementById('fat-descricao')?.value.trim();
-      const quantidade = parseInt(document.getElementById('fat-quantidade')?.value);
-      const valorUnit = parseFloat(document.getElementById('fat-valorUnit')?.value);
-  
-      if (!descricao || isNaN(quantidade) || isNaN(valorUnit)) {
-        alert('Preencha todos os campos corretamente.');
-        return;
-      }
+    const quantidade = parseInt(document.getElementById('fat-quantidade')?.value);
+    const valorUnit = parseFloat(document.getElementById('fat-valorUnit')?.value);
 
-      const produtoAtual = {
-        nome: descricao,
-        quantidade: quantidade,
-        valorunit: valorUnit
-      };
+    if (!descricao || isNaN(quantidade) || isNaN(valorUnit)) {
+      alert('Preencha todos os campos corretamente.');
+      return;
+    }
 
-      recebe_nome_produto = descricao;
-      recebe_valor_produto = valorUnit;
-      recebe_quantidade_produto = quantidade;
+    const produtoAtual = {
+      nome: descricao,
+      quantidade: quantidade,
+      valorunit: valorUnit
+    };
 
-      // Aguarda a gravação do produto e captura o retorno
-      const retorno = await grava_produto();
+    recebe_nome_produto = descricao;
+    recebe_valor_produto = valorUnit;
+    recebe_quantidade_produto = quantidade;
 
-      // Aqui assumo que o PHP retorna algo como { codigo_produto: 123, ... }
-      codigoProduto = retorno ?? null;
+    const retorno = await grava_produto();
+    const codigoProduto = retorno ?? null;
+    produtoAtual.id = codigoProduto;
 
-      produtoAtual.id = codigoProduto;
+    window.fatProdutosGlobais = window.fatProdutosGlobais || [];
+    window.fatProdutosGlobais.push(produtoAtual);
 
-      // Adiciona produto ao array global
-      window.fatProdutosGlobais.push(produtoAtual);
-  
-      const valorTotal = quantidade * valorUnit;
-      
-      // Atualiza o total global de EPI/EPC
-      window.fatTotalEPI = (window.fatTotalEPI || 0) + valorTotal;
-      console.log('Produto adicionado. Novo total EPI/EPC:', window.fatTotalEPI);
-  
-      // Adiciona estilos CSS para a lista de produtos
+    const valorTotal = quantidade * valorUnit;
+    window.fatTotalEPI = (window.fatTotalEPI || 0) + valorTotal;
+
+    console.log('Produto adicionado. Novo total EPI/EPC:', window.fatTotalEPI);
+
+    // 🔹 Cria os estilos apenas uma vez
+    if (!document.getElementById('fat-styles')) {
       const style = document.createElement('style');
-      if (!document.getElementById('fat-styles')) {
-        style.id = 'fat-styles';
-        style.textContent = `
-          .fat-produto-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px 15px;
-            color: #2d3748;
-            font-size: 14px;
-            border-bottom: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-            background-color: white;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-          }
-          .fat-produto-item:hover {
-            background-color: #f8fafc;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          }
-          .fat-produto-item > div {
-            padding: 4px 8px;
-          }
-          .fat-produto-descricao {
-            flex: 3;
-            font-weight: 500;
-            color: #1a365d;
-          }
-          .fat-produto-quantidade, .fat-produto-valor-unit, .fat-produto-total {
-            flex: 1;
-            text-align: center;
-            color: #4a5568;
-          }
-          .fat-produto-total {
-            font-weight: 600;
-            color: #2b6cb0;
-          }
-          .fat-produto-acoes {
-            flex: 0.8;
-            text-align: center;
-          }
-          .btn-remover {
-            background-color: #fff;
-            color: #e53e3e;
-            border: 1px solid #fed7d7;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s ease;
-          }
-          .btn-remover:hover {
-            background-color: #feb2b2;
-            color: #9b2c2c;
-            transform: translateY(-1px);
-          }
-          .btn-remover i {
-            font-size: 14px;
-          }
-        `;
-        document.head.appendChild(style);
-      }
+      style.id = 'fat-styles';
+      style.textContent = `
+        .fat-produto-item {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 12px 15px;
+          color: #2d3748;
+          font-size: 14px;
+          border-bottom: 1px solid #e2e8f0;
+          transition: all 0.2s ease;
+          background-color: white;
+          border-radius: 8px;
+          margin-bottom: 8px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .fat-produto-item:hover {
+          background-color: #f8fafc;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .fat-produto-item > div { padding: 4px 8px; }
+        .fat-produto-descricao { flex: 3; font-weight: 500; color: #1a365d; }
+        .fat-produto-quantidade, .fat-produto-valor-unit, .fat-produto-total {
+          flex: 1;
+          text-align: center;
+          color: #4a5568;
+        }
+        .fat-produto-total { font-weight: 600; color: #2b6cb0; }
+        .fat-produto-acoes { flex: 0.8; text-align: center; }
+        .btn-remover {
+          background-color: #fff;
+          color: #e53e3e;
+          border: 1px solid #fed7d7;
+          border-radius: 6px;
+          padding: 6px 12px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          transition: all 0.2s ease;
+        }
+        .btn-remover:hover {
+          background-color: #feb2b2;
+          color: #9b2c2c;
+          transform: translateY(-1px);
+        }
+        .btn-remover i { font-size: 14px; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // 🔹 Seleciona a lista de produtos
+    const listaProdutos = document.getElementById('fat-lista-produtos');
+    if (!listaProdutos) {
+      console.error('Elemento #fat-lista-produtos não encontrado.');
+      return;
+    }
+
+    listaProdutos.innerHTML = ''; // <- aqui limpa tudo, incluindo "Nenhum produto disponível"
+
+    // 🔹 Remove qualquer mensagem de “Nenhum produto disponível”
+    // const mensagens = listaProdutos.querySelectorAll('.fat-sem-produtos, div[style*="Nenhum produto disponível"]');
+    // mensagens.forEach(msg => msg.remove());
+
+    // // 🔹 Cria a linha do novo produto
+    // const linha = document.createElement('div');
+    // linha.className = 'fat-produto-item';
+    // linha.innerHTML = `
+    //   <div class="fat-produto-descricao">${descricao}</div>
+    //   <div class="fat-produto-quantidade">${quantidade}</div>
+    //   <div class="fat-produto-valor-unit">${fatFormatter.format(valorUnit)}</div>
+    //   <div class="fat-produto-total">${fatFormatter.format(valorTotal)}</div>
+    //   <div class="fat-produto-acoes">
+    //     <button class="btn-remover" onclick="fatRemoverProduto(this, ${codigoProduto}, ${valorTotal})">
+    //       <i class="fas fa-trash-alt"></i> Remover
+    //     </button>
+    //   </div>
+    // `;
+
+    // // 🔹 Adiciona o produto à lista
+    // listaProdutos.appendChild(linha);
+
+    // 🔹 Renderiza novamente todos os produtos atuais
+    window.fatProdutosGlobais.forEach(p => {
+      const valorTotalItem = p.quantidade * p.valorunit;
 
       const linha = document.createElement('div');
       linha.className = 'fat-produto-item';
-      
-      const html = [
-        `<div class="fat-produto-descricao">${descricao}</div>`,
-        `<div class="fat-produto-quantidade">${quantidade}</div>`,
-        `<div class="fat-produto-valor-unit">${fatFormatter.format(valorUnit)}</div>`,
-        `<div class="fat-produto-total">${fatFormatter.format(valorTotal)}</div>`,
-        '<div class="fat-produto-acoes">',
-        `  <button class="btn-remover" onclick="fatRemoverProduto(this, ${codigoProduto},${valorTotal})">`,
-        '    <i class="fas fa-trash-alt"></i> Remover',
-        '  </button>',
-        '</div>'
-      ].join('');
-      
-      linha.innerHTML = html;
-  
-      // Limpa a lista antes de adicionar novos produtos
-      const listaProdutos = document.getElementById('fat-lista-produtos');
-      listaProdutos.innerHTML = '';
-
-      // Adiciona à lista de produtos
+      linha.innerHTML = `
+        <div class="fat-produto-descricao">${p.nome}</div>
+        <div class="fat-produto-quantidade">${p.quantidade}</div>
+        <div class="fat-produto-valor-unit">${fatFormatter.format(p.valorunit)}</div>
+        <div class="fat-produto-total">${fatFormatter.format(valorTotalItem)}</div>
+        <div class="fat-produto-acoes">
+          <button class="btn-remover" onclick="fatRemoverProduto(this, ${p.id}, ${valorTotalItem})">
+            <i class="fas fa-trash-alt"></i> Remover
+          </button>
+        </div>
+      `;
       listaProdutos.appendChild(linha);
+    });
 
-      // Armazena no array global e sincroniza JSON
-      try {
-        window.fatProdutosSelecionados = window.fatProdutosSelecionados || [];
-        window.fatProdutosSelecionados.push({ descricao: descricao, quantidade: quantidade, valorunit: valorUnit });
-        fatSyncProdutosJSON();
-      } catch(e) { console.warn('Falha ao registrar produto no array global:', e); }
-
-      // Limpa os campos
-      document.getElementById('fat-descricao').value = '';
-      document.getElementById('fat-quantidade').value = '1';
-      document.getElementById('fat-valorUnit').value = '';
-      
-      // Atualiza os totais exibidos
-      if (typeof window.fatAtualizarTotais === 'function') {
-        window.fatAtualizarTotais();
-      }
-    } finally {
-      window._fatSaving = false;
+    // 🔹 Atualiza o array global e sincroniza JSON
+    try {
+      window.fatProdutosSelecionados = window.fatProdutosSelecionados || [];
+      window.fatProdutosSelecionados.push({ descricao, quantidade, valorunit: valorUnit });
+      fatSyncProdutosJSON();
+    } catch (e) {
+      console.warn('Falha ao registrar produto no array global:', e);
     }
-  };
+
+    // 🔹 Limpa os campos
+    document.getElementById('fat-descricao').value = '';
+    document.getElementById('fat-quantidade').value = '1';
+    document.getElementById('fat-valorUnit').value = '';
+
+    // 🔹 Atualiza totais se a função existir
+    if (typeof window.fatAtualizarTotais === 'function') {
+      window.fatAtualizarTotais();
+    }
+
+  } catch (e) {
+    console.error('Erro ao adicionar produto:', e);
+  } finally {
+    window._fatSaving = false;
+  }
+};
+
+
+
 
   // ============================================================
 // 🔹 Função para adicionar produto
