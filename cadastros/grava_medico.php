@@ -493,6 +493,7 @@
                             $("#nascimento").val(resposta_medico[indice].nascimento);
                             $("#sexo-medico").val(resposta_medico[indice].sexo);
                             $("#contato").val(resposta_medico[indice].contato);
+                            $("#categoria").val(resposta_medico[indice].categoria);
                         }
                     }
 
