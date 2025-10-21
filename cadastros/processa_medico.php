@@ -187,6 +187,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_arquivo_assinatura_medico_alterar    = !empty($_FILES["valor_arquivo_assinatura_medico"]) ? $_FILES["valor_arquivo_assinatura_medico"] : null;
         $recebe_empresa_id_medico_alterar    = !empty($_POST["valor_empresa_id_medico"]) ? $_POST["valor_empresa_id_medico"] : null;
         $recebe_id_medico_alterar            = $_POST["valor_id_medico"];
+        $recebe_categoria                    = !empty($_POST["valor_categoria"]) ? $_POST["valor_categoria"] : null;
 
         $recebe_selecao_medico_examinador_kit = !empty($_POST["valor_acao_alteracao_medico"]) ? $_POST["valor_acao_alteracao_medico"] : null;
 
@@ -247,7 +248,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
                 rqe = :recebe_rqe,
                 uf_rqe = :recebe_uf_rqe,
                 contato = :recebe_contato,
-                imagem_assinatura = :recebe_imagem_assinatura,
+                categoria = :recebe_categoria,
                 created_at = :recebe_created_at, 
                 updated_at = :recebe_updated_at 
             WHERE id = :recebe_id 
@@ -265,7 +266,8 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
             $comando_altera_medico->bindValue(":recebe_rqe", $recebe_rqe_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_uf_rqe", $recebe_uf_rqe_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_contato", $recebe_contato_medico_alterar);
-            $comando_altera_medico->bindValue(":recebe_imagem_assinatura", $recebe_assinatura_medico_alterar);
+            // $comando_altera_medico->bindValue(":recebe_imagem_assinatura", $recebe_assinatura_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_categoria", $recebe_categoria);
             $comando_altera_medico->bindValue(":recebe_created_at", $recebe_data_cadastro_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_updated_at", $recebe_data_cadastro_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_id", $recebe_id_medico_alterar);

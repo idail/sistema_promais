@@ -491,7 +491,7 @@
                             $("#rqe").val(resposta_medico[indice].rqe);
                             $("#uf_rqe").val(resposta_medico[indice].uf_rqe);
                             $("#nascimento").val(resposta_medico[indice].nascimento);
-                            $("#sexo-medico").val(resposta_medico[indice].sexo);
+                            $("#sexo_medico").val(resposta_medico[indice].sexo);
                             $("#contato").val(resposta_medico[indice].contato);
                             $("#categoria").val(resposta_medico[indice].categoria);
                         }
@@ -738,7 +738,8 @@
                         valor_contato_medico: recebe_contato_medico,
 
                         valor_empresa_id_medico: recebe_empresa_id_medico,
-                        valor_id_medico: $("#medico_id_alteracao").val()
+                        valor_id_medico: $("#medico_id_alteracao").val(),
+                        valor_categoria:recebe_categoria
                     },
                     success: function(retorno_pessoa) {
                         debugger;
