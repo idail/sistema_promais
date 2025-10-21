@@ -44,11 +44,31 @@
 
                     <div class="address-container">
                         <div class="form-group" style="flex: 15%; min-width: 150px;">
-                            <label for="crm">CRM:</label>
+                            <label for="crm">Conselho de classe de cada profissional:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-id-card"></i>
 
-                                <input type="text" id="crm" name="crm" class="form-control" style="width: 100%;">
+                                <!-- <input type="text" id="crm" name="crm" class="form-control" style="width: 100%;"> -->
+
+                                <select id="crm" name="crm" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="medico">CAU</option>
+                                    <option value="fonoaudiologo">COREN</option>
+                                    <option value="psicologo">CRM</option>
+                                    <option value="radiologista">CREA</option>
+                                    <option value="fisioterapeuta">CRFa</option>
+                                    <option value="enfermeiro">CFFa</option>
+                                    <option value="enfermeiro">CREFITO</option>
+                                    <option value="enfermeiro">CRO</option>
+                                    <option value="enfermeiro">CRP</option>
+                                    <option value="enfermeiro">CRQ</option>
+                                    <option value="enfermeiro">CRTR</option>
+                                    <option value="enfermeiro">RMS</option>
+                                    <option value="enfermeiro">Registro no MTE</option>
+                                    <option value="enfermeiro">CRC</option>
+                                    <option value="enfermeiro">CRBM</option>
+                                    <option value="enfermeiro">CFT</option>
+                                </select>
                             </div>
                         </div>
 
@@ -156,6 +176,22 @@
                     </div>
 
                     <div class="address-container">
+
+                        <div class="form-group" style="flex:20%;">
+                            <label for="sexo-medico">Categoria:</label>
+                            <div class="input-with-icon" style="width: 19%;">
+                                <i class="fas fa-stethoscope"></i>
+                                <select id="sexo_medico" name="sexo_medico" class="form-control">
+                                    <option value="selecione">Selecione</option>
+                                    <option value="medico">Médico</option>
+                                    <option value="fonoaudiologo">Fonoaudiólogo</option>
+                                    <option value="psicologo">Psicólogo</option>
+                                    <option value="radiologista">Radiologista</option>
+                                    <option value="fisioterapeuta">Fisioterapeuta</option>
+                                    <option value="enfermeiro">Enfermeiro</option>
+                                </select>
+                            </div>
+                        </div>
 
 
                         <!-- <div class="form-group" style="flex:20%;">
