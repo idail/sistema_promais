@@ -1513,7 +1513,7 @@
     <div class="tabs">
       <div class="tab active" data-step="0"><i class="fas fa-vial"></i> Exame<div class="step-annotation">(Passo 1)</div></div>
       <div class="tab" data-step="1"><i class="fas fa-tasks"></i> Preenchimento ECP<div class="step-annotation">(Passo 2)</div></div>
-      <div class="tab" data-step="2"><i class="fas fa-user-md"></i> Médicos<div class="step-annotation">(Passo 3)</div></div>
+      <div class="tab" data-step="2"><i class="fas fa-user-md"></i> Profissionais da Medicina<div class="step-annotation">(Passo 3)</div></div>
       <div class="tab" data-step="3"><i class="fas fa-exclamation-triangle"></i> Riscos<div class="step-annotation">(Passo 4)</div></div>
       <div class="tab" data-step="4"><i class="fas fa-stethoscope"></i> Aptidões e Exames<div class="step-annotation">(Passo 5)</div></div>
       <div class="tab" data-step="5"><i class="fas fa-money-bill-wave"></i> Modelos e Faturas<div class="step-annotation">(Passo 6)</div></div>
