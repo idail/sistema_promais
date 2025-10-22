@@ -628,6 +628,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         cargo_id = :recebe_cargo_id,
         medico_coordenador_id = :recebe_medico_coordenador_id,
         medico_clinica_id = :recebe_medico_clinica_id,
+        medico_fonoaudiologo = :recebe_medico_fonoaudiologo,
         riscos_selecionados = :recebe_riscos_selecionados,
         treinamentos_selecionados = :recebe_treinamentos_selecionados,
         insalubridade = :recebe_insalubridade_selecionado,
@@ -668,7 +669,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $bind_medico_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_clinica_selecionado");
 
-        $bind_medico_fonoaudiologo = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_fonoaudiologo", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_fonoaudiologo_selecionado");
+        $bind_medico_fonoaudiologo = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_fonoaudiologo", "medico_fonoaudiologo", ":recebe_medico_fonoaudiologo", "medico_fonoaudiologo_selecionado");
 
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
 
@@ -814,7 +815,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // $_SESSION["medico_clinica_selecionado"] = $valor_medico_clinica_id;
 
             // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_id, PDO::PARAM_STR);
-            $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $_POST["valor_medico_fonoaudiologo"], PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_medico_fonoaudiologo", $_POST["valor_medico_fonoaudiologo"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem

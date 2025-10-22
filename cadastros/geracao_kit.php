@@ -2555,18 +2555,16 @@ function popular_lista_fonoaudiologos_audiometria() {
 $(document).on("change", "#fonoaudiologos", function (e) {
   e.preventDefault();
   debugger;
-  window.idSelecionado = $(this).val();
+  window.idSelecionado = parseInt($(this).val());
 
   console.log("👂 ID do fonoaudiólogo selecionado:", window.idSelecionado);
   alert("Alterado — ID: " + window.idSelecionado);
 
   window.medico_fonoaudiologo = true;
-      if(typeof window.grava_medico_clinica_kit === "function")
-      {
-        window.grava_medico_clinica_kit({
-                id: window.idSelecionado || null
-              });
-      }
+  if(typeof window.gravar_medico_fonoaudiologo === "function")
+  {
+    window.gravar_medico_fonoaudiologo(window.idSelecionado);
+  }
 });
 
 
@@ -12820,7 +12818,7 @@ modal.innerHTML = `
         }else
         {
 
-          console.log(valores);
+              console.log(valores);
 
               let recebe_id;
               if(valores.id !== undefined)
@@ -12878,6 +12876,64 @@ modal.innerHTML = `
                },
             }); 
         }
+    }
+
+    function gravar_medico_fonoaudiologo(id)
+    {
+      debugger;
+      if(window.recebe_acao && window.recebe_acao === "editar")
+      {
+
+      }else{
+        $.ajax({
+                  url: "cadastros/processa_geracao_kit.php",
+                  type: "POST",
+                  dataType: "json",
+                  data: {
+                    processo_geracao_kit: "incluir_valores_kit",
+                    valor_medico_fonoaudiologo: id,
+                  },
+                  success: function(retorno_exame_geracao_kit) {
+                    debugger;
+
+                    const mensagemSucesso = `
+                          <div id="medico-fonoaudiologo-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                              
+                              <div>
+                                
+                                <div>KIT atualizado com sucesso.</div>
+                              </div>
+                            </div>
+                          </div>
+                    `;
+
+                    // Remove mensagem anterior se existir
+                    $("#medico-fonoaudiologo-gravado").remove();
+                        
+                    // Adiciona a nova mensagem acima das abas
+                    $(".tabs-container").before(mensagemSucesso);
+
+                    // Configura o fade out após 5 segundos
+                    setTimeout(function() {
+                      $("#medico-fonoaudiologo-gravado").fadeOut(500, function() {
+                      $(this).remove();
+                      });
+                    }, 5000);
+
+
+                    // $("#exame-gravado").html(retorno_exame_geracao_kit);
+                    // $("#exame-gravado").show();
+                    // $("#exame-gravado").fadeOut(4000);
+                    console.log(retorno_exame_geracao_kit);
+                    // ajaxEmExecucao = false; // libera para nova requisição
+                  },
+                  error: function(xhr, status, error) {
+                    console.log("Falha ao incluir exame: " + error);
+                    // ajaxEmExecucao = false; // libera para tentar de novo
+               },
+          }); 
+      }
     }
 
     function renderAssinatura(pessoa) {
