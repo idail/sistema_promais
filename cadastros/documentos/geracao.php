@@ -8159,6 +8159,8 @@ function printSection(button) {
                         $listaAptidoes[$apt['id']] = trim($apt['nome']); // ajuste conforme nome da coluna no banco
                     }
 
+                    // var_dump($listaAptidoes);
+
                     // transforma o JSON da sessão em array associativo
                     $aptidoesSelecionadas = [];
                     if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
@@ -8172,70 +8174,26 @@ function printSection(button) {
                         }
                     }
 
-                    // $listaAptidoes = [
-                    //     "trabalho em altura"            => "Trabalho em Altura",
-                    //     "manusear produtos alimentícios" => "Manusear Produtos Alimentícios",
-                    //     "eletricidade"                  => "Eletricidade",
-                    //     "operar máquinas"               => "Operar Máquinas",
-                    //     "conduzir veículos"             => "Conduzir Veículos",
-                    //     "trabalho a quente"             => "Trabalho a Quente",
-                    //     "inflamáveis"                   => "Inflamáveis",
-                    //     "radiações ionizantes"          => "Radiações Ionizantes",
-                    //     "espaço confinado"              => "Espaço Confinado",
-                    //     "inspeções e manutenções"       => "Inspeções e Manutenções"
-                    // ];
-
-                    // // transforma o JSON da sessão em array associativo
-                    // $aptidoesSelecionadas = [];
-                    // if (isset($_SESSION["aptidao_selecionado"]) && $_SESSION["aptidao_selecionado"] !== "") {
-                    //     var_dump($_SESSION["aptidao_selecionado"]);
+                    // var_dump($aptidoesSelecionadas);
 
 
-                    //     $dataApt = json_decode($_SESSION["aptidao_selecionado"], true);
-                    //     if (json_last_error() === JSON_ERROR_NONE && is_array($dataApt)) {
-                    //         foreach ($dataApt as $apt) {
-                    //             if (isset($apt['nome'])) {
-                    //                 $aptidoesSelecionadas[] = strtolower(trim($apt['nome']));
-                    //             }
-                    //         }
-                    //     }
-                    // }
+                //     $aptidoesTabela .= '
+                // <table>
+                //     <tr>
+                //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                //     </tr>';
+                //     foreach ($linhas as $par) {
+                //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
 
-                    // // função para marcar sim/não
-                    // function marcarApt($nomeExibicao, $aptidoesSelecionadas)
-                    // {
-                    //     $nomeLower = strtolower($nomeExibicao);
-                    //     $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-                    //     $nao  = $sim === "X" ? " " : "X";
-                    //     return "( $sim ) Sim ( $nao ) Não";
-                    // }
-
-                    // // define os pares para exibição (duas colunas por linha)
-                    // $linhas = [
-                    //     ["Trabalho em Altura", "Manusear Produtos Alimentícios"],
-                    //     ["Eletricidade", "Operar Máquinas"],
-                    //     ["Conduzir Veículos", "Trabalho a Quente"],
-                    //     ["Inflamáveis", "Radiações Ionizantes"],
-                    //     ["Espaço Confinado", "Inspeções e Manutenções"]
-                    // ];
-
-                    $aptidoesTabela .= '
-                <table>
-                    <tr>
-                        <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-                    </tr>';
-                    foreach ($linhas as $par) {
-                        $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
-                        $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
-
-                        $aptidoesTabela .= '
-                    <tr>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                        <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                    </tr>';
-                    }
-                    $aptidoesTabela .= '
-                </table>';
+                //         $aptidoesTabela .= '
+                //     <tr>
+                //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                //     </tr>';
+                //     }
+                //     $aptidoesTabela .= '
+                // </table>';
 
                     // =====================================================================
 
@@ -8316,21 +8274,21 @@ function printSection(button) {
                 }
             }
 
-            // function marcar($valor, $tipoExame)
-            // {
-            //     return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
-            // }
+            function marcar($valor_audiometria, $tipoExame_audiometria)
+            {
+                return ($tipoExame_audiometria === strtolower($valor_audiometria)) ? '(X)' : '( )';
+            }
 
             if (!empty($aptidoesSelecionadas) && is_array($aptidoesSelecionadas)) {
 
                 // função para marcar Sim/Não
-                function marcarAptidao($nome, $aptidoesSelecionadas)
-                {
-                    $nomeLower = strtolower(trim($nome));
-                    $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-                    $nao  = $sim === "X" ? " " : "X";
-                    return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
-                }
+                // function marcarAptidao($nome, $aptidoesSelecionadas)
+                // {
+                //     $nomeLower = strtolower(trim($nome));
+                //     $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+                //     $nao  = $sim === "X" ? " " : "X";
+                //     return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+                // }
 
                 // gerar tabela apenas com as selecionadas
                 $aptidoesTabela  = '

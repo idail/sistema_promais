@@ -653,14 +653,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // 🔹 Ajusta o SQL para campos opcionais
         $bind_tipo_exame = bindCondicionalSession($instrucao_atualizar_kit, "valor_exame", "tipo_exame", ":recebe_tipo_exame", "exame_selecionado");
+
         $bind_empresa_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_empresa", "empresa_id", ":recebe_empresa_id", "empresa_selecionado");
+
         $bind_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_clinica", "clinica_id", ":recebe_clinica_id", "clinica_selecionado");
+
         $bind_pessoa_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_colaborador", "pessoa_id", ":recebe_pessoa_id", "colaborador_selecionado");
+
         $bind_motorista = bindCondicionalSession($instrucao_atualizar_kit, "valor_motorista", "motorista", ":recebe_motorista", "motorista_selecionado");
+
         $bind_cargo = bindCondicionalSession($instrucao_atualizar_kit, "valor_cargo", "cargo_id", ":recebe_cargo_id", "cargo_selecionado");
+
         $bind_medico_coordenador_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_coordenador_id", "medico_coordenador_id", ":recebe_medico_coordenador_id", "medico_coordenador_selecionado");
+
         $bind_medico_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_clinica_selecionado");
+
+        $bind_medico_fonoaudiologo = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_fonoaudiologo", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_fonoaudiologo_selecionado");
+
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
+
         $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
 
 
@@ -793,6 +804,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_id, PDO::PARAM_STR);
             $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $_POST["valor_medico_clinica_id"], PDO::PARAM_STR);
+        }
+
+        // 🔹 Faz bind dos campos opcionais se vierem
+        if ($bind_medico_fonoaudiologo) {
+            // $valor_medico_clinica_id = $_POST["valor_medico_clinica_id"];
+
+            // // Atualiza a sessão com o valor que veio do POST
+            // $_SESSION["medico_clinica_selecionado"] = $valor_medico_clinica_id;
+
+            // $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_id, PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_medico_clinica_id", $_POST["valor_medico_fonoaudiologo"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
