@@ -2485,6 +2485,39 @@ function renderAssinatura_examinador(pessoa) {
   return html;
 }
 
+function popular_lista_fonoaudiologos_audiometria() {
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    method: "GET",
+    dataType: "json",
+    data: {
+      processo_geracao_kit: "buscar_fonoaudiologos_kit",
+    },
+    success: function (resposta_fonoaudiologos) {
+      debugger;
+      console.log("✅ Médicos fonoaudiólogos retornados:", resposta_fonoaudiologos);
+
+      // Seleciona o elemento <select>
+      const selectFono = document.getElementById("fonoaudiologos");
+
+      // Limpa qualquer opção existente (mantém apenas o "Selecione o profissional")
+      selectFono.innerHTML = '<option value="">Selecione o profissional</option>';
+
+      // Preenche o select com os profissionais retornados
+      resposta_fonoaudiologos.forEach(fono => {
+        const option = document.createElement("option");
+        option.value = fono.id;       // ID no value
+        option.textContent = fono.nome; // Nome exibido
+        selectFono.appendChild(option);
+      });
+    },
+    error: function (xhr, status, error) {
+      console.error("❌ Falha ao buscar fonoaudiólogos:", error);
+    },
+  });
+}
+
+
 
 // 🔹 Função assíncrona que aguarda o processamento completo
 async function popular_medico_relacionados_empresa_edicao() {
@@ -2643,6 +2676,8 @@ async function popular_medico_relacionados_clinica_edicao() {
           {
             $("#exibi-clinica-selecionada").html(window.kit_clinica.nome_fantasia);
           }
+
+          try { popular_lista_fonoaudiologos_audiometria(); } catch (err) { /* noop */ }
         }, 50);
       }
     });
@@ -2848,7 +2883,7 @@ async function popular_medico_relacionados_clinica_edicao() {
           <div class="ecp-field" style="margin-top: 15px;">
             <label class="ecp-label">Audiometria</label>
             <div class="ecp-input-group" style="width: 100%;">
-              <select id="selectProfissional" class="ecp-input" style="width: 100%;">
+              <select id="fonoaudiologos" class="ecp-input" style="width: 100%;">
                 <option value="">Selecione o profissional</option>
               </select>
             </div>

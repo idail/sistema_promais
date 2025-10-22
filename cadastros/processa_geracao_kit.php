@@ -2323,5 +2323,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_empresa_principal_pessoa->execute();
         $resultado_busca_empresa_principal_pessoa = $comando_busca_empresa_principal_pessoa->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_empresa_principal_pessoa);
+    }else if($recebe_processo_geracao_kit === "buscar_fonoaudiologos_kit")
+    {
+        $instrucao_busca_fonoaudiologo_audiometria = "select * from medicos where categoria = :recebe_categoria and empresa_id = :recebe_empresa_id";
+        $comando_busca_fonoaudiologo_audiometria = $pdo->prepare($instrucao_busca_fonoaudiologo_audiometria);
+        $comando_busca_fonoaudiologo_audiometria->bindValue(":recebe_categoria","fonoaudiologo");
+        $comando_busca_fonoaudiologo_audiometria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_fonoaudiologo_audiometria->execute();
+        $resultado_busca_fonoaudiologo_audiometria = $comando_busca_fonoaudiologo_audiometria->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_fonoaudiologo_audiometria);
     }
 }
