@@ -2836,15 +2836,25 @@ async function popular_medico_relacionados_clinica_edicao() {
 
           <!-- Médico Emitente/Examinador -->
           <div class="ecp-field">
-            <label class="ecp-label">Médico Emitente/Examinador da Clínica</label>
-            <div class="ecp-input-group">
-              <input type="text" id="inputMedico" class="ecp-input" placeholder="Digite para procurar..." onkeyup="mostrarListaProfissionais('medico')">
-              <button class="ecp-button-add" onclick="abrirModalProfissionais('modalMedico')">+</button>
+          <label class="ecp-label">Médico Emitente/Examinador da Clínica</label>
+          <div class="ecp-input-group">
+            <input type="text" id="inputMedico" class="ecp-input" placeholder="Digite para procurar..." onkeyup="mostrarListaProfissionais('medico')">
+            <button class="ecp-button-add" onclick="abrirModalProfissionais('modalMedico')">+</button>
+          </div>
+          <div class="autocomplete-list" id="listaMedico"></div>
+          <div id="resultadoMedico"></div>
+
+          <!-- Lista de Profissionais -->
+          <div class="ecp-field" style="margin-top: 15px;">
+            <label class="ecp-label">Audiometria</label>
+            <div class="ecp-input-group" style="width: 100%;">
+              <select id="selectProfissional" class="ecp-input" style="width: 100%;">
+                <option value="">Selecione o profissional</option>
+              </select>
             </div>
-            <div class="autocomplete-list" id="listaMedico"></div>
-            <div id="resultadoMedico"></div>
           </div>
         </div>
+
       </div>
 
       <!-- Modal Coordenador -->
