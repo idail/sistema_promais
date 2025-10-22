@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION["codigo_kit"] = $recebe_codigo_gerado_kit;
         echo json_encode($recebe_codigo_gerado_kit);
     } else if ($recebe_processo_geracao_kit === "incluir_valores_kit") {
-        
+
 
         // EXAME
         // $valor_exame_bind = null;
@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
         // // EMPRESA
         // $valor_empresa_bind = null;
@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
         // // CLÍNICA
         // $valor_clinica_bind = null;
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-       
+
 
         // // COLABORADOR
         // $valor_colaborador_bind = null;
@@ -138,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
         // // CARGO
         // $valor_cargo_bind = null;
@@ -153,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
 
         // // MOTORISTA
@@ -170,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
 
         // // MÉDICO COORDENADOR
@@ -186,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
 
         // // MÉDICO CLÍNICA
@@ -202,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
 
         // // RISCOS
@@ -218,7 +218,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
         // // TREINAMENTOS
         // $valor_treinamento_selecionado_bind = null;
@@ -301,7 +301,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //     $valor_aptidao_selecionado_bind = $_SESSION["aptidao_selecionado"];
         // }
 
-        
+
 
         // // EXAMES SELECIONADOS
         // $valor_exames_selecionado_bind = null; // garante que existe
@@ -323,7 +323,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-        
+
 
 
         // //TIPO ORCAMENTO
@@ -345,7 +345,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
 
         // //TIPO DADO BANCARIO
@@ -366,7 +366,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //     $valor_tipo_dado_bancario_bind = $_SESSION["tipo_dado_bancario"];
         // }
 
-        
+
 
         // // Agência/Conta
         // $valor_dado_bancario_agencia_conta_bind = null; // garante que existe
@@ -388,7 +388,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-        
+
 
         // // PIX
         // $valor_dado_bancario_pix_bind = null; // garante que existe
@@ -428,7 +428,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // }
 
 
-        
+
 
         // // TOTAL
         // $valor_total_bind = null; // garante que existe
@@ -663,7 +663,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
         $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
 
-        
+
 
         $bind_insalubridade = bindCondicionalLaudo(
             $instrucao_atualizar_kit,
@@ -1599,7 +1599,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
         $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
 
-        
+
 
         $bind_insalubridade = bindCondicionalLaudo(
             $instrucao_atualizar_kit,
@@ -1935,6 +1935,230 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
             echo json_encode("KIT não foi atualizado com sucesso");
         }
+    } else if ($recebe_processo_geracao_kit === "duplicar_kit") {
+        $recebe_valores_kit_duplicar = $_POST["valores_kit"];
+
+        $instrucao_duplicar_kit = "insert into kits(tipo_exame,status,empresa_id_principal,empresa_id,clinica_id,cargo_id,pessoa_id,
+        motorista,medico_coordenador_id,medico_clinica_id,riscos_selecionados,treinamentos_selecionados
+        ,insalubridade,porcentagem,periculosidade,aposentado_especial,agente_nocivo,ocorrencia_gfip,aptidoes_selecionadas,
+        exames_selecionados,tipo_orcamento,tipo_dado_bancario,dado_bancario_agencia_conta,dado_bancario_pix,assinatura_digital)
+        values(:recebe_tipo_exame,:recebe_status,:recebe_empresa_id_principal,:recebe_empresa_id,:recebe_clinica_id,:recebe_cargo_id,:recebe_pessoa_id,
+        :recebe_motorista,:recebe_medico_coordenador_id,:recebe_medico_clinica_id,:recebe_riscos_selecionados,:recebe_treinamentos_selecionados,
+        :recebe_insalubridade,:recebe_porcentagem,:recebe_periculosidade,:recebe_aposentado_especial,:recebe_agente_nocivo,:recebe_ocorrencia_gfip,:recebe_aptidoes_selecionadas,
+        :recebe_exames_selecionados,:recebe_tipo_orcamento,:recebe_tipo_dado_bancario,:recebe_dado_bancario_agencia_conta,:recebe_dado_bancario_pix,
+        :recebe_assinatura_digital)";
+
+
+        $comando_duplicar_kit = $pdo->prepare($instrucao_duplicar_kit);
+
+
+        // 🔹 Captura o valor
+        $valor_tipo_exame = $recebe_valores_kit_duplicar["tipo_exame"] ?? null;
+        $valor_empresa_id_principal = $recebe_valores_kit_duplicar["empresa_id_principal"] ?? null;
+        $valor_empresa_id = $recebe_valores_kit_duplicar["empresa_id"] ?? null;
+        $valor_clinica_id = $recebe_valores_kit_duplicar["clinica_id"] ?? null;
+        $valor_cargo_id   = $recebe_valores_kit_duplicar["cargo_id"] ?? null;
+        $valor_pessoa_id  = $recebe_valores_kit_duplicar["pessoa_id"] ?? null;
+        $valor_motorista  = $recebe_valores_kit_duplicar["motorista"] ?? null;
+        $valor_medico_coordenador_id  = $recebe_valores_kit_duplicar["medico_coordenador_id"] ?? null;
+        $valor_medico_clinica_id  = $recebe_valores_kit_duplicar["medico_clinica_id"] ?? null;
+        $valor_riscos_selecionados  = $recebe_valores_kit_duplicar["riscos_selecionados"] ?? null;
+        $valor_treinamentos_selecionados  = $recebe_valores_kit_duplicar["treinamentos_selecionados"] ?? null;
+        $valor_insalubridade  = $recebe_valores_kit_duplicar["insalubridade"] ?? null;
+        $valor_porcentagem  = $recebe_valores_kit_duplicar["porcentagem"] ?? null;
+        $valor_periculosidade  = $recebe_valores_kit_duplicar["periculosidade"] ?? null;
+        $valor_aposentado_especial  = $recebe_valores_kit_duplicar["aposentado_especial"] ?? null;
+        $valor_agente_nocivo  = $recebe_valores_kit_duplicar["agente_nocivo"] ?? null;
+        $valor_ocorrencia_gfip  = $recebe_valores_kit_duplicar["ocorrencia_gfip"] ?? null;
+        $valor_aptidoes_selecionadas  = $recebe_valores_kit_duplicar["aptidoes_selecionadas"] ?? null;
+        $valor_exames_selecionados  = $recebe_valores_kit_duplicar["exames_selecionados"] ?? null;
+        $valor_tipo_orcamento  = $recebe_valores_kit_duplicar["tipo_orcamento"] ?? null;
+        $valor_tipo_dado_bancario  = $recebe_valores_kit_duplicar["tipo_dado_bancario"] ?? null;
+        $valor_dado_bancario_agencia_conta  = $recebe_valores_kit_duplicar["dado_bancario_agencia_conta"] ?? null;
+        $valor_dado_bancario_pix  = $recebe_valores_kit_duplicar["dado_bancario_pix"] ?? null;
+        $valor_assinatura_digital  = $recebe_valores_kit_duplicar["assinatura_digital"] ?? null;
+
+        // 🔹 Se o valor for nulo ou vazio, envia NULL corretamente
+        if ($valor_tipo_exame === null || $valor_tipo_exame === '') {
+            $comando_duplicar_kit->bindValue(":recebe_tipo_exame", null, PDO::PARAM_NULL);
+        } else {
+            $comando_duplicar_kit->bindValue(":recebe_tipo_exame", $valor_tipo_exame, PDO::PARAM_STR);
+        }
+
+        $comando_duplicar_kit->bindValue(":recebe_status","FINALIZADO");
+
+        if($valor_empresa_id_principal === null || $valor_empresa_id_principal === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_empresa_id_principal", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_empresa_id_principal", $valor_empresa_id_principal, PDO::PARAM_STR);
+        }
+
+        if($valor_empresa_id === null || $valor_empresa_id === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_empresa_id", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_empresa_id", $valor_empresa_id, PDO::PARAM_STR);
+        }
+
+        if($valor_clinica_id === null || $valor_clinica_id === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_clinica_id", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_clinica_id", $valor_clinica_id, PDO::PARAM_STR);
+        }
+
+        if($valor_cargo_id === null || $valor_cargo_id === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_cargo_id", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_cargo_id", $valor_cargo_id, PDO::PARAM_STR);
+        }
+
+        if($valor_pessoa_id === null || $valor_pessoa_id === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_pessoa_id", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_pessoa_id", $valor_pessoa_id, PDO::PARAM_STR);
+        }
+
+        if($valor_motorista === null || $valor_motorista === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_motorista", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_motorista", $valor_motorista, PDO::PARAM_STR);
+        }
+
+        if($valor_medico_coordenador_id === null || $valor_medico_coordenador_id === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_medico_coordenador_id", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_medico_coordenador_id", $valor_medico_coordenador_id, PDO::PARAM_STR);
+        }
+
+        if($valor_medico_clinica_id === null || $valor_medico_clinica_id === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_medico_clinica_id", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_medico_clinica_id", $valor_medico_clinica_id, PDO::PARAM_STR);
+        }
+
+        if($valor_riscos_selecionados === null || $valor_riscos_selecionados === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_riscos_selecionados", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_riscos_selecionados", $valor_riscos_selecionados, PDO::PARAM_STR);
+        }
+
+        if($valor_treinamentos_selecionados === null || $valor_treinamentos_selecionados === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_treinamentos_selecionados", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_treinamentos_selecionados", $valor_treinamentos_selecionados, PDO::PARAM_STR);
+        }
+
+        if($valor_insalubridade === null || $valor_insalubridade === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_insalubridade", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_insalubridade", $valor_insalubridade, PDO::PARAM_STR);
+        }
+
+        if($valor_porcentagem === null || $valor_porcentagem === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_porcentagem", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_porcentagem", $valor_porcentagem, PDO::PARAM_STR);
+        }
+
+        if($valor_periculosidade === null || $valor_periculosidade === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_periculosidade", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_periculosidade", $valor_periculosidade, PDO::PARAM_STR);
+        }
+
+        if($valor_aposentado_especial === null || $valor_aposentado_especial === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_aposentado_especial", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_aposentado_especial", $valor_aposentado_especial, PDO::PARAM_STR);
+        }
+
+        if($valor_agente_nocivo === null || $valor_agente_nocivo === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_agente_nocivo", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_agente_nocivo", $valor_agente_nocivo, PDO::PARAM_STR);
+        }
+
+        if($valor_ocorrencia_gfip === null || $valor_ocorrencia_gfip === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_ocorrencia_gfip", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_ocorrencia_gfip", $valor_ocorrencia_gfip, PDO::PARAM_STR);
+        }
+
+        if($valor_ocorrencia_gfip === null || $valor_ocorrencia_gfip === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_ocorrencia_gfip", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_ocorrencia_gfip", $valor_ocorrencia_gfip, PDO::PARAM_STR);
+        }
+
+        if($valor_aptidoes_selecionadas === null || $valor_aptidoes_selecionadas === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_aptidoes_selecionadas", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_aptidoes_selecionadas", $valor_aptidoes_selecionadas, PDO::PARAM_STR);
+        }
+
+        if($valor_exames_selecionados === null || $valor_exames_selecionados === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_exames_selecionados", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_exames_selecionados", $valor_exames_selecionados, PDO::PARAM_STR);
+        }
+
+        if($valor_tipo_orcamento === null || $valor_tipo_orcamento === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_tipo_orcamento", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_tipo_orcamento", $valor_tipo_orcamento, PDO::PARAM_STR);
+        }
+
+        if($valor_tipo_dado_bancario === null || $valor_tipo_dado_bancario === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_tipo_dado_bancario", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_tipo_dado_bancario", $valor_tipo_dado_bancario, PDO::PARAM_STR);
+        }
+
+        if($valor_dado_bancario_agencia_conta === null || $valor_tipo_dado_bancario === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_dado_bancario_agencia_conta", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_dado_bancario_agencia_conta", $valor_dado_bancario_agencia_conta, PDO::PARAM_STR);
+        }
+
+        if($valor_dado_bancario_pix === null || $valor_dado_bancario_pix === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_dado_bancario_pix", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_dado_bancario_pix", $valor_dado_bancario_pix, PDO::PARAM_STR);
+        }
+
+        if($valor_assinatura_digital === null || $valor_assinatura_digital === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_assinatura_digital", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_assinatura_digital", $valor_assinatura_digital, PDO::PARAM_STR);
+        }
+
+
+        $resultado_duplicar_kit = $comando_duplicar_kit->execute();
+
+        echo json_encode($resultado_duplicar_kit);
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $recebe_processo_geracao_kit = $_GET["processo_geracao_kit"];
@@ -2074,5 +2298,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo json_encode($resultado_busca_pessoa);
     } else if ($recebe_processo_geracao_kit === "buscar_empresa_primeiro_kit") {
         echo json_encode($_SESSION["empresa_id"]);
+    } else if ($recebe_processo_geracao_kit === "buscar_empresa_principal_pessoa") {
+        $instrucao_busca_empresa_principal_pessoa = "select * from pessoas where empresa_id = :recebe_empresa_id";
+        $comando_busca_empresa_principal_pessoa = $pdo->prepare($instrucao_busca_empresa_principal_pessoa);
+        $comando_busca_empresa_principal_pessoa->bindValue(":recebe_empresa_id", $_GET["valor_empresa_id_pessoa"]);
+        $comando_busca_empresa_principal_pessoa->execute();
+        $resultado_busca_empresa_principal_pessoa = $comando_busca_empresa_principal_pessoa->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_empresa_principal_pessoa);
     }
 }

@@ -10698,6 +10698,24 @@ modal.innerHTML = `
       window.lastFocusedElement = document.activeElement;
     }
 
+    function requisitarEmpresaPrincipalPessoa(codigo_empresa) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_empresa_principal_pessoa",valor_empresa_id_pessoa: codigo_empresa},
+          success: function(resposta) {
+            console.log("Empresa retornada:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     async function duplicarKit(id)
     {
       debugger;
@@ -10708,12 +10726,35 @@ modal.innerHTML = `
 
       let recebe_dados_kit_especifico = await requisitarDadosKITEspecifico(id);
 
+      let recebe_empresa_principal_pessoa = await requisitarEmpresaPrincipalPessoa(window.recebe_empresa_id_pessoa);
+
       if(recebe_dados_kit_especifico.empresa_id_principal === window.recebe_empresa_id_pessoa)
       {
         alert("KIT já existente");
       }
 
       console.log(recebe_dados_kit_especifico);
+
+      console.log(recebe_empresa_principal_pessoa);
+
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          processo_geracao_kit: "duplicar_kit",
+          valores_kit: recebe_dados_kit_especifico,
+        },
+        success: function(retorno_duplicar_kit)
+        {
+          debugger;
+          console.log(retorno_duplicar_kit);
+        },
+        error:function(xhr,status,error)
+        {
+
+        },
+      });
     }
     
     function editarKit(kitId) {
