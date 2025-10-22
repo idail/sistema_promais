@@ -10653,6 +10653,21 @@ modal.innerHTML = `
             <span style="font-size: 0.75rem; font-weight: 500; color: #4b5563;">Visualizar KIT Completo</span>
           </button>
         </div>
+
+        <!-- Mensagem oculta -->
+        <div id="mensagemDuplicado" style="
+          display: none;
+          margin-top: 14px;
+          padding: 10px 14px;
+          background-color: #dcfce7;
+          color: #166534;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          text-align: center;
+          font-weight: 500;
+        ">
+          ✅ KIT duplicado com sucesso!
+        </div>
       </div>
     </div>
     
@@ -10749,6 +10764,19 @@ modal.innerHTML = `
         {
           debugger;
           console.log(retorno_duplicar_kit);
+
+          if (retorno_duplicar_kit === true) {
+            const mensagem = document.getElementById("mensagemDuplicado");
+            if (mensagem) {
+              mensagem.style.display = "block"; // Mostra a mensagem
+              mensagem.textContent = "✅ KIT duplicado com sucesso!";
+
+              // Opcional: esconder automaticamente depois de alguns segundos
+              setTimeout(() => {
+                mensagem.style.display = "none";
+              }, 4000);
+            }
+          }
         },
         error:function(xhr,status,error)
         {
