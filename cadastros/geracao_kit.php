@@ -2485,6 +2485,8 @@ function renderAssinatura_examinador(pessoa) {
   return html;
 }
 
+window.medico_fonoaudiologo;
+
 function popular_lista_fonoaudiologos_audiometria() {
   $.ajax({
     url: "cadastros/processa_geracao_kit.php",
@@ -2516,6 +2518,24 @@ function popular_lista_fonoaudiologos_audiometria() {
     },
   });
 }
+
+$(document).on("change", "#fonoaudiologos", function (e) {
+  e.preventDefault();
+  debugger;
+  const idSelecionado = $(this).val();
+
+  console.log("👂 ID do fonoaudiólogo selecionado:", idSelecionado);
+  alert("Alterado — ID: " + idSelecionado);
+
+  window.medico_fonoaudiologo = true;
+      if(typeof window.grava_medico_clinica_kit === "function")
+      {
+        window.grava_medico_clinica_kit({
+                id: idSelecionado || null
+              });
+      }
+});
+
 
 
 
@@ -12706,63 +12726,116 @@ modal.innerHTML = `
           });
         }else
         {
-          console.log(valores);
 
-          let recebe_id;
-          if(valores.id !== undefined)
+          if(window.medico_fonoaudiologo)
           {
-            recebe_id = valores.id;
-          }else{
-            recebe_id = valores;
-          }
-          $.ajax({
-            url: "cadastros/processa_geracao_kit.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-              processo_geracao_kit: "incluir_valores_kit",
-              valor_medico_clinica_id: recebe_id,
-            },
-            success: function(retorno_exame_geracao_kit) {
-              debugger;
+            $.ajax({
+                  url: "cadastros/processa_geracao_kit.php",
+                  type: "POST",
+                  dataType: "json",
+                  data: {
+                    processo_geracao_kit: "incluir_valores_kit",
+                    valor_medico_clinica_id: valores.id,
+                  },
+                  success: function(retorno_exame_geracao_kit) {
+                    debugger;
 
-              const mensagemSucesso = `
-                    <div id="medico-clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                      <div style="display: flex; align-items: center; justify-content: center;">
+                    const mensagemSucesso = `
+                          <div id="medico-clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                              
+                              <div>
+                                
+                                <div>KIT atualizado com sucesso.</div>
+                              </div>
+                            </div>
+                          </div>
+                    `;
+
+                    // Remove mensagem anterior se existir
+                    $("#medico-clinica-gravado").remove();
                         
-                        <div>
-                          
-                          <div>KIT atualizado com sucesso.</div>
-                        </div>
-                      </div>
-                    </div>
-              `;
+                    // Adiciona a nova mensagem acima das abas
+                    $(".tabs-container").before(mensagemSucesso);
 
-              // Remove mensagem anterior se existir
-              $("#medico-clinica-gravado").remove();
-                  
-              // Adiciona a nova mensagem acima das abas
-              $(".tabs-container").before(mensagemSucesso);
-
-              // Configura o fade out após 5 segundos
-              setTimeout(function() {
-                $("#medico-clinica-gravado").fadeOut(500, function() {
-                $(this).remove();
-                });
-              }, 5000);
+                    // Configura o fade out após 5 segundos
+                    setTimeout(function() {
+                      $("#medico-clinica-gravado").fadeOut(500, function() {
+                      $(this).remove();
+                      });
+                    }, 5000);
 
 
-              // $("#exame-gravado").html(retorno_exame_geracao_kit);
-              // $("#exame-gravado").show();
-              // $("#exame-gravado").fadeOut(4000);
-              console.log(retorno_exame_geracao_kit);
-              // ajaxEmExecucao = false; // libera para nova requisição
-            },
-            error: function(xhr, status, error) {
-              console.log("Falha ao incluir exame: " + error);
-              // ajaxEmExecucao = false; // libera para tentar de novo
-            },
-          });
+                    // $("#exame-gravado").html(retorno_exame_geracao_kit);
+                    // $("#exame-gravado").show();
+                    // $("#exame-gravado").fadeOut(4000);
+                    console.log(retorno_exame_geracao_kit);
+                    // ajaxEmExecucao = false; // libera para nova requisição
+                  },
+                  error: function(xhr, status, error) {
+                    console.log("Falha ao incluir exame: " + error);
+                    // ajaxEmExecucao = false; // libera para tentar de novo
+                  },
+                }); 
+          }else{
+            console.log(valores);
+
+              let recebe_id;
+              if(valores.id !== undefined)
+              {
+                recebe_id = valores.id;
+              }else{
+                recebe_id = valores;
+              }
+                $.ajax({
+                  url: "cadastros/processa_geracao_kit.php",
+                  type: "POST",
+                  dataType: "json",
+                  data: {
+                    processo_geracao_kit: "incluir_valores_kit",
+                    valor_medico_clinica_id: recebe_id,
+                  },
+                  success: function(retorno_exame_geracao_kit) {
+                    debugger;
+
+                    const mensagemSucesso = `
+                          <div id="medico-clinica-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                              
+                              <div>
+                                
+                                <div>KIT atualizado com sucesso.</div>
+                              </div>
+                            </div>
+                          </div>
+                    `;
+
+                    // Remove mensagem anterior se existir
+                    $("#medico-clinica-gravado").remove();
+                        
+                    // Adiciona a nova mensagem acima das abas
+                    $(".tabs-container").before(mensagemSucesso);
+
+                    // Configura o fade out após 5 segundos
+                    setTimeout(function() {
+                      $("#medico-clinica-gravado").fadeOut(500, function() {
+                      $(this).remove();
+                      });
+                    }, 5000);
+
+
+                    // $("#exame-gravado").html(retorno_exame_geracao_kit);
+                    // $("#exame-gravado").show();
+                    // $("#exame-gravado").fadeOut(4000);
+                    console.log(retorno_exame_geracao_kit);
+                    // ajaxEmExecucao = false; // libera para nova requisição
+                  },
+                  error: function(xhr, status, error) {
+                    console.log("Falha ao incluir exame: " + error);
+                    // ajaxEmExecucao = false; // libera para tentar de novo
+                  },
+                }); 
+          }
         }
     }
 
