@@ -1856,6 +1856,7 @@ function renderResultadoProfissional(tipo) {
   container.appendChild(chip);
 }
 
+    window.idSelecionado;
     // Restaura os campos da aba Médicos a partir do estado salvo
     function applyMedicosStateToUI() {
       try {
@@ -1894,6 +1895,38 @@ function renderResultadoProfissional(tipo) {
         }
       } catch (e) { /* noop */ }
     }
+
+    function repopular_medico_fonoaudiologo_audiometria() {
+  debugger;
+
+  const select = document.getElementById("fonoaudiologos");
+
+  // Garante que o select existe e que há um valor a selecionar
+  if (!select || !window.idSelecionado) {
+    console.warn("⚠️ Select não encontrado ou idSelecionado indefinido.");
+    return;
+  }
+
+  console.log("🎯 ID selecionado anteriormente:", window.idSelecionado);
+
+  // Define o valor do select
+  select.value = window.idSelecionado;
+
+  // Se o option ainda não existir (ex: carregado via AJAX depois), aguarda e tenta novamente
+  if (select.value !== window.idSelecionado) {
+    const observer = new MutationObserver(() => {
+      select.value = window.idSelecionado;
+      if (select.value === window.idSelecionado) {
+        observer.disconnect();
+        console.log("✅ Valor restaurado após carregamento dinâmico:", window.idSelecionado);
+      }
+    });
+
+    // Observa mudanças no select (por exemplo, opções adicionadas depois via AJAX)
+    observer.observe(select, { childList: true });
+  }
+}
+
 
       // Delegação de clique nas listas de autocomplete (se existirem)
       const bindAuto = (listaId, inputId, tipo) => {
@@ -2522,16 +2555,16 @@ function popular_lista_fonoaudiologos_audiometria() {
 $(document).on("change", "#fonoaudiologos", function (e) {
   e.preventDefault();
   debugger;
-  const idSelecionado = $(this).val();
+  window.idSelecionado = $(this).val();
 
-  console.log("👂 ID do fonoaudiólogo selecionado:", idSelecionado);
-  alert("Alterado — ID: " + idSelecionado);
+  console.log("👂 ID do fonoaudiólogo selecionado:", window.idSelecionado);
+  alert("Alterado — ID: " + window.idSelecionado);
 
   window.medico_fonoaudiologo = true;
       if(typeof window.grava_medico_clinica_kit === "function")
       {
         window.grava_medico_clinica_kit({
-                id: idSelecionado || null
+                id: window.idSelecionado || null
               });
       }
 });
@@ -2665,6 +2698,7 @@ async function popular_medico_relacionados_clinica_edicao() {
         setTimeout(async () => {
           try { bindMedicosInputsOnce(); } catch (e) { /* noop */ }
           try { applyMedicosStateToUI(); } catch (e) { /* noop */ }
+          try { repopular_medico_fonoaudiologo_audiometria(); } catch (e) { /* noop */ }
           // 🔹 Chama depois que o estado foi aplicado
           try {
             if (window.kit_tipo_exame?.empresa_id) {
