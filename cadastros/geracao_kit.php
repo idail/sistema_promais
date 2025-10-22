@@ -9704,7 +9704,7 @@ try {
                   return `
   <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; 
               cursor: pointer; transition: all 0.2s ease;"
-       onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${itemObj.nome ? itemObj.nome.replace(/'/g, "\\'") : 'Colaborador'}','${resposta_cargo_pessoa.titulo_cargo}')">
+       onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${itemObj.nome ? itemObj.nome.replace(/'/g, "\\'") : 'Colaborador'}','${resposta_cargo_pessoa.titulo_cargo}',${resposta_pessoa.empresa_id})">
     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
       <div style="flex: 1; min-width: 0;">
         <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
@@ -10433,9 +10433,14 @@ try {
         modal.style.display = 'flex';
       }
     }
+
+    window.recebe_empresa_id_pessoa;
     
-    async function abrirDetalhesKit(kit, nomeColaborador,cargo) {
+    async function abrirDetalhesKit(kit, nomeColaborador,cargo,empresa_id_pessoa) {
       debugger;
+      window.recebe_empresa_id_pessoa = empresa_id_pessoa;
+      console.log(empresa_id_pessoa);
+
       // Configurações de status
       // const statusConfig = {
       //   'Concluído': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
@@ -10693,11 +10698,22 @@ modal.innerHTML = `
       window.lastFocusedElement = document.activeElement;
     }
 
-    function duplicarKit(id)
+    async function duplicarKit(id)
     {
       debugger;
 
       console.log(kitsColaboradores);
+
+      console.log(id);
+
+      let recebe_dados_kit_especifico = await requisitarDadosKITEspecifico(id);
+
+      if(recebe_dados_kit_especifico.empresa_id_principal === window.recebe_empresa_id_pessoa)
+      {
+        alert("KIT já existente");
+      }
+
+      console.log(recebe_dados_kit_especifico);
     }
     
     function editarKit(kitId) {
