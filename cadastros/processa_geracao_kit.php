@@ -2365,5 +2365,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_fonoaudiologo_especifico->execute();
         $resultado_busca_fonoaudiologo_especifico = $comando_busca_fonoaudiologo_especifico->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_fonoaudiologo_especifico);
+    }else if($recebe_processo_geracao_kit === "buscar_todos_kits_empresa")
+    {
+        $instrucao_buscar_kits_empresa = "select * from kits where empresa_id_principal = :recebe_empresa_id_principal";
+        $comando_buscar_kits_empresa = $pdo->prepare($instrucao_buscar_kits_empresa);
+        $comando_buscar_kits_empresa->bindValue(":recebe_empresa_id_principal",$_SESSION["empresa_id"]);
+        $comando_buscar_kits_empresa->execute();
+        $resultado_buscar_kits_empresa = $comando_buscar_kits_empresa->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_buscar_kits_empresa);
+    }else if($recebe_processo_geracao_kit === "buscar_empresa_principal_kit")
+    {
+        $instrucao_buscar_empresa_kit = "select * from empresas where id = :recebe_id_empresa";
+        $comando_buscar_empresa_kit = $pdo->prepare($instrucao_buscar_empresa_kit);
+        $comando_buscar_empresa_kit->bindValue(":recebe_id_empresa",$_GET["valor_id_empresa"]);
+        $comando_buscar_empresa_kit->execute();
+        $resultado_buscar_empresa_kit = $comando_buscar_empresa_kit->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_buscar_empresa_kit);
     }
 }

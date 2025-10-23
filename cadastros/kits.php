@@ -137,20 +137,20 @@
 </style>
 
 <div>
-    <h1 class="dashboard">Pessoas</h1>
+    <h1 class="dashboard">KITS</h1>
 </div>
 
 <!-- Botão Cadastrar -->
 <div>
     <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_pessoa&acao=cadastrar';">
-        <i class="fas fa-plus"></i> Cadastrar
+        <i class="fas fa-plus"></i> Gerar KIT
     </button>
 </div>
 
 
 
 <div>
-    <table id="pessoas_tabela">
+    <table id="kits_tabela">
         <thead>
             <tr>
                 <th>ID</th>
@@ -170,26 +170,26 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
-    let recebe_codigo_clinica_informacoes_rapida;
-    let recebe_tabela_pessoas;
+    window.recebe_codigo_id_empresa_principal;
+    let recebe_tabela_kits;
     $(document).ready(function() {
         // Função para buscar dados da API
-        function buscar_pessoas() {
+        function buscar_kits() {
             $.ajax({
-                url: "cadastros/processa_pessoa.php", // Endpoint da API
+                url: "cadastros/processa_geracao_kit.php", // Endpoint da API
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_pessoa": "buscar_pessoas"
+                    "processo_geracao_kit": "buscar_todos_kits_empresa"
                 },
-                success: function(resposta_pessoa) {
+                success: async function(resposta_kits) {
                     debugger;
-                    if (resposta_pessoa.length > 0) {
-                        console.log(resposta_pessoa);
-                        preencher_tabela(resposta_pessoa);
+                    if (resposta_kits.length > 0) {
+                        console.log(resposta_kits);
+                        await preencher_tabela(resposta_kits);
                         inicializarDataTable();
                     } else {
-                        preencher_tabela(resposta_pessoa);
+                        preencher_tabela(resposta_kits);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -198,15 +198,36 @@
             });
         }
 
+        function requisitarEmpresaPrincipalKIT() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: "cadastros/processa_geracao_kit.php",
+                    method: "GET",
+                    dataType: "json",
+                    data: {
+                        processo_geracao_kit: "buscar_empresa_principal_kit",
+                        valor_id_empresa: window.recebe_codigo_id_empresa_principal
+                    },
+                    success: function(resposta) {
+                        console.log("KITs retornados:", resposta);
+                        resolve(resposta);
+                    },
+                    error: function(xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+
         // Função para preencher a tabela com os dados das clínicas
-        function preencher_tabela(pessoas) {
+        async function preencher_tabela(kits) {
             debugger;
-            let tbody = document.querySelector("#pessoas_tabela tbody");
+            let tbody = document.querySelector("#kits_tabela tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-            if (pessoas.length > 0) {
-                for (let index = 0; index < pessoas.length; index++) {
-                    let pessoa = pessoas[index];
+            if (kits.length > 0) {
+                for (let index = 0; index < kits.length; index++) {
+                    let kit = kits[index];
 
                     // Separar o endereço
                     // let partesEndereco = pessoa.endereco.split(',');
@@ -214,44 +235,47 @@
                     // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
                     // Converter data de nascimento para formato brasileiro
-                    let data_nascimento_formatado = "";
-                    if (pessoa.nascimento) {
-                        let data = new Date(pessoa.nascimento);
-                        data_nascimento_formatado = data.toLocaleDateString("pt-BR");
-                    }
+                    // let data_nascimento_formatado = "";
+                    // if (pessoa.nascimento) {
+                    //     let data = new Date(pessoa.nascimento);
+                    //     data_nascimento_formatado = data.toLocaleDateString("pt-BR");
+                    // }
+
+                    // <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-pessoa='${pessoa.id}'>
+                    //                 <i class="fas fa-eye"></i>
+                    //             </a>
+
+                    window.recebe_codigo_id_empresa_principal = kit.empresa_id_principal;
+
+                    window.recebe_dados_empresa_principal_kit = await requisitarEmpresaPrincipalKIT();
 
                     let row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${pessoa.id}</td>
-                        <td>${pessoa.nome}</td>
-                        <td>${pessoa.telefone}</td>
-                        <td>${pessoa.cpf}</td>
-                        <td>${data_nascimento_formatado}</td>
-                        <td>${pessoa.sexo}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-pessoa='${pessoa.id}'>
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="?pg=grava_pessoa&acao=editar&id=${pessoa.id}" target="_parent" class="edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="#" id='excluir-pessoa' data-codigo-pessoa="${pessoa.id}" class="delete" title="Apagar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
+                        <td style="text-align:center; vertical-align:middle;">${kit.id}</td>
+    <td style="text-align:center; vertical-align:middle;">${kit.status}</td>
+    <td style="text-align:center; vertical-align:middle;">${kit.tipo_exame}</td>
+    <td style="text-align:center; vertical-align:middle;">${window.recebe_dados_empresa_principal_kit.nome}</td>
+    <td style="text-align:center; vertical-align:middle;">
+        <div class="action-buttons">
+            <a href="?pg=grava_pessoa&acao=editar&id=${kit.id}" target="_parent" class="edit" title="Editar">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a href="#" id='excluir-kit' data-codigo-pessoa="${kit.id}" class="delete" title="Apagar">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+    </td>
                     `;
                     tbody.appendChild(row);
                 }
             } else {
-                $("#pessoas_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                $("#kits_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
             }
         }
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            recebe_tabela_pessoas = $("#pessoas_tabela").DataTable({
+            recebe_tabela_kits = $("#kits_tabela").DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 },
@@ -259,10 +283,10 @@
             });
         }
 
-        buscar_pessoas();
+        buscar_kits();
 
         $(".search-bar").on('keyup', function() {
-            recebe_tabela_pessoas.search(this.value).draw();
+            recebe_tabela_kits.search(this.value).draw();
         });
 
         // async function buscar_informacoes_rapidas_clinica() {
