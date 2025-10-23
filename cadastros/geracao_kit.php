@@ -2715,13 +2715,15 @@ function renderAssinaturaFonoaudiologo(pessoa_fonoaudiologo) {
 
       await grava_assinatura_fonoaudiologo(file,dados_fonoaudiologo.id);
 
+      let recebe_dados_atualizados_fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(dados);
+
       // Criar uma URL para visualização da imagem
       const reader = new FileReader();
       reader.onload = function(e) {
         // Atualizar a exibição
           const resultadoMedicoFonoaudiologo = document.getElementById('resultadoMedicoFonoaudiologo');
           if (resultadoMedicoFonoaudiologo) {
-            renderizarFonoaudiologo(dados_fonoaudiologo);
+            renderizarFonoaudiologo(recebe_dados_atualizados_fonoaudiologo);
           }
         // Encontrar o médico correspondente e atualizar a assinatura
         // const medico = profissionaisMedicinaData.medicos.find(m => m.cpf === cpf);
