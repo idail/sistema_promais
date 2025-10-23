@@ -1859,6 +1859,7 @@ function renderResultadoProfissional(tipo) {
     window.idSelecionado;
     // Restaura os campos da aba Médicos a partir do estado salvo
     function applyMedicosStateToUI() {
+      debugger;
       try {
         const st = window.ecpState || {};
         const prof = st.profissionais || {};
@@ -2530,6 +2531,33 @@ function renderAssinatura_examinador(pessoa) {
   return html;
 }
 
+function repopular_dados_medico_fonoaudiologo(pessoa, area) {
+  //debugger;
+  if (!pessoa) return;
+
+  area.className = 'ecp-details';
+  area.style.display = 'block';
+
+  // Adiciona prefixo 'Dr.' apenas se ainda não houver
+  let titulo = pessoa.nome || '';
+  if (!/^Dr\.?\s/i.test(titulo)) {
+    titulo = `Dr. ${titulo}`;
+  }
+
+  // CPF e CRM sempre visíveis
+  const linhaCpf = `CPF: ${pessoa.cpf}${pessoa.crm ? ` | CRM: ${pessoa.crm}` : ''}`;
+
+  // Monta o HTML principal
+  area.innerHTML = `
+    <div class="font-medium">${titulo}</div>
+    <div class="text-sm text-gray-500">${linhaCpf}</div>
+    ${renderAssinatura_examinador(pessoa)}
+    <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('assinatura-${pessoa.cpf}')">
+      ✖ Remover
+    </button>
+  `;
+}
+
 window.medico_fonoaudiologo;
 
 function popular_lista_fonoaudiologos_audiometria() {
@@ -2564,22 +2592,96 @@ function popular_lista_fonoaudiologos_audiometria() {
   });
 }
 
-$(document).on("change", "#fonoaudiologos", function (e) {
+$(document).on("change", "#fonoaudiologos", async function (e) {
   e.preventDefault();
   debugger;
-  window.idSelecionado = parseInt($(this).val());
 
+  window.idSelecionado = parseInt($(this).val());
   console.log("👂 ID do fonoaudiólogo selecionado:", window.idSelecionado);
   alert("Alterado — ID: " + window.idSelecionado);
 
   window.medico_fonoaudiologo = true;
-  if(typeof window.gravar_medico_fonoaudiologo === "function")
-  {
+
+  if (typeof window.gravar_medico_fonoaudiologo === "function") {
     window.gravar_medico_fonoaudiologo(window.idSelecionado);
   }
+
+  // ✅ Agora o await funciona corretamente
+  let recebe_medico_fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(window.idSelecionado);
+
+  console.log("📦 Dados do fonoaudiólogo retornados:", recebe_medico_fonoaudiologo);
+
+  renderizarFonoaudiologo(recebe_medico_fonoaudiologo);
 });
 
 
+function renderizarFonoaudiologo(dados)
+{
+  debugger;
+  let area = document.getElementById('resultadoMedicoFonoaudiologo')
+  area.className = 'ecp-details';
+  area.style.display = 'block';
+   // Título com prefixo 'Dr.' apenas se ainda não houver
+  let titulo = dados.nome || '';
+
+  if (!/^Dr\.?\s/i.test(titulo)) {
+    titulo = `Dr. ${titulo}`;
+  }
+
+  // Sempre mostrar CPF no cartão detalhado do médico (a área com assinatura)
+const linhaCpf = `CPF: ${dados.cpf}${dados.crm ? ` | CRM: ${dados.crm}` : ''}`;
+area.innerHTML = `
+  <div class="font-medium">${titulo}</div>
+  <div class="text-sm text-gray-500">${linhaCpf}</div>
+  ${renderAssinaturaFonoaudiologo(dados)}
+  <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('assinatura-${dados.cpf}')">✖ Remover</button>
+`;
+
+}
+
+
+function renderAssinaturaFonoaudiologo(pessoa_fonoaudiologo) {
+      debugger;
+
+      let html = `
+        <div class="mt-2">
+          <label class="ecp-label">Enviar Assinatura</label>
+          <input 
+            type="file" 
+            id="assinatura-${pessoa_fonoaudiologo.cpf}" 
+            class="ecp-input" 
+            accept="image/*" 
+            onchange="handleAssinaturaUpload(this, '${pessoa_fonoaudiologo.cpf}')"
+          >
+          <div class="ecp-questionario-note">
+            Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB
+          </div>
+        </div>
+        <div class="mt-2">
+            <label class="ecp-label">Assinatura atual</label>
+              <img src="cadastros/documentos/assinaturas/${pessoa_fonoaudiologo.imagem_assinatura}" alt="Assinatura" 
+              style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+        <div id="preview-assinatura-${pessoa_fonoaudiologo.cpf}" class="mt-2"></div>
+      `;
+
+      if (pessoa_fonoaudiologo.imagem_assinatura) {
+        return html;
+      }
+      return `
+        <div class="mt-2">
+          <label class="ecp-label">Enviar Assinatura</label>
+          <input 
+            type="file" 
+            id="assinatura-${pessoa_fonoaudiologo.cpf}" 
+            class="ecp-input" 
+            accept="image/*" 
+            onchange="handleAssinaturaUpload(this, '${pessoa_fonoaudiologo.id}','${pessoa_fonoaudiologo.cpf}')"
+          >
+          <div class="ecp-questionario-note">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</div>
+        </div>
+      `;
+    }
 
 
 // 🔹 Função assíncrona que aguarda o processamento completo
@@ -2951,6 +3053,7 @@ async function popular_medico_relacionados_clinica_edicao() {
                 <option value="">Selecione o profissional</option>
               </select>
             </div>
+            <div id="resultadoMedicoFonoaudiologo"></div>
           </div>
         </div>
 
@@ -12384,7 +12487,7 @@ modal.innerHTML = `
     };
 
     function mostrarListaProfissionais(tipo) {
-      // debugger;
+      debugger;
       const inputElement = document.getElementById(`input${capitalize(tipo)}`);
       const input = (inputElement && inputElement.value ? inputElement.value : '').toLowerCase();
       const lista = profissionaisMedicinaData[tipoMapeado[tipo]] || [];
