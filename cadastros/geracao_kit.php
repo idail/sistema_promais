@@ -1897,35 +1897,47 @@ function renderResultadoProfissional(tipo) {
     }
 
     function repopular_medico_fonoaudiologo_audiometria() {
-  debugger;
+      debugger;
 
-  const select = document.getElementById("fonoaudiologos");
+        const select = document.getElementById("fonoaudiologos");
+        if (!select) {
+          console.warn("⚠️ Select #fonoaudiologos não encontrado.");
+          return;
+        }
 
-  // Garante que o select existe e que há um valor a selecionar
-  if (!select || !window.idSelecionado) {
-    console.warn("⚠️ Select não encontrado ou idSelecionado indefinido.");
-    return;
-  }
+        // 🔹 Define o ID de acordo com o modo
+        let idParaSelecionar = null;
 
-  console.log("🎯 ID selecionado anteriormente:", window.idSelecionado);
+        if (window.recebe_acao === "editar") {
+          idParaSelecionar = window?.fonoaudiologo?.id ?? null;
+        } else {
+          idParaSelecionar = window?.idSelecionado ?? null;
+        }
 
-  // Define o valor do select
-  select.value = window.idSelecionado;
+        if (!idParaSelecionar) {
+          console.warn("⚠️ Nenhum ID encontrado para selecionar (modo:", window.recebe_acao, ")");
+          return;
+        }
 
-  // Se o option ainda não existir (ex: carregado via AJAX depois), aguarda e tenta novamente
-  if (select.value !== window.idSelecionado) {
-    const observer = new MutationObserver(() => {
-      select.value = window.idSelecionado;
-      if (select.value === window.idSelecionado) {
-        observer.disconnect();
-        console.log("✅ Valor restaurado após carregamento dinâmico:", window.idSelecionado);
-      }
-    });
+        console.log("🎯 ID a ser restaurado:", idParaSelecionar, " (modo:", window.recebe_acao, ")");
 
-    // Observa mudanças no select (por exemplo, opções adicionadas depois via AJAX)
-    observer.observe(select, { childList: true });
-  }
-}
+        // 🔸 Define o valor no select
+        select.value = idParaSelecionar;
+
+        // 🔸 Caso o option ainda não exista (ex: será carregado via AJAX), observa e tenta novamente
+        if (select.value !== String(idParaSelecionar)) {
+          const observer = new MutationObserver(() => {
+            select.value = idParaSelecionar;
+            if (select.value === String(idParaSelecionar)) {
+              observer.disconnect();
+              console.log("✅ Valor restaurado após carregamento dinâmico:", idParaSelecionar);
+            }
+          });
+
+          observer.observe(select, { childList: true });
+        }
+    }
+
 
 
       // Delegação de clique nas listas de autocomplete (se existirem)
@@ -3361,6 +3373,24 @@ function requisitarExameKITEspecifico(codigo_kit) {
       });
     }
 
+    function requisitarDadosFonoaudiologoKITEspecifico(codigo_fonoaudiologo) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: "cadastros/processa_geracao_kit.php",
+          method: "GET",
+          dataType: "json",
+          data: { processo_geracao_kit: "buscar_fonoaudiologo_especifico",valor_id_fonoaudiologo: codigo_fonoaudiologo},
+          success: function(resposta) {
+            console.log("Fonoaudiologo:", resposta);
+            resolve(resposta);
+          },
+          error: function(xhr, status, error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
     
 
     // ==========================================
@@ -4062,6 +4092,7 @@ function repopular_laudos() {
         window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
         window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
         window.modelos_documentos = window.kit_tipo_exame.modelos_selecionados;
+        window.fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(window.kit_tipo_exame.medico_fonoaudiologo);
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
