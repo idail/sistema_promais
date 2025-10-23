@@ -7806,8 +7806,6 @@ function printSection(button) {
                     $comando_verifica_marcacao_assinatura_digital->execute();
                     $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
 
-                    //var_dump($resultado_verifica_marcacao_assinatura_digital);
-
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                         // supondo que o campo no banco seja "assinatura" com o nome do arquivo
                         $html_assinatura = "<img src='assinaturas/"
@@ -8792,10 +8790,19 @@ table.no-break strong {
                     ' . $html_assinatura . '<br>
                     <span style="display:block; margin-top:-4px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Fonoaudiólogo/Médico Examinador</span>
-                    <span style="display:block;">
-                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — 
-                        CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
-                    </span>
+                    <span style="display:block;">' .
+    htmlspecialchars(
+        !empty($resultado_medico_relacionado_clinica['nome'])
+            ? $resultado_medico_relacionado_clinica['nome']
+            : ($resultado_medico_fonoaudiologo['nome'] ?? '')
+    ) .
+    ' — CRM: ' .
+    htmlspecialchars(
+        !empty($resultado_medico_relacionado_clinica['crm'])
+            ? $resultado_medico_relacionado_clinica['crm']
+            : ($resultado_medico_fonoaudiologo['crm'] ?? '')
+    ) .
+'</span>
                     </td>
 
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
