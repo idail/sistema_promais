@@ -8113,11 +8113,11 @@ function printSection(button) {
                     }
 
                     if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
-                        $instrucao_busca_medico_psicologo = "select * from medicos where id = :recebe_id_medico_psicologo";
-                        $comando_busca_medico_psicologo = $pdo->prepare($instrucao_busca_medico_psicologo);
-                        $comando_busca_medico_psicologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
-                        $comando_busca_medico_psicologo->execute();
-                        $resultado_medico_psicologo = $comando_busca_medico_psicologo->fetch(PDO::FETCH_ASSOC);
+                        $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                        $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                        $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                        $comando_busca_medico_fonoaudiologo->execute();
+                        $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
 
                         $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
                         $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
@@ -8130,7 +8130,7 @@ function printSection(button) {
                         if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
                             // supondo que o campo no banco seja "assinatura" com o nome do arquivo
                             $html_assinatura = "<img src='assinaturas/"
-                                . htmlspecialchars($resultado_medico_psicologo['imagem_assinatura'] ?? '')
+                                . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
                                 . "' alt='Assinatura do Médico' class='assinatura'>";
                         } else {
                             $html_assinatura = "_______________________________";
