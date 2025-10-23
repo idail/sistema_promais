@@ -7278,35 +7278,35 @@ function printSection(button) {
                     //     ["Espaço Confinado", "Inspeções e Manutenções"]
                     // ];
 
-                //     $aptidoesTabela .= '
-                // <table>
-                //     <tr>
-                //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-                //     </tr>';
-                //     foreach ($linhas as $par) {
-                //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
-                //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+                    //     $aptidoesTabela .= '
+                    // <table>
+                    //     <tr>
+                    //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    //     </tr>';
+                    //     foreach ($linhas as $par) {
+                    //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
 
-                //         $aptidoesTabela .= '
-                //     <tr>
-                //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                //     </tr>';
-                //     }
-                //     $aptidoesTabela .= '
-                // </table>';
+                    //         $aptidoesTabela .= '
+                    //     <tr>
+                    //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                    //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    //     </tr>';
+                    //     }
+                    //     $aptidoesTabela .= '
+                    // </table>';
 
-                //     // =====================================================================
+                    //     // =====================================================================
 
 
-                //     // Função helper para marcar Apto/Inapto
-                //     function marcarAptidao($nome, $aptidoesSelecionadas)
-                //     {
-                //         $nomeLower = strtolower($nome);
-                //         $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
-                //         $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
-                //         return "$nome ( $apto ) Apto ( $inapto ) Inapto";
-                //     }
+                    //     // Função helper para marcar Apto/Inapto
+                    //     function marcarAptidao($nome, $aptidoesSelecionadas)
+                    //     {
+                    //         $nomeLower = strtolower($nome);
+                    //         $apto   = in_array($nomeLower, $aptidoesSelecionadas) ? 'X' : ' ';
+                    //         $inapto = in_array($nomeLower, $aptidoesSelecionadas) ? ' ' : 'X';
+                    //         return "$nome ( $apto ) Apto ( $inapto ) Inapto";
+                    //     }
                 }
             }
 
@@ -7817,6 +7817,24 @@ function printSection(button) {
                         $html_assinatura = "_______________________________";
                     }
                 }
+
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    if($resultado_dados_kit["assinatura_digital"] === "Sim")
+                    {
+                       // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                        $html_assinatura = "<img src='assinaturas/"
+                            . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            . "' alt='Assinatura do Médico' class='assinatura'>"; 
+                    }else{
+                        $html_assinatura = "_______________________________";
+                    }
+                }
             } else {
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
                     salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
@@ -8096,8 +8114,7 @@ function printSection(button) {
                         }
                     }
 
-                    if(isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "")
-                    {
+                    if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
                         $instrucao_busca_medico_psicologo = "select * from medicos where id = :recebe_id_medico_psicologo";
                         $comando_busca_medico_psicologo = $pdo->prepare($instrucao_busca_medico_psicologo);
                         $comando_busca_medico_psicologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
@@ -8203,23 +8220,23 @@ function printSection(button) {
                     // var_dump($aptidoesSelecionadas);
 
 
-                //     $aptidoesTabela .= '
-                // <table>
-                //     <tr>
-                //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
-                //     </tr>';
-                //     foreach ($linhas as $par) {
-                //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
-                //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
+                    //     $aptidoesTabela .= '
+                    // <table>
+                    //     <tr>
+                    //         <td colspan="2" class="section-title">APTIDÕES EXTRAS</td>
+                    //     </tr>';
+                    //     foreach ($linhas as $par) {
+                    //         $esq = $par[0] . " " . marcarApt($par[0], $aptidoesSelecionadas);
+                    //         $dir = $par[1] . " " . marcarApt($par[1], $aptidoesSelecionadas);
 
-                //         $aptidoesTabela .= '
-                //     <tr>
-                //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-                //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-                //     </tr>';
-                //     }
-                //     $aptidoesTabela .= '
-                // </table>';
+                    //         $aptidoesTabela .= '
+                    //     <tr>
+                    //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+                    //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+                    //     </tr>';
+                    //     }
+                    //     $aptidoesTabela .= '
+                    // </table>';
 
                     // =====================================================================
 
@@ -9470,50 +9487,50 @@ table.no-break strong {
             //     return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
             // }
 
-        //     if (!empty($aptidoesSelecionadas) && is_array($aptidoesSelecionadas)) {
+            //     if (!empty($aptidoesSelecionadas) && is_array($aptidoesSelecionadas)) {
 
-        //         // função para marcar Sim/Não
-        //         function marcarAptidao($nome, $aptidoesSelecionadas)
-        //         {
-        //             $nomeLower = strtolower(trim($nome));
-        //             $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-        //             $nao  = $sim === "X" ? " " : "X";
-        //             return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
-        //         }
+            //         // função para marcar Sim/Não
+            //         function marcarAptidao($nome, $aptidoesSelecionadas)
+            //         {
+            //             $nomeLower = strtolower(trim($nome));
+            //             $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+            //             $nao  = $sim === "X" ? " " : "X";
+            //             return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+            //         }
 
-        //         // gerar tabela apenas com as selecionadas
-        //         $aptidoesTabela  = '
-        // <table>
-        //     <tr>
-        //         <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
-        //     </tr>';
+            //         // gerar tabela apenas com as selecionadas
+            //         $aptidoesTabela  = '
+            // <table>
+            //     <tr>
+            //         <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
+            //     </tr>';
 
-        //         $aptidoesFiltradas = [];
-        //         foreach ($listaAptidoes as $nome) {
-        //             if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
-        //                 $aptidoesFiltradas[] = $nome;
-        //             }
-        //         }
+            //         $aptidoesFiltradas = [];
+            //         foreach ($listaAptidoes as $nome) {
+            //             if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
+            //                 $aptidoesFiltradas[] = $nome;
+            //             }
+            //         }
 
-        //         // gerar com 2 colunas por linha
-        //         for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
-        //             $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
+            //         // gerar com 2 colunas por linha
+            //         for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
+            //             $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
 
-        //             $dir = "&nbsp;";
-        //             if (isset($aptidoesFiltradas[$i + 1])) {
-        //                 $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
-        //             }
+            //             $dir = "&nbsp;";
+            //             if (isset($aptidoesFiltradas[$i + 1])) {
+            //                 $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
+            //             }
 
-        //             $aptidoesTabela .= '
-        //     <tr>
-        //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-        //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-        //     </tr>';
-        //         }
+            //             $aptidoesTabela .= '
+            //     <tr>
+            //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+            //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+            //     </tr>';
+            //         }
 
-        //         $aptidoesTabela .= '
-        // </table>';
-        //     }
+            //         $aptidoesTabela .= '
+            // </table>';
+            //     }
 
             echo '
         <style>
@@ -10523,50 +10540,50 @@ table.no-break strong {
             //     return ($tipoExame === strtolower($valor)) ? '(X)' : '( )';
             // }
 
-        //     if (!empty($aptidoesSelecionadas) && is_array($aptidoesSelecionadas)) {
+            //     if (!empty($aptidoesSelecionadas) && is_array($aptidoesSelecionadas)) {
 
-        //         // função para marcar Sim/Não
-        //         function marcarAptidao($nome, $aptidoesSelecionadas)
-        //         {
-        //             $nomeLower = strtolower(trim($nome));
-        //             $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
-        //             $nao  = $sim === "X" ? " " : "X";
-        //             return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
-        //         }
+            //         // função para marcar Sim/Não
+            //         function marcarAptidao($nome, $aptidoesSelecionadas)
+            //         {
+            //             $nomeLower = strtolower(trim($nome));
+            //             $sim  = in_array($nomeLower, $aptidoesSelecionadas) ? "X" : " ";
+            //             $nao  = $sim === "X" ? " " : "X";
+            //             return htmlspecialchars($nome) . " ( $sim ) Sim ( $nao ) Não";
+            //         }
 
-        //         // gerar tabela apenas com as selecionadas
-        //         $aptidoesTabela  = '
-        // <table>
-        //     <tr>
-        //         <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
-        //     </tr>';
+            //         // gerar tabela apenas com as selecionadas
+            //         $aptidoesTabela  = '
+            // <table>
+            //     <tr>
+            //         <td colspan="2" class="section-title">Observações Importantes - Aptidões Extras</td>
+            //     </tr>';
 
-        //         $aptidoesFiltradas = [];
-        //         foreach ($listaAptidoes as $nome) {
-        //             if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
-        //                 $aptidoesFiltradas[] = $nome;
-        //             }
-        //         }
+            //         $aptidoesFiltradas = [];
+            //         foreach ($listaAptidoes as $nome) {
+            //             if (in_array(strtolower($nome), $aptidoesSelecionadas)) {
+            //                 $aptidoesFiltradas[] = $nome;
+            //             }
+            //         }
 
-        //         // gerar com 2 colunas por linha
-        //         for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
-        //             $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
+            //         // gerar com 2 colunas por linha
+            //         for ($i = 0; $i < count($aptidoesFiltradas); $i += 2) {
+            //             $esq = marcarAptidao($aptidoesFiltradas[$i], $aptidoesSelecionadas);
 
-        //             $dir = "&nbsp;";
-        //             if (isset($aptidoesFiltradas[$i + 1])) {
-        //                 $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
-        //             }
+            //             $dir = "&nbsp;";
+            //             if (isset($aptidoesFiltradas[$i + 1])) {
+            //                 $dir = marcarAptidao($aptidoesFiltradas[$i + 1], $aptidoesSelecionadas);
+            //             }
 
-        //             $aptidoesTabela .= '
-        //     <tr>
-        //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
-        //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
-        //     </tr>';
-        //         }
+            //             $aptidoesTabela .= '
+            //     <tr>
+            //         <td style="width:50%; font-size:12px; padding:4px;">' . $esq . '</td>
+            //         <td style="width:50%; font-size:12px; padding:4px;">' . $dir . '</td>
+            //     </tr>';
+            //         }
 
-        //         $aptidoesTabela .= '
-        // </table>';
-        //     }
+            //         $aptidoesTabela .= '
+            // </table>';
+            //     }
 
             echo '
         <style>
