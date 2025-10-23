@@ -277,6 +277,51 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
             echo json_encode($resultado_altera_medico);
         }
 
+    }else if($recebe_processo_medico === "alterar_medico_fonoaudiologo")
+    {
+        $recebe_id_medico_alterar = $_POST["valor_id_medico"];
+        $recebe_selecao_medico_fonoaudiologo_kit = !empty($_POST["valor_acao_alteracao_medico"]) ? $_POST["valor_acao_alteracao_medico"] : null;
+
+        if($recebe_selecao_medico_fonoaudiologo_kit === "selecao_medico_fonoaudiologo_kit")
+        {
+            $instrucao_busca_empresa_id_medico_fonoaudiologo_kit = "SELECT id,empresa_id FROM medicos WHERE id = :recebe_id_medico";
+            $comando_busca_empresa_id_medico_fonoaudiologo_kit = $pdo->prepare($instrucao_busca_empresa_id_medico_fonoaudiologo_kit);
+            $comando_busca_empresa_id_medico_fonoaudiologo_kit->bindValue(":recebe_id_medico", $recebe_id_medico_alterar);
+            $comando_busca_empresa_id_medico_fonoaudiologo_kit->execute();
+            $resultado_busca_empresa_id_medico_fonoaudiologo_kit = $comando_busca_empresa_id_medico_fonoaudiologo_kit->fetch(PDO::FETCH_ASSOC);
+        }
+
+        // Se veio empresa_id da busca, sobrescreve o que veio do POST
+        if (!empty($resultado_busca_empresa_id_medico_fonoaudiologo_kit) && !empty($resultado_busca_empresa_id_medico_fonoaudiologo_kit["empresa_id"])) {
+
+            $arquivo_temporario = $_FILES['valor_arquivo_assinatura_medico']['tmp_name'];
+            // Nome final do arquivo (use basename para evitar problemas)
+            $nome_arquivo = basename($_FILES['valor_arquivo_assinatura_medico']['name']);
+
+            // Caminho de destino a partir de processa_medico.php
+            $destino = __DIR__ . "/documentos/assinaturas/" . $nome_arquivo;
+
+            // Cria a pasta se não existir
+            if (!file_exists(__DIR__ . "/documentos/assinaturas")) {
+                mkdir(__DIR__ . "/documentos/assinaturas", 0777, true);
+            }
+
+            if (move_uploaded_file($arquivo_temporario, $destino)) {
+                $recebe_empresa_id_medico_alterar = $resultado_busca_empresa_id_medico_fonoaudiologo_kit["empresa_id"];
+                $recebe_id_medico_alterar = $resultado_busca_empresa_id_medico_fonoaudiologo_kit["id"];
+
+                $instrucao_atualiza_assinatura_medico_fonoaudiologo = "update medicos set imagem_assinatura = :recebe_imagem_assinatura where id = :recebe_id and empresa_id = :recebe_empresa_id";
+                $comando_atualiza_assinatura_medico_fonoaudiologo = $pdo->prepare($instrucao_atualiza_assinatura_medico_fonoaudiologo);
+                $comando_atualiza_assinatura_medico_fonoaudiologo->bindValue(":recebe_imagem_assinatura",$nome_arquivo);
+                $comando_atualiza_assinatura_medico_fonoaudiologo->bindValue(":recebe_id",$recebe_id_medico_alterar);
+                $comando_atualiza_assinatura_medico_fonoaudiologo->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico_alterar);
+                $resultado_atualiza_assinatura_medico_fonoaudiologo = $comando_atualiza_assinatura_medico_fonoaudiologo->execute();
+                echo json_encode($resultado_atualiza_assinatura_medico_fonoaudiologo);   
+            } else {
+                echo json_encode("nao copiada");
+            }
+        }
+
     }else if($recebe_processo_medico === "excluir_medico")
     {
         $recebe_codigo_excluir_medico = $_POST["valor_id_medico"];

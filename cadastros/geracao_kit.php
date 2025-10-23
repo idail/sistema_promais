@@ -2651,7 +2651,7 @@ function renderAssinaturaFonoaudiologo(pessoa_fonoaudiologo) {
             id="assinatura-${pessoa_fonoaudiologo.cpf}" 
             class="ecp-input" 
             accept="image/*" 
-            onchange="handleAssinaturaUpload(this, '${pessoa_fonoaudiologo.cpf}')"
+            onchange="Uploadassinaturafonoaudiologo(this,'${pessoa_fonoaudiologo.id}')"
           >
           <div class="ecp-questionario-note">
             Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB
@@ -2681,6 +2681,112 @@ function renderAssinaturaFonoaudiologo(pessoa_fonoaudiologo) {
           <div class="ecp-questionario-note">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB</div>
         </div>
       `;
+    }
+
+    let assinaturaFonoaudiologoSelecionadaNome = null;
+
+    async function Uploadassinaturafonoaudiologo(input, dados) {
+      debugger;
+
+      let dados_fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(dados);
+
+      const file = input.files[0];
+      if (!file) return;
+
+      // Guardar o nome do arquivo em variável global
+      assinaturaFonoaudiologoSelecionadaNome = file.name;
+
+      // Validar o tipo do arquivo
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        alert('Por favor, selecione um arquivo de imagem válido (JPG, PNG ou GIF)');
+        input.value = '';
+        assinaturaFonoaudiologoSelecionadaNome = null; // limpa a variável caso inválido
+        return;
+      }
+
+      // Validar o tamanho do arquivo (2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('O arquivo é muito grande. O tamanho máximo permitido é 2MB.');
+        input.value = '';
+        assinaturaFonoaudiologoSelecionadaNome = null; // limpa a variável caso inválido
+        return;
+      }
+
+      await grava_assinatura_fonoaudiologo(file,dados_fonoaudiologo.id);
+
+      // Criar uma URL para visualização da imagem
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Atualizar a exibição
+          const resultadoMedicoFonoaudiologo = document.getElementById('resultadoMedicoFonoaudiologo');
+          if (resultadoMedicoFonoaudiologo) {
+            renderizarFonoaudiologo(dados_fonoaudiologo);
+          }
+        // Encontrar o médico correspondente e atualizar a assinatura
+        // const medico = profissionaisMedicinaData.medicos.find(m => m.cpf === cpf);
+        // if (medico) {
+        //   medico.assinatura = e.target.result; // URL temporária para visualização
+        // }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function grava_assinatura_fonoaudiologo(arquivo, id_medico) {
+      debugger;
+
+      var dados_assinatura_medico = new FormData();
+      dados_assinatura_medico.append("processo_medico", "alterar_medico_fonoaudiologo");
+      dados_assinatura_medico.append("valor_arquivo_assinatura_medico", arquivo); // se "arquivo" for File ou Blob
+      dados_assinatura_medico.append("valor_id_medico", id_medico);
+      dados_assinatura_medico.append("valor_acao_alteracao_medico", "selecao_medico_fonoaudiologo_kit");
+
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          type: "POST",
+          enctype: "multipart/form-data",
+          dataType: "json",
+          // url: "http://localhost/software-medicos/api/ProtocolosAPI.php",
+          url: "cadastros/processa_medico.php",
+          cache: false,
+          processData: false,
+          contentType: false,
+          data: dados_assinatura_medico,
+          success: function(retorno_grava_medico_assinatura) {
+            debugger;
+
+            const mensagemSucesso = `
+              <div id="medico-assinatura-gravado" class="alert alert-success" 
+                  style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                  <div>
+                    <div>Assinatura gravada com sucesso.</div>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            // Remove mensagem anterior se existir
+            $("#medico-assinatura-gravado").remove();
+
+            // Adiciona a nova mensagem acima das abas
+            $(".tabs-container").before(mensagemSucesso);
+
+            // Configura o fade out após 5 segundos
+            setTimeout(function() {
+              $("#medico-assinatura-gravado").fadeOut(500, function() {
+                $(this).remove();
+              });
+            }, 5000);
+
+            resolve(retorno_grava_medico_assinatura);
+          },
+          error: function(xhr, status, error) {
+            console.log("Falha ao incluir exame: " + error);
+            reject(error);
+          },
+        });
+      });
     }
 
 
