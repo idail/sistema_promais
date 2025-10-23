@@ -2532,7 +2532,7 @@ function renderAssinatura_examinador(pessoa) {
 }
 
 function repopular_dados_medico_fonoaudiologo(pessoa, area) {
-  //debugger;
+  debugger;
   if (!pessoa) return;
 
   area.className = 'ecp-details';
@@ -2551,7 +2551,7 @@ function repopular_dados_medico_fonoaudiologo(pessoa, area) {
   area.innerHTML = `
     <div class="font-medium">${titulo}</div>
     <div class="text-sm text-gray-500">${linhaCpf}</div>
-    ${renderAssinatura_examinador(pessoa)}
+    ${renderAssinaturaFonoaudiologo(pessoa)}
     <button class="ecp-button-cancel mt-2" type="button" onclick="removerPessoa('assinatura-${pessoa.cpf}')">
       ✖ Remover
     </button>
@@ -2945,6 +2945,7 @@ async function popular_medico_relacionados_clinica_edicao() {
 
           try { repopular_dados_medico_coordenador(); } catch (err) { /* noop */ }
           try { repopular_dados_medico_examinador(window.kit_medico_examinador, document.getElementById('resultadoMedico')); } catch (err) { /* noop */ }
+          try { repopular_dados_medico_fonoaudiologo(window.fonoaudiologo, document.getElementById('resultadoMedicoFonoaudiologo')); } catch (err) { /* noop */ }
 
           if(window.kit_clinica && window.kit_clinica !== "")
           {
