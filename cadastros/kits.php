@@ -142,7 +142,7 @@
 
 <!-- Botão Cadastrar -->
 <div>
-    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_pessoa&acao=cadastrar';">
+    <button class="btn-cadastrar" onclick="window.location.href='?pg=geracao_kit';">
         <i class="fas fa-plus"></i> Gerar KIT
     </button>
 </div>
@@ -252,15 +252,15 @@
                     let row = document.createElement("tr");
                     row.innerHTML = `
                         <td style="text-align:center; vertical-align:middle;">${kit.id}</td>
-    <td style="text-align:center; vertical-align:middle;">${kit.status}</td>
-    <td style="text-align:center; vertical-align:middle;">${kit.tipo_exame}</td>
-    <td style="text-align:center; vertical-align:middle;">${window.recebe_dados_empresa_principal_kit.nome}</td>
+<td style="text-align:center; vertical-align:middle;">${kit.status && kit.status.trim() !== "" ? kit.status : "Não informado"}</td>
+<td style="text-align:center; vertical-align:middle;">${kit.tipo_exame && kit.tipo_exame.trim() !== "" ? kit.tipo_exame : "Não informado"}</td>
+<td style="text-align:center; vertical-align:middle;">${window.recebe_dados_empresa_principal_kit?.nome || "Não informado"}</td>
     <td style="text-align:center; vertical-align:middle;">
         <div class="action-buttons">
-            <a href="?pg=grava_pessoa&acao=editar&id=${kit.id}" target="_parent" class="edit" title="Editar">
+            <a href="?pg=geracao_kit&id=${kit.id}&acao=editar" target="_parent" class="edit" title="Editar">
                 <i class="fas fa-edit"></i>
             </a>
-            <a href="#" id='excluir-kit' data-codigo-pessoa="${kit.id}" class="delete" title="Apagar">
+            <a href="#" id='excluir-kit' data-codigo-kit="${kit.id}" class="delete" title="Apagar">
                 <i class="fas fa-trash"></i>
             </a>
         </div>
@@ -296,31 +296,32 @@
         // buscar_informacoes_rapidas_clinica();
     });
 
-    $(document).on("click", "#excluir-pessoa", function(e) {
+    $(document).on("click", "#excluir-kit", function(e) {
         e.preventDefault();
 
         debugger;
 
-        let recebe_id_pessoa = $(this).data("codigo-pessoa");
+        let recebe_id_kit = $(this).data("codigo-kit");
 
-        let recebe_resposta_excluir_pessoa = window.confirm(
-            "Tem certeza que deseja excluir a pessoa?"
+        let recebe_resposta_excluir_kit = window.confirm(
+            "Tem certeza que deseja excluir o kit?"
         );
 
-        if (recebe_resposta_excluir_pessoa) {
+        if (recebe_resposta_excluir_kit) {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_geracao_kit.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "excluir_pessoa",
-                    valor_id_pessoa: recebe_id_pessoa,
+                    processo_geracao_kit: "excluir_kit",
+                    valor_id_kit: recebe_id_kit,
+                    metodo:"PUT"
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_kits) {
                     debugger;
-                    console.log(retorno_pessoa);
-                    if (retorno_pessoa) {
-                        window.location.href = "painel.php?pg=pessoas";
+                    console.log(retorno_kits);
+                    if (retorno_kits) {
+                        window.location.href = "painel.php?pg=kits";
                     }
                 },
                 error: function(xhr, status, error) {

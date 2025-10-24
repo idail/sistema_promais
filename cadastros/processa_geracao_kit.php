@@ -2200,6 +2200,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $resultado_duplicar_kit = $comando_duplicar_kit->execute();
 
         echo json_encode($resultado_duplicar_kit);
+    }else if($recebe_processo_geracao_kit === "excluir_kit")
+    {
+        if($_POST["metodo"] === "PUT"){
+            $instrucao_excluir_kit = "delete from kits where id = :recebe_id_kit";
+            $comando_excluir_kit = $pdo->prepare($instrucao_excluir_kit);
+            $comando_excluir_kit->bindValue(":recebe_id_kit",$_POST["valor_id_kit"]);
+            $resultado_excluir_kit = $comando_excluir_kit->execute();
+            echo json_encode($resultado_excluir_kit);
+        }
     }
 } else if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $recebe_processo_geracao_kit = $_GET["processo_geracao_kit"];
