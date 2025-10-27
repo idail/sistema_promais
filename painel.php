@@ -166,21 +166,30 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                                 </span>
                                 <i class="fas fa-chevron-right arrow"></i>
                             </div>
+
                             <div class="submenu">
+                                <!-- Primeira seção -->
                                 <div class="menu-trigger" style="margin-left: -20px;">
-                                    <span>
-                                        Gerenciar API - Recebimento
-                                    </span>
+                                    <span>Gerenciar API - Recebimento</span>
                                     <i class="fas fa-chevron-right arrow"></i>
                                 </div>
                                 <div class="submenu" style="margin-left: -5px;">
                                     <a href="?pg=pix"><i class="fas fa-qrcode"></i> PIX</a>
                                     <a href="?pg=boleto"><i class="fas fa-file-invoice"></i> Boleto</a>
                                     <a href="?pg=cartao"><i class="fas fa-credit-card"></i> Cartão de Crédito</a>
+                                </div>
 
+                                <!-- Segunda seção -->
+                                <div class="menu-trigger" style="margin-left: -20px; margin-top: 5px;">
+                                    <span>Gerenciar Planos</span>
+                                    <i class="fas fa-chevron-right arrow"></i>
+                                </div>
+                                <div class="submenu" style="margin-left: -5px;">
+                                    <a href="?pg=planos"><i class="fas fa-money-bill-wave"></i> Planos</a>
                                 </div>
                             </div>
                         </li>
+
                     <?php
                     }
                     ?>
