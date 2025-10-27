@@ -174,9 +174,9 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                                     <i class="fas fa-chevron-right arrow"></i>
                                 </div>
                                 <div class="submenu" style="margin-left: -5px;">
-                                    <a href="?pg=api_pix"><i class="fas fa-qrcode"></i> PIX</a>
-                                    <a href="?pg=api_boleto"><i class="fas fa-file-invoice"></i> Boleto</a>
-                                    <a href="?pg=api_cartao"><i class="fas fa-credit-card"></i> Cartão de Crédito</a>
+                                    <a href="?pg=pix"><i class="fas fa-qrcode"></i> PIX</a>
+                                    <a href="?pg=boleto"><i class="fas fa-file-invoice"></i> Boleto</a>
+                                    <a href="?pg=cartao"><i class="fas fa-credit-card"></i> Cartão de Crédito</a>
 
                                 </div>
                             </div>
