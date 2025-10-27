@@ -172,26 +172,26 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
-    let recebe_codigo_clinica_informacoes_rapida;
-    let recebe_tabela_planos;
+    let recebe_codigo_pix_informacoes_rapida;
+    let recebe_tabela_pix;
     $(document).ready(function() {
         // Função para buscar dados da API
         function buscar_pix() {
             $.ajax({
-                url: "cadastros/processa_plano.php", // Endpoint da API
+                url: "cadastros/processa_pix.php", // Endpoint da API
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processa_plano": "buscar_planos"
+                    "processa_pix": "buscar_pix"
                 },
-                success: function(resposta_planos) {
+                success: function(resposta_pix) {
                     debugger;
-                    if (resposta_planos.length > 0) {
-                        console.log(resposta_planos);
-                        preencher_tabela(resposta_planos);
+                    if (resposta_pix.length > 0) {
+                        console.log(resposta_pix);
+                        preencher_tabela(resposta_pix);
                         inicializarDataTable();
                     } else {
-                        preencher_tabela(resposta_planos);
+                        preencher_tabela(resposta_pix);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -216,13 +216,13 @@
                     // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
                     // Converter data de nascimento para formato brasileiro
-                    let data_criacao_formatado = "";
-                    if (plano.criado_em) {
-                        let data = new Date(plano.criado_em);
-                        data_criacao_formatado = data.toLocaleDateString("pt-BR");
-                    }
+                    // let data_criacao_formatado = "";
+                    // if (plano.criado_em) {
+                    //     let data = new Date(plano.criado_em);
+                    //     data_criacao_formatado = data.toLocaleDateString("pt-BR");
+                    // }
 
-                    const precoFormatado = parseFloat(plano.preco).toLocaleString('pt-BR', {
+                    const precoFormatado = parseFloat(recebe_pix.valor).toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
                     });
@@ -230,16 +230,13 @@
                     let row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${recebe_pix.id}</td>
-                        <td>${recebe_pix.valor}</td>
+                        <td>${precoFormatado}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-plano' data-codigo-pessoa='${plano.id}'>
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="?pg=grava_plano&acao=editar&id=${plano.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=grava_pix&acao=editar&id=${recebe_pix.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="#" id='excluir-plano' data-codigo-pessoa="${plano.id}" class="delete" title="Apagar">
+                                <a href="#" id='excluir-plano' data-codigo-pessoa="${recebe_pix.id}" class="delete" title="Apagar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -248,13 +245,13 @@
                     tbody.appendChild(row);
                 }
             } else {
-                $("#planos_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                $("#pix_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
             }
         }
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            recebe_tabela_planos = $("#planos_tabela").DataTable({
+            recebe_tabela_pix = $("#pix_tabela").DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 },
@@ -262,10 +259,10 @@
             });
         }
 
-        buscar_planos();
+        buscar_pix();
 
         $(".search-bar").on('keyup', function() {
-            recebe_tabela_planos.search(this.value).draw();
+            recebe_tabela_pix.search(this.value).draw();
         });
 
         // async function buscar_informacoes_rapidas_clinica() {
@@ -275,7 +272,7 @@
         // buscar_informacoes_rapidas_clinica();
     });
 
-    $(document).on("click", "#excluir-pessoa", function(e) {
+    $(document).on("click", "#excluir-pix", function(e) {
         e.preventDefault();
 
         debugger;
@@ -309,45 +306,6 @@
         } else {
             return;
         }
-    });
-
-    $(document).on("click", "#visualizar-informacoes-pessoa", function(e) {
-        debugger;
-        recebe_codigo_pessoa_informacoes_rapida = $(this).data("codigo-pessoa");
-
-        $.ajax({
-            url: "cadastros/processa_pessoa.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_pessoa": "buscar_informacoes_rapidas_pessoas",
-                "valor_codigo_pessoa_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
-            },
-            success: function(resposta) {
-                debugger;
-
-                if (resposta.length > 0) {
-                    for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#created_at").val(resposta[indice].created_at);
-                        $("#nome").val(resposta[indice].nome);
-                        $("#cpf").val(resposta[indice].cpf);
-                        $("#nascimento").val(resposta[indice].nascimento);
-                        $("#sexo-pessoa").val(resposta[indice].sexo);
-                        $("#telefone").val(resposta[indice].telefone);
-                        $("#whatsapp").val(resposta[indice].whatsapp);
-                    }
-                }
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-        document.getElementById('informacoes-pessoa').classList.remove('hidden'); // abrir
-    });
-
-    $(document).on("click", "#fechar-modal-informacoes-pessoa", function(e) {
-        debugger;
-        document.getElementById('informacoes-pessoa').classList.add('hidden'); // fechar
     });
 
     // async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {

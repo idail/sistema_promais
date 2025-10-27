@@ -6,26 +6,17 @@
 
     <div id="dados" class="tab-content active">
         <form class="custom-form">
-            <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
-
-            <div class="form-group">
-                <label for="created_at">Data de Cadastro:</label>
-                <!-- <div class="input-with-icon">
-                    <i class="fas fa-calendar-alt"></i>
-                    <input type="datetime-local" id="created_at" name="created_at" class="form-control" readonly>
-                </div> -->
-            </div>
 
             <div class="form-columns">
                 <div class="form-column">
-
+                    <input type="hidden" id="pix-id-alteracao"/>
 
                     <div class="address-container">
 
                         <div class="form-group" style="flex: 50%;">
                             <label for="nome">Valor:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-money-bill"></i> 
+                                <i class="fas fa-money-bill"></i>
                                 <input type="text" id="valor" name="valor" class="form-control" style="width: 20%;">
                             </div>
                         </div>
@@ -81,7 +72,7 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-pix">Salvar</button>
-            <button type="reset"  class="botao-cinza">Cancelar</button>
+            <button type="reset" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -270,64 +261,105 @@
 </style>
 
 <script>
+    let recebe_codigo_alteracao_pix;
+    let recebe_acao_alteracao_pix = "cadastrar";
+    $(document).ready(function(e) {
+        debugger;
+        let recebe_url_atual = window.location.href;
 
-    $("#grava-pessoa").click(function(e) {
+        let recebe_parametro_acao_pix = new URLSearchParams(recebe_url_atual.split("&")[1]);
+
+        let recebe_parametro_codigo_pix = new URLSearchParams(recebe_url_atual.split("&")[2]);
+
+        recebe_codigo_alteracao_pix = recebe_parametro_codigo_pix.get("id");
+
+        let recebe_acao_pix = recebe_parametro_acao_pix.get("acao");
+
+        if (recebe_acao_pix !== "" && recebe_acao_pix !== null)
+            recebe_acao_alteracao_pix = recebe_acao_pix;
+
+        async function buscar_informacoes_pix() {
+            debugger;
+            if (recebe_acao_alteracao_pix === "editar") {
+                // carrega_cidades();
+                // await popula_lista_cidade_empresa_alteracao();
+                await popula_informacoes_pix_alteracao();
+            } else {
+                // carrega_cidades();
+
+                // let atual = new Date();
+
+                // let ano = atual.getFullYear();
+                // let mes = String(atual.getMonth() + 1).padStart(2, '0');
+                // let dia = String(atual.getDate()).padStart(2, '0');
+                // let horas = String(atual.getHours()).padStart(2, '0');
+                // let minutos = String(atual.getMinutes()).padStart(2, '0');
+
+                // // Formato aceito por <input type="datetime-local">
+                // let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+
+                // console.log("Data formatada para input datetime-local:", data_formatada);
+                // document.getElementById('created_at').value = data_formatada;
+            }
+        }
+
+        buscar_informacoes_pix();
+    });
+
+    async function popula_informacoes_pix_alteracao() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_pix.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processa_pix": "buscar_informacoes_pix_alteracao",
+                    valor_codigo_pix_alteracao: recebe_codigo_alteracao_pix,
+                },
+                success: function(resposta_pix) {
+                    debugger;
+                    console.log(resposta_pix);
+
+                    if (resposta_pix.length > 0) {
+                        for (let indice = 0; indice < resposta_pix.length; indice++) {
+                            $("#pix-id-alteracao").val(resposta_pix[indice].id);
+                            $("#valor").val(resposta_pix[indice].valor);
+                        }
+                    }
+
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar pix:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
+
+    $("#grava-pix").click(function(e) {
         e.preventDefault();
 
         debugger;
-        let recebe_nome_pessoa = $("#nome").val();
-        let recebe_cpf_pessoa = $("#cpf").val();
-        let recebe_nascimento_pessoa = $("#nascimento").val();
-        let recebe_sexo_pessoa = $("#sexo-pessoa").val();
-        let recebe_telefone_pessoa = $("#telefone").val();
-        let recebe_data_cadastro_pessoa = $("#created_at").val();
-        let recebe_whatsapp_pessoa = $("#whatsapp").val();
-        let recebe_empresa_id_pessoa = $("#empresa_id").val();
-        // let recebe_cargo_pessoa = $("#cargo").val();
+        let recebe_valor = $("#valor").val();
 
-        // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
-        //     recebe_id_cidade = $("#cidade_id").val();
-
-        // let recebe_cidade_id_empresa = $("#cidade_id").val();
-        // let recebe_endereco_pessoa = $("#endereco").val();
-        // let recebe_numero_pessoa = $("#numero").val();
-        // let recebe_complemento_pessoa = $("#complemento").val();
-        // let recebe_bairro_pessoa = $("#bairro").val();
-        // let recebe_cep_pessoa = $("#cep").val();
-        // let recebe_email_pessoa = $("#email").val();
-        // let recebe_senha_pessoa = $("#senha").val();
-        // let recebe_cbo_pessoa = $("#cbo").val();
-        // let recebe_idade_pessoa = $("#idade").val();
-        // let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
-        // let recebe_empresa_id = $("#empresa_id").val();
-
-        // let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
-
-        // console.log(recebe_endereco_completo);
-
-        if (recebe_acao_alteracao_pessoa === "editar") {
+        if (recebe_acao_alteracao_pix === "editar") {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_pix.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "alterar_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
-                    valor_id_pessoa: $("#pessoa_id_alteracao").val(),
+                    processo_pix: "alterar_pix",
+                    valor_pix: recebe_valor,
+                    valor_id_pix: $("#pix-id-alteracao").val(),
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_pix) {
                     debugger;
 
-                    console.log(retorno_pessoa);
-                    if (retorno_pessoa) {
-                        console.log("Pessoa alterada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                    console.log(retorno_pix);
+                    if (retorno_pix) {
+                        console.log("PIX alterado com sucesso");
+                        window.location.href = "painel.php?pg=pix";
                     }
                 },
                 error: function(xhr, status, error) {
@@ -336,45 +368,25 @@
             });
         } else {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_pix.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "inserir_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
-                    valor_empresa_id_pessoa: recebe_empresa_id_pessoa,
-                    // valor_cargo_pessoa: recebe_cargo_pessoa,
-                    // valor_cbo_pessoa: recebe_cbo_pessoa,
-                    // valor_idade_pessoa: recebe_idade_pessoa,
-                    // valor_endereco_pessoa: recebe_endereco_completo,
-                    // valor_numero_pessoa: recebe_numero_pessoa,
-                    // valor_complemento_pessoa: recebe_complemento_pessoa,
-                    // valor_bairro_pessoa: recebe_bairro_pessoa,
-                    // valor_cep_pessoa: recebe_cep_pessoa,
-                    // valor_id_cidade_pessoa: recebe_id_cidade,
-                    // valor_email_pessoa: recebe_email_pessoa,
-                    // valor_senha_pessoa: recebe_senha_pessoa,
-                    // valor_nivel_acesso_pessoa: recebe_nivel_acesso_pessoa,
-                    // valor_empresa_id: recebe_empresa_id,
+                    processo_pix: "inserir_pix",
+                    recebe_valor_pix: recebe_valor,
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_pix) {
                     debugger;
 
-                    console.log(retorno_pessoa);
+                    console.log(retorno_pix);
 
-                    if (retorno_pessoa) {
-                        console.log("Pessoa cadastrada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                    if (retorno_pix) {
+                        console.log("PIX cadastrado com sucesso");
+                        window.location.href = "painel.php?pg=pix";
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao inserir empresa:" + error);
+                    console.log("Falha ao inserir pix:" + error);
                 },
             });
         }

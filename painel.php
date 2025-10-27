@@ -187,6 +187,15 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                                 <div class="submenu" style="margin-left: -5px;">
                                     <a href="?pg=planos"><i class="fas fa-money-bill-wave"></i> Planos</a>
                                 </div>
+
+                                <!-- Terceira seção -->
+                                <div class="menu-trigger" style="margin-left: -20px; margin-top: 5px;">
+                                    <span>Gerenciar Administradores das Contas</span>
+                                    <i class="fas fa-chevron-right arrow"></i>
+                                </div>
+                                <div class="submenu" style="margin-left: -5px;">
+                                    <a href="?pg=administradores"><i class="fas fa-money-bill-wave"></i> Planos</a>
+                                </div>
                             </div>
                         </li>
 
