@@ -43,6 +43,28 @@ header('Content-Type: text/html; charset=utf-8');
     .color-option:hover {
         transform: scale(1.1);
     }
+
+    /* Submenu dentro de "Gerenciar API - Recebimento" */
+    .sidebar .submenu .submenu a {
+        padding-left: 0px !important;
+        /* distância equilibrada */
+        display: block;
+        font-size: 0.95em;
+    }
+
+    /* Ícones alinhados ao texto */
+    .sidebar .submenu .submenu a i {
+        margin-right: 8px;
+        font-size: 0.9em;
+        width: 18px;
+        text-align: center;
+    }
+
+    /* Pequeno ajuste no espaço do submenu */
+    .sidebar .submenu .submenu {
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
 </style>
 <?php
 $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
@@ -129,11 +151,35 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                     // Verifique se o nível de acesso é "admin"
                     if (isset($_SESSION['user_access_level']) && $_SESSION['user_access_level'] === 'admin') {
                     ?>
-                        <li>
+                        <!-- <li>
                             <a href="?pg=admin" class="master-admin">
                                 <i class="fas fa-shield-alt"></i>
                                 MasterAdmin
                             </a>
+                        </li> -->
+
+                        <li>
+                            <div class="menu-trigger">
+                                <span>
+                                    <i class="fas fa-shield-alt"></i>
+                                    MasterAdmin
+                                </span>
+                                <i class="fas fa-chevron-right arrow"></i>
+                            </div>
+                            <div class="submenu">
+                                <div class="menu-trigger" style="margin-left: -20px;">
+                                    <span>
+                                        Gerenciar API - Recebimento
+                                    </span>
+                                    <i class="fas fa-chevron-right arrow"></i>
+                                </div>
+                                <div class="submenu" style="margin-left: -5px;">
+                                    <a href="?pg=api_pix"><i class="fas fa-qrcode"></i> PIX</a>
+                                    <a href="?pg=api_boleto"><i class="fas fa-file-invoice"></i> Boleto</a>
+                                    <a href="?pg=api_cartao"><i class="fas fa-credit-card"></i> Cartão de Crédito</a>
+
+                                </div>
+                            </div>
                         </li>
                     <?php
                     }
