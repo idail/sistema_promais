@@ -243,100 +243,202 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
         <div class="color-option theme-red" style="background: #ff4757" onclick="setTheme(&apos;theme-red&apos;)"></div>
     </div>
     <script>
+        // 🔹 Mantém referências para não empilhar gráficos
+        let mainChartInstance = null;
+        let pieChartInstance = null;
+
         window.onload = function() {
             initializeCharts();
         };
 
         function initializeCharts() {
-            const mainCtx = document.getElementById('mainChart').getContext('2d');
-            const mainChart = new Chart(mainCtx, {
-                type: 'line',
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
                 data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                    datasets: [{
-                        label: 'ASOs Emitidos',
-                        data: [65, 59, 80, 81, 56, 55],
-                        borderColor: '#525d69',
-                        backgroundColor: 'rgba(0, 255, 157, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#525d69',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
+                    "processo_geracao_kit": "buscar_todos_kits_empresa"
                 },
-                options: {
-                    responsive: true,
-                    animation: {
-                        duration: 2000
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'ASOs Emitidos por Mês',
-                            font: {
-                                size: 16,
-                                weight: 'bold'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: true,
-                                drawBorder: false,
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
+                success: function(resposta_kits) {
+                    if (!Array.isArray(resposta_kits)) {
+                        console.warn("Resposta inválida:", resposta_kits);
+                        resposta_kits = [];
                     }
-                }
-            });
 
-            const pieCtx = document.getElementById('pieChart').getContext('2d');
-            const pieChart = new Chart(pieCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Admissional', 'Periódico', 'Demissional'],
-                    datasets: [{
-                        data: [300, 150, 100],
-                        backgroundColor: ['#525d69', '#4834d4', '#ff4757'],
-                        borderWidth: 0,
-                        hoverOffset: 15
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    animation: {
-                        duration: 2000
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Tipos de Exames',
-                            font: {
-                                size: 16,
-                                weight: 'bold'
+                    // 🔹 Modelos permitidos
+                    const modelosPermitidos = [
+                        "Guia de Encaminhamento",
+                        "ASO - Atestado de Saúde Ocupacional",
+                        "Prontuário Médico"
+                    ];
+
+                    // 🔹 Função auxiliar para extrair modelos
+                    function extrairModelos(kit) {
+                        try {
+                            if (typeof kit.modelos_selecionados === "string") {
+                                return JSON.parse(kit.modelos_selecionados || "[]");
+                            } else if (Array.isArray(kit.modelos_selecionados)) {
+                                return kit.modelos_selecionados;
                             }
-                        },
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20
-                            }
+                        } catch (e) {
+                            console.warn("Erro ao parsear modelos_selecionados:", e, kit.modelos_selecionados);
                         }
-                    },
-                    cutout: '60%'
+                        return [];
+                    }
+
+                    // 🔹 Verifica se o kit contém modelo permitido
+                    function contemModeloPermitido(kit) {
+                        const modelos = extrairModelos(kit);
+                        return modelos.some(m => modelosPermitidos.includes(m));
+                    }
+
+                    // ------------------------------------------------------------------
+                    // 🔸 GRÁFICO 1 — Pizza (Tipos de Exames) → usa TODOS os kits
+                    // ------------------------------------------------------------------
+                    const contagemTipos = {
+                        Admissional: 0,
+                        Periódico: 0,
+                        Demissional: 0
+                    };
+
+                    resposta_kits.forEach(kit => {
+                        const raw = (kit.tipo_exame || "").toString().trim().toLowerCase();
+
+                        if (raw.includes("admiss")) contagemTipos.Admissional++;
+                        else if (raw.includes("perio") || raw.includes("period") || raw.includes("periód")) contagemTipos.Periódico++;
+                        else if (raw.includes("demiss")) contagemTipos.Demissional++;
+                    });
+
+                    const dadosPizza = [
+                        contagemTipos.Admissional,
+                        contagemTipos.Periódico,
+                        contagemTipos.Demissional
+                    ];
+
+                    const pieEl = document.getElementById('pieChart');
+                    if (pieEl) {
+                        const pieCtx = pieEl.getContext('2d');
+                        if (pieChartInstance) pieChartInstance.destroy();
+
+                        pieChartInstance = new Chart(pieCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Admissional', 'Periódico', 'Demissional'],
+                                datasets: [{
+                                    data: dadosPizza,
+                                    backgroundColor: ['#525d69', '#4834d4', '#ff4757'],
+                                    borderWidth: 0,
+                                    hoverOffset: 15
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                animation: {
+                                    duration: 1000
+                                },
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Tipos de Exames',
+                                        font: {
+                                            size: 16,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            padding: 12
+                                        }
+                                    }
+                                },
+                                cutout: '60%'
+                            }
+                        });
+                    }
+
+                    // ------------------------------------------------------------------
+                    // 🔸 GRÁFICO 2 — Linha (ASOs Finalizados por Mês)
+                    // ------------------------------------------------------------------
+                    const kitsFinalizados = resposta_kits.filter(kit => {
+                        const status = (kit.status || "").toString().trim().toLowerCase();
+                        return status === "finalizado" && contemModeloPermitido(kit);
+                    });
+
+                    const asosPorMes = Array(12).fill(0);
+
+                    kitsFinalizados.forEach(kit => {
+                        if (!kit.data_geracao) return;
+                        const data = new Date(kit.data_geracao);
+                        if (!isNaN(data)) {
+                            asosPorMes[data.getMonth()]++;
+                        }
+                    });
+
+                    const lineEl = document.getElementById('mainChart') || document.getElementById('lineChart') || document.getElementById('asoChart');
+                    if (lineEl) {
+                        const lineCtx = lineEl.getContext('2d');
+                        if (mainChartInstance) mainChartInstance.destroy();
+
+                        mainChartInstance = new Chart(lineCtx, {
+                            type: 'line',
+                            data: {
+                                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                                datasets: [{
+                                    label: 'ASOs Finalizados por Mês',
+                                    data: asosPorMes,
+                                    fill: true,
+                                    borderColor: '#4834d4',
+                                    backgroundColor: 'rgba(72,52,212,0.08)',
+                                    tension: 0.35,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                animation: {
+                                    duration: 1000
+                                },
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'ASOs por Mês',
+                                        font: {
+                                            size: 16,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // ------------------------------------------------------------------
+                    // Logs de depuração
+                    // ------------------------------------------------------------------
+                    console.log("✔️ Total de kits:", resposta_kits.length);
+                    console.log("📊 Tipos de exame (todos os kits):", contagemTipos);
+                    console.log("📈 Kits finalizados (com modelos permitidos):", kitsFinalizados.length);
+                    console.log("📅 ASOs por mês:", asosPorMes);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro ao buscar kits:", error);
                 }
             });
         }
+
 
         function setTheme(themeName) {
             document.body.className = themeName;
