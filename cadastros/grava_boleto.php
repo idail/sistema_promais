@@ -6,15 +6,15 @@
 
     <div id="dados" class="tab-content active">
         <form class="custom-form">
-            <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
-
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="created_at">Data de Cadastro:</label>
-                <!-- <div class="input-with-icon">
+                <div class="input-with-icon">
                     <i class="fas fa-calendar-alt"></i>
                     <input type="datetime-local" id="created_at" name="created_at" class="form-control" readonly>
-                </div> -->
-            </div>
+                </div>
+            </div> -->
+
+            <input type="hidden" id="boleto-id-alteracao" />
 
             <div class="form-columns">
                 <div class="form-column">
@@ -25,7 +25,7 @@
                         <div class="form-group" style="flex: 50%;">
                             <label for="nome">Valor:</label>
                             <div class="input-with-icon">
-                                <i class="fas fa-money-bill"></i> 
+                                <i class="fas fa-money-bill"></i>
                                 <input type="text" id="valor" name="valor" class="form-control" style="width: 20%;">
                             </div>
                         </div>
@@ -81,7 +81,7 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-boleto">Salvar</button>
-            <button type="reset"  class="botao-cinza">Cancelar</button>
+            <button type="reset" class="botao-cinza">Cancelar</button>
         </form>
     </div>
 
@@ -270,64 +270,105 @@
 </style>
 
 <script>
+    let recebe_codigo_alteracao_boleto;
+    let recebe_acao_alteracao_boleto = "cadastrar";
+    $(document).ready(function(e) {
+        debugger;
+        let recebe_url_atual = window.location.href;
 
-    $("#grava-pessoa").click(function(e) {
+        let recebe_parametro_acao_boleto = new URLSearchParams(recebe_url_atual.split("&")[1]);
+
+        let recebe_parametro_codigo_boleto = new URLSearchParams(recebe_url_atual.split("&")[2]);
+
+        recebe_codigo_alteracao_boleto = recebe_parametro_codigo_boleto.get("id");
+
+        let recebe_acao_boleto = recebe_parametro_acao_boleto.get("acao");
+
+        if (recebe_acao_boleto !== "" && recebe_acao_boleto !== null)
+            recebe_acao_alteracao_boleto = recebe_acao_boleto;
+
+        async function buscar_informacoes_boleto() {
+            debugger;
+            if (recebe_acao_alteracao_boleto === "editar") {
+                // carrega_cidades();
+                // await popula_lista_cidade_empresa_alteracao();
+                await popula_informacoes_boleto_alteracao();
+            } else {
+                // carrega_cidades();
+
+                // let atual = new Date();
+
+                // let ano = atual.getFullYear();
+                // let mes = String(atual.getMonth() + 1).padStart(2, '0');
+                // let dia = String(atual.getDate()).padStart(2, '0');
+                // let horas = String(atual.getHours()).padStart(2, '0');
+                // let minutos = String(atual.getMinutes()).padStart(2, '0');
+
+                // // Formato aceito por <input type="datetime-local">
+                // let data_formatada = `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+
+                // console.log("Data formatada para input datetime-local:", data_formatada);
+                // document.getElementById('created_at').value = data_formatada;
+            }
+        }
+
+        buscar_informacoes_boleto();
+    });
+
+    async function popula_informacoes_boleto_alteracao() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_boleto.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_boleto": "buscar_informacoes_boleto_alteracao",
+                    valor_codigo_boleto_alteracao: recebe_codigo_alteracao_boleto,
+                },
+                success: function(resposta_boleto) {
+                    debugger;
+                    console.log(resposta_boleto);
+
+                    if (resposta_boleto.length > 0) {
+                        for (let indice = 0; indice < resposta_boleto.length; indice++) {
+                            $("#boleto-id-alteracao").val(resposta_boleto[indice].id);
+                            $("#valor").val(resposta_boleto[indice].valor);
+                        }
+                    }
+
+                    resolve(); // sinaliza que terminou
+                },
+                error: function(xhr, status, error) {
+                    console.log("Falha ao buscar boleto:" + error);
+                    reject(error);
+                },
+            });
+        });
+    }
+
+    $("#grava-boleto").click(function(e) {
         e.preventDefault();
 
         debugger;
-        let recebe_nome_pessoa = $("#nome").val();
-        let recebe_cpf_pessoa = $("#cpf").val();
-        let recebe_nascimento_pessoa = $("#nascimento").val();
-        let recebe_sexo_pessoa = $("#sexo-pessoa").val();
-        let recebe_telefone_pessoa = $("#telefone").val();
-        let recebe_data_cadastro_pessoa = $("#created_at").val();
-        let recebe_whatsapp_pessoa = $("#whatsapp").val();
-        let recebe_empresa_id_pessoa = $("#empresa_id").val();
-        // let recebe_cargo_pessoa = $("#cargo").val();
+        let recebe_valor = $("#valor").val();
 
-        // if (recebe_id_cidade === "" || recebe_id_cidade === undefined)
-        //     recebe_id_cidade = $("#cidade_id").val();
-
-        // let recebe_cidade_id_empresa = $("#cidade_id").val();
-        // let recebe_endereco_pessoa = $("#endereco").val();
-        // let recebe_numero_pessoa = $("#numero").val();
-        // let recebe_complemento_pessoa = $("#complemento").val();
-        // let recebe_bairro_pessoa = $("#bairro").val();
-        // let recebe_cep_pessoa = $("#cep").val();
-        // let recebe_email_pessoa = $("#email").val();
-        // let recebe_senha_pessoa = $("#senha").val();
-        // let recebe_cbo_pessoa = $("#cbo").val();
-        // let recebe_idade_pessoa = $("#idade").val();
-        // let recebe_nivel_acesso_pessoa = $("#acesso-pessoa").val();
-        // let recebe_empresa_id = $("#empresa_id").val();
-
-        // let recebe_endereco_completo = recebe_endereco_pessoa + "," + recebe_numero_pessoa + "," + recebe_nome_cidade_pessoa;
-
-        // console.log(recebe_endereco_completo);
-
-        if (recebe_acao_alteracao_pessoa === "editar") {
+        if (recebe_acao_alteracao_boleto === "editar") {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_boleto.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "alterar_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
-                    valor_id_pessoa: $("#pessoa_id_alteracao").val(),
+                    processo_boleto: "alterar_boleto",
+                    valor_boleto: recebe_valor,
+                    valor_id_boleto: $("#boleto-id-alteracao").val(),
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_boleto) {
                     debugger;
 
-                    console.log(retorno_pessoa);
-                    if (retorno_pessoa) {
-                        console.log("Pessoa alterada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                    console.log(retorno_boleto);
+                    if (retorno_boleto) {
+                        console.log("Boleto alterado com sucesso");
+                        window.location.href = "painel.php?pg=boleto";
                     }
                 },
                 error: function(xhr, status, error) {
@@ -336,45 +377,25 @@
             });
         } else {
             $.ajax({
-                url: "cadastros/processa_pessoa.php",
+                url: "cadastros/processa_boleto.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_pessoa: "inserir_pessoa",
-                    valor_nome_pessoa: recebe_nome_pessoa,
-                    valor_cpf_pessoa: recebe_cpf_pessoa,
-                    valor_nascimento_pessoa: recebe_nascimento_pessoa,
-                    valor_sexo_pessoa: recebe_sexo_pessoa,
-                    valor_telefone_pessoa: recebe_telefone_pessoa,
-                    valor_data_cadastro_pessoa: recebe_data_cadastro_pessoa,
-                    valor_whatsapp_pessoa: recebe_whatsapp_pessoa,
-                    valor_empresa_id_pessoa: recebe_empresa_id_pessoa,
-                    // valor_cargo_pessoa: recebe_cargo_pessoa,
-                    // valor_cbo_pessoa: recebe_cbo_pessoa,
-                    // valor_idade_pessoa: recebe_idade_pessoa,
-                    // valor_endereco_pessoa: recebe_endereco_completo,
-                    // valor_numero_pessoa: recebe_numero_pessoa,
-                    // valor_complemento_pessoa: recebe_complemento_pessoa,
-                    // valor_bairro_pessoa: recebe_bairro_pessoa,
-                    // valor_cep_pessoa: recebe_cep_pessoa,
-                    // valor_id_cidade_pessoa: recebe_id_cidade,
-                    // valor_email_pessoa: recebe_email_pessoa,
-                    // valor_senha_pessoa: recebe_senha_pessoa,
-                    // valor_nivel_acesso_pessoa: recebe_nivel_acesso_pessoa,
-                    // valor_empresa_id: recebe_empresa_id,
+                    processo_boleto: "inserir_boleto",
+                    recebe_valor_boleto: recebe_valor,
                 },
-                success: function(retorno_pessoa) {
+                success: function(retorno_boleto) {
                     debugger;
 
-                    console.log(retorno_pessoa);
+                    console.log(retorno_boleto);
 
-                    if (retorno_pessoa) {
-                        console.log("Pessoa cadastrada com sucesso");
-                        window.location.href = "painel.php?pg=pessoas";
+                    if (retorno_boleto) {
+                        console.log("Boleto cadastrado com sucesso");
+                        window.location.href = "painel.php?pg=boleto";
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao inserir empresa:" + error);
+                    console.log("Falha ao inserir boleto:" + error);
                 },
             });
         }
