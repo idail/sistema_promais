@@ -194,7 +194,9 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                                     <i class="fas fa-chevron-right arrow"></i>
                                 </div>
                                 <div class="submenu" style="margin-left: -5px;">
-                                    <a href="?pg=administradores"><i class="fas fa-money-bill-wave"></i> Planos</a>
+                                    <a href="?pg=empresa_principal"><i class="fas fa-building"></i>Empresa Principal</a>
+                                    <a href="?pg=kits_empresa"><i class="fas fa-kit-medical"></i>Gerencia KITS</a>
+                                    <a href="?pg=dados_empresa"><i class="fas fa-users"></i>Gerencia Usuários e Dados</a>
                                 </div>
                             </div>
                         </li>
