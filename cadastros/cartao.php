@@ -172,26 +172,26 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
-    let recebe_codigo_clinica_informacoes_rapida;
-    let recebe_tabela_planos;
+    let recebe_codigo_cartao_informacoes_rapida;
+    let recebe_tabela_cartao;
     $(document).ready(function() {
         // Função para buscar dados da API
-        function buscar_pix() {
+        function buscar_cartao() {
             $.ajax({
-                url: "cadastros/processa_plano.php", // Endpoint da API
+                url: "cadastros/processa_cartao.php", // Endpoint da API
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processa_plano": "buscar_planos"
+                    "processo_cartao": "buscar_cartao"
                 },
-                success: function(resposta_planos) {
+                success: function(resposta_cartao) {
                     debugger;
-                    if (resposta_planos.length > 0) {
-                        console.log(resposta_planos);
-                        preencher_tabela(resposta_planos);
+                    if (resposta_cartao.length > 0) {
+                        console.log(resposta_cartao);
+                        preencher_tabela(resposta_cartao);
                         inicializarDataTable();
                     } else {
-                        preencher_tabela(resposta_planos);
+                        preencher_tabela(resposta_cartao);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -201,14 +201,14 @@
         }
 
         // Função para preencher a tabela com os dados das clínicas
-        function preencher_tabela(pix) {
+        function preencher_tabela(cartao) {
             debugger;
             let tbody = document.querySelector("#cartao_tabela tbody");
             tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-            if (pix.length > 0) {
-                for (let index = 0; index < pix.length; index++) {
-                    let recebe_pix = pix[index];
+            if (cartao.length > 0) {
+                for (let index = 0; index < cartao.length; index++) {
+                    let recebe_cartao = cartao[index];
 
                     // Separar o endereço
                     // let partesEndereco = pessoa.endereco.split(',');
@@ -216,30 +216,27 @@
                     // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
                     // Converter data de nascimento para formato brasileiro
-                    let data_criacao_formatado = "";
-                    if (plano.criado_em) {
-                        let data = new Date(plano.criado_em);
-                        data_criacao_formatado = data.toLocaleDateString("pt-BR");
-                    }
+                    // let data_criacao_formatado = "";
+                    // if (plano.criado_em) {
+                    //     let data = new Date(plano.criado_em);
+                    //     data_criacao_formatado = data.toLocaleDateString("pt-BR");
+                    // }
 
-                    const precoFormatado = parseFloat(plano.preco).toLocaleString('pt-BR', {
+                    const precoFormatado = parseFloat(recebe_cartao.valor).toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
                     });
 
                     let row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${recebe_pix.id}</td>
-                        <td>${recebe_pix.valor}</td>
+                        <td>${recebe_cartao.id}</td>
+                        <td>${precoFormatado}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-plano' data-codigo-pessoa='${plano.id}'>
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="?pg=grava_plano&acao=editar&id=${plano.id}" target="_parent" class="edit" title="Editar">
+                                <a href="?pg=grava_cartao&acao=editar&id=${recebe_cartao.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="#" id='excluir-plano' data-codigo-pessoa="${plano.id}" class="delete" title="Apagar">
+                                <a href="#" id='excluir-plano' data-codigo-pessoa="${recebe_cartao.id}" class="delete" title="Apagar">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -254,7 +251,7 @@
 
         // Função para inicializar o DataTables
         function inicializarDataTable() {
-            recebe_tabela_planos = $("#cartao_tabela").DataTable({
+            recebe_tabela_cartao = $("#cartao_tabela").DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
                 },
@@ -262,10 +259,10 @@
             });
         }
 
-        buscar_planos();
+        buscar_cartao();
 
         $(".search-bar").on('keyup', function() {
-            recebe_tabela_planos.search(this.value).draw();
+            recebe_tabela_cartao.search(this.value).draw();
         });
 
         // async function buscar_informacoes_rapidas_clinica() {
@@ -309,45 +306,6 @@
         } else {
             return;
         }
-    });
-
-    $(document).on("click", "#visualizar-informacoes-pessoa", function(e) {
-        debugger;
-        recebe_codigo_pessoa_informacoes_rapida = $(this).data("codigo-pessoa");
-
-        $.ajax({
-            url: "cadastros/processa_pessoa.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_pessoa": "buscar_informacoes_rapidas_pessoas",
-                "valor_codigo_pessoa_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
-            },
-            success: function(resposta) {
-                debugger;
-
-                if (resposta.length > 0) {
-                    for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#created_at").val(resposta[indice].created_at);
-                        $("#nome").val(resposta[indice].nome);
-                        $("#cpf").val(resposta[indice].cpf);
-                        $("#nascimento").val(resposta[indice].nascimento);
-                        $("#sexo-pessoa").val(resposta[indice].sexo);
-                        $("#telefone").val(resposta[indice].telefone);
-                        $("#whatsapp").val(resposta[indice].whatsapp);
-                    }
-                }
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-        document.getElementById('informacoes-pessoa').classList.remove('hidden'); // abrir
-    });
-
-    $(document).on("click", "#fechar-modal-informacoes-pessoa", function(e) {
-        debugger;
-        document.getElementById('informacoes-pessoa').classList.add('hidden'); // fechar
     });
 
     // async function popula_cidades_informacoes_rapidas(cidadeSelecionada = "", estadoSelecionado = "") {
@@ -428,87 +386,3 @@
     //     });
     // }
 </script>
-
-<!-- <div id="informacoes-pessoa"
-    class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center h-screen">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl p-6 relative">
-
-        
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Informações da Pessoa</h2>
-            <button id="fechar-modal-informacoes-pessoa" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
-        </div>
-
-       
-        <form method="post" id="empresaForm" class="space-y-6 text-sm text-gray-700">
-            
-            <div class="form-group">
-                <label for="created_at" class="block font-semibold mb-1">Data de Cadastro:</label>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-calendar-alt text-gray-500"></i>
-                    <input type="datetime-local" value="" id="created_at" name="created_at" class="form-control w-full" readonly>
-                </div>
-            </div>
-
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="form-group">
-                    <label for="nome">Nome Completo:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-user text-gray-500"></i>
-                        <input type="text" id="nome" name="nome" disabled class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="cpf">CPF:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-address-card text-gray-500"></i>
-                        <input type="text" id="cpf" name="cpf" disabled oninput="formatCPF(this)" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="nascimento">Data Nascimento:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-gray-500"></i>
-                        <input type="date" id="nascimento" disabled name="nascimento" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="sexo-pessoa">Sexo:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-mars text-gray-500"></i>
-                        <select id="sexo-pessoa" disabled name="sexo_pessoa" class="form-control w-full">
-                            <option value="selecione">Selecione</option>
-                            <option value="feminino">Feminino</option>
-                            <option value="masculino">Masculino</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-phone text-gray-500"></i>
-                        <input type="text" disabled id="telefone" name="telefone" oninput="mascaraTelefone(this);" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="whatsapp">Whatsapp:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-phone text-gray-500"></i>
-                        <input type="text" disabled id="whatsapp" name="whatsapp" oninput="mascaraTelefone(this);" class="form-control w-full">
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-between mt-6">
-                <button id="fechar-modal-informacoes-pessoa" type="button"
-                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800">Fechar</button>
-            </div>
-        </form>
-    </div>
-</div> -->
