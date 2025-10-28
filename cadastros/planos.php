@@ -142,7 +142,7 @@
 
 <!-- Botão Cadastrar -->
 <div>
-    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_pessoa&acao=cadastrar';">
+    <button class="btn-cadastrar" onclick="window.location.href='?pg=grava_plano&acao=cadastrar';">
         <i class="fas fa-plus"></i> Cadastrar
     </button>
 </div>
@@ -182,7 +182,7 @@
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processa_plano": "buscar_planos"
+                    "processo_plano": "buscar_planos"
                 },
                 success: function(resposta_planos) {
                     debugger;
@@ -237,9 +237,6 @@
                         <td>${data_criacao_formatado}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-plano' data-codigo-pessoa='${plano.id}'>
-                                    <i class="fas fa-eye"></i>
-                                </a>
                                 <a href="?pg=grava_plano&acao=editar&id=${plano.id}" target="_parent" class="edit" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
