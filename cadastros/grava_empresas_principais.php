@@ -592,12 +592,12 @@
     async function popula_informacoes_empresa_alteracao() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: "cadastros/processa_empresa.php",
+                url: "cadastros/processa_empresa_principal.php",
                 method: "GET",
                 dataType: "json",
                 data: {
-                    "processo_empresa": "buscar_informacoes_empresa_alteracao",
-                    valor_codigo_empresa_alteracao: recebe_codigo_alteracao_empresa,
+                    "processo_empresa": "buscar_informacoes_empresas_principal_alteracao",
+                    valor_codigo_empresa_principal_alteracao: recebe_codigo_alteracao_empresa,
                 },
                 success: async function(resposta_empresa) {
                     debugger;
@@ -617,8 +617,6 @@
                         $("#complemento").val(empresa.complemento);
                         $("#email").val(empresa.email);
                         $("#telefone").val(empresa.telefone);
-                        $("#nome_contabilidade").val(empresa.nome_contabilidade);
-                        $("#email_contabilidade").val(empresa.email_contabilidade);
                         $("#empresa_id_alteracao").val(empresa.id);
                         
                         // Se tiver ID de cidade, busca os dados da cidade e estado

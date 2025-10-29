@@ -239,7 +239,7 @@
             <td>${empresa.telefone}</td>
             <td>
                 <div class="action-buttons">
-                    <a href="?pg=grava_empresa&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
+                    <a href="?pg=grava_empresas_principais&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
                     <a href='#' id='exclui-empresa' data-codigo-empresa="${empresa.id}" class="delete" title="Apagar">
@@ -289,33 +289,6 @@
                 return;
             }
         });
-
-        // resposta_empresa.forEach(empresa => {
-        //     const row = document.createElement("tr");
-        //     row.innerHTML = `
-        //                 <td>${empresa.id}</td>
-        //                 <td>${empresa.nome_fantasia}</td>
-        //                 <td>${empresa.cnpj}</td>
-        //                 <td>${empresa.endereco}, ${empresa.numero}, ${empresa.complemento}</td>
-        //                 <td>${empresa.cidade_nome}/${empresa.cidade_estado}</td>
-        //                 <td>${empresa.telefone}</td>
-        //                 <td>${empresa.status}</td>
-        //                 <td>
-        //                     <div class="action-buttons">
-        //                         <a href="#" class="view" title="Visualizar">
-        //                             <i class="fas fa-eye"></i>
-        //                         </a>
-        //                         <a href="?pg=pro_cli&acao=editar&id=${empresa.id}" target="_parent" class="edit" title="Editar">
-        //                             <i class="fas fa-edit"></i>
-        //                         </a>
-        //                         <a href="cadastros/pro_cli_json.php?pg=pro_cli&acao=apagar&id=${empresa.id}" class="delete" title="Apagar">
-        //                             <i class="fas fa-trash"></i>
-        //                         </a>
-        //                     </div>
-        //                 </td>
-        //             `;
-        //     tbody.appendChild(row);
-        // });
     }
 
     // Função para inicializar o DataTables
