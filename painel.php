@@ -195,7 +195,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                                 </div>
                                 <div class="submenu" style="margin-left: -5px;">
                                     <a href="?pg=empresas_principais"><i class="fas fa-building"></i>Empresa Principal</a>
-                                    <a href="?pg=kits_empresa"><i class="fas fa-kit-medical"></i>Gerencia KITS</a>
+                                    <a href="?pg=gerencia_kits"><i class="fas fa-kit-medical"></i>Gerencia KITS</a>
                                     <a href="?pg=dados_empresa"><i class="fas fa-users"></i>Gerencia Usuários e Dados</a>
                                 </div>
                             </div>
