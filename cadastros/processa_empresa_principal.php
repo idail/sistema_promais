@@ -77,9 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_bairro_empresa = !empty($_POST["valor_bairro_empresa"]) ? $_POST["valor_bairro_empresa"] : null;
         $recebe_cep_empresa = !empty($_POST["valor_cep_empresa"]) ? $_POST["valor_cep_empresa"] : null;
         $recebe_complemento_empresa = !empty($_POST["valor_complemento_empresa"]) ? $_POST["valor_complemento_empresa"] : null;
-        $recebe_id_empresa_principal_alterar = !empty($_POST["valor_id_empresa_principal_alterar"]) ? $_POST["valor_id_empresa_principal_alterar"] : null;
+        $recebe_id_empresa_principal_alterar = !empty($_POST["valor_id_empresa"]) ? $_POST["valor_id_empresa"] : null;
 
-        $instrucao_altera_empresa_principal = "INSERT INTO empresas set nome = :recebe_nome,endereco = :recebe_endereco,
+        $instrucao_altera_empresa_principal = "update empresas set nome = :recebe_nome,endereco = :recebe_endereco,
         id_cidade = :recebe_id_ciadde,id_estado = :recebe_id_estado,telefone = :recebe_telefone,email = :recebe_email,razao_social = :recebe_razao_social,
         bairro = :recebe_bairro,cep = :recebe_cep,complemento = :recebe_complemento where id = :recebe_id_empresa_principal";
         $comando_altera_empresa_principal = $pdo->prepare($instrucao_altera_empresa_principal);

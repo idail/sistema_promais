@@ -1411,13 +1411,12 @@
                 type: "POST",
                 dataType: "json",
                 data: {
-                    processo_empresa: "alterar_empresa",
+                    processo_empresa: "alterar_empresas_principal",
                     valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
                     valor_cnpj_empresa: recebe_cnpj_empresa,
                     valor_endereco_empresa: recebe_endereco_completo,
                     valor_telefone_empresa: recebe_telefone_empresa,
                     valor_email_empresa: recebe_email_empresa,
-                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
                     valor_id_cidade: recebe_id_cidade,
                     valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
                     valor_razao_social_empresa: recebe_razao_social_empresa,
@@ -1434,7 +1433,7 @@
                     console.log(retorno_empresa);
                     if (retorno_empresa) {
                         console.log("Empresa alterada com sucesso");
-                        window.location.href = "painel.php?pg=empresas";
+                        window.location.href = "painel.php?pg=empresas_principais";
                     }
                 },
                 error: function(xhr, status, error) {
