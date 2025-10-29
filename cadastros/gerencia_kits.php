@@ -24,13 +24,12 @@
 
                     <div class="address-container">
 
-                        <div class="form-group" style="flex:30%;">
+                        <div class="form-group" style="flex:35%;">
                             <label for="grupo_risco">Empresas:</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-building"></i>
 
                                 <select id="empresas" name="empresas" class="form-control" style="width: 25%;">
-                                    <option value="selecione">Selecione</option>
                                 </select>
                             </div>
                         </div>
@@ -39,15 +38,13 @@
             </div>
 
             <div>
-                <table id="empresas_principal_tabela">
+                <table id="kits_tabela">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Nome Fantasia</th>
-                            <th>CNPJ</th>
-                            <th>Endereço</th>
-                            <th>Cidade/Estado</th>
-                            <th>Telefone</th>
+                            <th>Status</th>
+                            <th>Tipo do Exame</th>
+                            <th>Empresa</th>
                             <th>Ações</th> <!-- Nova coluna para os botões de ação -->
                         </tr>
                     </thead>
@@ -88,22 +85,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #empresas_principal_tabela {
+    #kits_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #empresas_principal_tabela th,
-    #empresas_principal_tabela td {
+    #kits_tabela th,
+    #kits_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #empresas_principal_tabela th {
+    #kits_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
@@ -361,235 +358,6 @@
         display: none;
     }
 
-    .accordion-content {
-        padding: 10px;
-        background-color: #f2f2f2;
-        border: 1px solid #ddd;
-    }
-
-    #risco_ergonomico {
-        font-size: 12px;
-        width: 100%;
-        border-collapse: collapse;
-        padding-top: 20px;
-    }
-
-    #risco_ergonomico th,
-    #risco_ergonomico td {
-        padding: 10px;
-        border: 1px solid #fff;
-        text-align: left;
-
-    }
-
-    #risco_ergonomico th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-
-    #risco_acidente_mecanico {
-        font-size: 12px;
-        width: 100%;
-        border-collapse: collapse;
-        padding-top: 20px;
-    }
-
-    #risco_acidente_mecanico th,
-    #risco_acidente_mecanico td {
-        padding: 10px;
-        border: 1px solid #fff;
-        text-align: left;
-
-    }
-
-    #risco_acidente_mecanico th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-    #risco_fisico {
-        font-size: 12px;
-        width: 100%;
-        border-collapse: collapse;
-        padding-top: 20px;
-    }
-
-    #risco_fisico th,
-    #risco_fisico td {
-        padding: 10px;
-        border: 1px solid #fff;
-        text-align: left;
-
-    }
-
-    #risco_fisico th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-    #risco_quimico {
-        font-size: 12px;
-        width: 100%;
-        border-collapse: collapse;
-        padding-top: 20px;
-    }
-
-    #risco_quimico th,
-    #risco_quimico td {
-        padding: 10px;
-        border: 1px solid #fff;
-        text-align: left;
-
-    }
-
-    #risco_quimico th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-    #risco_biologico {
-        font-size: 12px;
-        width: 100%;
-        border-collapse: collapse;
-        padding-top: 20px;
-    }
-
-    #risco_biologico th,
-    #risco_biologico td {
-        padding: 10px;
-        border: 1px solid #fff;
-        text-align: left;
-
-    }
-
-    #risco_biologico th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-    #risco_outros {
-        font-size: 12px;
-        width: 100%;
-        border-collapse: collapse;
-        padding-top: 20px;
-    }
-
-    #risco_outros th,
-    #risco_outros td {
-        padding: 10px;
-        border: 1px solid #fff;
-        text-align: left;
-
-    }
-
-    #risco_outros th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-    .accordion-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .accordion-arrow {
-        font-size: 16px;
-        transition: transform 0.3s ease;
-    }
-
-    .accordion-header[aria-expanded="true"] .accordion-arrow {
-        transform: rotate(180deg);
-    }
-
-    /* Alinhar seletor e busca à direita */
-    .dataTables_wrapper .dataTables_length,
-    .dataTables_wrapper .dataTables_filter {
-        float: right;
-        text-align: right;
-        margin-left: 10px;
-    }
-
-    /* Alinhar paginação à direita */
-    .dataTables_wrapper .dataTables_paginate {
-        float: right;
-        text-align: right;
-        margin-top: 10px;
-    }
-
-    /* Estilizar o número da página atual */
-    .dataTables_wrapper .dataTables_paginate .current {
-        background-color: #3b3b3b;
-        color: white;
-        border-radius: 4px;
-        padding: 5px 10px;
-        margin: 0 2px;
-    }
-
-    #risco_ergonomico {
-        width: 100% !important;
-    }
-
-    #risco_acidente_mecanico {
-        width: 100% !important;
-    }
-
-    #risco_fisico {
-        width: 100% !important;
-    }
-
-    #risco_biologico {
-        width: 100% !important;
-    }
-
-    #risco_outros {
-        width: 100% !important;
-    }
-
-    /* Força o alinhamento horizontal entre a info e os botões */
-    .dataTables_wrapper .dataTables_info,
-    .dataTables_wrapper .dataTables_paginate {
-        display: inline-block;
-        vertical-align: middle;
-        margin: 0;
-        padding: 8px 0;
-        /* Ajuste a altura aqui */
-    }
-
-    /* Para o container geral da parte inferior do DataTable */
-    .dataTables_wrapper .dataTables_length,
-    .dataTables_wrapper .dataTables_filter,
-    .dataTables_wrapper .dataTables_info,
-    .dataTables_wrapper .dataTables_paginate {
-        box-sizing: border-box;
-    }
-
-    /* Garante que tudo fique dentro do container da tabela */
-    .dataTables_wrapper .dataTables_paginate {
-        text-align: right;
-        float: right;
-    }
-
-    .dataTables_wrapper .dataTables_info {
-        float: left;
-    }
-
-    /* Limpa margens extras do paginador */
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        margin: 0;
-        padding: 4px 8px;
-        line-height: 1.5;
-        vertical-align: middle;
-    }
-
-    /* Ajuste para o layout responsivo da section */
-    .dataTables_wrapper .row:last-child {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
     /* .accordion-content {
         min-height: 150px;
         /* ou outro valor */
@@ -603,6 +371,50 @@
         debugger;
 
         $("#mensagem-campo-vazio").hide();
+
+        function buscar_empresas_principais() {
+            $.ajax({
+                url: "cadastros/processa_empresa_principal.php", // Endpoint da API
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_empresa": "buscar_empresas_principal"
+                },
+                success: async function(resposta_empresa_principal) {
+                    debugger;
+
+                    try {
+                        // Preenche o select
+                        let select = $("#empresas");
+                        select.empty(); // limpa antes
+                        select.append('<option value="selecione">Selecione</option>');
+
+                        resposta_empresa_principal.forEach(function(empresa) {
+                            select.append(`<option value="${empresa.id}">${empresa.nome}</option>`);
+                        });
+
+                        // Se quiser, continua com sua lógica da tabela
+                        console.log(resposta_empresa_principal);
+
+                    } catch (error) {
+                        console.error("Erro ao preencher tabela:", error);
+                    }
+
+                    // try {
+                    //     console.log(resposta_empresa_principal);
+                    //     await preencher_tabela(resposta_empresa_principal);
+                    //     inicializarDataTable();
+                    // } catch (error) {
+                    //     console.error("Erro ao preencher tabela:", error);
+                    //     $("#empresas_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Erro ao carregar dados</td></tr>");
+                    //     inicializarDataTable();
+                    // }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro na requisição:", error);
+                }
+            });
+        }
 
         // let recebe_url_atual = window.location.href;
 
@@ -644,9 +456,50 @@
 
         // buscar_informacoes_medico();
 
-        buscar_grupos_riscos();
+        buscar_empresas_principais();
 
-        inicializarTabelas();
+        // inicializarTabelas();
+    });
+
+    let recebe_empresa_selecionada;
+    let recebe_id_empresa_principal_selecionada;
+
+    $("#empresas").change(function(e){
+        e.preventDefault();
+
+        debugger;
+
+        recebe_empresa_selecionada = $("#empresas option:selected").text();
+
+        recebe_id_empresa_principal_selecionada = this.value;
+
+        buscar_kits();
+
+        // Função para buscar dados da API
+        function buscar_kits() {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php", // Endpoint da API
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "processo_geracao_kit": "buscar_todos_kits_empresa_gerenciamento_kits",
+                    valor_id_empresa_principal:recebe_id_empresa_principal_selecionada
+                },
+                success: async function(resposta_kits) {
+                    debugger;
+                    if (resposta_kits.length > 0) {
+                        console.log(resposta_kits);
+                        await preencher_tabela(resposta_kits);
+                        inicializarDataTable();
+                    } else {
+                        preencher_tabela(resposta_kits);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro na requisição:", error);
+                }
+            });
+        }
     });
 
     // Accordion toggle
@@ -675,693 +528,71 @@
         select_grupo_risco.selectedIndex = 0;
     });
 
-    // async function popula_informacoes_medico_alteracao() {
-    //     return new Promise((resolve, reject) => {
-    //         $.ajax({
-    //             url: "cadastros/processa_medico.php",
-    //             method: "GET",
-    //             dataType: "json",
-    //             data: {
-    //                 "processo_medico": "buscar_informacoes_medico_alteracao",
-    //                 valor_codigo_medico_alteracao: recebe_codigo_alteracao_risco,
-    //             },
-    //             success: function(resposta_medico) {
-    //                 debugger;
-    //                 console.log(resposta_medico);
-
-    //                 if (resposta_medico.length > 0) {
-    //                     for (let indice = 0; indice < resposta_medico.length; indice++) {
-    //                         $("#created_at").val(resposta_medico[indice].created_at);
-    //                         $("#medico_id_alteracao").val(resposta_medico[indice].id);
-    //                         $("#nome").val(resposta_medico[indice].nome);
-    //                         $("#cpf").val(resposta_medico[indice].cpf);
-    //                         $("#crm").val(resposta_medico[indice].crm);
-    //                         $("#uf_crm").val(resposta_medico[indice].uf_crm);
-    //                         $("#especialidade").val(resposta_medico[indice].especialidade);
-    //                         $("#rqe").val(resposta_medico[indice].rqe);
-    //                         $("#uf_rqe").val(resposta_medico[indice].uf_rqe);
-    //                         $("#nascimento").val(resposta_medico[indice].nascimento);
-    //                         $("#sexo-medico").val(resposta_medico[indice].sexo);
-    //                         $("#contato").val(resposta_medico[indice].contato);
-    //                     }
-    //                 }
-
-    //                 resolve(); // sinaliza que terminou
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.log("Falha ao buscar médicos:" + error);
-    //                 reject(error);
-    //             },
-    //         });
-    //     });
-    // }
-
-    function buscar_grupos_riscos(e) {
+    // Função para preencher a tabela com os dados das clínicas
+    async function preencher_tabela(kits) {
         debugger;
-
-        $.ajax({
-            url: "cadastros/processa_risco.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_risco": "buscar_riscos_ergonomico",
-            },
-            success: function(resposta_risco) {
-                debugger;
-                console.log(resposta_risco);
-
-                if ($.fn.dataTable.isDataTable('#risco_ergonomico')) {
-                    $('#risco_ergonomico').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#risco_ergonomico tbody").empty();
-
-                let corpo = document.querySelector("#risco_ergonomico tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_risco.length > 0) {
-                    // $("#risco_ergonomico tbody").html("");
-                    for (let index = 0; index < resposta_risco.length; index++) {
-                        let risco = resposta_risco[index];
-                        let resultado = risco.grupo_risco !== "" ? "Ergonômico" : "";
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML = `
-                    <td>${risco.id}</td>
-                    <td>${risco.codigo}</td>
-                    <td>${risco.descricao_grupo_risco}</td>
-                    <td>${resultado}</td>
-                    <td>
-                        <div class='action-buttons'>
-                            <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
-                            data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
-                            <a href='#' id='excluir-risco' data-id-risco="${risco.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                    </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#risco_ergonomico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#risco_ergonomico')) {
-                    $('#risco_ergonomico').DataTable().destroy();
-                }
-
-                $("#risco_ergonomico").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao carregar dados:", error);
-            },
-        });
-
-
-        $.ajax({
-            url: "cadastros/processa_risco.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_risco": "buscar_riscos_acidente_mecanico",
-            },
-            success: function(resposta_risco) {
-                debugger;
-
-                console.log(resposta_risco);
-
-                if ($.fn.dataTable.isDataTable('#risco_acidente_mecanico')) {
-                    $('#risco_acidente_mecanico').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#risco_acidente_mecanico tbody").empty();
-
-                let corpo = document.querySelector("#risco_acidente_mecanico tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_risco.length > 0) {
-                    // let corpo = document.querySelector("#risco_acidente_mecanico tbody");
-                    // corpo.innerHTML = "";
-                    for (let index = 0; index < resposta_risco.length; index++) {
-                        let risco = resposta_risco[index];
-
-                        // let resultado;
-
-                        // if (risco.grupo_risco.includes("_")) {
-                        //     resultado = risco.grupo_risco
-                        //         .replace(/_/g, " ")
-                        //         .split(" ")
-                        //         .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
-                        //         .join(" ");
-                        // } else {
-                        //     resultado = risco.grupo_risco.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
-                        // }
-
-                        let resultado;
-
-                        if (risco.grupo_risco !== "") {
-                            resultado = "Acidente Mecânico";
-                        }
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML =
-                            `<td>${risco.id}</td>
-                        <td>${risco.codigo}</td>
-                        <td>${risco.descricao_grupo_risco}</td>
-                        <td>${resultado}</td>
-                        <td>
-                        <div class='action-buttons'>
-                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
-                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
-                        <a href='#' id='excluir-risco' data-id-risco="${risco.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                        </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#risco_acidente_mecanico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#risco_acidente_mecanico')) {
-                    $('#risco_acidente_mecanico').DataTable().destroy();
-                }
-
-                // // 🎛️ Inicializa o DataTable com a paginação e idioma corretos
-                // $("#risco_acidente_mecanico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": 'lfrtip', // Exibe o filtro, paginação, etc.
-                //     "pageLength": 10, // Quantos registros por página
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ] // Opções do select
-                // });
-
-                // $("#risco_acidente_mecanico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                //     "pageLength": 10,
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ]
-                // });
-
-                $("#risco_acidente_mecanico").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-                // section1
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-
-        $.ajax({
-            url: "cadastros/processa_risco.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_risco": "buscar_riscos_quimico",
-            },
-            success: function(resposta_risco) {
-                debugger;
-
-                console.log(resposta_risco);
-
-                if ($.fn.dataTable.isDataTable('#risco_quimico')) {
-                    $('#risco_quimico').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#risco_quimico tbody").empty();
-
-                let corpo = document.querySelector("#risco_quimico tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_risco.length > 0) {
-                    // let corpo = document.querySelector("#risco_quimico tbody");
-                    // corpo.innerHTML = "";
-                    for (let index = 0; index < resposta_risco.length; index++) {
-                        let risco = resposta_risco[index];
-
-                        let resultado;
-                        if (risco.grupo_risco !== "") {
-                            resultado = "Químico";
-                        }
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML =
-                            `<td>${risco.id}</td>
-                        <td>${risco.codigo}</td>
-                        <td>${risco.descricao_grupo_risco}</td>
-                        <td>${resultado}</td>
-                        <td>
-                        <div class='action-buttons'>
-                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
-                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
-                        <a href='#' id='excluir-risco' data-id-risco="${risco.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                        </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#risco_quimico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#risco_quimico')) {
-                    $('#risco_quimico').DataTable().destroy();
-                }
-
-                // 🎛️ Inicializa o DataTable com a paginação e idioma corretos
-                // $("#risco_quimico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": 'lfrtip', // Exibe o filtro, paginação, etc.
-                //     "pageLength": 10, // Quantos registros por página
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ] // Opções do select
-                // });
-
-                // $("#risco_quimico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                //     "pageLength": 10,
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ]
-                // });
-
-                $("#risco_quimico").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-                // section1
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-
-        $.ajax({
-            url: "cadastros/processa_risco.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_risco": "buscar_riscos_fisicos",
-            },
-            success: function(resposta_risco) {
-                debugger;
-
-                console.log(resposta_risco);
-
-                if ($.fn.dataTable.isDataTable('#risco_fisico')) {
-                    $('#risco_fisico').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#risco_fisico tbody").empty();
-
-                let corpo = document.querySelector("#risco_fisico tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_risco.length > 0) {
-                    // let corpo = document.querySelector("#risco_fisico tbody");
-                    // corpo.innerHTML = "";
-                    for (let index = 0; index < resposta_risco.length; index++) {
-                        let risco = resposta_risco[index];
-
-                        let resultado;
-                        if (risco.grupo_risco !== "") {
-                            resultado = "Físico";
-                        }
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML =
-                            `<td>${risco.id}</td>
-                        <td>${risco.codigo}</td>
-                        <td>${risco.descricao_grupo_risco}</td>
-                        <td>${resultado}</td>
-                        <td>
-                        <div class='action-buttons'>
-                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
-                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
-                        <a href='#' id='excluir-risco' data-id-risco="${risco.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                        </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#risco_fisico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#risco_fisico')) {
-                    $('#risco_fisico').DataTable().destroy();
-                }
-
-                // 🎛️ Inicializa o DataTable com a paginação e idioma corretos
-                // $("#risco_fisico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": 'lfrtip', // Exibe o filtro, paginação, etc.
-                //     "pageLength": 10, // Quantos registros por página
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ] // Opções do select
-                // });
-
-                // $("#risco_fisico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                //     "pageLength": 10,
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ]
-                // });
-
-                $("#risco_fisico").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-                // section1
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-
-
-        $.ajax({
-            url: "cadastros/processa_risco.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_risco": "buscar_riscos_biologico",
-            },
-            success: function(resposta_risco) {
-                debugger;
-
-                console.log(resposta_risco);
-
-                if ($.fn.dataTable.isDataTable('#risco_biologico')) {
-                    $('#risco_biologico').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#risco_biologico tbody").empty();
-
-                let corpo = document.querySelector("#risco_biologico tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_risco.length > 0) {
-                    // let corpo = document.querySelector("#risco_biologico tbody");
-                    // corpo.innerHTML = "";
-                    for (let index = 0; index < resposta_risco.length; index++) {
-                        let risco = resposta_risco[index];
-
-                        let resultado;
-                        if (risco.grupo_risco !== "") {
-                            resultado = "Biológico";
-                        }
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML =
-                            `<td>${risco.id}</td>
-                        <td>${risco.codigo}</td>
-                        <td>${risco.descricao_grupo_risco}</td>
-                        <td>${resultado}</td>
-                        <td>
-                        <div class='action-buttons'>
-                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
-                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
-                        <a href='#' id='excluir-risco' data-id-risco="${risco.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                        </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#risco_biologico tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#risco_biologico')) {
-                    $('#risco_biologico').DataTable().destroy();
-                }
-
-                // 🎛️ Inicializa o DataTable com a paginação e idioma corretos
-                // $("#risco_biologico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": 'lfrtip', // Exibe o filtro, paginação, etc.
-                //     "pageLength": 10, // Quantos registros por página
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ] // Opções do select
-                // });
-
-                // $("#risco_biologico").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                //     "pageLength": 10,
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ]
-                // });
-
-                $("#risco_biologico").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-                // section1
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-
-        $.ajax({
-            url: "cadastros/processa_risco.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_risco": "buscar_riscos_outros",
-            },
-            success: function(resposta_risco) {
-                debugger;
-
-                console.log(resposta_risco);
-
-                if ($.fn.dataTable.isDataTable('#risco_outros')) {
-                    $('#risco_outros').DataTable().clear().destroy();
-                }
-
-                // Limpa o tbody manualmente (opcional, mas recomendado)
-                $("#risco_outros tbody").empty();
-
-                let corpo = document.querySelector("#risco_outros tbody");
-                corpo.innerHTML = "";
-
-                if (resposta_risco.length > 0) {
-                    // let corpo = document.querySelector("#risco_outros tbody");
-                    // corpo.innerHTML = "";
-                    for (let index = 0; index < resposta_risco.length; index++) {
-                        let risco = resposta_risco[index];
-
-                        let resultado;
-                        if (risco.grupo_risco !== "") {
-                            resultado = "Outros";
-                        }
-
-                        let linha = document.createElement("tr");
-                        linha.innerHTML =
-                            `<td>${risco.id}</td>
-                        <td>${risco.codigo}</td>
-                        <td>${risco.descricao_grupo_risco}</td>
-                        <td>${resultado}</td>
-                        <td>
-                        <div class='action-buttons'>
-                        <a href='#' id='alterar-risco' data-id-risco="${risco.id}" data-codigo-risco="${risco.codigo}"
-                        data-descricao-risco="${risco.descricao_grupo_risco}" data-grupo-risco="${risco.grupo_risco}" title='Editar'><i class="fas fa-edit"></i></a>
-                        <a href='#' id='excluir-risco' data-id-risco="${risco.id}" class='delete' title='Apagar'><i class="fas fa-trash"></i></a>
-                        </div>
-                        </td>`;
-                        corpo.appendChild(linha);
-                    }
-                } else {
-                    $("#risco_outros tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-                }
-
-                // 🧹 Destrói o DataTable antigo antes de recriar
-                if ($.fn.dataTable.isDataTable('#risco_outros')) {
-                    $('#risco_outros').DataTable().destroy();
-                }
-
-                // 🎛️ Inicializa o DataTable com a paginação e idioma corretos
-                // $("#risco_outros").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": 'lfrtip', // Exibe o filtro, paginação, etc.
-                //     "pageLength": 10, // Quantos registros por página
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ] // Opções do select
-                // });
-
-                // $("#risco_outros").DataTable({
-                //     "language": {
-                //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                //     },
-                //     "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                //     "pageLength": 10,
-                //     "lengthMenu": [
-                //         [10, 25, 50, -1],
-                //         [10, 25, 50, "Todos"]
-                //     ]
-                // });
-
-                $("#risco_outros").DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-                    },
-                    "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-                    "pageLength": 5, // Exibir 5 registros por página
-                    "lengthMenu": [
-                        [5, 10, 25, 50, -1],
-                        [5, 10, 25, 50, "Todos"]
-                    ]
-                });
-
-                // section1
-            },
-            error: function(xhr, status, error) {
-
-            },
-        });
-
-        $(document).on("click", "#alterar-risco", function(e) {
-            e.preventDefault();
-
-            debugger;
-
-            let recebe_id_risco = $(this).data("id-risco");
-            let recebe_codigo_risco = $(this).data("codigo-risco");
-            let recebe_descricao_risco = $(this).data("descricao-risco");
-            let recebe_grupo_risco = $(this).data("grupo-risco");
-
-            $("#id_risco_alteracao").val(recebe_id_risco);
-            $("#codigo_risco").val(recebe_codigo_risco);
-            $("#descricao_risco").val(recebe_descricao_risco);
-            $("#grupo_risco").val(recebe_grupo_risco);
-
-            // $('button[name="grava_risco"]').attr('id', 'altera-risco');
-            recebe_acao_alteracao_risco = "editar";
-        });
+        let tbody = document.querySelector("#kits_tabela tbody");
+        tbody.innerHTML = ""; // Limpa o conteúdo existente
+
+        if (kits.length > 0) {
+            for (let index = 0; index < kits.length; index++) {
+                let kit = kits[index];
+
+                // Separar o endereço
+                // let partesEndereco = pessoa.endereco.split(',');
+                // let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
+                // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+
+                // Converter data de nascimento para formato brasileiro
+                // let data_nascimento_formatado = "";
+                // if (pessoa.nascimento) {
+                //     let data = new Date(pessoa.nascimento);
+                //     data_nascimento_formatado = data.toLocaleDateString("pt-BR");
+                // }
+
+                // <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-pessoa='${pessoa.id}'>
+                //                 <i class="fas fa-eye"></i>
+                //             </a>
+
+                window.recebe_codigo_id_empresa_principal = kit.empresa_id_principal;
+
+                window.recebe_dados_empresa_principal_kit = "";
+
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                        <td style="text-align:center; vertical-align:middle;">${kit.id}</td>
+<td style="text-align:center; vertical-align:middle;">${kit.status && kit.status.trim() !== "" ? kit.status : "Não informado"}</td>
+<td style="text-align:center; vertical-align:middle;">${kit.tipo_exame && kit.tipo_exame.trim() !== "" ? kit.tipo_exame : "Não informado"}</td>
+<td style="text-align:center; vertical-align:middle;">${recebe_empresa_selecionada || "Não informado"}</td>
+    <td style="text-align:center; vertical-align:middle;">
+        <div class="action-buttons">
+            <a href="?pg=geracao_kit&id=${kit.id}&acao=editar" target="_parent" class="edit" title="Editar">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a href="#" id='excluir-kit' data-codigo-kit="${kit.id}" class="delete" title="Apagar">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+    </td>
+                    `;
+                tbody.appendChild(row);
+            }
+        } else {
+            $("#kits_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+        }
     }
 
-    $(document).on("click", "#excluir-risco", function(e) {
-        e.preventDefault();
+    let recebe_tabela_kits;
 
-        debugger;
-
-        let recebe_confirmar_exclusao_risco = window.confirm("Tem certeza que deseja excluir o risco?");
-
-        if (recebe_confirmar_exclusao_risco) {
-            let recebe_id_risco = $(this).data("id-risco");
-            $.ajax({
-                url: "cadastros/processa_risco.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    processo_risco: "excluir_risco",
-                    valor_id_risco: recebe_id_risco,
-                },
-                success: function(retorno_risco) {
-                    debugger;
-                    console.log(retorno_risco);
-                    if (retorno_risco) {
-                        // window.location.href = "painel.php?pg=grava_risco";
-                        buscar_grupos_riscos();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log("Falha ao excluir pessoa:" + error);
-                },
-            });
-        } else {
-            return;
-        }
-    });
+    // Função para inicializar o DataTables
+    function inicializarDataTable() {
+        recebe_tabela_kits = $('#kits_tabela').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+            },
+            "dom": 'lrtip' // Remove a barra de pesquisa padrão
+        });
+    }
 
     $("#grava-risco").click(function(e) {
         e.preventDefault();

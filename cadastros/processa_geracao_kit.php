@@ -2390,5 +2390,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_buscar_empresa_kit->execute();
         $resultado_buscar_empresa_kit = $comando_buscar_empresa_kit->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_buscar_empresa_kit);
+    }else if($recebe_processo_geracao_kit === "buscar_todos_kits_empresa_gerenciamento_kits")
+    {
+        $instrucao_buscar_kits_empresa = "select * from kits where empresa_id_principal = :recebe_id_principal";
+        $comando_buscar_kits_empresa = $pdo->prepare($instrucao_buscar_kits_empresa);
+        $comando_buscar_kits_empresa->bindValue(":recebe_id_principal",$_GET["valor_id_empresa_principal"]);
+        $comando_buscar_kits_empresa->execute();
+        $resultado_buscar_kits_empresa_principal = $comando_buscar_kits_empresa->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_buscar_kits_empresa_principal);
     }
 }
+?>
