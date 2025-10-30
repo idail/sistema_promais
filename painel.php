@@ -141,12 +141,12 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                             Configura&#xe7;&#xf5;es
                         </a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="?pg=usuarios">
                             <i class="fas fa-users"></i>
                             Usu&#xe1;rios
                         </a>
-                    </li>
+                    </li> -->
                     <?php
                     // Verifique se o nível de acesso é "admin"
                     if (isset($_SESSION['user_access_level']) && $_SESSION['user_access_level'] === 'admin') {
@@ -298,8 +298,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                 }
             }
             ?>
-    </div>
-    </main>
+        </main>
     </div>
     <div class="color-picker">
         <div class="color-option theme-green" style="background: #525d69" onclick="setTheme(&apos;theme-green&apos;)"></div>

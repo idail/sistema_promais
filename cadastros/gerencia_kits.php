@@ -134,6 +134,25 @@
     .status-toggle .toggle-checkbox:checked+.toggle-label:before {
         transform: translateX(26px);
     }
+
+    /* Forçar dropdown do perfil a ficar atrás da modal */
+    .profile-dropdown {
+        position: absolute;
+        z-index: 10 !important;
+    }
+
+    .profile-menu {
+        position: absolute;
+        z-index: 10 !important;
+    }
+
+    #informacoes-kit {
+        z-index: 99999 !important;
+    }
+
+    #informacoes-kit>div {
+        z-index: 100000 !important;
+    }
 </style>
 
 <div>
@@ -178,12 +197,178 @@
     </table>
 </div>
 
+<div id="informacoes-kit"
+    class="fixed inset-0 z-[99999] hidden bg-black bg-opacity-50 flex items-center justify-center h-screen">
+
+    <!-- Modal grande -->
+    <div class="bg-white rounded-lg shadow-lg w-[95%] max-w-[1500px] p-0 relative overflow-y-auto max-h-[95vh] z-[10000]" style="width: 55%;">
+
+
+
+        <!-- Conteúdo interno -->
+        <div style="
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    padding: 30px 40px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+    font-family: Arial, sans-serif;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin: 0 auto;
+">
+
+            <h2 style="margin-top:0; text-align:center; font-size:30px; color:#333;">
+                Detalhes do Kit: <span id="recebe-detalhe-tipo-exame"></span>
+            </h2>
+
+            <table style="width:100%; margin-top:10px; border-collapse:collapse; font-size:18px;">
+
+                <tr>
+                    <td style="font-weight:bold; padding:6px 8px; width:155px;">Tipo do Exame:</td>
+                    <td><span id="recebe-tipo-exame"></span></td>
+                    <td style="font-weight:bold; padding:12px; width:18%;">Empresa:</td>
+                    <td style="width: 24%;"><span id="nome-empresa"></span></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold; padding:12px;">Clínica:</td>
+                    <td><span id="recebe-clinica"></span></td>
+                    <td style="font-weight:bold; padding:12px;">Colaborador:</td>
+                    <td><span id="recebe-colaborador"></span></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold; padding:12px;">Cargo:</td>
+                    <td><span id="recebe-cargo"></span></td>
+                    <td style="font-weight:bold; padding:12px;">Motorista:</td>
+                    <td><span id="recebe-motorista"></span></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold; padding:12px;width: 19%;">Médico Coordenador:</td>
+                    <td><span id="recebe-medico-coordenador"></span></td>
+                    <td style="font-weight:bold; padding:12px;width: 16%;">Médico Examinador:</td>
+                    <td><span id="recebe-medico-examinador"></span></td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight:bold; padding:12px;width: 13%;">Médico Fonoaudiologo:</td>
+                    <td><span id="recebe-medico-fonoaudiologo"></span></td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="padding:12px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:6px;">Riscos:</div>
+
+                        <table id="tabela-riscos" style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                            <tr style="background:#f2f2f2; font-weight:bold;">
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Código</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:60%;">Descrição</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Grupo</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="padding:12px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:6px;">Treinamentos:</div>
+
+                        <table id="tabela-treinamentos" style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                            <tr style="background:#f2f2f2; font-weight:bold;">
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Código</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:60%;">Descrição</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Valor</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="4" style="padding:12px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:16px;">
+                            <tr>
+                                <td style="font-weight:bold; padding:8px; width:8%;">Insalubridade:</td>
+                                <td><span id="recebe-insalubridade"></span></td>
+                                <td style="font-weight:bold; padding:8px;">Porcentagem:</td>
+                                <td><span id="recebe-porcentagem"></span></td>
+                                <td style="font-weight:bold; padding:8px;">Periculosidade 30%:</td>
+                                <td><span id="recebe-periculosidade"></span></td>
+                                <td style="font-weight:bold; padding:8px;">Aposent. Especial:</td>
+                                <td><span id="recebe-aposentaria-especial"></span></td>
+                                <td style="font-weight:bold; padding:8px;">Agente Nocivo:</td>
+                                <td><span id="recebe-agente-nocivo"></span></td>
+                                <td style="font-weight:bold; padding:8px;">Ocorrência GFIP:</td>
+                                <td><span id="recebe-ocorrencia-gfip"></span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="padding:12px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:6px;">Aptidões:</div>
+                        <!-- tabela de aptidões aqui -->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="padding:12px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:6px;">Exames:</div>
+                        <!-- tabela de exames aqui -->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="padding:12px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:6px;">Faturamento:</div>
+                        <!-- tabela de faturamento aqui -->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="padding:12px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:6px;">Modelos Selecionados:</div>
+                        <!-- tabela de modelos aqui -->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
+                    <td>${kitInfo.status.charAt(0).toUpperCase() + kitInfo.status.slice(1).toLowerCase()}</td>
+                    <td style="font-weight:bold; padding:12px;">Data:</td>
+                    <td>${kitInfo.data ? kitInfo.data.split(' ')[0].split('-').reverse().join('/') : 'Não informada'}</td>
+                </tr>
+            </table>
+
+            <div style="text-align:center; margin-top:40px;">
+                <button id="fechar-modal-informacoes-kit" style="
+          background:#fd9203;
+          color:white;
+          border:none;
+          padding:14px 45px;
+          border-radius:10px;
+          cursor:pointer;
+          font-size:18px;
+          transition: background 0.3s;
+        "
+                    onmouseover="this.style.background='#e68100'"
+                    onmouseout="this.style.background='#fd9203'">
+                    Fechar
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
-    let recebe_codigo_clinica_informacoes_rapida;
-    let recebe_tabela_pessoas;
+    let recebe_codigo_kit_informacoes_rapida;
+    let recebe_tabela_kits;
     $(document).ready(function() {
 
         function buscar_empresas_principais() {
@@ -328,11 +513,8 @@
                         <td style="text-align:center; vertical-align:middle;">${recebe_empresa_selecionada || "Não informado"}</td>
                             <td style="text-align:center; vertical-align:middle;">
                                 <div class="action-buttons">
-                                    <a href="?pg=geracao_kit&id=${kit.id}&acao=editar" target="_parent" class="edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" id='excluir-kit' data-codigo-kit="${kit.id}" class="delete" title="Apagar">
-                                        <i class="fas fa-trash"></i>
+                                    <a href="#" class="view" title="Visualizar" id="visualizar-informacoes-kit" data-codigo-kit="${kit.id}" data-nome-empresa="${recebe_empresa_selecionada}">
+                                        <i class="fas fa-eye"></i>
                                     </a>
                                 </div>
                             </td>
@@ -345,7 +527,7 @@
     }
 
     function inicializarDataTable() {
-        recebe_tabela_pessoas = $("#kits_tabela").DataTable({
+        recebe_tabela_kits = $("#kits_tabela").DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
             },
@@ -353,129 +535,400 @@
         });
     }
 
-
-    $(document).on("click", "#visualizar-informacoes-pessoa", function(e) {
-        debugger;
-        recebe_codigo_pessoa_informacoes_rapida = $(this).data("codigo-pessoa");
-
-        $.ajax({
-            url: "cadastros/processa_pessoa.php",
-            method: "GET",
-            dataType: "json",
-            data: {
-                "processo_pessoa": "buscar_informacoes_rapidas_pessoas",
-                "valor_codigo_pessoa_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
-            },
-            success: function(resposta) {
-                debugger;
-
-                if (resposta.length > 0) {
-                    for (let indice = 0; indice < resposta.length; indice++) {
-                        $("#created_at").val(resposta[indice].created_at);
-                        $("#nome").val(resposta[indice].nome);
-                        $("#cpf").val(resposta[indice].cpf);
-                        $("#nascimento").val(resposta[indice].nascimento);
-                        $("#sexo-pessoa").val(resposta[indice].sexo);
-                        $("#telefone").val(resposta[indice].telefone);
-                        $("#whatsapp").val(resposta[indice].whatsapp);
-                    }
+    function requisitarDadosKITEspecifico(codigo_kit) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "buscar_kit",
+                    valor_id_kit: codigo_kit
+                },
+                success: function(resposta) {
+                    console.log("KIT retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
                 }
-            },
-            error: function(xhr, status, error) {
-
-            },
+            });
         });
-        document.getElementById('informacoes-pessoa').classList.remove('hidden'); // abrir
+    }
+
+    function requisitarDadosClinicaEspecifico(codigo_clinica) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "busca_clinica_kit",
+                    valor_id_clinica_kit: codigo_clinica
+                },
+                success: function(resposta) {
+                    console.log("KIT retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    function requisitarDadosColaboradorEspecifico(codigo_colaborador) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "busca_pessoa_kit",
+                    valor_id_pessoa_kit: codigo_colaborador
+                },
+                success: function(resposta) {
+                    console.log("KIT retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    function requisitarDadosCargoEspecifico(codigo_cargo) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "buscar_cargo_kit",
+                    valor_id_cargo_kit: codigo_cargo
+                },
+                success: function(resposta) {
+                    console.log("KIT retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    function requisitarDadosMedicoCoordenador(codigo_medico_coordenador) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "buscar_medico_coordenador",
+                    valor_id_medico_coordenador: codigo_medico_coordenador
+                },
+                success: function(resposta) {
+                    console.log("Médico coordenador retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    function requisitarDadosMedicoExaminador(codigo_medico_examinador) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "busca_medico_examinador",
+                    valor_id_medico_examinador: codigo_medico_examinador
+                },
+                success: function(resposta) {
+                    console.log("Médico examinador retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    function requisitarDadosMedicoFonoaudiologo(codigo_medico_fonoaudiologo) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "buscar_medico_fonoaudiologo_gerenciamento_kits",
+                    valor_id_fonoaudiologo: codigo_medico_fonoaudiologo
+                },
+                success: function(resposta) {
+                    console.log("Médico examinador retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+
+
+    $(document).on("click", "#visualizar-informacoes-kit", async function(e) {
+        debugger;
+        recebe_codigo_kit_informacoes_rapida = $(this).data("codigo-kit");
+
+        let recebe_dados_kit_especifico = await requisitarDadosKITEspecifico(recebe_codigo_kit_informacoes_rapida);
+
+        let recebe_dados_clinica_especifico = await requisitarDadosClinicaEspecifico(recebe_dados_kit_especifico.clinica_id);
+
+        let recebe_dados_colaborador_especifico = await requisitarDadosColaboradorEspecifico(recebe_dados_kit_especifico.pessoa_id);
+
+        let recebe_dados_cargo_especifico = await requisitarDadosCargoEspecifico(recebe_dados_kit_especifico.pessoa_id);
+
+        let recebe_dados_medico_coordenador_especifico = await requisitarDadosMedicoCoordenador(recebe_dados_kit_especifico.medico_coordenador_id);
+
+        let recebe_dados_medico_examinador_especifico = await requisitarDadosMedicoExaminador(recebe_dados_kit_especifico.medico_clinica_id);
+
+        let recebe_dados_medico_fonoaudiologo_especifico = await requisitarDadosMedicoFonoaudiologo(recebe_dados_kit_especifico.medico_fonoaudiologo);
+
+        console.log(recebe_dados_kit_especifico);
+
+        // Tipo Exame (Título)
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.tipo_exame) {
+            document.getElementById("recebe-detalhe-tipo-exame").textContent = recebe_dados_kit_especifico.tipo_exame;
+        } else {
+            document.getElementById("recebe-detalhe-tipo-exame").textContent = "Não informado";
+        }
+
+        // Tipo Exame
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.tipo_exame) {
+            document.getElementById("recebe-tipo-exame").textContent = recebe_dados_kit_especifico.tipo_exame;
+        } else {
+            document.getElementById("recebe-tipo-exame").textContent = "Não informado";
+        }
+
+        // Empresa
+        if (recebe_empresa_selecionada && recebe_empresa_selecionada !== "") {
+            document.getElementById("nome-empresa").textContent = recebe_empresa_selecionada;
+        } else {
+            document.getElementById("nome-empresa").textContent = "Não informado";
+        }
+
+        // Clínica
+        if (recebe_dados_clinica_especifico && recebe_dados_clinica_especifico.nome_fantasia) {
+            document.getElementById("recebe-clinica").textContent = recebe_dados_clinica_especifico.nome_fantasia;
+        } else {
+            document.getElementById("recebe-clinica").textContent = "Não informado";
+        }
+
+        // Colaborador
+        if (recebe_dados_colaborador_especifico && recebe_dados_colaborador_especifico.nome) {
+            document.getElementById("recebe-colaborador").textContent = recebe_dados_colaborador_especifico.nome;
+        } else {
+            document.getElementById("recebe-colaborador").textContent = "Não informado";
+        }
+
+        // Motorista
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.motorista) {
+            document.getElementById("recebe-motorista").textContent = recebe_dados_kit_especifico.motorista;
+        } else {
+            document.getElementById("recebe-motorista").textContent = "Não informado";
+        }
+
+        // Cargo
+        if (recebe_dados_cargo_especifico && recebe_dados_cargo_especifico.titulo_cargo) {
+            document.getElementById("recebe-cargo").textContent = recebe_dados_cargo_especifico.titulo_cargo;
+        } else {
+            document.getElementById("recebe-cargo").textContent = "Não informado";
+        }
+
+        // Médico Coordenador
+        if (recebe_dados_medico_coordenador_especifico && recebe_dados_medico_coordenador_especifico.nome) {
+            document.getElementById("recebe-medico-coordenador").textContent = recebe_dados_medico_coordenador_especifico.nome;
+        } else {
+            document.getElementById("recebe-medico-coordenador").textContent = "Não informado";
+        }
+
+        // Médico Examinador
+        if (recebe_dados_medico_examinador_especifico && recebe_dados_medico_examinador_especifico.nome) {
+            document.getElementById("recebe-medico-examinador").textContent = recebe_dados_medico_examinador_especifico.nome;
+        } else {
+            document.getElementById("recebe-medico-examinador").textContent = "Não informado";
+        }
+
+        // Médico Fonoaudiólogo
+        if (recebe_dados_medico_fonoaudiologo_especifico && recebe_dados_medico_fonoaudiologo_especifico.nome) {
+            document.getElementById("recebe-medico-fonoaudiologo").textContent = recebe_dados_medico_fonoaudiologo_especifico.nome;
+        } else {
+            document.getElementById("recebe-medico-fonoaudiologo").textContent = "Não informado";
+        }
+
+        // Trata e converte os riscos
+        let riscos = [];
+
+        if (recebe_dados_kit_especifico?.riscos_selecionados) {
+            try {
+                riscos = JSON.parse(recebe_dados_kit_especifico.riscos_selecionados);
+            } catch (e) {
+                console.error("Erro ao converter riscos:", e);
+                riscos = [];
+            }
+        }
+
+        // Seleciona o tbody da tabela de riscos
+        const tabelaRiscos = document.querySelector('#tabela-riscos');
+
+        // Remove todas as linhas, **menos a primeira** (cabeçalho)
+        while (tabelaRiscos.rows.length > 1) {
+            tabelaRiscos.deleteRow(1);
+        }
+
+        // Insere as linhas se houver riscos
+        for (let i = 0; i < riscos.length; i++) {
+            const r = riscos[i];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td style="padding:6px; border:1px solid #ccc;">${r.codigo || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${r.descricao || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${r.grupo || '-'}</td>
+    `;
+            tabelaRiscos.appendChild(row);
+        }
+
+        // Se não tiver riscos, adiciona linha indicando isso
+        if (riscos.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td colspan="3" style="padding:6px; border:1px solid #ccc; text-align:center;">
+            Nenhum risco informado
+        </td>
+    `;
+            tabelaRiscos.appendChild(row);
+        }
+
+        // Trata e converte os treinamentos
+        let treinamentos = [];
+
+        if (recebe_dados_kit_especifico?.treinamentos_selecionados) {
+            try {
+                treinamentos = JSON.parse(recebe_dados_kit_especifico.treinamentos_selecionados);
+            } catch (e) {
+                console.error("Erro ao converter treinamentos:", e);
+                treinamentos = [];
+            }
+        }
+
+        // Seleciona a tabela de treinamentos
+        const tabelaTreinamentos = document.querySelector('#tabela-treinamentos');
+
+        // Remove todas as linhas, menos a primeira (cabeçalho)
+        while (tabelaTreinamentos.rows.length > 1) {
+            tabelaTreinamentos.deleteRow(1);
+        }
+
+        // Insere os treinamentos
+        treinamentos.forEach(t => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td style="padding:6px; border:1px solid #ccc;">${t.codigo || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${t.descricao || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${t.valor || '-'}</td>
+    `;
+            tabelaTreinamentos.appendChild(row);
+        });
+
+        // Se não tiver treinamentos, exibe linha informando
+        if (treinamentos.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td colspan="3" style="padding:6px; border:1px solid #ccc; text-align:center;">
+            Nenhum treinamento informado
+        </td>
+    `;
+            tabelaTreinamentos.appendChild(row);
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.insalubridade) {
+            document.getElementById("recebe-insalubridade").textContent = recebe_dados_kit_especifico.insalubridade;
+        } else {
+            document.getElementById("recebe-insalubridade").textContent = "Não informado";
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.porcentagem) {
+            document.getElementById("recebe-porcentagem").textContent = recebe_dados_kit_especifico.porcentagem;
+        } else {
+            document.getElementById("recebe-porcentagem").textContent = "Não informado";
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.periculosidade) {
+            document.getElementById("recebe-periculosidade").textContent = recebe_dados_kit_especifico.periculosidade;
+        } else {
+            document.getElementById("recebe-periculosidade").textContent = "Não informado";
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.aposentado_especial) {
+            document.getElementById("recebe-aposentaria-especial").textContent = recebe_dados_kit_especifico.aposentado_especial;
+        } else {
+            document.getElementById("recebe-aposentaria-especial").textContent = "Não informado";
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.agente_nocivo) {
+            document.getElementById("recebe-agente-nocivo").textContent = recebe_dados_kit_especifico.agente_nocivo;
+        } else {
+            document.getElementById("recebe-agente-nocivo").textContent = "Não informado";
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.ocorrencia_gfip) {
+            document.getElementById("recebe-ocorrencia-gfip").textContent = recebe_dados_kit_especifico.ocorrencia_gfip;
+        } else {
+            document.getElementById("recebe-ocorrencia-gfip").textContent = "Não informado";
+        }
+
+        // $.ajax({
+        //     url: "cadastros/processa_pessoa.php",
+        //     method: "GET",
+        //     dataType: "json",
+        //     data: {
+        //         "processo_pessoa": "buscar_informacoes_rapidas_pessoas",
+        //         "valor_codigo_pessoa_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
+        //     },
+        //     success: function(resposta) {
+        //         debugger;
+
+        //         if (resposta.length > 0) {
+        //             for (let indice = 0; indice < resposta.length; indice++) {
+        //                 $("#created_at").val(resposta[indice].created_at);
+        //                 $("#nome").val(resposta[indice].nome);
+        //                 $("#cpf").val(resposta[indice].cpf);
+        //                 $("#nascimento").val(resposta[indice].nascimento);
+        //                 $("#sexo-pessoa").val(resposta[indice].sexo);
+        //                 $("#telefone").val(resposta[indice].telefone);
+        //                 $("#whatsapp").val(resposta[indice].whatsapp);
+        //             }
+        //         }
+        //     },
+        //     error: function(xhr, status, error) {
+
+        //     },
+        // });
+
+        document.getElementById('informacoes-kit').classList.remove('hidden');
+        document.body.style.overflow = "hidden";
     });
 
-    $(document).on("click", "#fechar-modal-informacoes-pessoa", function(e) {
+    $(document).on("click", "#fechar-modal-informacoes-kit", function(e) {
         debugger;
-        document.getElementById('informacoes-pessoa').classList.add('hidden'); // fechar
+        document.getElementById('informacoes-kit').classList.add('hidden'); // fechar
     });
 </script>
-
-<!-- Modal -->
-<div id="informacoes-pessoa"
-    class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center h-screen">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl p-6 relative">
-
-        <!-- Cabeçalho -->
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Informações da Pessoa</h2>
-            <button id="fechar-modal-informacoes-pessoa" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
-        </div>
-
-        <!-- Corpo da modal -->
-        <form method="post" id="empresaForm" class="space-y-6 text-sm text-gray-700">
-            <!-- Data de Cadastro -->
-            <div class="form-group">
-                <label for="created_at" class="block font-semibold mb-1">Data de Cadastro:</label>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-calendar-alt text-gray-500"></i>
-                    <input type="datetime-local" value="" id="created_at" name="created_at" class="form-control w-full" readonly>
-                </div>
-            </div>
-
-            <!-- Grid com 2 colunas maiores -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="form-group">
-                    <label for="nome">Nome Completo:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-user text-gray-500"></i>
-                        <input type="text" id="nome" name="nome" disabled class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="cpf">CPF:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-address-card text-gray-500"></i>
-                        <input type="text" id="cpf" name="cpf" disabled oninput="formatCPF(this)" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="nascimento">Data Nascimento:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-gray-500"></i>
-                        <input type="date" id="nascimento" disabled name="nascimento" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="sexo-pessoa">Sexo:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-mars text-gray-500"></i>
-                        <select id="sexo-pessoa" disabled name="sexo_pessoa" class="form-control w-full">
-                            <option value="selecione">Selecione</option>
-                            <option value="feminino">Feminino</option>
-                            <option value="masculino">Masculino</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-phone text-gray-500"></i>
-                        <input type="text" disabled id="telefone" name="telefone" oninput="mascaraTelefone(this);" class="form-control w-full">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="whatsapp">Whatsapp:</label>
-                    <div class="input-with-icon flex items-center gap-2">
-                        <i class="fas fa-phone text-gray-500"></i>
-                        <input type="text" disabled id="whatsapp" name="whatsapp" oninput="mascaraTelefone(this);" class="form-control w-full">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botões -->
-            <div class="flex justify-between mt-6">
-                <button id="fechar-modal-informacoes-pessoa" type="button"
-                    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800">Fechar</button>
-            </div>
-        </form>
-    </div>
-</div>
