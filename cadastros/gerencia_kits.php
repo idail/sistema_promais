@@ -417,12 +417,18 @@
                     </td>
                 </tr>
 
-                <tr>
-                    <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
-                    <td><span id="recebe-status"></span></td>
-                    <td style="font-weight:bold; padding:12px;">Data:</td>
-                    <td><span id="recebe-data"></span></td>
+                <tr style="vertical-align: middle;">
+                    <td style="font-weight:bold; padding:6px 10px; white-space: nowrap;">Status do Kit:</td>
+                    <td style="padding:6px 10px; white-space: nowrap;">
+                        <span id="recebe-status"></span>
+                    </td>
+                    <td style="font-weight:bold; padding:6px 10px; white-space: nowrap;">Data:</td>
+                    <td style="padding:6px 10px; white-space: nowrap;">
+                        <span id="recebe-data"></span>
+                    </td>
                 </tr>
+
+
             </table>
 
             <div style="text-align:center; margin-top:40px;">
@@ -1383,6 +1389,27 @@
                 total_geral += parseFloat((item.valor || "0").toString().replace(",", "."));
             });
 
+
+            let tipoOrcamento = "Não informado";
+
+            if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.tipo_orcamento) {
+                try {
+                    // Tenta converter a string JSON em array
+                    let tipoArray = JSON.parse(recebe_dados_kit_especifico.tipo_orcamento);
+
+                    // Se for realmente um array, junta os itens separados por vírgula
+                    if (Array.isArray(tipoArray)) {
+                        tipoOrcamento = tipoArray.join(", ");
+                    } else {
+                        // Caso não seja array, exibe o valor puro
+                        tipoOrcamento = recebe_dados_kit_especifico.tipo_orcamento;
+                    }
+                } catch (e) {
+                    // Se der erro no parse, exibe o texto original
+                    tipoOrcamento = recebe_dados_kit_especifico.tipo_orcamento;
+                }
+            }
+
             // --- Monta HTML ---
             let html = `
     <div class="faturamento-container">
@@ -1393,7 +1420,6 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Código</th>
                         <th>Nome</th>
                         <th>Valor (R$)</th>
                     </tr>
@@ -1402,7 +1428,6 @@
                     ${
                         (recebe_dados_produto || []).map(p => `
                             <tr>
-                                <td>${p.codigo || '-'}</td>
                                 <td>${p.nome || '-'}</td>
                                 <td>${parseFloat((p.valor || "0").toString().replace(",", "."))
                                     .toFixed(2)
@@ -1467,9 +1492,9 @@
         </div>
 
         <!-- Tipo de orçamento -->
-        <div style="border: 1px solid #ccc; padding: 8px 10px; background: #fff; font-size: 13px; margin-top: 10px;">
-            <strong>Tipo de Orçamento:</strong> ${recebe_dados_kit_especifico.tipo_orcamento || "Não informado"}
-        </div>
+<div style="border: 1px solid #ccc; padding: 8px 10px; background: #fff; font-size: 13px; margin-top: 10px;">
+    <strong>Tipo de Orçamento:</strong> ${tipoOrcamento}
+</div>
 
         <!-- Dados bancários -->
         <div class="dados-bancarios">
