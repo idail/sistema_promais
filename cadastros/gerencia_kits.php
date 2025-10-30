@@ -153,6 +153,74 @@
     #informacoes-kit>div {
         z-index: 100000 !important;
     }
+
+    .faturamento-container {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        color: #333;
+        margin-top: 20px;
+    }
+
+    /* Título principal */
+    .faturamento-container h2 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    /* Cada seção (Produtos, Aptidões, Exames) */
+    .tabela-faturamento {
+        margin-bottom: 18px;
+    }
+
+    .titulo-secao {
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    /* Tabelas internas */
+    .tabela-faturamento table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 4px;
+        font-size: 13px;
+        margin-bottom: -19px;
+    }
+
+    /* Cabeçalho da tabela */
+    .tabela-faturamento thead tr {
+        background: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* Células padrão */
+    .tabela-faturamento th,
+    .tabela-faturamento td {
+        padding: 6px;
+        border: 1px solid #ccc;
+        vertical-align: top;
+    }
+
+    /* Bloco de dados bancários */
+    .dados-bancarios {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background: #fafafa;
+        margin-top: 0px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    /* Total geral */
+    .total-geral {
+        margin-top: 0px;
+        text-align: right;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 10px;
+        background: #f9f9f9;
+        border: 1px solid #ccc;
+    }
 </style>
 
 <div>
@@ -290,15 +358,15 @@
                             <tr>
                                 <td style="font-weight:bold; padding:8px; width:8%;">Insalubridade:</td>
                                 <td><span id="recebe-insalubridade"></span></td>
-                                <td style="font-weight:bold; padding:8px;">Porcentagem:</td>
+                                <td style="font-weight:bold; padding:8px;width: 0%;">Porcentagem:</td>
                                 <td><span id="recebe-porcentagem"></span></td>
-                                <td style="font-weight:bold; padding:8px;">Periculosidade 30%:</td>
+                                <td style="font-weight:bold; padding:8px;width: 13%;">Periculosidade 30%:</td>
                                 <td><span id="recebe-periculosidade"></span></td>
-                                <td style="font-weight:bold; padding:8px;">Aposent. Especial:</td>
+                                <td style="font-weight:bold; padding:8px;width: 12%;">Aposent. Especial:</td>
                                 <td><span id="recebe-aposentaria-especial"></span></td>
-                                <td style="font-weight:bold; padding:8px;">Agente Nocivo:</td>
+                                <td style="font-weight:bold; padding:8px;width: 11%;">Agente Nocivo:</td>
                                 <td><span id="recebe-agente-nocivo"></span></td>
-                                <td style="font-weight:bold; padding:8px;">Ocorrência GFIP:</td>
+                                <td style="font-weight:bold; padding:8px;width: 11%;">Ocorrência GFIP:</td>
                                 <td><span id="recebe-ocorrencia-gfip"></span></td>
                             </tr>
                         </table>
@@ -336,8 +404,8 @@
 
 
                 <tr>
-                    <td colspan="4" style="padding:12px; vertical-align:top;">
-                        <div style="font-weight:bold; margin-bottom:6px;">Faturamento:</div>
+                    <td colspan="4" style="padding:10px; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:0px;">Faturamento:</div>
                         <div id="areaFaturamento"></div>
                     </td>
                 </tr>
@@ -1018,153 +1086,411 @@
             tabelaExames.appendChild(row);
         }
 
-        function montarFaturamento() {
-            // --- Dados existentes ---
-            const recebe_dados_produto = [{
-                    id: 10,
-                    id_kit: 162,
-                    nome: "produto 1",
-                    quantidade: 1,
-                    valor: 25.55
-                },
-                {
-                    id: 11,
-                    id_kit: 162,
-                    nome: "produto 2",
-                    quantidade: 1,
-                    valor: 25.55
-                }
-            ];
+        //     async function montarFaturamento() {
+        //         debugger;
+        //         // --- Aguarda os dados do banco ---
+        //         // let recebe_dados_kit_especifico = await requisitarDadosKITEspecifico(recebe_codigo_kit_informacoes_rapida);
+        //         // let recebe_dados_produto = await requisitarProdutos(recebe_codigo_kit_informacoes_rapida);
 
-            const recebe_dados_kit_especifico = {
-                aptidoes_selecionadas: [{
-                        codigo: "5284",
-                        nome: "Trabalho em Altura",
-                        valor: "5284"
-                    },
-                    {
-                        codigo: "5874",
-                        nome: "Trabalho em Espaço Confinado",
-                        valor: "5874"
-                    }
-                ],
-                exames_selecionados: [{
-                        codigo: "0068",
-                        nome: "Acetilcolinesterase eritrocitária",
-                        valor: "18,25"
-                    },
-                    {
-                        codigo: "0109",
-                        nome: "Acido hipúrico",
-                        valor: "150,25"
-                    }
-                ],
-                tipo_orcamento: "Exames e Procedimentos, Treinamentos, EPI/EPC",
-                tipo_dado_bancario: "Agência/Conta",
-                dado_bancario_agencia_conta: "Não informado",
-                dado_bancario_pix: "Não informado"
-            };
+        //         // --- Inicializa o total ---
+        //         let total_geral = 0;
 
-            // --- Cálculo do total ---
+        //         // --- Soma as aptidões ---
+        //         let aptidoesArray = [];
+        //         if (recebe_dados_kit_especifico.aptidoes_selecionadas) {
+        //             try {
+        //                 // Converte string JSON em array
+        //                 aptidoesArray = JSON.parse(recebe_dados_kit_especifico.aptidoes_selecionadas);
+        //             } catch (e) {
+        //                 console.error("Erro ao converter aptidões:", e);
+        //                 aptidoesArray = [];
+        //             }
+        //         }
+
+        //         if (Array.isArray(aptidoesArray) && aptidoesArray.length) {
+        //             aptidoesArray.forEach(a => {
+        //                 const valorApt = parseFloat((a.valor || "0").toString().replace(",", "."));
+        //                 total_geral += valorApt;
+        //             });
+        //         }
+
+        //         // --- Soma os exames ---
+        //         let examesArray = [];
+        //         if (recebe_dados_kit_especifico.exames_selecionados) {
+        //             try {
+        //                 // Converte string JSON em array
+        //                 examesArray = JSON.parse(recebe_dados_kit_especifico.exames_selecionados);
+        //             } catch (e) {
+        //                 console.error("Erro ao converter exames:", e);
+        //                 examesArray = [];
+        //             }
+        //         }
+
+        //         if (Array.isArray(examesArray) && examesArray.length) {
+        //             examesArray.forEach(e => {
+        //                 const valorExame = parseFloat((e.valor || "0").toString().replace(",", "."));
+        //                 total_geral += valorExame;
+        //             });
+        //         }
+
+        //         // --- Cria tabela de exibição ---
+        //         const tabela = document.createElement("table");
+        //         Object.assign(tabela.style, {
+        //             width: "100%",
+        //             borderCollapse: "collapse",
+        //             fontFamily: "Arial, sans-serif",
+        //             fontSize: "14px",
+        //             border: "1px solid #ddd",
+        //             borderRadius: "10px",
+        //             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        //             overflow: "hidden"
+        //         });
+
+        //         const criarLinha = (titulo, conteudo) => {
+        //             const tr = document.createElement("tr");
+        //             const td = document.createElement("td");
+        //             td.style.padding = "10px";
+        //             td.style.border = "1px solid #ddd";
+        //             td.innerHTML = `<strong>${titulo}</strong><br>${conteudo}`;
+        //             tr.appendChild(td);
+        //             return tr;
+        //         };
+
+        //         // Cabeçalho
+        //         const cabecalho = document.createElement("tr");
+        //         Object.assign(cabecalho.style, {
+        //             background: "#f1f1f1",
+        //             fontWeight: "bold"
+        //         });
+        //         const tdCab = document.createElement("td");
+        //         tdCab.style.padding = "10px";
+        //         tdCab.style.border = "1px solid #ddd";
+        //         tdCab.textContent = "Itens do Faturamento";
+        //         cabecalho.appendChild(tdCab);
+        //         tabela.appendChild(cabecalho);
+
+        //         // --- Produtos ---
+        //         const produtosHTML = (Array.isArray(recebe_dados_produto) && recebe_dados_produto.length) ?
+        //             recebe_dados_produto.map(p =>
+        //                 `${p.nome} (${p.quantidade || 1}x) - R$ ${parseFloat((p.valor || "0").toString().replace(",", ".")).toFixed(2).replace('.', ',')}`
+        //             ).join("<br>") :
+        //             "Nenhum produto informado.";
+        //         tabela.appendChild(criarLinha("Produtos", produtosHTML));
+
+        //         // --- Aptidões ---
+        //         const aptidoesHTML = (Array.isArray(recebe_dados_kit_especifico.aptidoes_selecionadas) && recebe_dados_kit_especifico.aptidoes_selecionadas.length) ?
+        //             recebe_dados_kit_especifico.aptidoes_selecionadas.map(a =>
+        //                 `${a.nome} - R$ ${parseFloat((a.valor || "0").toString().replace(",", ".")).toFixed(2).replace('.', ',')}`
+        //             ).join("<br>") :
+        //             "Nenhuma aptidão informada.";
+        //         tabela.appendChild(criarLinha("Aptidões", aptidoesHTML));
+
+        //         // --- Exames ---
+        //         const examesHTML = (Array.isArray(recebe_dados_kit_especifico.exames_selecionados) && recebe_dados_kit_especifico.exames_selecionados.length) ?
+        //             recebe_dados_kit_especifico.exames_selecionados.map(e =>
+        //                 `${e.nome} - R$ ${parseFloat((e.valor || "0").toString().replace(",", ".")).toFixed(2).replace('.', ',')}`
+        //             ).join("<br>") :
+        //             "Nenhum exame informado.";
+        //         tabela.appendChild(criarLinha("Exames", examesHTML));
+
+        //         // --- Tipo de orçamento ---
+        //         if (recebe_dados_kit_especifico.tipo_orcamento) {
+        //             tabela.appendChild(criarLinha("Tipo de Orçamento", recebe_dados_kit_especifico.tipo_orcamento));
+        //         }
+
+        //         // --- Dados bancários ---
+        //         const dadosBancariosHTML = `
+        //     Tipo: ${recebe_dados_kit_especifico.tipo_dado_bancario || "Não informado"}<br>
+        //     Agência/Conta: ${recebe_dados_kit_especifico.dado_bancario_agencia_conta || "Não informado"}<br>
+        //     PIX: ${recebe_dados_kit_especifico.dado_bancario_pix || "Não informado"}
+        // `;
+        //         tabela.appendChild(criarLinha("Dados Bancários", dadosBancariosHTML));
+
+        //         // --- Total ---
+        //         const totalRow = document.createElement("tr");
+        //         Object.assign(totalRow.style, {
+        //             background: "#fafafa",
+        //             fontWeight: "bold"
+        //         });
+        //         const tdTotal = document.createElement("td");
+        //         Object.assign(tdTotal.style, {
+        //             padding: "12px",
+        //             border: "1px solid #ddd",
+        //             textAlign: "right"
+        //         });
+        //         tdTotal.textContent = `Total Geral: R$ ${total_geral.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+        //         totalRow.appendChild(tdTotal);
+        //         tabela.appendChild(totalRow);
+
+        //         // --- Inserir na tela ---
+        //         const area = document.getElementById("areaFaturamento");
+        //         area.innerHTML = "";
+        //         area.appendChild(tabela);
+        //     }
+
+        //     // Chama após carregar dados do kit
+        //     montarFaturamento();
+
+        //     async function montarFaturamento() {
+        //         let total_geral = 0;
+
+        //         // --- Trata arrays de aptidões e exames ---
+        //         let aptidoesArray = [];
+        //         if (recebe_dados_kit_especifico.aptidoes_selecionadas) {
+        //             try {
+        //                 aptidoesArray = JSON.parse(recebe_dados_kit_especifico.aptidoes_selecionadas);
+        //             } catch {
+        //                 aptidoesArray = [];
+        //             }
+        //         }
+
+        //         let examesArray = [];
+        //         if (recebe_dados_kit_especifico.exames_selecionados) {
+        //             try {
+        //                 examesArray = JSON.parse(recebe_dados_kit_especifico.exames_selecionados);
+        //             } catch {
+        //                 examesArray = [];
+        //             }
+        //         }
+
+        //         // Soma valores
+        //         [...aptidoesArray, ...examesArray].forEach(item => {
+        //             total_geral += parseFloat((item.valor || "0").toString().replace(",", "."));
+        //         });
+
+        //         // --- Monta HTML ---
+        //         let html = `
+        // <div class="faturamento-container">
+        //     <h2>Itens do Faturamento</h2>
+
+        //     <div class="tabela-faturamento">
+        //     <div class="titulo-secao" style="background: #fafafa;padding: 6px;border: 1px solid #ccc;margin-bottom: -4px;">Produtos</div>
+        //         <table>
+        //             <thead>
+        //                 <tr>
+        //                     <th>Código</th>
+        //                     <th>Nome</th>
+        //                     <th>Valor (R$)</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>
+        //                 ${
+        //                     (recebe_dados_produto || []).map(p => `
+        //                         <tr>
+        //                             <td>${p.codigo || '-'}</td>
+        //                             <td>${p.nome || '-'}</td>
+        //                             <td>${parseFloat((p.valor || "0").toString().replace(",", "."))
+        //                                 .toFixed(2)
+        //                                 .replace('.', ',')}</td>
+        //                         </tr>
+        //                     `).join('') || '<tr><td colspan="3">Nenhum produto informado.</td></tr>'
+        //                 }
+        //             </tbody>
+        //         </table>
+        //     </div>
+
+        //     <div class="tabela-faturamento">
+        //         <div class="titulo-secao" style="background: #fafafa;padding: 6px;border: 1px solid #ccc;margin-bottom: -4px;">Aptidões</div>
+        //         <table>
+        //             <thead>
+        //                 <tr>
+        //                     <th>Código</th>
+        //                     <th>Nome</th>
+        //                     <th>Valor (R$)</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>
+        //                 ${
+        //                     aptidoesArray.map(a => `
+        //                         <tr>
+        //                             <td>${a.codigo || '-'}</td>
+        //                             <td>${a.nome || '-'}</td>
+        //                             <td>${parseFloat((a.valor || "0").toString().replace(",", "."))
+        //                                 .toFixed(2)
+        //                                 .replace('.', ',')}</td>
+        //                         </tr>
+        //                     `).join('') || '<tr><td colspan="3">Nenhuma aptidão informada.</td></tr>'
+        //                 }
+        //             </tbody>
+        //         </table>
+        //     </div>
+
+        //     <div class="tabela-faturamento">
+        //         <div class="titulo-secao" style="background: #fafafa;padding: 6px;border: 1px solid #ccc;margin-bottom: -4px;">Exames</div>
+        //         <table>
+        //             <thead>
+        //                 <tr>
+        //                     <th>Código</th>
+        //                     <th>Nome</th>
+        //                     <th>Valor (R$)</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>
+        //                 ${
+        //                     examesArray.map(e => `
+        //                         <tr>
+        //                             <td>${e.codigo || '-'}</td>
+        //                             <td>${e.nome || '-'}</td>
+        //                             <td>${parseFloat((e.valor || "0").toString().replace(",", "."))
+        //                                 .toFixed(2)
+        //                                 .replace('.', ',')}</td>
+        //                         </tr>
+        //                     `).join('') || '<tr><td colspan="3">Nenhum exame informado.</td></tr>'
+        //                 }
+        //             </tbody>
+        //         </table>
+        //     </div>
+
+        //     <div class="dados-bancarios">
+        //         <strong>Dados Bancários:</strong><br>
+        //         Tipo: ${recebe_dados_kit_especifico.tipo_dado_bancario || "Não informado"}<br>
+        //         Agência/Conta: ${recebe_dados_kit_especifico.dado_bancario_agencia_conta || "Não informado"}<br>
+        //         PIX: ${recebe_dados_kit_especifico.dado_bancario_pix || "Não informado"}
+        //     </div>
+
+        //     <div class="total-geral">
+        //         <strong>Total Geral: R$ ${total_geral.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong>
+        //     </div>
+        // </div>`;
+
+        //         document.getElementById("areaFaturamento").innerHTML = html;
+        //     }
+
+        async function montarFaturamento() {
             let total_geral = 0;
 
-            recebe_dados_produto.forEach(p => {
-                total_geral += parseFloat(p.valor) * (p.quantidade || 1);
+            // --- Trata arrays de aptidões e exames ---
+            let aptidoesArray = [];
+            if (recebe_dados_kit_especifico.aptidoes_selecionadas) {
+                try {
+                    aptidoesArray = JSON.parse(recebe_dados_kit_especifico.aptidoes_selecionadas);
+                } catch {
+                    aptidoesArray = [];
+                }
+            }
+
+            let examesArray = [];
+            if (recebe_dados_kit_especifico.exames_selecionados) {
+                try {
+                    examesArray = JSON.parse(recebe_dados_kit_especifico.exames_selecionados);
+                } catch {
+                    examesArray = [];
+                }
+            }
+
+            // Soma valores
+            [...aptidoesArray, ...examesArray].forEach(item => {
+                total_geral += parseFloat((item.valor || "0").toString().replace(",", "."));
             });
 
-            recebe_dados_kit_especifico.exames_selecionados.forEach(e => {
-                total_geral += parseFloat((e.valor || "0").replace(",", "."));
-            });
+            // --- Monta HTML ---
+            let html = `
+    <div class="faturamento-container">
+        <h2>Itens do Faturamento</h2>
 
-            // --- Criação da tabela ---
-            const tabela = document.createElement("table");
-            Object.assign(tabela.style, {
-                width: "100%",
-                borderCollapse: "collapse",
-                fontFamily: "Arial, sans-serif",
-                fontSize: "14px",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                overflow: "hidden"
-            });
+        <div class="tabela-faturamento">
+            <div class="titulo-secao" style="background: #fafafa;padding: 6px;border: 1px solid #ccc;margin-bottom: -4px;">Produtos</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${
+                        (recebe_dados_produto || []).map(p => `
+                            <tr>
+                                <td>${p.codigo || '-'}</td>
+                                <td>${p.nome || '-'}</td>
+                                <td>${parseFloat((p.valor || "0").toString().replace(",", "."))
+                                    .toFixed(2)
+                                    .replace('.', ',')}</td>
+                            </tr>
+                        `).join('') || '<tr><td colspan="3">Nenhum produto informado.</td></tr>'
+                    }
+                </tbody>
+            </table>
+        </div>
 
-            const criarLinha = (titulo, conteudo) => {
-                const tr = document.createElement("tr");
-                const td = document.createElement("td");
-                td.style.padding = "10px";
-                td.style.border = "1px solid #ddd";
-                td.innerHTML = `<strong>${titulo}</strong><br>${conteudo}`;
-                tr.appendChild(td);
-                return tr;
-            };
+        <div class="tabela-faturamento">
+            <div class="titulo-secao" style="background: #fafafa;padding: 6px;border: 1px solid #ccc;margin-bottom: -4px;">Aptidões</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${
+                        aptidoesArray.map(a => `
+                            <tr>
+                                <td>${a.codigo || '-'}</td>
+                                <td>${a.nome || '-'}</td>
+                                <td>${parseFloat((a.valor || "0").toString().replace(",", "."))
+                                    .toFixed(2)
+                                    .replace('.', ',')}</td>
+                            </tr>
+                        `).join('') || '<tr><td colspan="3">Nenhuma aptidão informada.</td></tr>'
+                    }
+                </tbody>
+            </table>
+        </div>
 
-            const cabecalho = document.createElement("tr");
-            Object.assign(cabecalho.style, {
-                background: "#f1f1f1",
-                fontWeight: "bold"
-            });
-            const tdCab = document.createElement("td");
-            Object.assign(tdCab.style, {
-                padding: "10px",
-                border: "1px solid #ddd"
-            });
-            tdCab.textContent = "Itens do Faturamento";
-            cabecalho.appendChild(tdCab);
-            tabela.appendChild(cabecalho);
+        <div class="tabela-faturamento">
+            <div class="titulo-secao" style="background: #fafafa;padding: 6px;border: 1px solid #ccc;margin-bottom: -4px;">Exames</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${
+                        examesArray.map(e => `
+                            <tr>
+                                <td>${e.codigo || '-'}</td>
+                                <td>${e.nome || '-'}</td>
+                                <td>${parseFloat((e.valor || "0").toString().replace(",", "."))
+                                    .toFixed(2)
+                                    .replace('.', ',')}</td>
+                            </tr>
+                        `).join('') || '<tr><td colspan="3">Nenhum exame informado.</td></tr>'
+                    }
+                </tbody>
+            </table>
+        </div>
 
-            // Produtos
-            const produtosHTML = recebe_dados_produto.length ?
-                recebe_dados_produto.map(p => `${p.nome} (${p.quantidade}x) - R$ ${p.valor.toFixed(2).replace('.', ',')}`).join("<br>") :
-                "Nenhum produto informado.";
-            tabela.appendChild(criarLinha("Produtos", produtosHTML));
+        <!-- Tipo de orçamento -->
+        <div style="border: 1px solid #ccc; padding: 8px 10px; background: #fff; font-size: 13px; margin-top: 10px;">
+            <strong>Tipo de Orçamento:</strong> ${recebe_dados_kit_especifico.tipo_orcamento || "Não informado"}
+        </div>
 
-            // Aptidões
-            const aptidoesHTML = recebe_dados_kit_especifico.aptidoes_selecionadas.length ?
-                recebe_dados_kit_especifico.aptidoes_selecionadas.map(a => a.nome).join("<br>") :
-                "Nenhuma aptidão informada.";
-            tabela.appendChild(criarLinha("Aptidões", aptidoesHTML));
+        <!-- Dados bancários -->
+        <div class="dados-bancarios">
+            <strong>Dados Bancários:</strong><br>
+            Agência/Conta: ${recebe_dados_kit_especifico.dado_bancario_agencia_conta || "Não informado"}<br>
+            PIX: ${recebe_dados_kit_especifico.dado_bancario_pix || "Não informado"}<br>
+            ${recebe_dados_kit_especifico.chave_qrcode ? `Chave QRCode disponível` : ''}
+        </div>
 
-            // Exames
-            const examesHTML = recebe_dados_kit_especifico.exames_selecionados.length ?
-                recebe_dados_kit_especifico.exames_selecionados.map(e => `${e.nome} - R$ ${e.valor}`).join("<br>") :
-                "Nenhum exame informado.";
-            tabela.appendChild(criarLinha("Exames", examesHTML));
+        <div class="total-geral">
+            <strong>Total Geral: R$ ${total_geral.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong>
+        </div>
+    </div>`;
 
-            // Tipo de orçamento
-            tabela.appendChild(criarLinha("Tipo de Orçamento", recebe_dados_kit_especifico.tipo_orcamento));
-
-            // Dados bancários
-            const dadosBancariosHTML = `
-        Tipo: ${recebe_dados_kit_especifico.tipo_dado_bancario}<br>
-        Agência/Conta: ${recebe_dados_kit_especifico.dado_bancario_agencia_conta}<br>
-        PIX: ${recebe_dados_kit_especifico.dado_bancario_pix}
-    `;
-            tabela.appendChild(criarLinha("Dados Bancários", dadosBancariosHTML));
-
-            // Total
-            const totalRow = document.createElement("tr");
-            Object.assign(totalRow.style, {
-                background: "#fafafa",
-                fontWeight: "bold"
-            });
-            const tdTotal = document.createElement("td");
-            Object.assign(tdTotal.style, {
-                padding: "12px",
-                border: "1px solid #ddd",
-                textAlign: "right"
-            });
-            tdTotal.textContent = `Total Geral: R$ ${total_geral.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
-            totalRow.appendChild(tdTotal);
-            tabela.appendChild(totalRow);
-
-            // --- Inserir ---
-            const area = document.getElementById("areaFaturamento");
-            area.innerHTML = "";
-            area.appendChild(tabela);
+            document.getElementById("areaFaturamento").innerHTML = html;
         }
 
+
+
         montarFaturamento();
+
 
         if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.status) {
             document.getElementById("recebe-status").textContent = recebe_dados_kit_especifico.status;
@@ -1189,35 +1515,6 @@
         } else {
             document.getElementById("recebe-data").textContent = "Não informado";
         }
-
-
-        // $.ajax({
-        //     url: "cadastros/processa_pessoa.php",
-        //     method: "GET",
-        //     dataType: "json",
-        //     data: {
-        //         "processo_pessoa": "buscar_informacoes_rapidas_pessoas",
-        //         "valor_codigo_pessoa_informacoes_rapidas": recebe_codigo_pessoa_informacoes_rapida,
-        //     },
-        //     success: function(resposta) {
-        //         debugger;
-
-        //         if (resposta.length > 0) {
-        //             for (let indice = 0; indice < resposta.length; indice++) {
-        //                 $("#created_at").val(resposta[indice].created_at);
-        //                 $("#nome").val(resposta[indice].nome);
-        //                 $("#cpf").val(resposta[indice].cpf);
-        //                 $("#nascimento").val(resposta[indice].nascimento);
-        //                 $("#sexo-pessoa").val(resposta[indice].sexo);
-        //                 $("#telefone").val(resposta[indice].telefone);
-        //                 $("#whatsapp").val(resposta[indice].whatsapp);
-        //             }
-        //         }
-        //     },
-        //     error: function(xhr, status, error) {
-
-        //     },
-        // });
 
         document.getElementById('informacoes-kit').classList.remove('hidden');
         document.body.style.overflow = "hidden";
