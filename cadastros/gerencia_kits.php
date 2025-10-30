@@ -308,21 +308,37 @@
                 <tr>
                     <td colspan="4" style="padding:12px; vertical-align:top;">
                         <div style="font-weight:bold; margin-bottom:6px;">Aptidões:</div>
-                        <!-- tabela de aptidões aqui -->
+
+                        <table id="tabela-aptidoes" style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                            <tr style="background:#f2f2f2; font-weight:bold;">
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Código</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:60%;">Nome</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Valor</td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
+
 
                 <tr>
                     <td colspan="4" style="padding:12px; vertical-align:top;">
                         <div style="font-weight:bold; margin-bottom:6px;">Exames:</div>
-                        <!-- tabela de exames aqui -->
+
+                        <table id="tabela-exames" style="width:100%; border-collapse:collapse; font-size:13px; margin-top:4px;">
+                            <tr style="background:#f2f2f2; font-weight:bold;">
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Código</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:60%;">Nome</td>
+                                <td style="padding:6px; border:1px solid #ccc; width:20%;">Valor</td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
+
 
                 <tr>
                     <td colspan="4" style="padding:12px; vertical-align:top;">
                         <div style="font-weight:bold; margin-bottom:6px;">Faturamento:</div>
-                        <!-- tabela de faturamento aqui -->
+                        <div id="areaFaturamento"></div>
                     </td>
                 </tr>
 
@@ -335,9 +351,9 @@
 
                 <tr>
                     <td style="font-weight:bold; padding:12px;">Status do Kit:</td>
-                    <td>${kitInfo.status.charAt(0).toUpperCase() + kitInfo.status.slice(1).toLowerCase()}</td>
+                    <td><span id="recebe-status"></span></td>
                     <td style="font-weight:bold; padding:12px;">Data:</td>
-                    <td>${kitInfo.data ? kitInfo.data.split(' ')[0].split('-').reverse().join('/') : 'Não informada'}</td>
+                    <td><span id="recebe-data"></span></td>
                 </tr>
             </table>
 
@@ -682,6 +698,27 @@
         });
     }
 
+    function requisitarProdutos(codigo_kit) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "cadastros/processa_geracao_kit.php",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    processo_geracao_kit: "busca_produtos",
+                    valor_id_kit_produtos: codigo_kit
+                },
+                success: function(resposta) {
+                    console.log("Produtos retornado:", resposta);
+                    resolve(resposta);
+                },
+                error: function(xhr, status, error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
 
 
     $(document).on("click", "#visualizar-informacoes-kit", async function(e) {
@@ -701,6 +738,8 @@
         let recebe_dados_medico_examinador_especifico = await requisitarDadosMedicoExaminador(recebe_dados_kit_especifico.medico_clinica_id);
 
         let recebe_dados_medico_fonoaudiologo_especifico = await requisitarDadosMedicoFonoaudiologo(recebe_dados_kit_especifico.medico_fonoaudiologo);
+
+        let recebe_dados_produto = await requisitarProdutos(recebe_codigo_kit_informacoes_rapida);
 
         console.log(recebe_dados_kit_especifico);
 
@@ -894,6 +933,263 @@
         } else {
             document.getElementById("recebe-ocorrencia-gfip").textContent = "Não informado";
         }
+
+        // Trata e converte as aptidões
+        let aptidoes = [];
+
+        if (recebe_dados_kit_especifico?.aptidoes_selecionadas) {
+            try {
+                aptidoes = JSON.parse(recebe_dados_kit_especifico.aptidoes_selecionadas);
+            } catch (e) {
+                console.error("Erro ao converter aptidões:", e);
+                aptidoes = [];
+            }
+        }
+
+        // Seleciona a tabela de aptidões
+        const tabelaAptidoes = document.querySelector('#tabela-aptidoes');
+
+        // Remove todas as linhas, menos o cabeçalho
+        while (tabelaAptidoes.rows.length > 1) {
+            tabelaAptidoes.deleteRow(1);
+        }
+
+        // Insere as aptidões
+        aptidoes.forEach(ap => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td style="padding:6px; border:1px solid #ccc;">${ap.codigo || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${ap.nome || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${ap.valor || '-'}</td>
+    `;
+            tabelaAptidoes.appendChild(row);
+        });
+
+        // Caso não tenha aptidões selecionadas
+        if (aptidoes.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td colspan="3" style="padding:6px; border:1px solid #ccc; text-align:center;">
+            Nenhuma aptidão informada
+        </td>
+    `;
+            tabelaAptidoes.appendChild(row);
+        }
+
+        // Trata e converte os exames
+        let exames = [];
+
+        if (recebe_dados_kit_especifico?.exames_selecionados) {
+            try {
+                exames = JSON.parse(recebe_dados_kit_especifico.exames_selecionados);
+            } catch (e) {
+                console.error("Erro ao converter exames:", e);
+                exames = [];
+            }
+        }
+
+        // Seleciona a tabela de exames
+        const tabelaExames = document.querySelector('#tabela-exames');
+
+        // Remove todas as linhas, exceto a primeira (cabeçalho)
+        while (tabelaExames.rows.length > 1) {
+            tabelaExames.deleteRow(1);
+        }
+
+        // Insere os exames
+        exames.forEach(ex => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td style="padding:6px; border:1px solid #ccc;">${ex.codigo || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${ex.nome || '-'}</td>
+        <td style="padding:6px; border:1px solid #ccc;">${ex.valor || '-'}</td>
+    `;
+            tabelaExames.appendChild(row);
+        });
+
+        // Caso não existam exames selecionados
+        if (exames.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td colspan="3" style="padding:6px; border:1px solid #ccc; text-align:center;">
+            Nenhum exame informado
+        </td>
+    `;
+            tabelaExames.appendChild(row);
+        }
+
+        function montarFaturamento() {
+            // --- Dados existentes ---
+            const recebe_dados_produto = [{
+                    id: 10,
+                    id_kit: 162,
+                    nome: "produto 1",
+                    quantidade: 1,
+                    valor: 25.55
+                },
+                {
+                    id: 11,
+                    id_kit: 162,
+                    nome: "produto 2",
+                    quantidade: 1,
+                    valor: 25.55
+                }
+            ];
+
+            const recebe_dados_kit_especifico = {
+                aptidoes_selecionadas: [{
+                        codigo: "5284",
+                        nome: "Trabalho em Altura",
+                        valor: "5284"
+                    },
+                    {
+                        codigo: "5874",
+                        nome: "Trabalho em Espaço Confinado",
+                        valor: "5874"
+                    }
+                ],
+                exames_selecionados: [{
+                        codigo: "0068",
+                        nome: "Acetilcolinesterase eritrocitária",
+                        valor: "18,25"
+                    },
+                    {
+                        codigo: "0109",
+                        nome: "Acido hipúrico",
+                        valor: "150,25"
+                    }
+                ],
+                tipo_orcamento: "Exames e Procedimentos, Treinamentos, EPI/EPC",
+                tipo_dado_bancario: "Agência/Conta",
+                dado_bancario_agencia_conta: "Não informado",
+                dado_bancario_pix: "Não informado"
+            };
+
+            // --- Cálculo do total ---
+            let total_geral = 0;
+
+            recebe_dados_produto.forEach(p => {
+                total_geral += parseFloat(p.valor) * (p.quantidade || 1);
+            });
+
+            recebe_dados_kit_especifico.exames_selecionados.forEach(e => {
+                total_geral += parseFloat((e.valor || "0").replace(",", "."));
+            });
+
+            // --- Criação da tabela ---
+            const tabela = document.createElement("table");
+            Object.assign(tabela.style, {
+                width: "100%",
+                borderCollapse: "collapse",
+                fontFamily: "Arial, sans-serif",
+                fontSize: "14px",
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                overflow: "hidden"
+            });
+
+            const criarLinha = (titulo, conteudo) => {
+                const tr = document.createElement("tr");
+                const td = document.createElement("td");
+                td.style.padding = "10px";
+                td.style.border = "1px solid #ddd";
+                td.innerHTML = `<strong>${titulo}</strong><br>${conteudo}`;
+                tr.appendChild(td);
+                return tr;
+            };
+
+            const cabecalho = document.createElement("tr");
+            Object.assign(cabecalho.style, {
+                background: "#f1f1f1",
+                fontWeight: "bold"
+            });
+            const tdCab = document.createElement("td");
+            Object.assign(tdCab.style, {
+                padding: "10px",
+                border: "1px solid #ddd"
+            });
+            tdCab.textContent = "Itens do Faturamento";
+            cabecalho.appendChild(tdCab);
+            tabela.appendChild(cabecalho);
+
+            // Produtos
+            const produtosHTML = recebe_dados_produto.length ?
+                recebe_dados_produto.map(p => `${p.nome} (${p.quantidade}x) - R$ ${p.valor.toFixed(2).replace('.', ',')}`).join("<br>") :
+                "Nenhum produto informado.";
+            tabela.appendChild(criarLinha("Produtos", produtosHTML));
+
+            // Aptidões
+            const aptidoesHTML = recebe_dados_kit_especifico.aptidoes_selecionadas.length ?
+                recebe_dados_kit_especifico.aptidoes_selecionadas.map(a => a.nome).join("<br>") :
+                "Nenhuma aptidão informada.";
+            tabela.appendChild(criarLinha("Aptidões", aptidoesHTML));
+
+            // Exames
+            const examesHTML = recebe_dados_kit_especifico.exames_selecionados.length ?
+                recebe_dados_kit_especifico.exames_selecionados.map(e => `${e.nome} - R$ ${e.valor}`).join("<br>") :
+                "Nenhum exame informado.";
+            tabela.appendChild(criarLinha("Exames", examesHTML));
+
+            // Tipo de orçamento
+            tabela.appendChild(criarLinha("Tipo de Orçamento", recebe_dados_kit_especifico.tipo_orcamento));
+
+            // Dados bancários
+            const dadosBancariosHTML = `
+        Tipo: ${recebe_dados_kit_especifico.tipo_dado_bancario}<br>
+        Agência/Conta: ${recebe_dados_kit_especifico.dado_bancario_agencia_conta}<br>
+        PIX: ${recebe_dados_kit_especifico.dado_bancario_pix}
+    `;
+            tabela.appendChild(criarLinha("Dados Bancários", dadosBancariosHTML));
+
+            // Total
+            const totalRow = document.createElement("tr");
+            Object.assign(totalRow.style, {
+                background: "#fafafa",
+                fontWeight: "bold"
+            });
+            const tdTotal = document.createElement("td");
+            Object.assign(tdTotal.style, {
+                padding: "12px",
+                border: "1px solid #ddd",
+                textAlign: "right"
+            });
+            tdTotal.textContent = `Total Geral: R$ ${total_geral.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+            totalRow.appendChild(tdTotal);
+            tabela.appendChild(totalRow);
+
+            // --- Inserir ---
+            const area = document.getElementById("areaFaturamento");
+            area.innerHTML = "";
+            area.appendChild(tabela);
+        }
+
+        montarFaturamento();
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.status) {
+            document.getElementById("recebe-status").textContent = recebe_dados_kit_especifico.status;
+        } else {
+            document.getElementById("recebe-status").textContent = "Não informado";
+        }
+
+        if (recebe_dados_kit_especifico && recebe_dados_kit_especifico.data_geracao) {
+            // Pega a string original
+            let dataOriginal = recebe_dados_kit_especifico.data_geracao;
+
+            // Cria um objeto Date (substitui espaço por 'T' para compatibilidade)
+            let data = new Date(dataOriginal.replace(' ', 'T'));
+
+            // Formata para o padrão brasileiro (dd/mm/aaaa)
+            let dataFormatada = data.toLocaleDateString('pt-BR', {
+                timeZone: 'America/Sao_Paulo'
+            });
+
+            // Exibe no elemento HTML
+            document.getElementById("recebe-data").textContent = dataFormatada;
+        } else {
+            document.getElementById("recebe-data").textContent = "Não informado";
+        }
+
 
         // $.ajax({
         //     url: "cadastros/processa_pessoa.php",
