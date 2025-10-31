@@ -37,6 +37,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_usuarios->execute();
         $resultado_busca_usuarios = $comando_busca_usuarios->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_usuarios);
+    }else if($recebe_processo_usuario === "buscar_usuario_especifico")
+    {
+        $instrucao_busca_usuario_especifico = "select * from usuarios where id = :recebe_id_usuario";
+        $comando_busca_usuario_especifico = $pdo->prepare($instrucao_busca_usuario_especifico);
+        $comando_busca_usuario_especifico->bindValue(":recebe_id_usuario",$_GET["valor_id_usuario"]);
+        $comando_busca_usuario_especifico->execute();
+        $resultado_busca_usuario_especifico = $comando_busca_usuario_especifico->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_usuario_especifico);
     }
 }
 ?>
