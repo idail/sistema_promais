@@ -5,22 +5,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #treinamento_capacitacao_tabela {
+    #usuario_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #treinamento_capacitacao_tabela th,
-    #treinamento_capacitacao_tabela td {
+    #usuario_tabela th,
+    #usuario_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #treinamento_capacitacao_tabela th {
+    #usuario_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
