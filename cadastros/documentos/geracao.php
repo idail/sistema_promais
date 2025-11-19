@@ -44295,7 +44295,272 @@ exibe_info_bancaria([
             //     }
 
 
-            echo '
+//             echo '
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+// </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">TIPO DE EXAME / PROCEDIMENTO</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+//                         Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+//                     </td>
+//                 </tr>
+//             </table>';
+
+//             if (
+//                 isset($resultado_mudanca_cargo_selecionado)
+//                 && !empty($resultado_mudanca_cargo_selecionado)
+//             ) {
+//                 echo '
+//                     <table> 
+//                         <tr>
+//                             <td colspan="2" class="section-title">Mudança de Função</td>
+//                         </tr>
+//                         <tr>
+//                             <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+//                             <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+//                     htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") .
+//                     '</td>
+//                         </tr>
+//                         <tr>
+//                             <th style="font-size:12px; text-align:left;">Novo CBO</th>
+//                             <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+//                     htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") .
+//                     '</td>
+//                         </tr>
+//                     </table>
+//                 ';
+//             }
+
+//             $nomeCoord = htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "");
+//             $crmCoord  = htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "");
+//             $textoCoord = $nomeCoord . (!empty($nomeCoord) && !empty($crmCoord) ? " / " : "") . $crmCoord;
+
+//             $nomeExam = htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "");
+//             $crmExam  = htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "");
+//             $textoExam = $nomeExam . (!empty($nomeExam) && !empty($crmExam) ? " / " : "") . $crmExam;
+
+//             echo '
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">Dados dos Médicos</td>
+//                 </tr>
+//                 <tr>
+//                     <th style="font-size:12px; text-align:left;width: 185px;">Médico coordenador do PCMSO</th>
+//                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
+//                 </tr>
+                
+//                 <tr>
+//                     <th style="font-size:12px; text-align:left;">Médico emitente/examinador</th>
+//                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoExam . '</td>
+//                 </tr>
+//             </table>
+
+//             ' . $riscosTabela . '
+
+//             <table class="table-exames" style="width:100%; border-collapse:collapse;">
+//                 <tr>
+//                     <td colspan="2" class="section-title" style="text-align:left; font-size:12px; font-weight:bold;">
+//                         Procedimentos e Exames a realizar
+//                     </td>
+//                 </tr>
+//                     ' . $linhasExames . '
+//             </table>
+
+//             ' . $aptidoesTabela . '
+            
+//         </div>';
+
+//             echo '
+//             <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>
+//         ';
+
+
+echo '
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -44375,6 +44640,11 @@ exibe_info_bancaria([
                 }
                 body { background:#fff; }
                 .actions { display: none !important; }
+
+                .page-break {
+        page-break-before: always;
+        break-before: page;
+    }
             }
 
             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
@@ -44405,7 +44675,7 @@ exibe_info_bancaria([
     height: 60px;
     border-bottom: 1px solid #000;
     display: block;
-    margin: 0px auto 5px auto;
+    margin: 0px auto -15px auto;
         }
 
         .legenda {
@@ -44413,6 +44683,7 @@ exibe_info_bancaria([
             font-size: 14px;
         }
 </style>
+        <div class="page-break"></div>
 
         <div class="guia-container">
             <table>
@@ -44552,15 +44823,378 @@ exibe_info_bancaria([
         </div>';
 
             echo '
-            <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
             </div>
+</div>
+
+        ';
+
+        echo '
+        <script>
+function enviarClinica() {
+    let email = document.getElementById("emailClinica").value.trim();
+
+    if(email === "") {
+        alert("Informe um e-mail antes de enviar!");
+        return;
+    }
+
+    alert("Enviar para clínica:", email);
+    // sua lógica futura aqui...
+}
+
+function enviarEmpresa() {
+    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
+
+    if(whatsapp === "") {
+        alert("Informe um WhatsApp antes de enviar!");
+        return;
+    }
+
+    alert("Enviar para empresa:", whatsapp);
+    // sua lógica futura aqui...
+}
+</script>
+
         ';
 
 
-            echo '
+
+
+//             echo '
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .assinatura {
+//             width: 150px;
+//             height: 60px;
+//             border-bottom: 1px solid #000;
+//             display: block;
+//             margin: 0px auto 5px auto;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+
+//         </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>            
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">TIPO DE PRONTUARIO MÉDICO EXAME OCUPACIONAL ANAMNESE CLINICA E PROFISSIONAL</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+//                         Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+//                     </td>
+//                 </tr>
+//             </table>';
+
+//             if (
+//                 isset($resultado_mudanca_cargo_selecionado)
+//                 && !empty($resultado_mudanca_cargo_selecionado)
+//             ) {
+//                 echo '
+//                     <table> 
+//                         <tr>
+//                             <td colspan="2" class="section-title">Mudança de Função</td>
+//                         </tr>
+//                         <tr>
+//                             <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+//                             <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+//                     htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") .
+//                     '</td>
+//                         </tr>
+//                         <tr>
+//                             <th style="font-size:12px; text-align:left;">Novo CBO</th>
+//                             <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+//                     htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") .
+//                     '</td>
+//                         </tr>
+//                     </table>
+//                 ';
+//             }
+
+//             $nomeCoord = htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "");
+//             $crmCoord  = htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "");
+//             $textoCoord = $nomeCoord . (!empty($nomeCoord) && !empty($crmCoord) ? " / " : "") . $crmCoord;
+
+//             $nomeExam = htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "");
+//             $crmExam  = htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "");
+//             $textoExam = $nomeExam . (!empty($nomeExam) && !empty($crmExam) ? " / " : "") . $crmExam;
+
+//             echo '
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">Dados dos Médicos</td>
+//                 </tr>
+//                 <tr>
+//                     <th style="font-size:12px; text-align:left;width: 185px;">Médico coordenador do PCMSO</th>
+//                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
+//                 </tr>
+                
+//                 <tr>
+//                     <th style="font-size:12px; text-align:left;">Médico emitente/examinador</th>
+//                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoExam . '</td>
+//                 </tr>
+//             </table>
+
+//             ' . $riscosTabela . '
+
+//             <table class="table-exames" style="width:100%; border-collapse:collapse;">
+//                 <tr>
+//                     <td colspan="2" class="section-title" style="text-align:left; font-size:12px; font-weight:bold;">
+//                        Procedimentos e Exames realizados
+//                     </td>
+//                 </tr>
+//                     ' . $linhasExames . '
+//             </table>
+
+//             ' . $aptidoesTabela . '
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" style="background:#eaeaea; border:1px solid #666; font-weight:bold; font-size:12px; padding:3px 8px; text-align:left;">
+//                         CONCLUSÃO DO EXAME
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; padding:6px;">
+//                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; padding:6px;">
+//                     Atesto que o trabalhador acima identificado se submeteu aos exames médicos ocupacionais em cumprimento a NR 07 e seus itens 7.5.19.1 e
+// 7.5.19.2 sendo o resultado de avaliação considerado:
+//                         Resultado: ( ) APTO &nbsp;&nbsp; ( ) INAPTO
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <!-- Espaço para assinatura -->
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+                        
+//                         ' . $html_assinatura . ' <br>
+//                         Médico emitente/ Examinador
+//                         ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+//                     </td>
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                         <br>
+                        
+//                         <br>
+//                         _______________________________<br>
+//                         Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             </div>';
+
+//             echo '
+
+//             <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>
+//         </div>
+// ';
+
+
+echo '
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -44640,6 +45274,9 @@ exibe_info_bancaria([
                 }
                 body { background:#fff; }
                 .actions { display: none !important; }
+                .page-break {
+        page-break-before: always;
+    }
             }
 
             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
@@ -44670,7 +45307,7 @@ exibe_info_bancaria([
             height: 60px;
             border-bottom: 1px solid #000;
             display: block;
-            margin: 0px auto 5px auto;
+            margin: 0px auto -15px auto;
         }
 
         .legenda {
@@ -44683,11 +45320,13 @@ exibe_info_bancaria([
     height: 60px;
     border-bottom: 1px solid #000;
     display: block;
-    margin: 0px auto 5px auto;
+    margin: 0px auto -10px !important;
         }
 
 
         </style>
+
+        <div class="page-break"></div>
 
         <div class="guia-container">
             <table>
@@ -44847,8 +45486,11 @@ exibe_info_bancaria([
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
                         ' . $html_assinatura . ' <br>
-                        Médico emitente/ Examinador
-                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+                        _______________________________<br>
+                        <h4 style="margin-bottom: 0px;
+    margin-top: 2px;
+    font-weight: normal;">Médico emitente/ Examinador
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT</h4>
                     </td>
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         <br>
@@ -44864,15 +45506,548 @@ exibe_info_bancaria([
 
             echo '
 
-            <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
             </div>
-        </div>
+            </div>
 ';
 
-            echo '
+
+//             echo '
+        
+
+
+
+
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+// </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">TIPO DE PRONTUARIO MÉDICO EXAME OCUPACIONAL ANAMNESE CLINICA E PROFISSIONAL</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; line-height:1.5; padding:5px;">
+//                         Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '
+//                     </td>
+//                 </tr>
+//             </table>';
+
+//             if (
+//                 isset($resultado_mudanca_cargo_selecionado)
+//                 && !empty($resultado_mudanca_cargo_selecionado)
+//             ) {
+//                 echo '
+//                     <table> 
+//                         <tr>
+//                             <td colspan="2" class="section-title">Mudança de Função</td>
+//                         </tr>
+//                         <tr>
+//                             <th style="font-size:12px; text-align:left;">Novo Cargo</th>
+//                             <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+//                     htmlspecialchars($resultado_mudanca_cargo_selecionado['titulo_cargo'] ?? "") .
+//                     '</td>
+//                         </tr>
+//                         <tr>
+//                             <th style="font-size:12px; text-align:left;">Novo CBO</th>
+//                             <td style="font-size:12px; line-height:1.4; text-align:left;">' .
+//                     htmlspecialchars($resultado_mudanca_cargo_selecionado['codigo_cargo'] ?? "") .
+//                     '</td>
+//                         </tr>
+//                     </table>
+//                 ';
+//             }
+
+//             $nomeCoord = htmlspecialchars($resultado_medico_coordenador_selecionado['nome'] ?? "");
+//             $crmCoord  = htmlspecialchars($resultado_medico_coordenador_selecionado['crm'] ?? "");
+//             $textoCoord = $nomeCoord . (!empty($nomeCoord) && !empty($crmCoord) ? " / " : "") . $crmCoord;
+
+//             $nomeExam = htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "");
+//             $crmExam  = htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "");
+//             $textoExam = $nomeExam . (!empty($nomeExam) && !empty($crmExam) ? " / " : "") . $crmExam;
+
+//             echo '
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">Dados dos Médicos</td>
+//                 </tr>
+//                 <tr>
+//                     <th style="font-size:12px; text-align:left;width: 185px;">Médico coordenador do PCMSO</th>
+//                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoCoord . '</td>
+//                 </tr>
+                
+//                 <tr>
+//                     <th style="font-size:12px; text-align:left;">Médico emitente/examinador</th>
+//                     <td style="font-size:12px; line-height:1.4; text-align:left;">' . $textoExam . '</td>
+//                 </tr>
+//             </table>
+
+
+//             <!-- INFORMAÇÕES CLÍNICAS -->
+//             <table style="width:100%; border-collapse:collapse;">
+//                 <tr>
+//                     <td colspan="8" class="section-title">INFORMAÇÕES CLÍNICAS</td>
+//                 </tr>
+
+//                 <!-- Cabeçalho -->
+//                 <tr>
+//                     <th colspan="2" class="section-title">ANTECEDENTES FAMILIARES</th>
+//                     <th>SIM</th><th>NÃO</th>
+//                     <th colspan="2" class="section-title">ANTECEDENTES PESSOAIS</th>
+//                     <th>SIM</th><th>NÃO</th>
+//                 </tr>
+
+//                 <!-- Familiares x Pessoais -->
+//                 <tr><td colspan="2">DIABETE (AÇÚCAR NO SANGUE)</td><td></td><td></td>
+//                     <td colspan="2">ESTEVE EM TRATAMENTO? JÁ TEVE ALGUMA DOENÇA GRAVE?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">ASMA / BRONQUITE / ALERGIA OU URTICÁRIA</td><td></td><td></td>
+//                     <td colspan="2">FAZ USO DIÁRIO DE ALGUM MEDICAMENTO?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">DOENÇAS MENTAIS OU NERVOSAS</td><td></td><td></td>
+//                     <td colspan="2">SOFREU ALGUM ACIDENTE?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">EPILEPSIA - ATAQUES</td><td></td><td></td>
+//                     <td colspan="2">ESTEVE INTERNADO EM HOSPITAL?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">ALCOOLISMO</td><td></td><td></td>
+//                     <td colspan="2">JÁ FOI OPERADO?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">REUMATISMO</td><td></td><td></td>
+//                     <td colspan="2">TEM DEFICIÊNCIA OU IMPEDIMENTOS FÍSICOS?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">GASTRITE / ÚLCERA</td><td></td><td></td>
+//                     <td colspan="2">TRABALHOU EM AMBIENTE COM RUÍDO?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">PRESSÃO ALTA / DOENÇAS DO CORAÇÃO</td><td></td><td></td>
+//                     <td colspan="2">TEVE ALGUMA CRISE CONVULSIVA (ATAQUE)?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">CÂNCER</td><td></td><td></td>
+//                     <td colspan="2">TEM DOR DE CABEÇA?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">DERRAME</td><td></td><td></td>
+//                     <td colspan="2">TEVE TRAUMA OU BATIDA NA CABEÇA? TEM TONTURA?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">HIPERCOLESTEROLEMIA (COLESTEROL ALTO)</td><td></td><td></td>
+//                     <td colspan="2">TEM ALGUMA ALERGIA (ASMA, RINITE)?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">TUBERCULOSE</td><td></td><td></td>
+//                     <td colspan="2">TEM OU TEVE ALGUMA DOENÇA NO PULMÃO / FALTA DE AR?</td><td></td><td></td></tr>
+
+//                 <!-- Habitos de Vida alinhado com Coluna -->
+//                 <tr>
+//                     <th colspan="2" class="section-title">HÁBITOS DE VIDA</th><th>SIM</th><th>NÃO</th>
+//                     <td colspan="2">TEM ALGUM PROBLEMA DE COLUNA?</td><td></td><td></td>
+//                 </tr>
+//                 <tr><td colspan="2">FUMA?</td><td></td><td></td>
+//                     <td colspan="2">TEM REUMATISMO?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">TOMA/TOMAVA BEBIDA ALCOÓLICA?</td><td></td><td></td>
+//                     <td colspan="2">TEM HÉRNIA (SACO RENDIDO)?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">USA/USAVA DROGA?</td><td></td><td></td>
+//                     <td colspan="2">TEVE DOENÇA DE CHAGAS?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">PRATICA ESPORTE?</td><td></td><td></td>
+//                     <td colspan="2">SENTE CANSAÇO FACILMENTE?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">DORME BEM?</td><td></td><td></td>
+//                     <td colspan="2">ESTÁ COM FEBRE OU PERDA DE PESO?</td><td></td><td></td></tr>
+
+//                 <!-- Ocupacionais alinhado -->
+//                 <tr>
+//                     <th colspan="2" class="section-title">ANTECEDENTES OCUPACIONAIS</th><th>SIM</th><th>NÃO</th>
+//                     <td colspan="2">JÁ TEVE FRATURAS?</td><td></td><td></td>
+//                 </tr>
+//                 <tr><td colspan="2">PODE EXECUTAR TAREFAS PESADAS?</td><td></td><td></td>
+//                     <td colspan="2">REALIZA TRABALHO FORA DA EMPRESA?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">EXECUTOU TAREFAS INSALUBRES PERIGOSAS?</td><td></td><td></td>
+//                     <td colspan="2">CONSIDERA TER SUA SAÚDE?</td><td></td><td></td></tr>
+//                 <tr><td colspan="2">JÁ ESTEVE DOENTE DEVIDO AO SEU TRABALHO?</td><td></td><td></td>
+//                     <td colspan="2">POSSUI DIFICULDADE MOTORA?</td><td></td><td></td></tr>
+
+//                 <!-- Para Mulheres alinhado -->
+//                 <tr>
+//                     <td colspan="2">JÁ FOI DEMITIDO POR MOTIVO DE DOENÇA?</td><td></td><td></td>
+//                     <th colspan="4" class="section-title">PARA MULHERES</th>
+//                 </tr>
+//                 <tr><td colspan="2">JÁ ESTEVE AFASTADO PELO INSS?</td><td></td><td></td>
+//                     <td colspan="4">DATA DA ÚLTIMA MENSTRUAÇÃO: ___/___/____</td></tr>
+//                 <tr><td colspan="2">JÁ TEVE ACIDENTE DE TRABALHO?</td><td></td><td></td>
+//                     <td colspan="4">DATA DO ÚLTIMO PREVENTIVO: ___/___/____</td></tr>
+//             </table>
+//             </div>
+
+//             <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:6px;">
+//                <!-- Linha com dados clínicos -->
+//                <tr>
+//                     <th colspan="5" class="titulo-guia">APTIDÃO FÍSICA E METAL</th>
+//                 </tr>
+//                <tr>
+//                   <th style="text-align:left; padding:4px; width: 15%;">ALTURA:</th>
+//                   <th style="text-align:left; padding:4px; width: 15%;">PESO:</th>
+//                   <th style="text-align:left; padding:4px; width: 15%;">TEMPERATURA:</th>
+//                   <th style="text-align:left; padding:4px; width: 15%;">PULSO:</th>
+//                   <th style="text-align:left; padding:4px; width: 15%;">PRESSÃO ARTERIAL:</th>
+//                 </tr>
+//             </table>
+
+//             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:0px;">
+//                 <!-- Cabeçalho das colunas de avaliação -->
+//                 <tr>
+//                     <td style="padding:4px;"></td>
+//                     <th style="text-align:center; padding:4px; width:6%;">NORMAL</th>
+//                     <th style="text-align:center; padding:4px; width:6%;">ANORMAL</th>
+//                     <th colspan="2" style="text-align:center; padding:4px; width:64%;">OBSERVAÇÃO</th>
+//                 </tr>
+
+//                 <!-- Linhas dos exames físicos -->
+//                 <tr><td style="padding:4px; width:24%;">ASPECTO GERAL</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">OLHOS</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">OTOSCOPIA</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">NARIZ</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">BOCA - AMÍGDALAS - DENTES</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">PESCOÇO - GÂNGLIOS</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">PULMÃO</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">CORAÇÃO</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">ABDOMÊ</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">COLUNA</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">MEMBROS SUPERIORES</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">MEMBROS INFERIORES</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">PELE E FÂNEROS</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">PSIQUISMO</td><td></td><td></td><td colspan="2"></td></tr>
+//                 <tr><td style="padding:4px;">EXAMES COMPLEMENTARES</td><td></td><td></td><td colspan="2"></td></tr>
+//             </table>
+
+//             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia" style="text-align:left;">Preenchimento Obrigatório em Caso de Exame Demissional</th>
+//                 </tr>
+
+//                 <tr><th colspan="6" style="text-align:left; padding:4px;" class="titulo-guia">Demissional</th></tr>
+//                 <tr><td colspan="6" style="padding:4px;">Adquiriu alguma doença em virtude da função?</td></tr>
+//                 <tr><td colspan="6" style="padding:4px;">Sofreu acidente de trabalho na empresa?</td></tr>
+//                 <tr><td colspan="6" style="padding:4px;">Recebeu EPI da empresa?</td></tr>
+//                 <tr>
+//                     <td colspan="6" style="padding:4px;">
+//                         PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+//                         PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+//                         TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+//                 <tr>
+//                     <th colspan="4" class="titulo-guia" style="text-align:left;">Para Mulheres</th>
+//                 </tr>
+//                 <tr>
+//                     <th style="text-align:left; padding:4px;width: 160px;">Data da Última Menstruação</th>
+//                     <td style="padding:4px;width:200px"></td>
+//                     <th style="text-align:left; padding:4px;width: 160px;">Data do Último Preventivo</th>
+//                     <td style="padding:4px;width:200px"></td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia" style="text-align:left;">EXAMES COMPLEMENTARES</th>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" class="dados-hospital" style="height:60px;">
+//                         ___________________________________________________________________________________
+//                     </td>
+//                 </tr>
+//             </table>
+
+
+
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia" style="text-align:left;">EVOLUÇÃO CLÍNICA</th>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" class="dados-hospital" style="height:60px;">
+//                         ___________________________________________________________________________________
+//                     </td>
+//                 </tr>
+//             </table>
+
+
+//             <table>
+    
+//                 <tr>
+//                     <td colspan="2" class="dados-hospital">
+//                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <!-- Espaço para assinatura -->
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                         ' . $html_assinatura . ' <br>
+//                         Médico emitente/ Examinador<br>
+//                         ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+//                     </td>
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                                     <br>
+                                    
+//                                     <br>
+//                                     _______________________________<br>
+//                                     Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             </div>
+
+//             <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>
+//         </div>
+// ';
+
+echo '
         
 
 
@@ -44957,6 +46132,9 @@ exibe_info_bancaria([
                 }
                 body { background:#fff; }
                 .actions { display: none !important; }
+                .page-break {
+        page-break-before: always;
+    }
             }
 
             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
@@ -44995,6 +46173,7 @@ exibe_info_bancaria([
             font-size: 14px;
         }
 </style>
+        <div class="page-break"></div>
 
         <div class="guia-container">
             <table>
@@ -45309,9 +46488,11 @@ exibe_info_bancaria([
                 <tr><td colspan="6" style="padding:4px;">Recebeu EPI da empresa?</td></tr>
                 <tr>
                     <td colspan="6" style="padding:4px;">
-                        PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
-                        PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
-                        TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        PRESSÃO ARTERIAL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        PULSO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
+                        TEMPERATURA: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </td>
                 </tr>
             </table>
@@ -45333,7 +46514,7 @@ exibe_info_bancaria([
                     <th colspan="2" class="titulo-guia" style="text-align:left;">EXAMES COMPLEMENTARES</th>
                 </tr>
                 <tr>
-                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                    <td colspan="2" class="dados-hospital" style="height:10px;">
                         ___________________________________________________________________________________
                     </td>
                 </tr>
@@ -45346,7 +46527,7 @@ exibe_info_bancaria([
                     <th colspan="2" class="titulo-guia" style="text-align:left;">EVOLUÇÃO CLÍNICA</th>
                 </tr>
                 <tr>
-                    <td colspan="2" class="dados-hospital" style="height:60px;">
+                    <td colspan="2" class="dados-hospital" style="height:20px;">
                         ___________________________________________________________________________________
                     </td>
                 </tr>
@@ -45364,8 +46545,11 @@ exibe_info_bancaria([
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         ' . $html_assinatura . ' <br>
-                        Médico emitente/ Examinador<br>
-                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+                        _____________________________<br>
+                        <h4 style="margin-bottom: 0px;
+    margin-top: 2px;
+    font-weight: normal;">Médico emitente/ Examinador
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT</h4>
                     </td>
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                                     <br>
@@ -45379,15 +46563,376 @@ exibe_info_bancaria([
 
             </div>
 
-            <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
             </div>
         </div>
+    </div>
 ';
 
-            echo '
+
+//             echo '
+// <style>
+//     body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         @media print {
+//   table {
+//     page-break-inside: avoid;
+//   }
+// }
+// </style>
+
+// <div class="guia-container">
+
+//     <!-- Cabeçalho Clínica -->
+//     <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//     <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//     <!-- Acuidade Visual -->
+//     <table>
+//         <tr><td colspan="4" class="section-title">IDENTIFICAÇÃO</td></tr>
+//         <tr>
+//             <th>Nome</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . '</td>
+//             <th>Código</th><td>' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '</td>
+//         </tr>
+//         <tr>
+//             <th>Cidade</th><td>' . htmlspecialchars($recebe_cidade_uf ?? "") . '</td>
+//             <th>Função</th><td>' . htmlspecialchars($resultado_busca_cargo_pessoa['titulo_cargo'] ?? "") . '</td>
+//         </tr>
+//         <tr>
+//             <th>Empresa</th><td colspan="3">' . htmlspecialchars($resultado_empresa_selecionada['nome'] ?? "") . '</td>
+//         </tr>
+//     </table>
+
+//     <table>
+//     <tr><td colspan="3" class="section-title">QUESTIONÁRIO</td></tr>
+//     <tr>
+//         <th>Pergunta</th>
+//         <th>Sim</th>
+//         <th>Não</th>
+//     </tr>
+//     <tr>
+//         <td>1) Usa óculos / lentes de contato?</td>
+//         <td style="text-align:center;"></td>
+//         <td style="text-align:center;"></td>
+//     </tr>
+//     <tr>
+//         <td>2) Já teve algum problema com os olhos?</td>
+//         <td style="text-align:center;"></td>
+//         <td style="text-align:center;"></td>
+//     </tr>
+//     <tr>
+//         <td>3) Exame será realizado com óculos/lentes?</td>
+//         <td style="text-align:center;"></td>
+//         <td style="text-align:center;"></td>
+//     </tr>
+// </table>
+
+
+//     <table>
+//     <tr><td colspan="11" class="section-title">TABELA DE SNELLEN</td></tr>
+//     <tr>
+//         <th></th>
+//         <th>20/200<br>(1)</th>
+//         <th>20/100<br>(2)</th>
+//         <th>20/50<br>(3)</th>
+//         <th>20/40<br>(4)</th>
+//         <th>20/30<br>(5)</th>
+//         <th>20/25<br>(6)</th>
+//         <th>20/20<br>(7)</th>
+//         <th>20/15<br>(8)</th>
+//         <th>20/13<br>(9)</th>
+//         <th>20/10<br>(10)</th>
+//     </tr>
+//     <tr><th>OD</th><td colspan="10"></td></tr>
+//     <tr><th>OE</th><td colspan="10"></td></tr>
+//     <tr><th>AO</th><td colspan="10"></td></tr>
+// </table>
+
+
+//     <table>
+//         <tr><td colspan="6" class="section-title">CARTA DE JEAGER (TESTE PARA PERTO)</td></tr>
+//         <tr><th>J6</th><th>J5</th><th>J4</th><th>J3</th><th>J2</th><th>J1</th></tr>
+//         <tr><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td><td style="height: 25px;"></td></tr>
+//     </table>
+
+//     <table>
+//         <tr><td colspan="2" class="section-title">TESTE DE ISHIHARA</td></tr>
+//         <tr>
+//             <td> Normal</td>
+//             <td> Alterado</td>
+//         </tr>
+//     </table>
+
+//     <!-- Tabela de Snellen -->
+//     <table>
+//         <tr>
+//             <td colspan="2" class="section-title">Tabela de Snellen</td>
+//         </tr>
+//         <tr>
+//             <th>Normal</th>
+//             <th>Alterado</th>
+//         </tr>
+//         <tr>
+//             <td style="text-align:center;height:25px;"></td>
+//             <td style="text-align:center;height:25px;"></td>
+//         </tr>
+//     </table>
+
+//     <!-- Carta de Jeager -->
+//     <table>
+//         <tr>
+//             <td colspan="2" class="section-title">Carta de Jeager</td>
+//         </tr>
+//         <tr>
+//             <th>Normal</th>
+//             <th>Alterado</th>
+//         </tr>
+//         <tr>
+//             <td style="text-align:center;height:25px;"></td>
+//             <td style="text-align:center;height:25px;"></td>
+//         </tr>
+//     </table>
+
+//     <!-- Apresenta Acuidade Visual -->
+// <table>
+//     <tr>
+//         <td rowspan="2" style="text-align:center; font-weight:bold; width:70%;">
+//             APRESENTA ACUIDADE VISUAL
+//         </td>
+//         <td style="width:15%;">Satisfatória:</td>
+//         <td style="width:15%;"></td>
+//     </tr>
+//     <tr>
+//         <td>Insatisfatória:</td>
+//         <td></td>
+//     </tr>
+// </table>
+
+
+
+//    <table>
+//     <tr>
+//                     <th colspan="2" class="section-title" style="text-align:left;">ASSINATURAS</th>
+//                 </tr>
+//     <tr>
+//         <td colspan="2" class="dados-hospital">
+//             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//         </td>
+//     </tr>
+//     <tr>
+//         <!-- Espaço para assinatura -->
+//         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//             ' . $html_assinatura . ' <br>
+//             Médico emitente/ Examinador<br>
+//             ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+//         </td>
+//         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                                     <br>
+                                    
+//                                     <br>
+//                                     _______________________________<br>
+//                                     Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//         </td>
+//     </tr>
+// </table>
+//         </div>
+        
+//         <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>';
+
+
+echo '
 <style>
     body {
                 font-family: Arial, sans-serif;
@@ -45509,9 +47054,12 @@ exibe_info_bancaria([
   table {
     page-break-inside: avoid;
   }
+    .page-break {
+        page-break-before: always;
+    }
 }
 </style>
-
+<div class="page-break"></div>
 <div class="guia-container">
 
     <!-- Cabeçalho Clínica -->
@@ -45708,8 +47256,11 @@ exibe_info_bancaria([
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
             ' . $html_assinatura . ' <br>
-            Médico emitente/ Examinador<br>
-            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+            _____________________________<br>
+                        <h4 style="margin-bottom: 0px;
+    margin-top: 2px;
+    font-weight: normal;">Médico emitente/ Examinador
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT</h4>
         </td>
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                                     <br>
@@ -45721,14 +47272,484 @@ exibe_info_bancaria([
     </tr>
 </table>
         </div>
+        </div>
         
-        <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
             </div>';
 
-            echo '
+//             echo '
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         @media print {
+//   table {
+//     page-break-inside: avoid;
+//   }
+// }
+
+//         </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+
+//             <!-- QUESTIONÁRIO PSICOSSOCIAL -->
+//             <table>
+//                 <tr>
+//                     <td colspan="4" class="section-title">QUESTIONÁRIO PSICOSSOCIAL</td>
+//                 </tr>
+//             </table>
+
+//             <!-- 01 - Identificação -->
+//             <table>
+//                 <tr>
+//                     <th style="width:15%;">Idade</th>
+//                     <td style="width:20%;">' . htmlspecialchars($idade) . ' anos</td>
+                    
+//                     <th style="width:15%;">Peso</th>
+//                     <td style="width:20%;"></td>
+                    
+//                     <th style="width:15%;">Altura</th>
+//                     <td style="width:20%;"></td>
+//                 </tr>
+//             </table>
+
+
+// <!-- 02 - Avaliação da Qualidade do Sono -->
+// <table>
+//     <tr>
+//         <td colspan="4" class="section-title">02 - Avaliação da Qualidade do Sono</td>
+//     </tr>
+//     <tr>
+//         <td>1. Você leva mais de 30 minutos para adormecer?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>2. Você acorda muitas vezes durante a noite?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+//     <tr>
+//         <td>3. E quando acorda, demora muito para voltar a dormir?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>4. Seu sono é agitado, inquieto?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+//     <tr>
+//         <td>5. Precisa de um despertador para acordar?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>6. Tem dificuldades para levantar de manhã?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+//     <tr>
+//         <td>7. Sente-se cansado ao longo do dia?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>8. Já sofreu algum acidente de estepe por dormir pouco?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+//     <tr>
+//         <td>9. Cochila diante da TV ou em outras situações?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>10. Dorme mais nos finais de semana?</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+// </table>
+
+
+// <!-- 03 - Escala de Sonolência Diurna -->
+// <table>
+//     <tr>
+//         <td colspan="5" class="section-title">03 - Escala de Sonolência Diurna (Epworth)</td>
+//     </tr>
+//     <tr>
+//         <th>Situação</th>
+//         <th>Nunca (0)</th>
+//         <th>Pouca (1)</th>
+//         <th>Média (2)</th>
+//         <th>Grande (3)</th>
+//     </tr>
+//     <tr><td>Lendo</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>Assistindo TV</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>Em local público</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>Como passageiro em carro</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>Conversando com alguém</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>Sentado calmamente</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>Após almoço sem álcool</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+//     <tr><td>No carro, parado no trânsito</td><td>( )</td><td>( )</td><td>( )</td><td>( )</td></tr>
+// </table>
+
+// <!-- 04 - Escala de Fadiga de Chalder -->
+// <table>
+//     <tr>
+//         <td colspan="5" class="section-title">04 - Escala de Fadiga de Chalder</td>
+//     </tr>
+//     <tr>
+//         <th>Sintomas Físicos</th>
+//         <th>Não ou Menos que o Normal</th>
+//         <th>Igual ao Normal</th>
+//         <th>Mais que Normal</th>
+//         <th>Muito mais que o Normal</th>
+//     </tr>
+//     <tr><td>1. Você tem problemas com cansaço?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>2. Você precisa descansar mais?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>3. Você se sente com sono ou sonolência?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>4. Você tem problemas para começar a fazer as coisas?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>5. Você começa coisas com dificuldade mas fica cansado quando continua?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>6. Você está perdendo energia?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>7. Você tem menos força em seus músculos?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>8. Você se sente fraco?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><th colspan="5">Sintomas Mentais</th></tr>
+//     <tr><td>9. Você tem dificuldade de concentração?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>10. Você tem problemas em pensar claramente?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>11. Você comete erros sem intenção ao falar?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>12. Como está sua memória?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+//     <tr><td>13. Você perdeu o interesse em coisas que costumava fazer?</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+// </table>
+
+// <!-- 05 - Avaliação Psicológica -->
+// <table>
+//     <tr>
+//         <td colspan="6" class="section-title">05 - Avaliação Psicológica</td>
+//     </tr>
+//     <tr>
+//         <td>3. Você tem ou teve síndrome do pânico?</td>
+//         <td>SIM ( )</td>
+//         <td>NÃO ( )</td>
+//         <td>4. Você tem ou teve familiar com síndrome do pânico?</td>
+//         <td>SIM ( )</td>
+//         <td>NÃO ( )</td>
+//     </tr>
+//     <tr>
+//         <td>5. Você tem ou teve depressão?</td>
+//         <td>SIM ( )</td>
+//         <td>NÃO ( )</td>
+//         <td>6. Você tem ou teve familiar com depressão?</td>
+//         <td>SIM ( )</td>
+//         <td>NÃO ( )</td>
+//     </tr>
+//     <tr>
+//         <td>9. Você tem ou já teve crise convulsiva?</td>
+//         <td>SIM ( )</td>
+//         <td>NÃO ( )</td>
+//         <td>10. Você tem tonturas? Labirintite?</td>
+//         <td>SIM ( )</td>
+//         <td>NÃO ( )</td>
+//     </tr>
+// </table>
+
+
+// <!-- 06 - Self Report Questionnaire -->
+// <table>
+//     <tr>
+//         <td colspan="6" class="section-title">06 - Self Report Questionnaire (SRQ)</td>
+//     </tr>
+//     <!-- repete pares de perguntas 1–20 -->
+//     <tr><td>1. Tem dores de cabeça frequentes?</td><td>SIM ( )</td><td>NÃO ( )</td><td>11. Tem falta de apetite?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>2. Assusta-se com facilidade?</td><td>SIM ( )</td><td>NÃO ( )</td><td>12. Dorme mal?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>3. Tem tremores de mão?</td><td>SIM ( )</td><td>NÃO ( )</td><td>13. Tem perdido interesse pelas coisas?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>4. Tem má digestão?</td><td>SIM ( )</td><td>NÃO ( )</td><td>14. Você cansa com facilidade?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>5. Você tem se sentido triste ultimamente?</td><td>SIM ( )</td><td>NÃO ( )</td><td>15. Tem ideias de acabar com a vida?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>6. Você tem chorado mais do que de costume?</td><td>SIM ( )</td><td>NÃO ( )</td><td>16. Sente-se cansado(a) o tempo todo?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>7. Tem dificuldade de pensar com clareza?</td><td>SIM ( )</td><td>NÃO ( )</td><td>17. Tem sensações desagradáveis no estômago?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>8. Tem dificuldades no serviço?</td><td>SIM ( )</td><td>NÃO ( )</td><td>18. Tem dificuldades para tomar decisões?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>9. É incapaz de desempenhar papel útil?</td><td>SIM ( )</td><td>NÃO ( )</td><td>19. Dificuldades para realizar atividades?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+//     <tr><td>10. Sente-se nervoso, tenso ou preocupado?</td><td>SIM ( )</td><td>NÃO ( )</td><td>20. Você se sente inútil?</td><td>SIM ( )</td><td>NÃO ( )</td></tr>
+// </table>
+
+// <!-- 07 - AUDIT -->
+// <table>
+//     <tr>
+//         <td colspan="6" class="section-title">07 - Distúrbio de Uso do Álcool (AUDIT)</td>
+//     </tr>
+//     <tr>
+//         <th>Pergunta</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th>
+//     </tr>
+//     <tr><td>1. Frequência de consumo</td><td>Nunca</td><td>1x/mês ou menos</td><td>2-4x/mês</td><td>2-3x/semana</td><td>4+ vezes/semana</td></tr>
+//     <tr><td>2. Quantidade em um dia típico</td><td>1-2 doses</td><td>3-4 doses</td><td>5-6 doses</td><td>7-9 doses</td><td>10+ doses</td></tr>
+//     <tr><td>3. Frequência de ≥6 doses</td><td>Nunca</td><td>&lt;1x/mês</td><td>Mensal</td><td>Semanal</td><td>Quase todos os dias</td></tr>
+//     <tr><td>4. Incapaz de parar de beber</td><td>Nunca</td><td>&lt;1x/mês</td><td>Mensal</td><td>Semanal</td><td>Diário</td></tr>
+//     <tr><td>5. Falhou em tarefas por álcool</td><td>Nunca</td><td>&lt;1x/mês</td><td>Mensal</td><td>Semanal</td><td>Diário</td></tr>
+//     <tr><td>6. Precisa beber pela manhã</td><td>Nunca</td><td>&lt;1x/mês</td><td>Mensal</td><td>Semanal</td><td>Diário</td></tr>
+//     <tr><td>7. Culpa ou remorso</td><td>Nunca</td><td>&lt;1x/mês</td><td>Mensal</td><td>Semanal</td><td>Diário</td></tr>
+//     <tr><td>8. Blackout</td><td>Nunca</td><td>&lt;1x/mês</td><td>Mensal</td><td>Semanal</td><td>Diário</td></tr>
+//     <tr><td>9. Já se feriu por beber</td><td>Não</td><td>—</td><td>Sim, último ano</td><td colspan="2">—</td></tr>
+//     <tr><td>10. Sugeriram reduzir consumo</td><td>Não</td><td>—</td><td>Sim, último ano</td><td colspan="2">—</td></tr>
+// </table>
+
+// <!-- 08 - Teste de Nicotina -->
+// <table>
+//     <tr>
+//         <td colspan="5" class="section-title">08 - Teste de Nicotina de Fagerström</td>
+//     </tr>
+//     <tr>
+//         <th>Questão</th><th>3</th><th>2</th><th>1</th><th>0</th>
+//     </tr>
+//     <tr><td>Não fumo</td><td></td><td></td><td></td><td></td></tr>
+//     <tr><td>1. Tempo após acordar</td><td>&lt;5 min</td><td>6–30 min</td><td>31–60 min</td><td>&gt;60 min</td></tr>
+//     <tr><td>2. Cigarros por dia</td><td>31+</td><td>21–30</td><td>11–20</td><td>&lt;10</td></tr>
+//     <tr><td>3. Cigarro mais difícil de largar</td><td colspan="2">Primeiro da manhã</td><td colspan="2">Outro</td></tr>
+//     <tr><td>4. Fuma mais de manhã?</td><td colspan="2">Sim</td><td colspan="2">Não</td></tr>
+//     <tr><td>5. Fuma mesmo doente?</td><td colspan="2">Sim</td><td colspan="2">Não</td></tr>
+//     <tr><td>6. Difícil ficar sem fumar em locais proibidos?</td><td colspan="2">Sim</td><td colspan="2">Não</td></tr>
+// </table>
+
+// <!-- Primeira parte da Conclusão -->
+// <table>
+//     <tr>
+//         <th colspan="10" class="section-title" style="text-align:left;">CONCLUSÃO</th>
+//     </tr>
+//     <tr>
+//         <td colspan="4">Colaborador apto ou inapto a realizar as atividades abaixo</td>
+//     </tr>
+// </table>
+
+// <!-- Continuação da Conclusão -->
+// <table>
+//     <tr>
+//         <td>1. Liberado para tarefas em altura, sem restrições</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>2. Liberado para tarefas em espaço confinado, sem restrição</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+//     <tr>
+//         <td>3. Vetado para tarefas em altura até posterior avaliação – quando? _________</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td>4. Vetado para tarefas em espaço confinado até posterior avaliação – quando? _________</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//     </tr>
+//     <tr>
+//         <td>5. Encaminhado para avaliação médica complementar</td>
+//         <td style="text-align:center;">Sim ( ) Não ( )</td>
+//         <td colspan="2">Colaborador:Apto( )   Inapto( )</td>
+//     </tr>
+// </table>
+
+
+
+
+// <table>
+    
+//     <tr>
+//         <td colspan="2" class="dados-hospital">
+//             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//         </td>
+//     </tr>
+//     <tr>
+//         <!-- Espaço para assinatura -->
+//         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//             ' . $html_assinatura . ' <br>
+//             Médico emitente/ Examinador<br>
+//             ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+//         </td>
+
+//         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                                     <br>
+                                    
+//                                     <br>
+//                                     _______________________________<br>
+//                                     Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//         </td>
+//     </tr>
+// </table>
+
+
+//             </div>
+            
+//             <div class="actions">
+//                         <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                         <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                         <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//                     </div>
+
+//             ';
+
+echo '
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -46155,8 +48176,11 @@ exibe_info_bancaria([
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
             ' . $html_assinatura . ' <br>
-            Médico emitente/ Examinador<br>
-            ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT
+            _____________________________<br>
+                        <h4 style="margin-bottom: 0px;
+    margin-top: 2px;
+    font-weight: normal;">Médico emitente/ Examinador
+                        ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' - ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '/MT</h4>
         </td>
 
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -46172,16 +48196,278 @@ exibe_info_bancaria([
 
             </div>
             
-            <div class="actions">
-                        <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                    </div>
+            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
+            </div>
 
             ';
 
 
-            echo '
+//             echo '
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         @media print {
+//   table {
+//     page-break-inside: avoid;
+//   }
+// }
+
+//         </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">Procedimento a realizar</td>
+//                 </tr>
+//                 ' . $linhasExames . '
+                
+//             </table>
+
+//             <!-- 🔹 Informações importantes -->
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">INFORMAÇÕES IMPORTANTES:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; padding:6px; line-height:1.5;">
+//                         <b>• Comunique o uso de medicamentos:</b> Se você estiver usando medicamentos controlados 
+//                         (como ansiolíticos ou estimulantes), é fundamental informar o laboratório e apresentar a 
+//                         prescrição médica, para que isso seja considerado no laudo.
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; padding:6px; line-height:1.5;">
+//                         <b>• Consulte a legislação e o Senatran:</b> É possível consultar a situação do seu exame 
+//                         toxicológico no portal do Senatran, inserindo o CPF, data de nascimento e a data de expiração 
+//                         da sua CNH, para verificar a necessidade de fazer a renovação.
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">Assinatura</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; padding:6px;">
+//                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//                     </td>
+//                 </tr>
+                
+
+//                 <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                                     <br>
+                                    
+//                                     <br>
+//                                     _______________________________<br>
+//                                     Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//                 </td>
+//             </table>
+
+
+
+//         </div>
+        
+//         <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>
+        
+//         ';
+
+echo '
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -46190,13 +48476,14 @@ exibe_info_bancaria([
                 padding:0;
             }
             .guia-container {
-                width: 210mm;
-                min-height: 297mm;
-                margin:5mm auto;
-                padding:10px;
-                background:#fff;
-                border:1px solid #000;
-            }
+    width: 210mm;
+    margin: 0 auto;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
             table { width:100%; border-collapse:collapse; font-size:12px; }
             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
 
@@ -46254,14 +48541,19 @@ exibe_info_bancaria([
             .btn-print { background:#6c757d; }
             .btn:hover { opacity:.9; }
 
-            @media print {
-                * {
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                }
-                body { background:#fff; }
-                .actions { display: none !important; }
-            }
+            
+
+    .guia-container table {
+    font-size: 11px !important;
+}
+
+.logo img {
+    max-height: 35px !important;
+}
+
+td[style*="height:80px"] {
+    height: 45px !important;
+}
 
             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
         .table-riscos th {
@@ -46300,14 +48592,25 @@ exibe_info_bancaria([
         }
 
         @media print {
-  table {
-    page-break-inside: avoid;
-  }
+  .bloco-cabecalho {
+        page-break-inside: avoid;
+        page-break-after: avoid;
+    }
+
+    table {
+        page-break-inside: auto !important;  /* PERMITE QUEBRA NO CORPO */
+    }
+
+    .guia-container {
+        page-break-inside: auto !important;
+    }
 }
 
         </style>
 
         <div class="guia-container">
+        <div class="bloco-cabecalho">
+
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
@@ -46328,7 +48631,7 @@ exibe_info_bancaria([
                     </td>
                 </tr>
             </table>
-
+        </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -46366,12 +48669,16 @@ exibe_info_bancaria([
             </table>
 
             <table>
-                <tr>
-                    <td colspan="2" class="section-title">Procedimento a realizar</td>
-                </tr>
-                ' . $linhasExames . '
-                
-            </table>
+    <tr>
+        <td colspan="2" class="section-title">Procedimento a realizar</td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; line-height:1.4; width:100%;">
+            Exame Toxicológico - AA999999999
+        </td>
+    </tr>
+</table>
+
 
             <!-- 🔹 Informações importantes -->
             <table>
@@ -46418,17 +48725,498 @@ exibe_info_bancaria([
 
         </div>
         
-        <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
             </div>
         
         ';
 
 
-            echo '
-        <style>
+//             echo '
+//         <style>
+// body {
+//   font-family: Arial, sans-serif;
+//   background: #f2f2f2;
+//   margin: 0;
+//   padding: 0;
+// }
+
+// .guia-container {
+//   width: 210mm;
+//   min-height: 297mm;
+//   margin: 2mm auto;
+//   padding: 4px 6px;
+//   background: #fff;
+//   border: 1px solid #000;
+// }
+
+// table {
+//   width: 100%;
+//   border-collapse: collapse;
+//   font-size: 10.5px; /* 🔹 reduzido levemente */
+// }
+// th, td {
+//   border: 1px solid #000;
+//   padding: 2px 3px; /* 🔹 padding menor */
+//   vertical-align: top;
+// }
+
+// .titulo-guia {
+//   background: #eaeaea;
+//   font-weight: bold;
+//   text-align: center;
+//   font-size: 12px;
+//   padding: 3px;
+//   height: 16px;
+// }
+
+// .section-title {
+//   background: #eaeaea;
+//   border: 1px solid #666;
+//   font-weight: bold;
+//   font-size: 10.5px;
+//   padding: 2px 3px;
+//   text-align: left;
+// }
+
+// .dados-hospital {
+//   font-size: 10.5px;
+//   line-height: 1.25;
+// }
+// .hospital-nome {
+//   font-weight: bold;
+//   text-transform: uppercase;
+//   text-decoration: underline;
+//   display: block;
+//   margin-bottom: 1px;
+// }
+
+// .logo img {
+//   max-height: 36px;
+// }
+
+// .table-riscos td,
+// .table-exames td {
+//   font-size: 10.5px;
+//   padding: 2px 3px;
+// }
+
+// .legenda {
+//   text-align: center;
+//   font-size: 12px;
+// }
+
+// .assinatura {
+//   width: 120px;
+//   height: 40px;
+//   border-bottom: 1px solid #000;
+//   display: block;
+//   margin: 0 auto -9px auto;
+// }
+
+// /* 🔹 Espaçamento mínimo entre blocos */
+// table + table {
+//   margin-top: 3px;
+// }
+
+// /* 🔹 Compacta imagens e gráficos */
+// img {
+//   max-width: 95%;
+//   height: auto;
+// }
+
+// /* 🔹 Ajustes específicos para o bloco final (parecer) */
+// table.no-break td {
+//   padding: 3px !important;
+//   line-height: 1.2;
+// }
+// table.no-break strong {
+//   font-size: 10.5px;
+// }
+
+// /* 🔹 Impressão */
+// @media print {
+//   * {
+//     -webkit-print-color-adjust: exact !important;
+//     print-color-adjust: exact !important;
+//   }
+//   body {
+//     background: #fff;
+//   }
+//   .actions {
+//     display: none !important;
+//   }
+//   table, tr, td, th, .no-break {
+//     page-break-inside: avoid !important;
+//     break-inside: avoid !important;
+//   }
+//   html, body {
+//     margin: 0;
+//     padding: 0;
+//   }
+// }
+
+// .actions { margin-top: 10px; padding-top: 8px; text-align: center; border-top: 1px solid #ccc; } .btn { padding:8px 14px; font-size:13px; font-weight:bold; border:none; border-radius:5px; cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2); margin:0 4px; } .btn-email { background:#007bff; } .btn-whatsapp { background:#25d366; } .btn-print { background:#6c757d; } .btn:hover { opacity:.9; }
+// </style>
+
+
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">TIPO DE EXAME / PROCEDIMENTO: Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+//                         Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</td>
+//                 </tr>
+//             </table>
+
+//             <!-- Tabela de Meatoscopia -->
+//             <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+//             <tr style="font-weight:bold; background-color:#f2f2f2;">
+//                 <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
+//             </tr>
+//             <tr>
+//                 <!-- OD -->
+//                 <td style="width:50%; border:1px solid #000; padding:6px;">
+//                 <strong>OD</strong><br>
+//                 <label><input type="checkbox" name="od_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+//                 <label><input type="checkbox" name="od_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+//                 <label><input type="checkbox" name="od_total" /> Obstrução Total</label>
+//                 </td>
+
+//                 <!-- OE -->
+//                 <td style="width:50%; border:1px solid #000; padding:6px;">
+//                 <strong>OE</strong><br>
+//                 <label><input type="checkbox" name="oe_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+//                 <label><input type="checkbox" name="oe_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+//                 <label><input type="checkbox" name="oe_total" /> Obstrução Total</label>
+//                 </td>
+//             </tr>
+//             </table>
+
+//             <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+//             <tr>
+//                 <!-- Orelha Direita -->
+//                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+//                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
+//                     <!-- Ajuste nas imagens dos audiogramas -->
+//                     <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+            
+//                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
+//                         <tr>
+//                             <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+//                                 Média: __________________________________ dB
+//                             </td>
+//                         </tr>
+//                         <tr>
+//                             <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+//                                 Masc. VO: Tipo: __________________________________
+//                             </td>
+//                         </tr>
+//                     </table>
+//                 </td>
+
+//                 <!-- Orelha Esquerda -->
+//                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+//                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
+//                     <!-- Ajuste nas imagens dos audiogramas -->
+//                     <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+            
+//                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
+//                         <tr>
+//                             <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+//                                 Média: __________________________________ dB
+//                             </td>
+//                         </tr>
+//                         <tr>
+//                             <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+//                                 Masc. VA: Tipo: __________________________________
+//                             </td>
+//                         </tr>
+//                     </table>
+//                 </td>
+//             </tr>
+//         </table>
+
+// <!-- SEÇÃO LOGOAUDIOMETRIA -->
+// <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+//     <tr>
+//         <td colspan="3" class="section-title">LOGOAUDIOMETRIA</td>
+//     </tr>
+//     <tr>
+//         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
+//         <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+//             <table style="width:100%; border-collapse:collapse;height: 136px;">
+//                 <tr>
+//                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
+//                         LIMIAR DE RECONHECIMENTO DE FALA
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="border:1px solid #000; padding:6px;">
+//                         <strong>OD:</strong>
+//                         <span style="float:right; font-weight:bold;">dB</span>
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="border:1px solid #000; padding:6px;">
+//                         <strong>OE:</strong>
+//                         <span style="float:right; font-weight:bold;">dB</span>
+//                     </td>
+//                 </tr>
+//             </table>
+//         </td>
+
+//        <!-- Tabela: ÍNDICE DE RECONHECIMENTO DE FALA -->
+//         <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+//             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
+//                 <tr>
+//                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
+//                         ÍNDICE DE RECONHECIMENTO DE FALA
+//                     </td>
+//                 </tr>
+
+//                 <!-- OD -->
+//                 <tr>
+//                     <td rowspan="2" style="border:1px solid #000; padding:6px; width:10%; text-align:center; vertical-align:middle;"><strong>OD</strong></td>
+//                     <td rowspan="2" style="border:1px solid #000; padding:6px; width:15%; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+//                     <td style="border:1px solid #000; padding:6px; width:50%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+//                     <td style="border:1px solid #000; padding:6px; width:35%;">Monossílabos</td>
+//                 </tr>
+//                 <tr>
+//                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+//                     <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
+//                 </tr>
+
+//                 <!-- OE -->
+//                 <tr>
+//                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
+//                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+//                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+//                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
+//                 </tr>
+//                 <tr>
+//                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+//                     <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
+//                 </tr>
+//             </table>
+//         </td>
+
+
+
+
+
+//         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
+//         <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+//             <table style="width:100%; border-collapse:collapse;height: 136px;">
+//                 <tr>
+//                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
+//                         LIMIAR DE DETECTABILIDADE DE FALA
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="border:1px solid #000; padding:6px;">
+//                         <strong>OD:</strong>
+//                         <span style="float:right; font-weight:bold;">dB</span>
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="border:1px solid #000; padding:6px;">
+//                         <strong>OE:</strong>
+//                         <span style="float:right; font-weight:bold;">dB</span>
+//                     </td>
+//                 </tr>
+//             </table>
+//         </td>
+//     </tr>
+// </table>
+
+
+
+
+// <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:5px;">
+//     <tr>
+//         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
+//         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 
+//         Modelo: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+//         Data de calibração: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+//     </tr>
+// </table>
+
+
+// <!-- Tabela: PARECER FONOAUDIOLÓGICO -->
+//     <table class="no-break" style="width:100%; border-collapse:collapse; margin-top:5px;">
+//         <tr>
+//             <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+//                 PARECER FONOAUDIOLÓGICO
+//             </td>
+//         </tr>
+//         <tr>
+//             <td colspan="6" style="border:1px solid #000; padding:4px;">
+//                 <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong> &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) | OE |
+//             </td>
+//         </tr>
+//         <tr>
+//             <td colspan="6" style="border:1px solid #000; padding:4px;">
+//                 <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Mista | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Neurosensorial | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
+//             </td>
+//         </tr>
+//         <tr>
+//             <td colspan="6" style="border:1px solid #000; padding:4px;">
+//                 <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada Severa | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Severa <br> | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
+//                 (&nbsp;&nbsp;&nbsp;&nbsp;  ) Profunda | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
+//             </td>
+//         </tr>
+//         <tr>
+//             <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
+//                 <strong>Obs:</strong>
+//             </td>
+//         </tr>
+//         <tr>
+//                     <td colspan="2" class="dados-hospital">
+//                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//                     </td>
+//                 </tr>
+//         <tr>
+//                     <!-- Espaço para assinatura -->
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
+//                     ' . $html_assinatura . '<br>
+//                     <span style="display:block; margin-top:-4px;">Assinatura</span>
+//                     <span style="display:block;margin-top:-1px;">Fonoaudiólogo/Médico Examinador</span>
+//                     <span style="display:block;">' .
+//                 htmlspecialchars(
+//                     !empty($resultado_medico_relacionado_clinica['nome'])
+//                         ? $resultado_medico_relacionado_clinica['nome']
+//                         : ($resultado_medico_fonoaudiologo['nome'] ?? '')
+//                 ) .
+//                 ' — CRM: ' .
+//                 htmlspecialchars(
+//                     !empty($resultado_medico_relacionado_clinica['crm'])
+//                         ? $resultado_medico_relacionado_clinica['crm']
+//                         : ($resultado_medico_fonoaudiologo['crm'] ?? '')
+//                 ) .
+//                 '</span>
+//                     </td>
+
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                                     <br>
+                                    
+//                                     <br>
+//                                     _______________________________<br>
+//                                     Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//                     </td>
+//                 </tr>
+//     </table>
+
+
+
+
+
+//         </div>
+         
+//         <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>
+//         ';
+
+
+echo '
+<style>
 body {
   font-family: Arial, sans-serif;
   background: #f2f2f2;
@@ -46436,23 +49224,26 @@ body {
   padding: 0;
 }
 
+/* Reduz margens internas gerais */
 .guia-container {
   width: 210mm;
   min-height: 297mm;
-  margin: 2mm auto;
-  padding: 4px 6px;
+  margin: 1mm auto;
+  padding: 2px 4px;
   background: #fff;
   border: 1px solid #000;
 }
 
+/* Fontes menores + células mais compactas */
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10.5px; /* 🔹 reduzido levemente */
+  font-size: 9px;
 }
+
 th, td {
   border: 1px solid #000;
-  padding: 2px 3px; /* 🔹 padding menor */
+  padding: 1px 2px;
   vertical-align: top;
 }
 
@@ -46460,123 +49251,163 @@ th, td {
   background: #eaeaea;
   font-weight: bold;
   text-align: center;
-  font-size: 12px;
-  padding: 3px;
-  height: 16px;
+  font-size: 10px;
+  padding: 2px;
+  height: 14px;
 }
 
+/* Títulos das seções */
 .section-title {
   background: #eaeaea;
   border: 1px solid #666;
   font-weight: bold;
-  font-size: 10.5px;
-  padding: 2px 3px;
+  font-size: 9px;
+  padding: 2px 2px;
   text-align: left;
 }
 
+/* Dados reduzidos */
 .dados-hospital {
-  font-size: 10.5px;
-  line-height: 1.25;
+  font-size: 9px;
+  line-height: 1.1;
 }
+
 .hospital-nome {
   font-weight: bold;
   text-transform: uppercase;
   text-decoration: underline;
   display: block;
-  margin-bottom: 1px;
+  margin-bottom: 0px;
+  font-size: 9.5px;
 }
 
+/* Logo menor */
 .logo img {
-  max-height: 36px;
+  max-height: 26px;
 }
 
+/* Tabelas internas */
 .table-riscos td,
 .table-exames td {
-  font-size: 10.5px;
-  padding: 2px 3px;
-}
-
-.legenda {
-  text-align: center;
-  font-size: 12px;
+  font-size: 9px;
+  padding: 1px 2px;
 }
 
 .assinatura {
-  width: 120px;
-  height: 40px;
+  width: 100px;
+  height: 50px !important;
   border-bottom: 1px solid #000;
   display: block;
-  margin: 0 auto -9px auto;
+  margin: 0 auto -6px auto;
 }
 
-/* 🔹 Espaçamento mínimo entre blocos */
 table + table {
-  margin-top: 3px;
+  margin-top: 1px;
 }
 
-/* 🔹 Compacta imagens e gráficos */
+/* Imagens reduzidas */
 img {
-  max-width: 95%;
+  max-width: 85%;
   height: auto;
 }
 
-/* 🔹 Ajustes específicos para o bloco final (parecer) */
-table.no-break td {
-  padding: 3px !important;
-  line-height: 1.2;
-}
-table.no-break strong {
-  font-size: 10.5px;
+/* Evitar quebra */
+.no-break,
+.no-break * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
-/* 🔹 Impressão */
+/* Impressão */
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  body {
-    background: #fff;
+  .page-break {
+        page-break-before: always;
   }
   .actions {
     display: none !important;
   }
-  table, tr, td, th, .no-break {
+  table, tr, td, th {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  html, body {
-    margin: 0;
-    padding: 0;
-  }
 }
 
-.actions { margin-top: 10px; padding-top: 8px; text-align: center; border-top: 1px solid #ccc; } .btn { padding:8px 14px; font-size:13px; font-weight:bold; border:none; border-radius:5px; cursor:pointer; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.2); margin:0 4px; } .btn-email { background:#007bff; } .btn-whatsapp { background:#25d366; } .btn-print { background:#6c757d; } .btn:hover { opacity:.9; }
+ /* Bloco do Parecer Fonoaudiológico */
+.parecer-fono {
+    width: 100% !important;
+    margin-top: 2px !important;
+    padding-top: 0 !important;
+}
+
+/* Fonte equilibrada (8.5px) + padding compacto */
+.parecer-fono table, .parecer-fono td, .parecer-fono th {
+    font-size: 8.5px !important;
+    padding: 0px !important;
+    line-height: 1.12 !important;
+    width: 65% !important;
+}
+
+/* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
+.parecer-fono table {
+    table-layout: auto !important;
+    width: 100% !important;
+}
+
+/* Linhas longas */
+.parecer-fono td[colspan="6"] {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+}
+
+/* Altura das linhas com textos grandes */
+.parecer-fono td[style*="height"] {
+    height: 19px !important;    /* antes estava 55px/80px */
+}
+
+/* Assinaturas */
+.parecer-fono .assinatura td {
+    height: 50px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+
+
 </style>
 
 
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+<div class="guia-container">
+
+
+<!-- ===================== -->
+<!-- CABEÇALHO AUDIOMETRIA -->
+<!-- ===================== -->
+
+<table>
+    <tr>
+        <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
+    </tr>
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+        </td>
+        <td class="logo">
+            <img src="logo.jpg" alt="Logo">
+        </td>
+    </tr>
+</table>
 
             <table>
                 <tr>
@@ -46654,7 +49485,7 @@ table.no-break strong {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -46674,7 +49505,7 @@ table.no-break strong {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:70%; height:auto; max-width:350px; margin-top:-3px;">
+                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -46693,14 +49524,14 @@ table.no-break strong {
         </table>
 
 <!-- SEÇÃO LOGOAUDIOMETRIA -->
-<table style="width:100%; border-collapse:collapse; margin-top:8px;">
+<table style="width:100%; border-collapse:collapse; margin-top:0px;">
     <tr>
-        <td colspan="3" class="section-title">LOGOAUDIOMETRIA</td>
+        <td colspan="3" class="section-title" style="text-align:center">LOGOAUDIOMETRIA</td>
     </tr>
     <tr>
         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
         <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse;height: 136px;">
+            <table style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE RECONHECIMENTO DE FALA
@@ -46721,9 +49552,9 @@ table.no-break strong {
             </table>
         </td>
 
-       <!-- Tabela: ÍNDICE DE RECONHECIMENTO DE FALA -->
+        <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
         <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
+            <table style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
                 <tr>
                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
                         ÍNDICE DE RECONHECIMENTO DE FALA
@@ -46734,13 +49565,11 @@ table.no-break strong {
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; width:10%; text-align:center; vertical-align:middle;"><strong>OD</strong></td>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; width:15%; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
-                    <td style="border:1px solid #000; padding:6px; width:50%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px; width:50%;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px; width:35%;">Monossílabos</td>
                 </tr>
                 <tr>
-                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
                 </tr>
 
@@ -46748,25 +49577,19 @@ table.no-break strong {
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
-                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
                 <tr>
-                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
                 </tr>
             </table>
         </td>
 
-
-
-
-
         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
         <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse;height: 136px;">
+            <table style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE DETECTABILIDADE DE FALA
@@ -46790,9 +49613,7 @@ table.no-break strong {
 </table>
 
 
-
-
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:5px;">
+<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -46804,93 +49625,495 @@ table.no-break strong {
 </table>
 
 
-<!-- Tabela: PARECER FONOAUDIOLÓGICO -->
-    <table class="no-break" style="width:100%; border-collapse:collapse; margin-top:5px;">
-        <tr>
-            <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
-                PARECER FONOAUDIOLÓGICO
-            </td>
-        </tr>
-        <tr>
-            <td colspan="6" style="border:1px solid #000; padding:4px;">
-                <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong> &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) | OE |
-            </td>
-        </tr>
-        <tr>
-            <td colspan="6" style="border:1px solid #000; padding:4px;">
-                <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Mista | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Neurosensorial | OD | &nbsp;&nbsp; (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
-            </td>
-        </tr>
-        <tr>
-            <td colspan="6" style="border:1px solid #000; padding:4px;">
-                <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Moderada Severa | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Severa <br> | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE &nbsp;&nbsp;
-                (&nbsp;&nbsp;&nbsp;&nbsp;  ) Profunda | OD | (&nbsp;&nbsp;&nbsp;&nbsp;  ) OE
-            </td>
-        </tr>
-        <tr>
-            <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
-                <strong>Obs:</strong>
-            </td>
-        </tr>
-        <tr>
-                    <td colspan="2" class="dados-hospital">
-                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-        <tr>
-                    <!-- Espaço para assinatura -->
-                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
-                    <span style="display:block; margin-top:-4px;">Assinatura</span>
-                    <span style="display:block;margin-top:-1px;">Fonoaudiólogo/Médico Examinador</span>
-                    <span style="display:block;">' .
-                htmlspecialchars(
-                    !empty($resultado_medico_relacionado_clinica['nome'])
-                        ? $resultado_medico_relacionado_clinica['nome']
-                        : ($resultado_medico_fonoaudiologo['nome'] ?? '')
+<table class="no-break parecer-fono" style="width:100%; border-collapse:collapse; margin-top:5px;">
+
+
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+            PARECER FONOAUDIOLÓGICO
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px;">
+            <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
+            (&nbsp;&nbsp;&nbsp;  ) | OD |  
+            (&nbsp;&nbsp;&nbsp;  ) | OE |
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px;">
+            <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
+            (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Neurosensorial | OD | (&nbsp;&nbsp;&nbsp;  ) OE
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px;">
+            <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
+            (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Moderada | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Moderada Severa | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Severa | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Profunda | OD | (&nbsp;&nbsp;&nbsp;  ) OE
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
+            <strong>Obs:</strong>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+
+    <tr>
+        <!-- Assinatura médico -->
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            ' . $html_assinatura . '<br>
+            ____________________________<br>
+            <span>Assinatura</span><br>
+            <span>' .
+                (!empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'Fonoaudiólogo Examinador'
+                    : (!empty($resultado_medico_relacionado_clinica['nome'])
+                        ? 'Médico Examinador'
+                        : '')
                 ) .
-                ' — CRM: ' .
+            '</span><br>
+            <span>' .
                 htmlspecialchars(
-                    !empty($resultado_medico_relacionado_clinica['crm'])
-                        ? $resultado_medico_relacionado_clinica['crm']
-                        : ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    !empty($resultado_medico_fonoaudiologo['nome'])
+                        ? $resultado_medico_fonoaudiologo['nome']
+                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                ) . 
+                ' — ' .
+                htmlspecialchars(
+                    !empty($resultado_medico_fonoaudiologo['nome'])
+                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+                            ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
+                            : ''
+                        )
                 ) .
-                '</span>
-                    </td>
+            '</span>
+        </td>
 
-                    <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                                    <br>
-                                    
-                                    <br>
-                                    _______________________________<br>
-                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                    </td>
-                </tr>
-    </table>
+        <!-- Assinatura funcionário -->
+        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            _______________________________<br>
+            Assinatura do Funcionário <br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+        </td>
+    </tr>
+</table>
+</div>
+
+<div class="actions" style="display:flex; gap:20px; justify-content:center;">
+    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+</div>
+';
 
 
 
+//             echo '
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         @media print {
+//   table {
+//     page-break-inside: avoid;
+//   }
+// }
+
+// @media print {
+//     /* Impede quebra dentro do bloco */
+//     .no-break {
+//         page-break-inside: avoid !important;
+//         break-inside: avoid !important;
+//         display: block !important;
+//     }
+
+//     /* Evita quebras dentro das tabelas */
+//     table, tr, td {
+//         page-break-inside: avoid !important;
+//         break-inside: avoid !important;
+//     }
+
+//     /* Garante que a assinatura fique junto */
+//     .assinatura-bloco {
+//         page-break-before: auto !important;
+//         page-break-after: avoid !important;
+//         margin-top: 10px !important;
+//         display: table !important;
+//         width: 100% !important;
+//     }
+
+//     /* Remove margens que possam forçar quebra */
+//     body, html {
+//         margin: 0;
+//         padding: 0;
+//     }
+// }
+
+//         </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" class="section-title">
+//                     MODALIDADE RESUMO DE LAUDO:
+//                     <label style="margin-left: 10px;">
+//                         Admissional
+//                         <input type="checkbox" />
+//                     </label>
+//                     <label style="margin-left: 20px;">
+//                         Mudança de função
+//                         <input type="checkbox" />
+//                     </label>
+//                     </td>
+
+//                 </tr>
+//             </table>
+
+//             <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 12px;">
+//             <tr>
+//                 <td style="border: 1px solid #000; padding: 6px; width: 20%;"><strong>Função:</strong></td>
+//                 <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '</td>
+//             </tr>
+//             <tr>
+//                 <td style="border: 1px solid #000; padding: 6px;"><strong>CBO:</strong></td>
+//                 <td colspan="5" style="border: 1px solid #000; padding: 6px;">' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '</td>
+//             </tr>
+
+//             <tr>
+//                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+//                 O colaborador registrado nesta função terá direito de:
+//                 </td>
+//             </tr>
+
+//             <tr>
+//                 <td style="border: 1px solid #000; padding: 6px;"><strong>Insalubridade?</strong></td>
+//                 <td style="border: 1px solid #000; padding: 6px;">
+//                 <label><input type="checkbox"> Sim</label>
+//                 <label><input type="checkbox"> Não</label>
+//                 </td>
+//                 <td style="border: 1px solid #000; padding: 6px;"><strong>Qual porcentagem?</strong></td>
+//                 <td colspan="3" style="border: 1px solid #000; padding: 6px;">
+//                 <label><input type="checkbox"> 10%</label>
+//                 <label><input type="checkbox"> 20%</label>
+//                 <label><input type="checkbox"> 40%</label>
+//                 </td>
+//             </tr>
+
+//             <tr>
+//                 <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
+//                 <td style="border: 1px solid #000; padding: 6px;">
+//                 <label><input type="checkbox"> Sim</label>
+//                 <label><input type="checkbox"> Não</label>
+//                 </td>
+//                 <td style="border: 1px solid #000; padding: 6px;"><strong>Porcentagem:</strong></td>
+//                 <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%
+//                     <label><input type="checkbox"></label>
+//                 </td>
+//             </tr>
+
+//             <tr>
+//                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+//                 <strong>Observação:</strong> Na hipotese de o colabodador fazer jus, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculados sobre o salario bruto.
+//                 </td>
+//             </tr>
+
+//             <tr>
+//   <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+//     <strong>Aposentadoria especial – exposição a agente nocivo:</strong>
+//     &nbsp;&nbsp;
+//     <label><input type="checkbox"> Sim</label>
+//     &nbsp;&nbsp;
+//     <label><input type="checkbox"> Não</label>
+//   </td>
+// </tr>
 
 
-        </div>
-         
-        <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-            </div>
-        ';
+//             <tr>
+//                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+//                 <strong>Código a ser utilizado na contemplação de fator previdenciário:</strong>
+//                 </td>
+//             </tr>
 
-            echo '
+//             <tr style="text-align: left;">
+//                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+//                 Ocorrência SEFIP GFIP: 
+//                 <label><input type="checkbox"> 00</label>
+//                 <label><input type="checkbox"> 01</label>
+//                 <label><input type="checkbox"> 02</label>
+//                 <label><input type="checkbox"> 03</label>
+//                 <label><input type="checkbox"> 04</label>
+//                 </td>
+//             </tr>
+
+//             <tr>
+//                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
+//                 <strong>Observações:</strong> O colaborador terá obrigatoriedade de treinamentos específicos
+//                 para execução das atividades como:
+//                 &nbsp; NR10 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+//                 &nbsp;&nbsp; NR12 <label><input type="checkbox"> Sim</label> <label><input type="checkbox"> Não</label>
+//                 </td>
+//             </tr>
+//             </table>
+
+//             <table style="margin-top:10px; width:100%; table-layout:fixed;">
+
+
+//     <!-- Linhas dinâmicas -->
+//     ' . (isset($resultado_colaboradores) && is_array($resultado_colaboradores) && count($resultado_colaboradores) > 0
+//                 ? implode("", array_map(function ($colab) {
+//                     return "
+//             <tr style=\"text-align:center; font-size:12px;\">
+//                 <td>" . htmlspecialchars($colab["nome"] ?? "") . "</td>
+//                 <td>" . htmlspecialchars($colab["funcao"] ?? "") . "<br>" . htmlspecialchars($colab["cbo"] ?? "") . "</td>
+//                 <td>" . htmlspecialchars($colab["insalubridade"] ?? "NÃO") . "</td>
+//                 <td>" . htmlspecialchars($colab["porcentagem_insalubridade"] ?? "") . "</td>
+//                 <td>" . htmlspecialchars($colab["periculosidade"] ?? "NÃO") . "</td>
+//                 <td>" . htmlspecialchars($colab["aposentadoria_especial"] ?? "NÃO") . "</td>
+//                 <td>" . htmlspecialchars($colab["agente_nocivo"] ?? "NÃO") . "</td>
+//                 <td>" . htmlspecialchars($colab["codigo_fator_previdenciario"] ?? "") . "</td>
+//                 <td>" . htmlspecialchars($colab["ocorrencia_sefip"] ?? "") . "</td>
+//                 <td>" . htmlspecialchars($colab["treinamentos_obrigatorios"] ?? "") . "</td>
+//             </tr>";
+//                 }, $resultado_colaboradores))
+//                 : "") . '
+// </table>
+
+//         </div>
+        
+//         <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>';
+
+
+		$instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
+                $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->execute();
+                $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
+
+                $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
+                $checkedSim = ($insalubridade === "sim") ? "checked" : "";
+                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+
+                $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
+
+                $checked10 = ($porcentagem === "10%") ? "checked" : "";
+                $checked20 = ($porcentagem === "20%") ? "checked" : "";
+                $checked40 = ($porcentagem === "40%") ? "checked" : "";
+
+                $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
+
+                $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+
+
+                $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
+
+                $checkedAposentadoSim = ($aposentado === "sim") ? "checked" : "";
+                $checkedAposentadoNao = ($aposentado === "nao") ? "checked" : "";
+
+                $agente_nocivo = $resultado_busca_resumo_laudo["agente_nocivo"] ?? "";
+
+                $checkedAgenteNocivoSim = ($aposentado === "sim") ? "checked" : "";
+                $checkedAgenteNocivoNao = ($aposentado === "nao") ? "checked" : "";
+
+                $ocorrencia = $resultado_busca_resumo_laudo["ocorrencia_gfip"] ?? "";
+
+                $checked00 = ($ocorrencia === "00") ? "checked" : "";
+                $checked01 = ($ocorrencia === "01") ? "checked" : "";
+                $checked02 = ($ocorrencia === "02") ? "checked" : "";
+                $checked03 = ($ocorrencia === "03") ? "checked" : "";
+                $checked04 = ($ocorrencia === "04") ? "checked" : "";
+
+echo '
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -47042,9 +50265,15 @@ table.no-break strong {
         margin: 0;
         padding: 0;
     }
+
+    .page-break {
+        page-break-before: always;
+    }
 }
 
         </style>
+
+        <div class="page-break"></div>
 
         <div class="guia-container">
             <table>
@@ -47137,44 +50366,47 @@ table.no-break strong {
             <tr>
                 <td style="border: 1px solid #000; padding: 6px;"><strong>Insalubridade?</strong></td>
                 <td style="border: 1px solid #000; padding: 6px;">
-                <label><input type="checkbox"> Sim</label>
-                <label><input type="checkbox"> Não</label>
+                    <label><input type="checkbox" '.$checkedSim.'> Sim</label>
+                    <label><input type="checkbox" '.$checkedNao.'> Não</label>
                 </td>
                 <td style="border: 1px solid #000; padding: 6px;"><strong>Qual porcentagem?</strong></td>
                 <td colspan="3" style="border: 1px solid #000; padding: 6px;">
-                <label><input type="checkbox"> 10%</label>
-                <label><input type="checkbox"> 20%</label>
-                <label><input type="checkbox"> 40%</label>
+                    <label><input type="checkbox" '.$checked10.'> 10%</label>
+                    <label><input type="checkbox" '.$checked20.'> 20%</label>
+                    <label><input type="checkbox" '.$checked40.'> 40%</label>
                 </td>
             </tr>
 
             <tr>
                 <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
                 <td style="border: 1px solid #000; padding: 6px;">
-                <label><input type="checkbox"> Sim</label>
-                <label><input type="checkbox"> Não</label>
-                </td>
-                <td style="border: 1px solid #000; padding: 6px;"><strong>Porcentagem:</strong></td>
-                <td colspan="3" style="border: 1px solid #000; padding: 6px;">30%
-                    <label><input type="checkbox"></label>
+                    <label><input type="checkbox" '.$checkedPeriSim.'> Sim</label>
+                    <label><input type="checkbox" '.$checkedPeriNao.'> Não</label>
                 </td>
             </tr>
 
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-                <strong>Observação:</strong> Na hipotese de o colabodador fazer jus, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculados sobre o salario bruto.
+                <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
                 </td>
             </tr>
 
             <tr>
-  <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-    <strong>Aposentadoria especial – exposição a agente nocivo:</strong>
-    &nbsp;&nbsp;
-    <label><input type="checkbox"> Sim</label>
-    &nbsp;&nbsp;
-    <label><input type="checkbox"> Não</label>
-  </td>
-</tr>
+                <td style="border: 1px solid #000; padding: 6px;"><strong>Aposentadoria Especial?</strong></td>
+                <td colspan="3" style="border: 1px solid #000; padding: 6px;">
+                    <label><input type="checkbox" '.$checkedAposentadoSim.'> Sim</label>
+                    <label><input type="checkbox" '.$checkedAposentadoNao.'> Não</label>
+                </td>
+                <td colspan="2" style="border: 1px solid #000; padding: 6px;">
+                    <strong>Exposição a agente nocivo:</strong>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checkedAgenteNocivoSim.'> Sim</label>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checkedAgenteNocivoNao.'> Não</label>
+                </td>
+            </tr>
+
 
 
             <tr>
@@ -47185,12 +50417,17 @@ table.no-break strong {
 
             <tr style="text-align: left;">
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-                Ocorrência SEFIP GFIP: 
-                <label><input type="checkbox"> 00</label>
-                <label><input type="checkbox"> 01</label>
-                <label><input type="checkbox"> 02</label>
-                <label><input type="checkbox"> 03</label>
-                <label><input type="checkbox"> 04</label>
+                    <strong>Ocorrência SEFIP GFIP:</strong>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checked00.'> 00</label>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checked01.'> 01</label>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checked02.'> 02</label>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checked03.'> 03</label>
+                    &nbsp;&nbsp;
+                    <label><input type="checkbox" '.$checked04.'> 04</label>
                 </td>
             </tr>
 
@@ -47229,13 +50466,408 @@ table.no-break strong {
 
         </div>
         
-        <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-            </div>';
+        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
 
-            echo '
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
+            </div>
+        </div>
+            ';
+
+//             echo '
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//                 background:#f2f2f2;
+//                 margin:0;
+//                 padding:0;
+//             }
+//             .guia-container {
+//                 width: 210mm;
+//                 min-height: 297mm;
+//                 margin:5mm auto;
+//                 padding:10px;
+//                 background:#fff;
+//                 border:1px solid #000;
+//             }
+//             table { width:100%; border-collapse:collapse; font-size:12px; }
+//             th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+//             .titulo-guia {
+//                 background:#eaeaea;
+//                 border:1px solid #000;
+//                 font-weight:bold;
+//                 text-align:center;
+//                 font-size:14px;
+//                 padding:5px;
+//                 height:22px;
+//             }
+//             .section-title {
+//                 background:#eaeaea;
+//                 border:1px solid #666;
+//                 font-weight:bold;
+//                 font-size:12px;
+//                 padding:3px 5px;
+//                 text-align:left;
+//             }
+//             .dados-hospital { font-size:12px; line-height:1.4; }
+//             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+//             .logo { text-align:center; }
+//             .logo img { max-height:45px; }
+
+//             /* QR Code */
+//             .qrcode img {
+//                 display:block;
+//                 width:120px;
+//                 height:auto;
+//                 margin-top:5px;
+//             }
+
+//             /* Botões - Centralizados abaixo do formulário */
+//             .actions {
+//                 margin-top: 15px;
+//                 padding-top: 10px;
+//                 text-align: center;
+//                 border-top: 1px solid #ccc; /* linha de separação opcional */
+//             }
+//             .btn {
+//                 padding:10px 18px;
+//                 font-size:14px;
+//                 font-weight:bold;
+//                 border:none;
+//                 border-radius:5px;
+//                 cursor:pointer;
+//                 color:#fff;
+//                 box-shadow:0 2px 5px rgba(0,0,0,.2);
+//                 margin:0 5px;
+//             }
+//             .btn-email { background:#007bff; }
+//             .btn-whatsapp { background:#25d366; }
+//             .btn-print { background:#6c757d; }
+//             .btn:hover { opacity:.9; }
+
+//             @media print {
+//                 * {
+//                     -webkit-print-color-adjust: exact !important;
+//                     print-color-adjust: exact !important;
+//                 }
+//                 body { background:#fff; }
+//                 .actions { display: none !important; }
+//             }
+
+//             /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+//         .table-riscos th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+//         .table-riscos td {
+//             font-size: 12px;
+//             font-family: Arial, sans-serif;
+//             padding: 4px;
+//             vertical-align: top;
+//         }
+
+//         .table-exames th {
+//             text-align: left;
+//             font-weight: bold;
+//             font-size: 12px;
+//             padding: 4px;
+//         }
+
+//         .legenda {
+//             text-align: center;
+//             font-size: 14px;
+//         }
+
+//         .assinatura {
+//                 width: 150px;
+//     height: 60px;
+//     border-bottom: 1px solid #000;
+//     display: block;
+//     margin: 0px auto 5px auto;
+//         }
+
+//         @media print {
+//   table {
+//     page-break-inside: avoid;
+//   }
+// }
+
+// @media print {
+//     /* Impede quebra dentro do bloco */
+//     .no-break {
+//         page-break-inside: avoid !important;
+//         break-inside: avoid !important;
+//         display: block !important;
+//     }
+
+//     /* Evita quebras dentro das tabelas */
+//     table, tr, td {
+//         page-break-inside: avoid !important;
+//         break-inside: avoid !important;
+//     }
+
+//     /* Garante que a assinatura fique junto */
+//     .assinatura-bloco {
+//         page-break-before: auto !important;
+//         page-break-after: avoid !important;
+//         margin-top: 10px !important;
+//         display: table !important;
+//         width: 100% !important;
+//     }
+
+//     /* Remove margens que possam forçar quebra */
+//     body, html {
+//         margin: 0;
+//         padding: 0;
+//     }
+// }
+
+//         </style>
+
+//         <div class="guia-container">
+//             <table>
+//                 <tr>
+//                     <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital">
+//                         ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+//                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//                     </td>
+//                     <td class="logo">
+//                         <img src="logo.jpg" alt="Logo">
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+//                 </tr>
+//                 <tr>
+//                     <td class="dados-hospital" colspan="2">
+//                         ' . (!empty($resultado_empresa_selecionada['nome'])
+//                 ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+//                 : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
+//                         ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
+//                         ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
+//                         ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//                 <tr>
+//                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+//                 </tr>
+//                 <tr>
+//                     <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+//                         ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+//                         ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+//                         ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+//                     </td>
+//                 </tr>
+//             </table>
+
+//             <table>
+//     <tr>
+//         <th colspan="2" class="titulo-guia">TESTE DE EQUILÍBRIO ESTÁTICO E DINÂMICO</th>
+//     </tr>
+// </table>
+
+// <table>
+//     <tr>
+//         <td colspan="2" class="section-title">ANAMNESE</td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px; line-height:1.6;">
+//             Apresenta as alterações abaixo:
+//             <br><br>
+//             <table style="width:100%; border:none; font-size:13px;">
+//                 <tr>
+//                     <td style="width:50%; vertical-align:top;">
+//                         TONTEIRA (&nbsp;&nbsp;&nbsp )<br>
+//                         ZUMBIDO (&nbsp;&nbsp;&nbsp )<br>
+//                         VERTIGEM (&nbsp;&nbsp;&nbsp )<br>
+//                         NÁUSEAS (&nbsp;&nbsp;&nbsp )<br>
+//                         VÔMITOS (&nbsp;&nbsp;&nbsp )<br>
+//                         QUEDAS (&nbsp;&nbsp;&nbsp )<br>
+//                         ALGIACUSIA (&nbsp;&nbsp;&nbsp )<br>
+//                         SUDORESE (&nbsp;&nbsp;&nbsp )
+//                     </td>
+//                     <td style="width:50%; vertical-align:top;">
+//                         SENSAÇÃO DE PLENITUDE AURICULAR (&nbsp;&nbsp;&nbsp )<br>
+//                         HIPERSENSIBILIDADE NO COURO CABELUDO (&nbsp;&nbsp;&nbsp )<br>
+//                         CEFALÉIAS PERIÓDICAS (&nbsp;&nbsp;&nbsp )<br>
+//                         DORES FACIAIS (&nbsp;&nbsp;&nbsp )<br>
+//                         TAQUICARDIA (&nbsp;&nbsp;&nbsp )<br>
+//                         HIPERTENSÃO (&nbsp;&nbsp;&nbsp )<br>
+//                         PESO NA NUCA (&nbsp;&nbsp;&nbsp )
+//                     </td>
+//                 </tr>
+//             </table>
+//         </td>
+//     </tr>
+// </table>
+
+// <!-- EQUILÍBRIO ESTÁTICO -->
+// <table>
+//     <tr>
+//         <td colspan="2" class="section-title">EXAME</td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" class="section-subtitle"><strong>EQUILÍBRIO ESTÁTICO</strong></td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px;">
+//             * ROMBERG: (&nbsp;&nbsp;&nbsp ) Positivo - Paciente balança &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Sem alteração<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px;">
+//             * APOIO MONOPODAL DE UEMURA: (&nbsp;&nbsp;&nbsp ) Normal &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Alterado<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px;">
+//             * BRAÇOS ESTENDIDOS: (&nbsp;&nbsp;&nbsp ) Normal &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Alterado<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" 
+//             style="border-top:1px solid #000; text-align:left; font-weight:bold; padding-top:3px;">
+//             EQUILÍBRIO DINÂMICO
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px; padding:4px 0;">
+//             * TESTE DE BABINSKI-WEIL: (&nbsp;&nbsp;&nbsp;) Sem desvios &nbsp;&nbsp;&nbsp;
+//             (&nbsp;&nbsp;&nbsp;) Desvio da marcha para ____________ &nbsp;&nbsp;&nbsp;
+//             (&nbsp;&nbsp;&nbsp;) Marcha Ebriosa<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" 
+//             style="border-top:1px solid #000; text-align:left; font-weight:bold; padding-top:3px;">
+//             TESTE DE COOORDENAÇÃO
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px;">
+//             * INDEX - INDEX: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+//     <tr>
+//         <td colspan="2" style="font-size:13px;">
+//             * INDEX - NARIZ: (&nbsp;&nbsp;&nbsp ) Positiva &nbsp;&nbsp;&nbsp; (&nbsp;&nbsp;&nbsp ) Negativa<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+// </table>
+
+// <!-- DIADOCOCINESIA -->
+// <table style="width:100%; border-collapse:collapse;">
+//     <tr>
+//         <td colspan="2" style="font-size:13px;">
+//             <strong>DIADOCOCINESIA</strong><br><br>
+//             ( &nbsp;&nbsp;&nbsp; ) Normal &nbsp;&nbsp;&nbsp; ( &nbsp;&nbsp;&nbsp; ) Alterado<br>
+//             <strong>Observação:</strong> ___________________________________________
+//         </td>
+//     </tr>
+// </table>
+
+
+// <!-- APTIDÃO -->
+// <table>
+//     <tr>
+//         <td colspan="2" class="section-subtitle"><strong>O colaborador esta:</strong>
+//         <input type="checkbox"/>Apto para trabalhar em altura&nbsp;
+//         <input type="checkbox"/> Inapto para trabalhar em altura
+//         </td>
+//     </tr>
+// </table>
+
+// <!-- ASSINATURA -->
+// <table style="margin-top:40px; width:100%;">
+//     <tr>
+//                     <td colspan="2" class="dados-hospital">
+//                         ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+//                     </td>
+//                 </tr>
+//         <tr>
+//                     <!-- Espaço para assinatura -->
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
+//                     ' . $html_assinatura . '<br>
+//                     <span style="display:block; margin-top:-1px;">Assinatura</span>
+//                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
+//                     <span style="display:block;">
+//                         ' . htmlspecialchars($resultado_medico_relacionado_clinica['nome'] ?? "") . ' — 
+//                         CRM: ' . htmlspecialchars($resultado_medico_relacionado_clinica['crm'] ?? "") . '
+//                     </span>
+//                     </td>
+
+//                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+//                                     <br>
+                                    
+//                                     <br>
+//                                     _______________________________<br>
+//                                     Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+//                     </td>
+//                 </tr>
+// </table>
+
+//         </div>
+//         <div class="actions">
+//                 <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+//                 <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+//                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+//             </div>
+        
+        
+//         ';
+
+echo '
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -47583,6 +51215,7 @@ table.no-break strong {
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
                     ' . $html_assinatura . '<br>
+                    ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
                     <span style="display:block;">
@@ -47602,10 +51235,27 @@ table.no-break strong {
 </table>
 
         </div>
-        <div class="actions">
-                <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
             </div>
         
         
@@ -48145,12 +51795,464 @@ table.no-break strong {
                 $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
                 $comando_busca_dados_bancarios->execute();
                 $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_qrcode = "select informacoes_dados_bancarios_qrcode from kits where id = :recebe_id_kit";
+                $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
+                $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_informativo_bancario_qrcode->execute();
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_informativo_bancario_agenciaconta->execute();
+                $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_informativo_bancario_pix->execute();
+                $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                function deve_exibir_banco($categoria, $valorSelecionado) {
+    if (empty($valorSelecionado)) return false;
+
+    $categoriasPermitidas = explode('_', strtolower(trim($valorSelecionado)));
+    $categoria = strtolower(trim($categoria));
+
+    return in_array($categoria, $categoriasPermitidas, true);
+}
+
+
+                function exibe_info_bancaria($tipos, $dados) {
+    if (!is_array($tipos)) $tipos = [];
+
+    $temQrCode        = !empty($tipos["qrcode"]);
+    $temPix           = !empty($tipos["pix"]);
+    $temAgenciaConta  = !empty($tipos["agencia-conta"]);
+
+    if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
+
+    // Normaliza dados possíveis
+    $pixValor = $dados['pix'] 
+        ?? $dados['dado_bancario_pix'] 
+        ?? '';
+
+    $agenciaConta = $dados['agencia_conta'] 
+        ?? $dados['dado_bancario_agencia_conta'] 
+        ?? '';
+
+    // Pega o valor do QR Code — cobre vários nomes possíveis
+    $qrChave = $dados['qr']
+        ?? $dados['qrcode']
+        ?? $dados['dado_bancario_qr']
+        ?? '';
+
+    // Se não houver QR mas tem PIX, usa PIX como fallback (mostra QR mesmo assim)
+    if (empty($qrChave) && !empty($pixValor)) {
+        $qrChave = $pixValor;
+    }
+
+    echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+
+    // --- QR Code (somente se flag temQrCode estiver true)
+    if ($temQrCode) {
+        if (!empty($qrChave)) {
+            ob_start();
+            QRcode::png($qrChave, null, QR_ECLEVEL_L, 4, 2);
+            $imageData = ob_get_clean();
+            $imageString = base64_encode($imageData);
+
+            echo '<div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                    <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
+                    <div><p style="margin:0; font-weight:bold;">Chave:</p><p style="margin:0;">' . htmlspecialchars($qrChave) . '</p></div>
+                  </div>';
+        } else {
+            echo '<div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+                    <div style="width:80px; height:80px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:10px; color:#666;">QR não disponível</div>
+                    <div><p style="margin:0; font-weight:bold;">Chave:</p><p style="margin:0;">(não informada)</p></div>
+                  </div>';
+        }
+    }
+
+    // --- PIX
+    if ($temPix && !empty($pixValor)) {
+        echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+                <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+                <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
+              </div>';
+    }
+
+    // --- Agência e Conta
+    if ($temAgenciaConta && !empty($agenciaConta)) {
+        $linhas = is_string($agenciaConta) ? explode('|', $agenciaConta) : (is_array($agenciaConta) ? $agenciaConta : []);
+        echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+                <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+                <div>';
+        foreach ($linhas as $linha) {
+            echo '<p style="margin:0;">' . htmlspecialchars(trim($linha)) . '</p>';
+        }
+        echo '</div></div>';
+    }
+
+    echo '</div>'; // fecha container principal
+}
+
+
+
+
+$valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+$valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
+$valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
+
+// echo "qrcde:".$valQrcode."<br>";
+// echo "pix:".$valPix."<br>";
+// echo "agencia:".$valAgencia;
+
+// Tipos permitidos vindos do banco (ex: ["qrcode","agencia-conta","pix"])
+$tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+
+// Dados bancários reais
+$dadosBancarios = [
+    "qr"            => trim($resultado_busca_dados_bancarios[0]["qrcode"] ?? ""),
+    "pix"           => trim($resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? ""),
+    "agencia_conta" => trim($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "")
+];
+            
+
             }
 
 
 
 
-            echo '
+        //     echo '
+        // <style>
+        //                 body {
+        //         font-family: Arial, sans-serif;
+        //         background:#f2f2f2;
+        //         margin:0;
+        //         padding:0;
+        //     }
+        //     .guia-container {
+        //         width: 210mm;
+        //         min-height: 297mm;
+        //         margin:5mm auto;
+        //         padding:10px;
+        //         background:#fff;
+        //         border:1px solid #000;
+        //     }
+        //     table { width:100%; border-collapse:collapse; font-size:12px; }
+        //     th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+        //     .titulo-guia {
+        //         background:#eaeaea;
+        //         border:1px solid #000;
+        //         font-weight:bold;
+        //         text-align:center;
+        //         font-size:14px;
+        //         padding:5px;
+        //         height:22px;
+        //     }
+        //     .section-title {
+        //         background:#eaeaea;
+        //         border:1px solid #666;
+        //         font-weight:bold;
+        //         font-size:12px;
+        //         padding:3px 5px;
+        //         text-align:left;
+        //     }
+        //     .dados-hospital { font-size:12px; line-height:1.4; }
+        //     .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+        //     .logo { text-align:center; }
+        //     .logo img { max-height:45px; }
+
+        //     /* 🔹 QR Code - garante que apareça na tela e na impressão */
+        //     .qrcode img {
+        //         display:block;
+        //         width:120px;
+        //         height:auto;
+        //         margin-top:5px;
+        //     }
+
+        //     /* 🔹 Botões - agora fora do @media print */
+        //     .actions {
+        //         margin:10px 0;
+        //         text-align:center;
+        //     }
+        //     .btn {
+        //         padding:10px 18px;
+        //         font-size:14px;
+        //         font-weight:bold;
+        //         border:none;
+        //         border-radius:5px;
+        //         cursor:pointer;
+        //         color:#fff;
+        //         box-shadow:0 2px 5px rgba(0,0,0,.2);
+        //         margin:0 5px;
+        //     }
+        //     .btn-email { background:#007bff; }
+        //     .btn-whatsapp { background:#25d366; }
+        //     .btn-print { background:#6c757d; }
+        //     .btn:hover { opacity:.9; }
+
+        //     @media print {
+        //         * {
+        //             -webkit-print-color-adjust: exact !important;
+        //             print-color-adjust: exact !important;
+        //         }
+        //         body { background:#fff; }
+        //         .actions { display: none !important; }
+        //     }
+        // </style>
+
+        // <div class="guia-container">
+
+        // <table>
+        //         <!-- Linha do título -->
+        //         <tr>
+        //             <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+        //         </tr>
+        //         <!-- Linha dados hospital + logo -->
+        //         <tr>
+        //             <td class="dados-hospital">
+        //                 ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+        //                 ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+        //                 ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+        //                 ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+        //                 ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+        //                 ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+        //                 ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+        //                 ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+
+        //             </td>
+        //             <td class="logo">
+        //                 <img src="logo.jpg" alt="Logo">
+        //             </td>
+        //         </tr>
+        //     </table>
+
+        //     <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
+        //     <table>
+        //         <tr>
+        //             <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+        //         </tr>
+        //         <tr>
+        //             <td class="dados-hospital" colspan="2">
+        //                 ' . (!empty($resultado_empresa_selecionada['nome'])
+        //         ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+        //         : '') . '
+
+        //                 ' . (!empty($resultado_empresa_selecionada['cnpj'])
+        //         ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj'])
+        //         : '') . '
+        //             ' . (!empty($resultado_empresa_selecionada['endereco'])
+        //         ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco'])
+        //         : '') . '
+        //             ' . (!empty($resultado_empresa_selecionada['bairro'])
+        //         ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro'])
+        //         : '') . '
+        //             ' . (!empty($recebe_cidade_uf)
+        //         ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf)
+        //         : '') . '
+        //             ,
+        //                                     ' . (!empty($resultado_empresa_selecionada['cep'])
+        //         ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep'])
+        //         : '') . '
+
+        //             ' . (!empty($resultado_empresa_selecionada['telefone'])
+        //         ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+        //         : '') . '
+        //             </td>
+        //         </tr>
+        //     </table>
+
+        //     <!-- 🔹 Seção IDENTIFICAÇÃO DO FUNCIONÁRIO -->
+        //     <table>
+        //         <tr>
+        //             <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+        //         </tr>
+        //         <tr>
+        //             <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+        //                 ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+        //                 ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+        //                 ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+        //                 ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+        //                 ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+        //                 ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+        //                 ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
+        //             </td>
+        //         </tr>
+        //     </table>
+
+        //     <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
+
+        //     <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+        //         $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+        //         echo '<div class="top-bar"></div>
+        //     <!-- Produtos / Serviços -->
+
+        //         <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+        //     <tr>
+        //         <th style="padding:3px;">Código</th>
+        //         <th style="padding:3px;">Descrição dos produtos/serviços</th>
+        //         <th style="padding:3px;">Und</th>
+        //         <th style="padding:3px;">Pço.Unt.</th>
+        //         <th style="padding:3px;">Quant.</th>
+        //         <th style="padding:3px;">Total do item</th>
+        //     </tr>';
+
+        //         $totalGeral = 0;
+        //         $numeroItens = 0;
+
+        //         if (!empty($valores_pedidos)) {
+        //             foreach ($valores_pedidos as $item) {
+        //                 // Só exibe se for treinamento
+        //                 if (($item["tipo"] ?? "") === "treinamento") {
+
+        //                     $totalItem = $item["quantidade"] * $item["valor"];
+        //                     $totalGeral += $totalItem;
+        //                     $numeroItens++;
+
+        //                     echo '
+        //                     <tr>
+        //                         <td style="padding:3px;">' . $item["codigo"] . '</td>
+        //                         <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+        //                         <td style="padding:3px;">un</td>
+        //                         <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+        //                         <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+        //                         <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+        //                     </tr>';
+        //                 }
+        //             }
+        //         }
+
+
+        //         // Define o fuso horário do Brasil (evita diferenças)
+        //         date_default_timezone_set('America/Sao_Paulo');
+
+        //         // Data atual no formato brasileiro
+        //         $dataAtual = date('d/m/Y');
+
+        //         echo '</table>
+
+        //         <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+        //             <tr>
+        //                 <td style="padding:3px;">' . $dataAtual . '</td>
+        //                 <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+        //             </tr>
+        //             <tr>
+        //                 <td style="padding:3px;">Formas de Pagamento:</td>
+        //                 <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+        //             </tr>
+        //             <tr>
+        //                 <td></td>
+        //                 <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+        //             </tr>
+        //             <tr>
+        //                 <td></td>
+        //                 <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+        //             </tr>
+        //         </table>
+
+        //         <!-- Rodapé -->
+        //         <p style="margin:4px 0;">
+        //             <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
+        //             (!empty($prazo_entrega)
+        //                 ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
+        //                 : '<span style="font-size:11px;">A combinar</span>') .
+        //             '</p>
+
+        //         <p style="margin:4px 0;">
+        //             <strong style="font-size:11px;">Observações:</strong> ' .
+        //             (!empty($observacoes)
+        //                 ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
+        //                 : '<span style="font-size:11px;">Nenhuma</span>') .
+        //             '</p>
+
+        //         <div class="top-bar"></div>
+        //         <div class="top-bar" style="margin-top:20px;"></div>';
+
+
+        //         if (!empty($resultado_busca_dados_bancarios)) {
+        //             $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
+
+        //             if (!is_array($tipos)) {
+        //                 $tipos = [];
+        //             }
+
+        //             if (empty($tipos)) {
+        //                 echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
+        //                         <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
+        //                     </p>';
+        //             } else {
+        //                 $temQrCode = in_array('qrcode', $tipos);
+        //                 $temPix = in_array('pix', $tipos);
+        //                 $temAgenciaConta = in_array('agencia-conta', $tipos);
+
+        //                 if ($temQrCode || $temPix || $temAgenciaConta) {
+        //                     // Container principal
+        //                     echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+
+        //                     // Bloco QR Code (imagem + texto ao lado)
+        //                     if ($temQrCode) {
+        //                         $chave = '(64) 99606-5577'; // ou busca no banco
+        //                         ob_start();
+        //                         QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
+        //                         $imageString = base64_encode(ob_get_contents());
+        //                         ob_end_clean();
+
+        //                         echo '
+        //                         <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+        //                             <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
+        //                             <div>
+        //                                 <p style="margin:0; font-weight:bold;">Chave:</p>
+        //                                 <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
+        //                             </div>
+        //                         </div>
+        //                     ';
+        //                     }
+
+        //                     // Bloco PIX
+        //                     if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
+        //                         echo '
+        //                         <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
+        //                             <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+        //                             <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
+        //                         </div>';
+        //                     }
+
+        //                     // Bloco Agência e Conta
+        //                     if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
+        //                         $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
+        //                         echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
+        //                             <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+        //                             <div>';
+        //                         foreach ($dados as $dado) {
+        //                             echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
+        //                         }
+        //                         echo '</div></div>';
+        //                     }
+
+        //                     echo '</div>'; // fecha container principal
+        //                 }
+        //             }
+        //         }
+
+        //         echo '    </div>
+
+        // <!-- 🔹 Botões -->
+        // <div class="actions">
+        //     <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+        //     <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        //     <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+        // </div>';
+
+
+        //         echo '</div>';
+
+        echo '
         <style>
                         body {
                 font-family: Arial, sans-serif;
@@ -48236,7 +52338,7 @@ table.no-break strong {
         <table>
                 <!-- Linha do título -->
                 <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
                 </tr>
                 <!-- Linha dados hospital + logo -->
                 <tr>
@@ -48310,12 +52412,137 @@ table.no-break strong {
                 </tr>
             </table>
 
-            <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
+            <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>';
+            
 
-            <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
-                $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+           
+           
+//            <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
+//             $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
 
-                echo '<div class="top-bar"></div>
+//             echo '<div class="top-bar"></div>
+//                 <!-- Produtos / Serviços -->
+    
+
+//             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+//                 <tr>
+//                     <th style="padding:3px;">Código</th>
+//                     <th style="padding:3px;">Descrição dos produtos/serviços</th>
+//                     <th style="padding:3px;">Und</th>
+//                     <th style="padding:3px;">Pço.Unt.</th>
+//                     <th style="padding:3px;">Quant.</th>
+//                     <th style="padding:3px;">Total do item</th>
+//                 </tr>
+//         ';
+
+//             // Total geral e número de itens
+//             $totalGeral = 0;
+//             $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+
+//             foreach ($exames_count as $item) {
+//                 $quantidade = 1; // Cada linha representa 1 item
+//                 $totalItem = $quantidade * $item['valor'];
+//                 $totalGeral += $totalItem;
+
+//                 echo '<tr>
+//                     <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
+//                     <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+//                     <td style="padding:3px; text-align:right;">un</td>
+//                     <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+//                     <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
+//                     <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+//                 </tr>';
+//             }
+
+
+
+//             // Define o fuso horário do Brasil (evita diferenças)
+//             date_default_timezone_set('America/Sao_Paulo');
+
+//             // Data atual no formato brasileiro
+//             $dataAtual = date('d/m/Y');
+
+//             echo '</table>
+
+//             <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+//                 <tr>
+//                     <td style="padding:3px;">' . $dataAtual . '</td>
+//                     <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+//                 </tr>
+//                 <tr>
+//                     <td style="padding:3px;">Formas de Pagamento:</td>
+//                     <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                 </tr>
+//                 <tr>
+//                     <td></td>
+//                     <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
+//                 </tr>
+//                 <tr>
+//                     <td></td>
+//                     <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                 </tr>
+//             </table>';
+
+
+            
+
+// // $categoria = "exames";
+
+// // $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+// // $dadosBancarios = [
+// //     'qr' => $resultado_busca_dados_bancarios[0]['qrcode'] ?? '',
+// //     'pix' => $resultado_busca_dados_bancarios[0]['dado_bancario_pix'] ?? '',
+// //     'agencia_conta' => $resultado_busca_dados_bancarios[0]['dado_bancario_agencia_conta'] ?? ''
+// // ];
+
+
+// // // ✅ Adiciona bancos logo abaixo de "Nenhuma"
+// // if (
+// //     deve_exibir_banco($categoria, $valQrcode) ||
+// //     deve_exibir_banco($categoria, $valPix) ||
+// //     deve_exibir_banco($categoria, $valAgencia)
+// // ) {
+// //     // como essa função já deve imprimir o HTML, não entra no echo
+// //     exibe_info_bancaria($tipos, $dadosBancarios);
+// // }
+
+// // // EXAMES
+// // $categoria = "exames";
+// // $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// // $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// // $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// // exibe_info_bancaria([
+// //     "qrcode"         => $mostrarQr,
+// //     "pix"            => $mostrarPix,
+// //     "agencia-conta"  => $mostrarAgConta
+// // ], $dadosBancarios);
+
+// // EXAMES
+// $categoria = "exames";
+// $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// // echo "<pre>";
+// // var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
+// // echo "</pre>";
+
+// exibe_info_bancaria([
+//     "qrcode"         => $mostrarQr,
+//     "pix"            => $mostrarPix,
+//     "agencia-conta"  => $mostrarAgConta
+// ], $dadosBancarios);
+
+// echo '
+// <div class="top-bar"></div>
+// <div class="top-bar" style="margin-top: 10px;"></div>
+// ';
+
+            echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+            $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+            echo '<div class="top-bar"></div>
             <!-- Produtos / Serviços -->
 
                 <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
@@ -48328,19 +52555,19 @@ table.no-break strong {
                 <th style="padding:3px;">Total do item</th>
             </tr>';
 
-                $totalGeral = 0;
-                $numeroItens = 0;
+            $totalGeral = 0;
+            $numeroItens = 0;
 
-                if (!empty($valores_pedidos)) {
-                    foreach ($valores_pedidos as $item) {
-                        // Só exibe se for treinamento
-                        if (($item["tipo"] ?? "") === "treinamento") {
+            if (!empty($valores_pedidos)) {
+                foreach ($valores_pedidos as $item) {
+                    // Só exibe se for treinamento
+                    if (($item["tipo"] ?? "") === "treinamento") {
 
-                            $totalItem = $item["quantidade"] * $item["valor"];
-                            $totalGeral += $totalItem;
-                            $numeroItens++;
+                        $totalItem = $item["quantidade"] * $item["valor"];
+                        $totalGeral += $totalItem;
+                        $numeroItens++;
 
-                            echo '
+                        echo '
                             <tr>
                                 <td style="padding:3px;">' . $item["codigo"] . '</td>
                                 <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
@@ -48349,18 +52576,13 @@ table.no-break strong {
                                 <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
                                 <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
                             </tr>';
-                        }
                     }
                 }
+            }
 
 
-                // Define o fuso horário do Brasil (evita diferenças)
-                date_default_timezone_set('America/Sao_Paulo');
 
-                // Data atual no formato brasileiro
-                $dataAtual = date('d/m/Y');
-
-                echo '</table>
+            echo '</table>
 
                 <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
                     <tr>
@@ -48379,103 +52601,216 @@ table.no-break strong {
                         <td></td>
                         <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
                     </tr>
-                </table>
+                </table>';
 
-                <!-- Rodapé -->
-                <p style="margin:4px 0;">
-                    <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
-                    (!empty($prazo_entrega)
-                        ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
-                        : '<span style="font-size:11px;">A combinar</span>') .
-                    '</p>
+                
 
-                <p style="margin:4px 0;">
-                    <strong style="font-size:11px;">Observações:</strong> ' .
-                    (!empty($observacoes)
-                        ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
-                        : '<span style="font-size:11px;">Nenhuma</span>') .
-                    '</p>
+$tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+$dadosBancarios = [
+    'qr' => $resultado_busca_dados_bancarios[0]['qrcode'] ?? '',
+    'pix' => $resultado_busca_dados_bancarios[0]['dado_bancario_pix'] ?? '',
+    'agencia_conta' => $resultado_busca_dados_bancarios[0]['dado_bancario_agencia_conta'] ?? ''
+];
 
-                <div class="top-bar"></div>
-                <div class="top-bar" style="margin-top:20px;"></div>';
+// $categoria = "treinamentos";
+
+// // ✅ Adiciona bancos logo abaixo de "Nenhuma"
+// if (
+//     deve_exibir_banco($categoria, $valQrcode) ||
+//     deve_exibir_banco($categoria, $valPix) ||
+//     deve_exibir_banco($categoria, $valAgencia)
+// ) {
+//     // como essa função já deve imprimir o HTML, não entra no echo
+//     exibe_info_bancaria($tipos, $dadosBancarios);
+// }
+
+// // TREINAMENTOS
+// $categoria = "treinamentos";
+// $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia); // ✅ agora passa corretamente
+
+// exibe_info_bancaria([
+//     "qrcode"         => $mostrarQr,
+//     "pix"            => $mostrarPix,
+//     "agencia-conta"  => $mostrarAgConta // ✅ incluído
+// ], $dadosBancarios);
+
+// TREINAMENTOS
+$categoria = "treinamentos";
+$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+$mostrarPix      = deve_exibir_banco($categoria, $valPix);
+$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// echo "<pre>";
+// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
+// echo "</pre>";
+
+exibe_info_bancaria([
+    "qrcode"         => $mostrarQr,
+    "pix"            => $mostrarPix,
+    "agencia-conta"  => $mostrarAgConta
+], $dadosBancarios);
 
 
-                if (!empty($resultado_busca_dados_bancarios)) {
-                    $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
+// echo '
+// <div class="top-bar"></div>
+// <div class="top-bar" style="margin-top: 10px;"></div>
+// ';
 
-                    if (!is_array($tipos)) {
-                        $tipos = [];
-                    }
 
-                    if (empty($tipos)) {
-                        echo '<p style="font-size:11px; color:red; font-family:Arial, sans-serif;">
-                                <strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.
-                            </p>';
-                    } else {
-                        $temQrCode = in_array('qrcode', $tipos);
-                        $temPix = in_array('pix', $tipos);
-                        $temAgenciaConta = in_array('agencia-conta', $tipos);
+//             echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+//         03 - EPIs / EPCs
+//     </h4>';
 
-                        if ($temQrCode || $temPix || $temAgenciaConta) {
-                            // Container principal
-                            echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+//             $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
 
-                            // Bloco QR Code (imagem + texto ao lado)
-                            if ($temQrCode) {
-                                $chave = '(64) 99606-5577'; // ou busca no banco
-                                ob_start();
-                                QRcode::png($chave, null, QR_ECLEVEL_L, 4, 2);
-                                $imageString = base64_encode(ob_get_contents());
-                                ob_end_clean();
+//             echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
 
-                                echo '
-                                <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
-                                    <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:80px; height:auto;">
-                                    <div>
-                                        <p style="margin:0; font-weight:bold;">Chave:</p>
-                                        <p style="margin:0;">' . htmlspecialchars($chave) . '</p>
-                                    </div>
-                                </div>
-                            ';
-                            }
+//         <!-- Produtos / Serviços -->
+//         <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+//             <tr>
+//                 <th style="padding:3px;">Código</th>
+//                 <th style="padding:3px;">Descrição dos produtos/serviços</th>
+//                 <th style="padding:3px;">Und</th>
+//                 <th style="padding:3px;">Pço.Unt.</th>
+//                 <th style="padding:3px;">Quant.</th>
+//                 <th style="padding:3px;">Total do item</th>
+//             </tr>';
 
-                            // Bloco PIX
-                            if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-                                echo '
-                                <div style="display:flex; align-items:center; gap:8px; min-width:200px;margin-top: 35px;">
-                                    <p style="margin:0; font-weight:bold;">Chave PIX:</p>
-                                    <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-                                </div>';
-                            }
+//             $totalGeral = 0;
+//             $numeroItens = 0;
 
-                            // Bloco Agência e Conta
-                            if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-                                $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-                                echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px;margin-top: 35px;">
-                                    <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
-                                    <div>';
-                                foreach ($dados as $dado) {
-                                    echo '<p style="margin:0;">' . htmlspecialchars($dado) . '</p>';
-                                }
-                                echo '</div></div>';
-                            }
+//             if (!empty($valores_pedidos)) {
+//                 foreach ($valores_pedidos as $item) {
+//                     if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+//                         $quantidade = $item["quantidade"] ?? 1;
+//                         $valorUnitario = $item["valor"] ?? 0;
+//                         $totalItem = $quantidade * $valorUnitario;
 
-                            echo '</div>'; // fecha container principal
-                        }
-                    }
-                }
+//                         $totalGeral += $totalItem;
+//                         $numeroItens++;
 
-                echo '    </div>
+//                         echo '<tr style="border:1px solid #000;">
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+//                             </tr>';
+//                     }
+//                 }
+//             }
+
+//             echo '
+//             </table>
+
+//             <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+//                     <tr>
+//                         <td style="padding:3px;">' . $dataAtual . '</td>
+//                         <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td style="padding:3px;">Formas de Pagamento:</td>
+//                         <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td></td>
+//                         <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td></td>
+//                         <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                     </tr>
+//                 </table>';
+
+                
+
+// $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+// $dadosBancarios = [
+//     'qr' => $resultado_busca_dados_bancarios[0]['qrcode'] ?? '',
+//     'pix' => $resultado_busca_dados_bancarios[0]['dado_bancario_pix'] ?? '',
+//     'agencia_conta' => $resultado_busca_dados_bancarios[0]['dado_bancario_agencia_conta'] ?? ''
+// ];
+
+
+// // $categoria = "epi";
+// // // ✅ Adiciona bancos logo abaixo de "Nenhuma"
+// // if (
+// //     deve_exibir_banco($categoria, $valQrcode) ||
+// //     deve_exibir_banco($categoria, $valPix) ||
+// //     deve_exibir_banco($categoria, $valAgencia)
+// // ) {
+// //     // como essa função já deve imprimir o HTML, não entra no echo
+// //     exibe_info_bancaria($tipos, $dadosBancarios);
+// // }
+
+// // // EPI / EPC
+// // $categoria = "epi";
+// // $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// // $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// // $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// // exibe_info_bancaria([
+// //     "qrcode"         => $mostrarQr,
+// //     "pix"            => $mostrarPix,
+// //     "agencia-conta"  => $mostrarAgConta
+// // ], $dadosBancarios);
+
+// // EPI / EPC
+// $categoria = "epi";
+// $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// // echo "<pre>";
+// // var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
+// // echo "</pre>";
+
+// exibe_info_bancaria([
+//     "qrcode"         => $mostrarQr,
+//     "pix"            => $mostrarPix,
+//     "agencia-conta"  => $mostrarAgConta
+// ], $dadosBancarios);
+
+
+// echo '
+// <div class="top-bar"></div>
+// <div class="top-bar" style="margin-top: 10px;"></div>
+// ';
+
+            
+            echo '
+            </div>
 
         <!-- 🔹 Botões -->
-        <div class="actions">
-            <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-            <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-            <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-        </div>';
+        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+
+                <!-- BLOCO EMAIL -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
+                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- BLOCO WHATSAPP -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+                        style="margin-top:5px; padding:8px; width:180px;">
+                </div>
+
+                <!-- IMPRIMIR -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+                </div>
+
+            </div>';
 
 
-                echo '</div>';
+            echo '</div>';
+
 
             }else if ($guia_encaminhamento && $aso && $prontuario_medico && $acuidade_visual && $psicosocial && $toxicologico && $audiometria
             && $resumo_laudo && $teste_romberg && $faturamento && $epi_epc) {
