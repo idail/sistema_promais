@@ -2026,7 +2026,7 @@ function renderResultadoProfissional(tipo) {
           debugger;
 
           // Verifica se os dados da empresa foram carregados
-          const itemObj = window.kit_empresa;
+          const itemObj = window.kit_empresa || window.dados_empresa;
           const detalhes = document.getElementById('detalhesEmpresa');
 
           if (!detalhes) {
@@ -2341,10 +2341,48 @@ async function repopular_dados_pessoa() {
   }
 }
 
+// function repopular_dados_cargo() {
+//   debugger;
+//   const detalhes = document.getElementById('detalhesCargo');
+//   const itemObj = window.kit_cargo;
+
+//   if (detalhes) {
+//     if (itemObj && (itemObj.titulo_cargo || itemObj.codigo_cargo)) {
+//       detalhes.className = 'ecp-details';
+//       detalhes.style.display = 'block';
+//       detalhes.innerHTML = `
+//         <div style="background: white; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+//           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+//             <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0; line-height: 1.2;">
+//               ${itemObj.titulo_cargo || 'Cargo não especificado'}
+//             </h3>
+//             ${itemObj.codigo_cargo ? `
+//               <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
+//                         font-size: 0.75rem; font-weight: 500; background-color: #e0f2fe; color: #0369a1;">
+//                 CBO: ${itemObj.codigo_cargo}
+//               </span>
+//             ` : ''}
+//           </div>
+//           ${itemObj.descricao_cargo ? `
+//             <div style="font-size: 0.875rem; color: #4b5563; line-height: 1.5; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f3f4f6;">
+//               <h4 style="font-size: 0.875rem; font-weight: 600; color: #374151; margin: 0 0 0.5rem 0;">Descrição:</h4>
+//               <p style="margin: 0;">${itemObj.descricao_cargo}</p>
+//             </div>
+//           ` : ''}
+//         </div>
+//       `;
+//     } else {
+//       detalhes.style.display = 'none';
+//     }
+//   }
+// }
+
 function repopular_dados_cargo() {
   debugger;
   const detalhes = document.getElementById('detalhesCargo');
-  const itemObj = window.kit_cargo;
+
+  // Usa kit_cargo se existir, senão usa dados_cargo
+  const itemObj = window.kit_cargo ?? window.dados_cargo;
 
   if (detalhes) {
     if (itemObj && (itemObj.titulo_cargo || itemObj.codigo_cargo)) {
@@ -2371,16 +2409,41 @@ function repopular_dados_cargo() {
           ` : ''}
         </div>
       `;
+    }else if(itemObj && (itemObj.titulo || itemObj.cbo)){
+      detalhes.className = 'ecp-details';
+      detalhes.style.display = 'block';
+      detalhes.innerHTML = `
+        <div style="background: white; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+            <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0; line-height: 1.2;">
+              ${itemObj.titulo || 'Cargo não especificado'}
+            </h3>
+            ${itemObj.cbo ? `
+              <span style="display: inline-flex; align-items: center; padding: 0.25rem 0.5rem; border-radius: 0.25rem; 
+                        font-size: 0.75rem; font-weight: 500; background-color: #e0f2fe; color: #0369a1;">
+                CBO: ${itemObj.cbo}
+              </span>
+            ` : ''}
+          </div>
+          ${itemObj.descricao ? `
+            <div style="font-size: 0.875rem; color: #4b5563; line-height: 1.5; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f3f4f6;">
+              <h4 style="font-size: 0.875rem; font-weight: 600; color: #374151; margin: 0 0 0.5rem 0;">Descrição:</h4>
+              <p style="margin: 0;">${itemObj.descricao}</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
     } else {
       detalhes.style.display = 'none';
     }
   }
 }
 
+
 function repopular_dados_motorista() {
   debugger;
   // Obtém o valor do motorista salvo em window.kit_tipo_exame
-  const motoristaValue = window.kit_tipo_exame?.motorista;
+  const motoristaValue = window.kit_tipo_exame?.motorista || window.dado_motorista;
 
   // Verifica se o valor é "SIM"
   const isMotorista = motoristaValue === "SIM";
@@ -4305,6 +4368,9 @@ function repopular_laudos() {
         window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
         window.modelos_documentos = window.kit_tipo_exame.modelos_selecionados;
         window.fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(window.kit_tipo_exame.medico_fonoaudiologo);
+        window.informacoes_dados_bancarios_qrcode = window.kit_tipo_exame.informacoes_dados_bancarios_qrcode;
+        window.informacoes_dados_bancarios_agencia_conta = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta;
+        window.informacoes_dados_bancarios_pix = window.kit_tipo_exame.informacoes_dados_bancarios_pix;
 
         console.log(window.insalubridade + " - " + window.porcentagem + " - " + window.periculosidade + "- "
          + window.aposent_especial + " - " + window.agente_nocivo + " - " + window.ocorrencia_gfip);
@@ -4676,6 +4742,51 @@ try {
         restaurarModelosSelecionados();
         repopular_assinatura();
         repopular_dados_bancarios();
+
+        // Inicializa o seletor de escopo de informações bancárias com valor global ao abrir a aba
+        try {
+          const escopoContaSelect = document.getElementById('escopo-conta-bancaria');
+          if (escopoContaSelect) {
+            const valorInicialEscopo = (window.recebe_acao === 'editar')
+              ? window.informacoes_dados_bancarios_qrcode
+              : window.valor_informacoes_bancarias_qrcode;
+            if (typeof valorInicialEscopo !== 'undefined' && valorInicialEscopo !== null && valorInicialEscopo !== '') {
+              escopoContaSelect.value = valorInicialEscopo;
+              // Mantém a variável global unificada para uso geral
+              window.valor_informacoes_bancarias = valorInicialEscopo;
+            }
+          }
+        } catch(e) { /* noop */ }
+
+        // Inicializa o seletor de escopo de informações bancárias com valor global ao abrir a aba
+        try {
+          const escopoContaAgenciaContaSelect = document.getElementById('escopo-conta-bancaria-agencia-conta');
+          if (escopoContaAgenciaContaSelect) {
+            const valorInicialEscopo = (window.recebe_acao === 'editar')
+              ? window.informacoes_dados_bancarios_agencia_conta
+              : window.valor_informacoes_bancarias_agencia_conta;
+            if (typeof valorInicialEscopo !== 'undefined' && valorInicialEscopo !== null && valorInicialEscopo !== '') {
+              escopoContaAgenciaContaSelect.value = valorInicialEscopo;
+              // Mantém a variável global unificada para uso geral
+              window.valor_informacoes_bancarias_agencia_conta = valorInicialEscopo;
+            }
+          }
+        } catch(e) { /* noop */ }
+
+        // Inicializa o seletor de escopo de informações bancárias com valor global ao abrir a aba
+        try {
+          const escopoPIXSelect = document.getElementById('escopo-conta-bancaria-pix');
+          if (escopoPIXSelect) {
+            const valorInicialEscopo = (window.recebe_acao === 'editar')
+              ? window.informacoes_dados_bancarios_pix
+              : window.valor_informacoes_bancarias_pix;
+            if (typeof valorInicialEscopo !== 'undefined' && valorInicialEscopo !== null && valorInicialEscopo !== '') {
+              escopoPIXSelect.value = valorInicialEscopo;
+              // Mantém a variável global unificada para uso geral
+              window.valor_informacoes_bancarias_pix = valorInicialEscopo;
+            }
+          }
+        } catch(e) { /* noop */ }
 
         if (typeof tratar_modelos_orcamentos === 'function') {
   tratar_modelos_orcamentos();
@@ -6436,6 +6547,155 @@ function gravar_agencia_conta(agencia_conta) {
   });
 }
 
+function gravar_informacoes_bancarias_qrcode(valor_informacoes_bancarias) {
+  debugger;
+  // Persiste em variável global para manter a seleção entre etapas
+  window.valor_informacoes_bancarias_qrcode = valor_informacoes_bancarias;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_informacoes_bancarias: window.valor_informacoes_bancarias_qrcode,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_informacoes_bancarias_qrcode: window.valor_informacoes_bancarias_qrcode
+    },
+    success: function(ret) { 
+      const mensagemSucesso = `
+                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#dados-informacoes-bancarias-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+     },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
+
+function gravar_informacoes_bancarias_agencia_conta(valor_informacoes_bancarias) {
+  debugger;
+  // Persiste em variável global para manter a seleção entre etapas
+  window.valor_informacoes_bancarias_agencia_conta = valor_informacoes_bancarias;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_informacoes_bancarias: window.valor_informacoes_bancarias,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_informacoes_bancarias_agencia_conta: window.valor_informacoes_bancarias_agencia_conta
+    },
+    success: function(ret) { 
+      const mensagemSucesso = `
+                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#dados-informacoes-bancarias-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+     },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
+
+function gravar_informacoes_bancarias_pix(valor_informacoes_bancarias) {
+  debugger;
+  // Persiste em variável global para manter a seleção entre etapas
+  window.valor_informacoes_bancarias_pix = valor_informacoes_bancarias;
+  const emEdicao = window.recebe_acao === 'editar';
+
+  $.ajax({
+    url: "cadastros/processa_geracao_kit.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: emEdicao ? {
+      processo_geracao_kit: "atualizar_kit",
+      valor_informacoes_bancarias: window.valor_informacoes_bancarias,
+      valor_id_kit: window.recebe_id_kit
+    } : {
+      processo_geracao_kit: "incluir_valores_kit",
+      valor_informacoes_bancarias_pix: window.valor_informacoes_bancarias_pix
+    },
+    success: function(ret) { 
+      const mensagemSucesso = `
+                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    
+                    <div>
+                      
+                      <div>KIT atualizado com sucesso.</div>
+                    </div>
+                  </div>
+                </div>
+          `;
+
+          // Remove mensagem anterior se existir
+          $("#dados-informacoes-bancarias-gravado").remove();
+              
+          // Adiciona a nova mensagem acima das abas
+          $(".tabs-container").before(mensagemSucesso);
+
+          // Configura o fade out após 5 segundos
+          setTimeout(function() {
+            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
+            $(this).remove();
+            });
+          }, 5000);
+
+     },
+    error: function(xhr, status, error) { console.log("Erro:", error); }
+  });
+}
 
 // ============================================================
 // 🔹 Associação de eventos — apenas clique real do usuário
@@ -6496,6 +6756,61 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
     }
   });
 });
+
+
+          // Listener do seletor de escopo de informações bancárias
+          try {
+            const escopoContaSelect = document.getElementById('escopo-conta-bancaria');
+            if (escopoContaSelect) {
+              // Inicializa com valor global, se existir (persistência entre etapas/abas)
+              if (typeof window.valor_informacoes_bancarias_qrcode !== 'undefined' && window.valor_informacoes_bancarias_qrcode !== null) {
+                escopoContaSelect.value = window.valor_informacoes_bancarias_qrcode;
+              }
+
+              escopoContaSelect.addEventListener('change', function () {
+                debugger;
+                const valor = this.value || '';
+                window.valor_informacoes_bancarias_qrcode = valor;
+                gravar_informacoes_bancarias_qrcode(window.valor_informacoes_bancarias_qrcode);
+              });
+            }
+          } catch(e) { /* noop */ }
+
+          // Listener do seletor de escopo de informações bancárias
+          try {
+            const escopoContaAgenciaContaSelect = document.getElementById('escopo-conta-bancaria-agencia-conta');
+            if (escopoContaAgenciaContaSelect) {
+              // Inicializa com valor global, se existir (persistência entre etapas/abas)
+              if (typeof window.valor_informacoes_bancarias_agencia_conta !== 'undefined' && window.valor_informacoes_bancarias_agencia_conta !== null) {
+                escopoContaAgenciaContaSelect.value = window.valor_informacoes_bancarias_agencia_conta;
+              }
+
+              escopoContaAgenciaContaSelect.addEventListener('change', function () {
+                debugger;
+                const valor = this.value || '';
+                window.valor_informacoes_bancarias_agencia_conta = valor;
+                gravar_informacoes_bancarias_agencia_conta(window.valor_informacoes_bancarias_agencia_conta);
+              });
+            }
+          } catch(e) { /* noop */ }
+
+          // Listener do seletor de escopo de informações bancárias
+          try {
+            const escopoPIXSelect = document.getElementById('escopo-conta-bancaria-pix');
+            if (escopoPIXSelect) {
+              // Inicializa com valor global, se existir (persistência entre etapas/abas)
+              if (typeof window.valor_informacoes_bancarias_pix !== 'undefined' && window.valor_informacoes_bancarias_pix !== null) {
+                escopoPIXSelect.value = window.valor_informacoes_bancarias_pix;
+              }
+
+              escopoPIXSelect.addEventListener('change', function () {
+                debugger;
+                const valor = this.value || '';
+                window.valor_informacoes_bancarias_pix = valor;
+                gravar_informacoes_bancarias_pix(window.valor_informacoes_bancarias_pix);
+              });
+            }
+          } catch(e) { /* noop */ }
 
 
           
@@ -9931,6 +10246,8 @@ try {
       {
         if(inputId === "inputEmpresa")
         {
+          window.dados_empresa = itemObj;
+
           await grava_ecp_kit("empresa",itemObj.id);
 
           recebe_codigo_empresa_selecionada = itemObj.id;
@@ -9953,6 +10270,7 @@ try {
           await grava_ecp_kit("colaborador",itemObj.id);
         }else if(inputId === "inputCargo")
         {
+          window.dados_cargo = itemObj;
           await grava_ecp_kit("cargo",itemObj.id);
         }
       }
@@ -15724,6 +16042,7 @@ console.log(total); // Exemplo: "180.10"
 
       if(isMotorista)
       {
+        window.dado_motorista = "SIM";
         grava_motorista_kit("SIM");
       }else{
         grava_motorista_kit("NAO");
@@ -16151,6 +16470,63 @@ console.log(total); // Exemplo: "180.10"
                     <span>PIX</span>
                   </div>
                 </label>
+              </div>
+              
+              <!-- Seletor de Escopo (combinações) -->
+              <div id="escopo-conta-bancaria-container" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="flex: 1;">
+                    <label for="escopo-conta-bancaria" style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Aplicar a QRCODE</label>
+                    <select id="escopo-conta-bancaria" class="form-control" style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                      <option value="">Selecione uma opção</option>
+                      <option value="exames_treinamentos_epi">Exames e procedimentos, Treinamentos, EPI/EPC</option>
+                      <option value="exames_treinamentos">Exames e procedimentos, Treinamentos</option>
+                      <option value="exames_epi">Exames e procedimentos, EPI/EPC</option>
+                      <option value="treinamentos_epi">Treinamentos, EPI/EPC</option>
+                      <option value="exames">Exames e procedimentos</option>
+                      <option value="treinamentos">Treinamentos</option>
+                      <option value="epi">EPI/EPC</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Seletor de Escopo (combinações) -->
+              <div id="escopo-conta-bancaria-container" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="flex: 1;">
+                    <label for="escopo-conta-bancaria-agencia-conta" style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Aplicar a Agência e Conta</label>
+                    <select id="escopo-conta-bancaria-agencia-conta" class="form-control" style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                      <option value="">Selecione uma opção</option>
+                      <option value="exames_treinamentos_epi">Exames e procedimentos, Treinamentos, EPI/EPC</option>
+                      <option value="exames_treinamentos">Exames e procedimentos, Treinamentos</option>
+                      <option value="exames_epi">Exames e procedimentos, EPI/EPC</option>
+                      <option value="treinamentos_epi">Treinamentos, EPI/EPC</option>
+                      <option value="exames">Exames e procedimentos</option>
+                      <option value="treinamentos">Treinamentos</option>
+                      <option value="epi">EPI/EPC</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Seletor de Escopo (combinações) -->
+              <div id="escopo-conta-bancaria-container" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="flex: 1;">
+                    <label for="escopo-conta-bancaria-pix" style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Aplicar a PIX</label>
+                    <select id="escopo-conta-bancaria-pix" class="form-control" style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                      <option value="">Selecione uma opção</option>
+                      <option value="exames_treinamentos_epi">Exames e procedimentos, Treinamentos, EPI/EPC</option>
+                      <option value="exames_treinamentos">Exames e procedimentos, Treinamentos</option>
+                      <option value="exames_epi">Exames e procedimentos, EPI/EPC</option>
+                      <option value="treinamentos_epi">Treinamentos, EPI/EPC</option>
+                      <option value="exames">Exames e procedimentos</option>
+                      <option value="treinamentos">Treinamentos</option>
+                      <option value="epi">EPI/EPC</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               
               <!-- Seletor de Chave PIX -->

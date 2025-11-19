@@ -1,0 +1,124 @@
+<style>
+            body {
+                font-family: Arial, sans-serif;
+                background:#f2f2f2;
+                margin:0;
+                padding:0;
+            }
+            .guia-container {
+                width: 210mm;
+                min-height: 297mm;
+                margin:5mm auto;
+                padding:10px;
+                background:#fff;
+                border:1px solid #000;
+            }
+            table { width:100%; border-collapse:collapse; font-size:12px; }
+            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+            .titulo-guia {
+                background:#eaeaea;
+                border:1px solid #000;
+                font-weight:bold;
+                text-align:center;
+                font-size:14px;
+                padding:5px;
+                height:22px;
+            }
+            .section-title {
+                background:#eaeaea;
+                border:1px solid #666;
+                font-weight:bold;
+                font-size:12px;
+                padding:3px 5px;
+                text-align:left;
+            }
+            .dados-hospital { font-size:12px; line-height:1.4; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+
+            .logo { text-align:center; }
+            .logo img { max-height:45px; }
+
+            /* QR Code */
+            .qrcode img {
+                display:block;
+                width:120px;
+                height:auto;
+                margin-top:5px;
+            }
+
+            /* Botões - Centralizados abaixo do formulário */
+            .actions {
+                margin-top: 15px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid #ccc; /* linha de separação opcional */
+            }
+            .btn {
+                padding:10px 18px;
+                font-size:14px;
+                font-weight:bold;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
+                color:#fff;
+                box-shadow:0 2px 5px rgba(0,0,0,.2);
+                margin:0 5px;
+            }
+            .btn-email { background:#007bff; }
+            .btn-whatsapp { background:#25d366; }
+            .btn-print { background:#6c757d; }
+            .btn:hover { opacity:.9; }
+
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body { background:#fff; }
+                .actions { display: none !important; }
+            }
+
+            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
+        .table-riscos th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+        .table-riscos td {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .table-exames th {
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px;
+        }
+
+        .legenda {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .assinatura {
+                width: 150px;
+    height: 60px;
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 0px auto 5px auto;
+        }
+
+        @media print {
+  table {
+    page-break-inside: avoid;
+  }
+}
+
+        </style>
