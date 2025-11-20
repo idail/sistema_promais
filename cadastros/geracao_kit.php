@@ -12831,6 +12831,7 @@ modal.innerHTML = `
 
     function busca_medicos_relacionados_clinica()
     {
+      debugger;
 
       let medicos_relacionados_clinica = [];
 
@@ -13158,14 +13159,86 @@ modal.innerHTML = `
         });
       }
 
+    function buscar_assinatura_medico_examinador(pessoa)
+    {
+      debugger;
+      return new Promise((resolve, reject) => {
+          $.ajax({
+              url: "cadastros/processa_geracao_kit.php",
+              type: "GET",
+              dataType: "json",
+              data: {
+                  processo_geracao_kit: "busca_medico_examinador_kit",
+                  valor_id_medico_examinador_kit: pessoa.id,
+              },
+              success: function (retorno_medico) {
+                  debugger;
+                  console.log(retorno_medico);
+
+                  resolve(retorno_medico);
+
+                  // if (retorno_medico) {
+                  //     const mensagemSucesso = `
+                  //       <div id="medico-coordenador-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  //         <div style="display: flex; align-items: center; justify-content: center;">
+                  //           <div>
+                  //             <div>Médico coordenador cadastrado com sucesso.</div>
+                  //           </div>
+                  //         </div>
+                  //       </div>
+                  //     `;
+
+                  //     // Remove mensagem anterior se existir
+                  //     $("#medico-coordenador-gravado").remove();
+
+                  //     // Adiciona a nova mensagem acima das abas
+                  //     $(".tabs-container").before(mensagemSucesso);
+
+                  //     // Configura o fade out após 5 segundos
+                  //     setTimeout(function () {
+                  //         $("#medico-coordenador-gravado").fadeOut(500, function () {
+                  //             $(this).remove();
+                  //         });
+                  //     }, 5000);
+
+                  //     // Atualiza o ID temporário para o ID real retornado pelo servidor
+                  //     const medicoCoordenadorIndex = profissionaisMedicinaData.coordenadores.findIndex(
+                  //         mc => mc.id === valores.id
+                  //     );
+
+                  //     if (medicoCoordenadorIndex !== -1) {
+                  //         profissionaisMedicinaData.coordenadores[medicoCoordenadorIndex].id = retorno_medico; // usa retorno do servidor
+                  //     }
+                      
+                  //     resolve(retorno_medico); // <-- resolve a Promise com o ID
+                  // } else {
+                  //     reject("Erro: retorno inválido do servidor");
+                  // }
+              },
+              error: function (xhr, status, error) {
+                  console.log("Falha ao inserir empresa:" + error);
+                  reject(error); // <-- rejeita a Promise em caso de erro
+              },
+          });
+      });
+    }
 
 
-    function renderizarPessoa(tipo, pessoa, area) {
+
+    async function renderizarPessoa(tipo, pessoa, area) {
+      debugger;
       if(tipo === "coordenador")
       {
         grava_medico_coordenador_kit(pessoa);
       }else{
 
+      }
+
+      let dados_medico = await buscar_assinatura_medico_examinador(pessoa);
+
+      // 👉 Se vier imagem da assinatura, adiciona no objeto pessoa
+      if (dados_medico && dados_medico.imagem_assinatura) {
+        pessoa.assinatura = dados_medico.imagem_assinatura;
       }
 
       area.className = 'ecp-details';
@@ -13516,7 +13589,7 @@ modal.innerHTML = `
         </div>
         <div class="mt-2">
             <label class="ecp-label">Assinatura atual</label>
-              <img src="${pessoa.assinatura}" alt="Assinatura" 
+              <img src="cadastros/documentos/assinaturas/${pessoa.assinatura}" alt="Assinatura" 
               style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
           </div>
         <div id="preview-assinatura-${pessoa.cpf}" class="mt-2"></div>
