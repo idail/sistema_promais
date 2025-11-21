@@ -1897,7 +1897,7 @@ function renderResultadoProfissional(tipo) {
       } catch (e) { /* noop */ }
     }
 
-    function repopular_medico_fonoaudiologo_audiometria() {
+    async function repopular_medico_fonoaudiologo_audiometria() {
       debugger;
 
         const select = document.getElementById("fonoaudiologos");
@@ -1937,6 +1937,10 @@ function renderResultadoProfissional(tipo) {
 
           observer.observe(select, { childList: true });
         }
+
+        let recebe_medico_fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(idParaSelecionar);
+
+        renderizarFonoaudiologo(recebe_medico_fonoaudiologo);
     }
 
 
@@ -4060,10 +4064,21 @@ async function repopular_treinamentos() {
     // 3️⃣ Marca automaticamente os treinamentos que vieram de window.treinamentos (edição)
     let treinamentosMarcados = [];
     try {
-      treinamentosMarcados = JSON.parse(window.treinamentos);
-      if (!Array.isArray(treinamentosMarcados)) treinamentosMarcados = [];
+      if (Array.isArray(window.treinamentos)) {
+        // Já é um array vindo do backend
+        treinamentosMarcados = window.treinamentos;
+      } else if (typeof window.treinamentos === 'string' && window.treinamentos.trim() !== '') {
+        // String JSON
+        const parsed = JSON.parse(window.treinamentos);
+        treinamentosMarcados = Array.isArray(parsed) ? parsed : [];
+      } else if (window.treinamentos && typeof window.treinamentos === 'object') {
+        // Objeto/dicionário inesperado
+        treinamentosMarcados = Object.values(window.treinamentos);
+      } else {
+        treinamentosMarcados = [];
+      }
     } catch (e) {
-      console.warn("window.treinamentos não é um JSON válido:", e);
+      console.warn('Falha ao ler window.treinamentos:', e);
       treinamentosMarcados = [];
     }
 
@@ -4517,22 +4532,29 @@ setTimeout(async () => {
   try { repopularDetalhesRiscosSelecionados(); } 
   catch (e) { console.warn('Falha ao repopular detalhes de riscos (timeout):', e); }
 
-  try {
-  await repopular_treinamentos();
-  console.log("✅ Treinamentos exibidos corretamente.");
+  if (window.recebe_acao === 'editar') {
+    try {
+      await repopular_treinamentos();
+      console.log("✅ Treinamentos exibidos corretamente.");
+    } catch (e) {
+      console.warn("Falha ao repopular treinamentos (timeout):", e);
+    }
 
-  
-} catch (e) {
-  console.warn("Falha ao repopular detalhes de riscos (timeout):", e);
-}
+    try {
+      await repopular_treinamentos_selecionados();
+      console.log('✅ Treinamentos repopulados com sucesso.');
+    } catch (e) {
+      console.warn('Falha ao repopular treinamentos selecionados (timeout):', e);
+    }
 
-
-  try {
-  await repopular_treinamentos_selecionados();
-  console.log('✅ Treinamentos repopulados com sucesso.');
-} catch (e) {
-  console.warn('Falha ao repopular detalhes de riscos (timeout):', e);
-}
+    // Após repopular, sincroniza estado global temporário e reconstrói UI selecionada
+    try {
+      if (typeof syncTempSelecionadosFromDOM === 'function') syncTempSelecionadosFromDOM();
+      if (typeof rebuildSelecionadosUIFromChecked === 'function') rebuildSelecionadosUIFromChecked();
+    } catch (e) {
+      console.warn('Falha ao sincronizar/reconstruir UI de treinamentos após repopular:', e);
+    }
+  }
 
 try {
   marcarDropdownsLaudo();
@@ -15739,6 +15761,7 @@ if (listaTreinamentos !== null && Array.isArray(treinamentos) && treinamentos.le
 
       // Marca checkboxes conforme o estado temporário global
       function reaplicarSelecoes() {
+        debugger;
         window.treinamentosSelecionados = normalizeTreinamentosSelecionados(window.treinamentosSelecionados);
         const marcados = new Set(window.treinamentosSelecionados.map(t => String(t.codigo)));
         document.querySelectorAll('#listaTreinamentos input[type="checkbox"]').forEach(cb => {
