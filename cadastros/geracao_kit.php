@@ -13517,7 +13517,55 @@ modal.innerHTML = `
       debugger;
       if(window.recebe_acao && window.recebe_acao === "editar")
       {
+        $.ajax({
+                  url: "cadastros/processa_geracao_kit.php",
+                  type: "POST",
+                  dataType: "json",
+                  data: {
+                    processo_geracao_kit: "atualizar_kit",
+                    valor_medico_fonoaudiologo_id: id,
+                    valor_id_kit:window.recebe_id_kit
+                  },
+                  success: function(retorno_exame_geracao_kit) {
+                    debugger;
 
+                    const mensagemSucesso = `
+                          <div id="medico-fonoaudiologo-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                              
+                              <div>
+                                
+                                <div>KIT atualizado com sucesso.</div>
+                              </div>
+                            </div>
+                          </div>
+                    `;
+
+                    // Remove mensagem anterior se existir
+                    $("#medico-fonoaudiologo-gravado").remove();
+                        
+                    // Adiciona a nova mensagem acima das abas
+                    $(".tabs-container").before(mensagemSucesso);
+
+                    // Configura o fade out após 5 segundos
+                    setTimeout(function() {
+                      $("#medico-fonoaudiologo-gravado").fadeOut(500, function() {
+                      $(this).remove();
+                      });
+                    }, 5000);
+
+
+                    // $("#exame-gravado").html(retorno_exame_geracao_kit);
+                    // $("#exame-gravado").show();
+                    // $("#exame-gravado").fadeOut(4000);
+                    console.log(retorno_exame_geracao_kit);
+                    // ajaxEmExecucao = false; // libera para nova requisição
+                  },
+                  error: function(xhr, status, error) {
+                    console.log("Falha ao incluir exame: " + error);
+                    // ajaxEmExecucao = false; // libera para tentar de novo
+               },
+          }); 
       }else{
         $.ajax({
                   url: "cadastros/processa_geracao_kit.php",
@@ -13581,7 +13629,7 @@ modal.innerHTML = `
             id="assinatura-${pessoa.cpf}" 
             class="ecp-input" 
             accept="image/*" 
-            onchange="handleAssinaturaUpload(this, '${pessoa.cpf}')"
+            onchange="handleAssinaturaUpload(this,'${pessoa.id}', '${pessoa.cpf}')"
           >
           <div class="ecp-questionario-note">
             Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 2MB
