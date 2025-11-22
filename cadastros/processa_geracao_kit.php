@@ -1662,7 +1662,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $bind_cargo = bindCondicionalSession($instrucao_atualizar_kit, "valor_cargo", "cargo_id", ":recebe_cargo_id", "cargo_selecionado");
         $bind_medico_coordenador_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_coordenador_id", "medico_coordenador_id", ":recebe_medico_coordenador_id", "medico_coordenador_selecionado");
         $bind_medico_clinica_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_clinica_id", "medico_clinica_id", ":recebe_medico_clinica_id", "medico_clinica_selecionado");
-        $bind_medico_fonoaudiologo_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_fonoaudiologo_id", "medico_fonoaudiologo_id", ":recebe_medico_fonoaudiologo_id", "medico_fonoaudiologo_selecionado");
+        $bind_medico_fonoaudiologo_id = bindCondicionalSession($instrucao_atualizar_kit, "valor_medico_fonoaudiologo_id", "medico_fonoaudiologo", ":recebe_medico_fonoaudiologo_id", "medico_fonoaudiologo_selecionado");
         $bind_riscos = bindCondicionalSession($instrucao_atualizar_kit, "valor_riscos", "riscos_selecionados", ":recebe_riscos_selecionados", "medico_risco_selecionado");
         $bind_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_treinamentos", "treinamentos_selecionados", ":recebe_treinamentos_selecionados", "medico_treinamento_selecionado");
 

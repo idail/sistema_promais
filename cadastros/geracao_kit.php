@@ -18369,111 +18369,72 @@ if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0
     return;
   }
 
-  // 🔹 Seleciona array de base conforme modo (edição ou gravação)
-  let baseArray =
-    tipo === "aptidao"
-      ? (Array.isArray(window.aptidoes) && window.aptidoes.length > 0
-          ? window.aptidoes
-          : itens)
-      : (Array.isArray(window.exames) && window.exames.length > 0
-          ? window.exames
-          : itens);
+  // 🔹 Seleciona array de base preferindo sempre os 'itens' do UI
+  let baseArray;
+  if (Array.isArray(itens)) {
+    baseArray = itens;
+  } else if (window.recebe_acao === "editar") {
+    baseArray = tipo === "aptidao"
+      ? (Array.isArray(window.aptAptidoesSelecionadas) ? window.aptAptidoesSelecionadas : [])
+      : (Array.isArray(window.aptExamesSelecionados) ? window.aptExamesSelecionados : []);
+  } else {
+    baseArray = [];
+  }
 
   // 🔹 Atualiza variáveis principais e JSON
   if (tipo === "aptidao") {
     aptidoes_selecionadas = baseArray.map(item => ({
-      codigo: item.codigo,
+      codigo: String(item.codigo),
       nome: item.recebe_apenas_nome || item.nome,
       valor: item.valor
     }));
+
     aptidoes_selecionadas = [...new Map(aptidoes_selecionadas.map(i => [i.codigo, i])).values()];
     json_aptidoes = JSON.stringify(aptidoes_selecionadas);
     console.log("Aptidões selecionadas:", aptidoes_selecionadas);
+    if (window.recebe_acao === "editar") {
+      window.aptAptidoesSelecionadas = [...aptidoes_selecionadas];
+    }
     if (devePersistir && precisaSalvarAptidoes) {
       await gravar_aptidoes_selecionadas();
       precisaSalvarAptidoes = false;
     }
   } else {
     exames_selecionados = baseArray.map(item => ({
-      codigo: item.codigo,
+      codigo: String(item.codigo),
       nome: item.recebe_apenas_nome || item.nome,
       valor: item.valor
     }));
+
     exames_selecionados = [...new Map(exames_selecionados.map(i => [i.codigo, i])).values()];
     json_exames = JSON.stringify(exames_selecionados);
     console.log("Exames selecionados:", exames_selecionados);
+    if (window.recebe_acao === "editar") {
+      window.aptExamesSelecionados = [...exames_selecionados];
+    }
     if (devePersistir && precisaSalvarExames) {
       await gravar_exames_selecionadas();
       precisaSalvarExames = false;
     }
   }
 
-  // 🔹 Atualiza variáveis principais e JSON
-if (tipo === "aptidao") {
-  aptidoes_selecionadas = baseArray.map(item => ({
-    codigo: item.codigo,
-    nome: item.recebe_apenas_nome || item.nome,
-    valor: item.valor
-  }));
-  aptidoes_selecionadas = [...new Map(aptidoes_selecionadas.map(i => [i.codigo, i])).values()];
-  json_aptidoes = JSON.stringify(aptidoes_selecionadas);
-  console.log("Aptidões selecionadas:", aptidoes_selecionadas);
-
-  // 🟠 NOVO - se for gravação (step 4), salva globalmente
-  if (window.recebe_acao !== "edicao") {
-    window.aptAptidoesSelecionadas = [...aptidoes_selecionadas];
-  }
-
-  if (devePersistir && precisaSalvarAptidoes) {
-    await gravar_aptidoes_selecionadas();
-    precisaSalvarAptidoes = false;
-  }
-} else {
-  exames_selecionados = baseArray.map(item => ({
-    codigo: item.codigo,
-    nome: item.recebe_apenas_nome || item.nome,
-    valor: item.valor
-  }));
-  exames_selecionados = [...new Map(exames_selecionados.map(i => [i.codigo, i])).values()];
-  json_exames = JSON.stringify(exames_selecionados);
-  console.log("Exames selecionados:", exames_selecionados);
-
-  // 🟠 NOVO - se for gravação (step 4), salva globalmente
-  if (window.recebe_acao !== "edicao") {
-    window.aptExamesSelecionados = [...exames_selecionados];
-  }
-
-  if (devePersistir && precisaSalvarExames) {
-    await gravar_exames_selecionadas();
-    precisaSalvarExames = false;
-  }
-}
-
-
   // 🔹 Cálculo do total de exames (somente no modo de edição)
-  if (tipo === "exame" && Array.isArray(window.exames) && window.exames.length > 0) {
-    const total = window.exames.reduce((soma, item) => {
-      let v = item?.valor ?? "0";
-      if (typeof v === "string") v = v.replace(",", ".");
-      const num = parseFloat(v);
-      return soma + (isNaN(num) ? 0 : num);
-    }, 0);
-
-    window.fatTotalExames = Number(total.toFixed(2));
-    console.log("💰 Total de exames (edição):", window.fatTotalExames);
-  } else if (tipo === "exame") {
-    // Caso não esteja no modo edição, usa o array recebido normalmente
-    const total = baseArray.reduce((soma, item) => {
+  if (tipo === "exame") {
+    const renderArray = Array.isArray(exames_selecionados) ? exames_selecionados : [];
+    const total = renderArray.reduce((soma, item) => {
       let v = item?.valor ?? "0";
       if (typeof v === "string") v = v.replace(",", ".");
       const num = parseFloat(v);
       return soma + (isNaN(num) ? 0 : num);
     }, 0);
     window.fatTotalExames = Number(total.toFixed(2));
+    console.log("💰 Total de exames:", window.fatTotalExames);
   }
 
   // 🔹 Renderiza badges na interface
-  baseArray.forEach(item => {
+  const renderArray = tipo === 'aptidao' ? aptidoes_selecionadas : exames_selecionados;
+  renderArray.forEach(item => {
+
     debugger;
     const badge = document.createElement('div');
     badge.style.display = 'inline-flex';
@@ -18500,10 +18461,11 @@ if (tipo === "aptidao") {
         ? (window.aptAptidoesSelecionadas || aptAptidoesSelecionadas)
         : (window.aptExamesSelecionados || aptExamesSelecionados);
 
-      const index = arrayAlvo.findIndex(a => a.codigo === item.codigo);
+      const codigoAlvo = String(item.codigo);
+      const index = arrayAlvo.findIndex(a => String(a.codigo) === codigoAlvo);
       if (index !== -1) arrayAlvo.splice(index, 1);
 
-      const checkbox = document.querySelector(`#${tipo}-${item.codigo}`);
+      const checkbox = document.querySelector(`#${tipo}-${codigoAlvo}`);
       if (checkbox) {
         emAtualizacaoProgramatica = true;
         checkbox.checked = false;
@@ -18730,24 +18692,28 @@ async function atualizarSelecionados(checkbox, tipo) {
   if (emAtualizacaoProgramatica || emProcessamentoSelecao) return;
 
   const estadoInicialMarcado = !!checkbox.checked;
-  const codigo = checkbox.value;
+  const codigo = String(checkbox.value);
   const nome = checkbox.nextElementSibling.textContent.trim();
   const valor = checkbox.getAttribute('data-valor') || checkbox.value;
   const recebe_apenas_nome = nome.split('-')[1]?.trim() || nome;
 
   const dadosOriginais = tipo === 'aptidao' ? aptDadosAptidoes : aptDadosExames;
-  const itemOriginal = dadosOriginais.find(item => item.codigo === codigo);
-  const item = { codigo, recebe_apenas_nome, valor };
+  const itemOriginal = dadosOriginais.find(item => String(item.codigo) === String(codigo));
+  const item = { codigo: String(codigo), recebe_apenas_nome, valor };
 
-  // 🔹 Usa arrays de edição (globais) se existirem e contiverem dados
+  // 🔹 Sempre preferir arrays locais; inicializa dos globais se existirem
   const arraySelecionado =
     tipo === 'aptidao'
-      ? (Array.isArray(aptAptidoesSelecionadas) && aptAptidoesSelecionadas.length > 0
+      ? (Array.isArray(aptAptidoesSelecionadas)
           ? aptAptidoesSelecionadas
-          : (Array.isArray(window.aptAptidoesSelecionadas) ? window.aptAptidoesSelecionadas : []))
-      : (Array.isArray(aptExamesSelecionados) && aptExamesSelecionados.length > 0
+          : (Array.isArray(window.aptAptidoesSelecionadas)
+              ? (aptAptidoesSelecionadas = window.aptAptidoesSelecionadas)
+              : (aptAptidoesSelecionadas = [])))
+      : (Array.isArray(aptExamesSelecionados)
           ? aptExamesSelecionados
-          : (Array.isArray(window.aptExamesSelecionados) ? window.aptExamesSelecionados : []));
+          : (Array.isArray(window.aptExamesSelecionados)
+              ? (aptExamesSelecionados = window.aptExamesSelecionados)
+              : (aptExamesSelecionados = [])));
 
   const container = tipo === 'aptidao' ? selectedAptidoesContainer : selectedExamesContainer;
 
@@ -18756,19 +18722,19 @@ async function atualizarSelecionados(checkbox, tipo) {
 
   if (estadoInicialMarcado) {
     // Adiciona se não existir
-    if (!arraySelecionado.some(a => a.codigo === codigo)) {
+    if (!arraySelecionado.some(a => String(a.codigo) === String(codigo))) {
       arraySelecionado.push(item);
     }
 
-    if (!recebe_valores_exames_selecionados.some(ex => ex.codigo === codigo)) {
-      recebe_valores_exames_selecionados.push({ codigo, valor });
+    if (!recebe_valores_exames_selecionados.some(ex => String(ex.codigo) === String(codigo))) {
+      recebe_valores_exames_selecionados.push({ codigo: String(codigo), valor });
     }
   } else {
     // Remove se existir
-    const index = arraySelecionado.findIndex(a => a.codigo === codigo);
+    const index = arraySelecionado.findIndex(a => String(a.codigo) === String(codigo));
     if (index !== -1) arraySelecionado.splice(index, 1);
 
-    const idxValor = recebe_valores_exames_selecionados.findIndex(a => a.codigo === codigo);
+    const idxValor = recebe_valores_exames_selecionados.findIndex(a => String(a.codigo) === String(codigo));
     if (idxValor !== -1) recebe_valores_exames_selecionados.splice(idxValor, 1);
   }
 
@@ -18834,7 +18800,7 @@ function renderizarCheckboxes() {
     aptDadosAptidoes.forEach(item => {
       const checkbox = criarCheckbox(item, 'aptidao');
       const input = checkbox.querySelector('input[type="checkbox"]');
-      if (aptSelecionadas.some(a => a.codigo === item.codigo)) {
+      if (aptSelecionadas.some(a => String(a.codigo) === String(item.codigo))) {
         emAtualizacaoProgramatica = true;
         input.checked = true;
         emAtualizacaoProgramatica = false;
@@ -18849,7 +18815,7 @@ function renderizarCheckboxes() {
     aptDadosExames.forEach(item => {
       const checkbox = criarCheckbox(item, 'exame');
       const input = checkbox.querySelector('input[type="checkbox"]');
-      if (examesSelecionados.some(e => e.codigo === item.codigo)) {
+      if (examesSelecionados.some(e => String(e.codigo) === String(item.codigo))) {
         emAtualizacaoProgramatica = true;
         input.checked = true;
         emAtualizacaoProgramatica = false;
