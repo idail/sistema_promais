@@ -6123,13 +6123,12 @@ setTimeout(() => {
           }
           
           // Verificar se o módulo já foi inicializado
-          if (window.contaBancariaInicializada) {
-            console.log('Módulo de Conta Bancária já foi inicializado');
-            return;
-          }
-          
-          // Marcar como inicializado
-          window.contaBancariaInicializada = true;
+          // Desabilitado: permitir reinicialização ao reentrar na aba
+          // if (window.contaBancariaInicializada) {
+          //   console.log('Módulo de Conta Bancária já foi inicializado');
+          //   return;
+          // }
+          // window.contaBancariaInicializada = true;
           
           // Verificar se o tipo PIX já está selecionado
           const pixRadio = document.querySelector('input[value="pix"]');
@@ -6755,18 +6754,6 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
   input.addEventListener('click', function () {
     debugger;
     try {
-      // 🚫 Ignora clique se a aba bancária ainda estiver carregando
-      if (window._carregandoAbaBancaria) {
-        console.log('⏸️ Clique ignorado — aba bancária ainda carregando.');
-        return;
-      }
-
-      // 🚫 Ignora se não foi uma interação manual
-      if (!window._mudancaManualTipoConta) {
-        console.log('⏸️ Clique ignorado — não foi interação manual.');
-        return;
-      }
-
       // ✅ Executa a função de tratamento
       tratarSelecaoTipoBancario(this);
 
@@ -6779,6 +6766,58 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
   });
 });
 
+// Delegação para sobreviver a recriações do DOM
+if (!window._delegacaoTipoConta) {
+  window._delegacaoTipoConta = true;
+  document.addEventListener('mousedown', function (ev) {
+    const alvo = ev.target && ev.target.closest && ev.target.closest('input[name="tipo-conta"]');
+    if (alvo) window._mudancaManualTipoConta = true;
+  });
+  document.addEventListener('keydown', function (ev) {
+    const alvo = ev.target && ev.target.closest && ev.target.closest('input[name="tipo-conta"]');
+    if (alvo) window._mudancaManualTipoConta = true;
+  });
+  document.addEventListener('click', function (ev) {
+    const alvo = ev.target && ev.target.closest && ev.target.closest('input[name="tipo-conta"]');
+    if (!alvo) return;
+    try {
+      // Não bloquear por _carregandoAbaBancaria aqui para garantir clique na primeira entrada
+      // Executa sempre que houver clique no input (inclusive via label)
+      tratarSelecaoTipoBancario(alvo);
+    } catch (e) {
+      console.error('❌ Erro no clique de tipo-conta (delegado):', e);
+    } finally {
+      window._mudancaManualTipoConta = false;
+      window._carregandoAbaBancaria = false;
+    }
+  });
+
+  // Também trata a mudança (após o toggle do checkbox), útil no primeiro carregamento
+  document.addEventListener('change', function (ev) {
+    const alvo = ev.target && ev.target.closest && ev.target.closest('input[name="tipo-conta"]');
+    if (!alvo) return;
+    try {
+      tratarSelecaoTipoBancario(alvo);
+    } catch (e) {
+      console.error('❌ Erro no change de tipo-conta (delegado):', e);
+    }
+  });
+
+  // Também capturar cliques em labels associados (label[for])
+  document.addEventListener('click', function (ev) {
+    const lbl = ev.target && ev.target.closest && ev.target.closest('label[for]');
+    if (!lbl) return;
+    const forId = lbl.getAttribute('for');
+    if (!forId) return;
+    const inp = document.getElementById(forId);
+    if (inp && inp.name === 'tipo-conta') {
+      // Aguarda o navegador aplicar o toggle do checkbox e então trata
+      setTimeout(() => {
+        try { tratarSelecaoTipoBancario(inp); } catch (_) {}
+      }, 0);
+    }
+  });
+}
 
           // Listener do seletor de escopo de informações bancárias
           try {
@@ -7006,7 +7045,7 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
             console.log(retorno_conta_bancaria);
             if (retorno_conta_bancaria) {
               const mensagemSucesso = `
-                  <div id="pix-rapido-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+                  <div id="dados-pix-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
                     <div style="display: flex; align-items: center; justify-content: center;">
                     <div>
                     <div>PIX cadastrado com sucesso.</div>
@@ -7016,14 +7055,14 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
                   `;
 
             // Remove mensagem anterior se existir
-            $("#pix-rapido-gravado").remove();
+            $("#dados-pix-gravado").remove();
                          
             // Adiciona a nova mensagem acima das abas
             $(".tabs-container").before(mensagemSucesso);
 
             // Configura o fade out após 5 segundos
             setTimeout(function() {
-              $("#pix-rapido-gravado").fadeOut(500, function() {
+              $("#dados-pix-gravado").fadeOut(500, function() {
               $(this).remove();
               });
             }, 5000);
@@ -7328,15 +7367,8 @@ document.querySelectorAll('input[name="tipo-conta"]').forEach(input => {
 // ============================================================
 // 🔹 Controle de carregamento da aba
 // ============================================================
-window._carregandoAbaBancaria = true;
-
-// 🔹 Libera após o carregamento do DOM
-document.addEventListener('DOMContentLoaded', function () {
-  setTimeout(() => {
-    window._carregandoAbaBancaria = false;
-    console.log('✅ Aba bancária carregada — eventos liberados.');
-  }, 500);
-});
+// Não bloquear a interação inicial: a aba já está renderizada neste ponto
+window._carregandoAbaBancaria = false;
 
 // ============================================================
 // 🔹 Controle de mudança manual (somente se o usuário interagir)
@@ -7403,6 +7435,14 @@ debugger;
               if (acSelector) acSelector.style.display = agSelecionado ? 'block' : 'none';
             }
             tipoContaInputs.forEach(i => i.addEventListener('change', acAtualizarVisibilidade));
+            if (!window._delegacaoVisAg) {
+              window._delegacaoVisAg = true;
+              document.addEventListener('change', function(e){
+                if (e.target && e.target.matches && e.target.matches('input[name="tipo-conta"]')) {
+                  //acAtualizarVisibilidade();
+                }
+              });
+            }
             acAtualizarVisibilidade();
 
             function acAbrirModal() {
