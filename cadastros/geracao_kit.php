@@ -9870,7 +9870,7 @@ try {
 }
 
   function buscarECP(tipo, inputId, resultadoId, chave) {
-    //debugger;
+    debugger;
     console.log('buscarECP chamada com parâmetros:', {tipo, inputId, resultadoId, chave});
     console.log('ecpData no início da busca:', ecpData);
     console.log('Dados disponíveis para busca:', ecpData[tipo]);
