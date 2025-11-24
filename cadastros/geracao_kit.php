@@ -6581,7 +6581,7 @@ function gravar_informacoes_bancarias_qrcode(valor_informacoes_bancarias) {
     async: false,
     data: emEdicao ? {
       processo_geracao_kit: "atualizar_kit",
-      valor_informacoes_bancarias: window.valor_informacoes_bancarias_qrcode,
+      valor_informacoes_bancarias_qrcode: window.valor_informacoes_bancarias_qrcode,
       valor_id_kit: window.recebe_id_kit
     } : {
       processo_geracao_kit: "incluir_valores_kit",
