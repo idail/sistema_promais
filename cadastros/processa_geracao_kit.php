@@ -2107,7 +2107,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $comando_duplicar_kit->bindValue(":recebe_tipo_exame", $valor_tipo_exame, PDO::PARAM_STR);
         }
 
-        $comando_duplicar_kit->bindValue(":recebe_status","FINALIZADO");
+        $comando_duplicar_kit->bindValue(":recebe_status","CÓPIA");
 
         if($valor_empresa_id_principal === null || $valor_empresa_id_principal === "")
         {
@@ -2296,7 +2296,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $resultado_duplicar_kit = $comando_duplicar_kit->execute();
 
-        echo json_encode($resultado_duplicar_kit);
+        $resultado_codigo_kit_duplicado = $pdo->lastInsertId();
+
+        echo json_encode($resultado_codigo_kit_duplicado);
     }else if($recebe_processo_geracao_kit === "excluir_kit")
     {
         if($_POST["metodo"] === "PUT"){

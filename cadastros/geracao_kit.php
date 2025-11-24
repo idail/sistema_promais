@@ -2286,6 +2286,7 @@ async function repopular_dados_pessoa() {
               const statusConfig = {
                 'FINALIZADO': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
                 'RASCUNHO': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+                'CÓPIA': { bg: '#fef3c7', text: '#166534', icon: 'fa-clock' },
                 'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
               };
               const status = kit.status || 'RASCUNHO';
@@ -2293,7 +2294,7 @@ async function repopular_dados_pessoa() {
 
               return `
                 <div style="background: white; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease;"
-                     onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${window.kit_pessoa.nome ? window.kit_pessoa.nome.replace(/'/g, "\\'") : 'Colaborador'}','${window.resposta_cargo_pessoa.titulo_cargo}')">
+                     onclick="abrirDetalhesKit(${JSON.stringify(kit).replace(/"/g, '&quot;')}, '${window.kit_pessoa.nome ? window.kit_pessoa.nome.replace(/'/g, "\\'") : 'Colaborador'}','${window.resposta_cargo_pessoa.titulo_cargo}',${window.kit_pessoa.id})">
                   <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div style="flex: 1; min-width: 0;">
                       <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
@@ -10525,6 +10526,7 @@ try {
                   const statusConfig = {
                     'FINALIZADO': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
                     'RASCUNHO': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+                    'CÓPIA': { bg: '#fef3c7', text: '#166534', icon: 'fa-clock' },
                     'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
                   };
                   
@@ -11281,6 +11283,7 @@ try {
       const statusConfig = {
         'FINALIZADO': { bg: '#dcfce7', text: '#166534', icon: 'fa-check-circle' },
         'RASCUNHO': { bg: '#fef3c7', text: '#92400e', icon: 'fa-clock' },
+        'CÓPIA': { bg: '#fef3c7', text: '#166534', icon: 'fa-clock' },
         'default': { bg: '#fee2e2', text: '#991b1b', icon: 'fa-times-circle' }
       };
       const status = kit.status || 'RASCUNHO';
@@ -11376,56 +11379,89 @@ modal.innerHTML = `
             <i class="fas ${statusInfo.icon} mr-1.5" style="margin-inline-end: 5px;"></i>
             ${status}
           </div>
+          <!-- Botão Visualizar Duplicado abaixo do Status (oculto inicialmente) -->
+<div style="margin-top: 12px; margin-bottom: 20px;">
+  <button 
+    id="botao_visualizar_duplicado"
+    onclick="visualizarKitDuplicado();"
+    style="
+      background: #16a34a;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: none; /* oculto inicialmente */
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    ">
+    <i class="fas fa-copy"></i>
+    Visualizar Duplicado
+  </button>
+</div>
+
         </div>
       </div>
       
       <!-- Informações do Colaborador -->
-      <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; margin-bottom: 12px;">
-          <div style="
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: #e0e7ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            flex-shrink: 0;
-          ">
-            <i class="fas fa-user" style="color: #4f46e5; font-size: 1.1rem;"></i>
-          </div>
-          <div>
-            <div style="font-weight: 600; color: #111827; margin-bottom: 2px;">${nomeColaborador || 'Nome não informado'}</div>
-            <div style="font-size: 0.8125rem; color: #6b7280;">
-              ${cargo || 'Cargo não informado'}
-            </div>
-          </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-          <div>
-            <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Empresa</div>
-            <div style="font-size: 0.9375rem; color: #111827;">${kit.empresa || 'Não informada'}</div>
-          </div>
-          <div>
-            <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Data</div>
-            <div style="font-size: 0.9375rem; color: #111827;">
-              ${kit.data ? new Date(kit.data.replace(' ', 'T')).toLocaleDateString('pt-BR') : 'Não informada'}
-            </div>
-          </div>
-        </div>
+<div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
 
-        <!-- Tipo de Exame -->
-        ${kit.tipo_exame ? `
-          <div style="margin-top: 16px;">
-            <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Tipo de Exame</div>
-            <div style="font-size: 0.9375rem; color: #1f2937; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-              <i class="fas fa-stethoscope" style="color: #2563eb;"></i>
-              ${kit.tipo_exame}
-            </div>
-          </div>
-        ` : ''}
+  <div style="display: flex; align-items: center; margin-bottom: 12px;">
+    <div style="
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+    ">
+      <i class="fas fa-user" style="color: #4f46e5; font-size: 1.1rem;"></i>
+    </div>
+
+    <div>
+      <div style="font-weight: 600; color: #111827; margin-bottom: 2px;">
+        ${nomeColaborador || 'Nome não informado'}
       </div>
+      <div style="font-size: 0.8125rem; color: #6b7280;">
+        ${cargo || 'Cargo não informado'}
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+    <div>
+      <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Empresa</div>
+      <div style="font-size: 0.9375rem; color: #111827;">
+        ${kit.empresa || 'Não informada'}
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Data</div>
+      <div style="font-size: 0.9375rem; color: #111827;">
+        ${kit.data ? new Date(kit.data.replace(' ', 'T')).toLocaleDateString('pt-BR') : 'Não informada'}
+      </div>
+    </div>
+  </div>
+
+  <!-- Tipo de Exame -->
+  ${kit.tipo_exame ? `
+    <div style="margin-top: 16px;">
+      <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 4px;">Tipo de Exame</div>
+      <div style="font-size: 0.9375rem; color: #1f2937; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-stethoscope" style="color: #2563eb;"></i>
+        ${kit.tipo_exame}
+      </div>
+    </div>
+  ` : ''}
+
+</div>
+
       
       <!-- Seção de Ações Rápidas -->
       <div style="margin-top: 24px;">
@@ -11526,7 +11562,6 @@ modal.innerHTML = `
     </div>
   </div>
 `;
-
       
       // Adicionar o modal ao body
       document.body.appendChild(modal);
@@ -11595,7 +11630,12 @@ modal.innerHTML = `
           debugger;
           console.log(retorno_duplicar_kit);
 
-          if (retorno_duplicar_kit === true) {
+          if (retorno_duplicar_kit > 0) {
+            document.getElementById("botao_visualizar_duplicado").data = {
+    id: retorno_duplicar_kit
+};
+            document.getElementById("botao_visualizar_duplicado").style.display = "inline-flex";
+
             const mensagem = document.getElementById("mensagemDuplicado");
             if (mensagem) {
               mensagem.style.display = "block"; // Mostra a mensagem
@@ -11614,6 +11654,34 @@ modal.innerHTML = `
         },
       });
     }
+
+//     document.getElementById("botao_visualizar_duplicado").addEventListener("click", function() {
+//       debugger;
+//     let idRecebido = this.dataset.id;
+//     visualizarKitDuplicado(idRecebido);
+// });
+
+    function visualizarKitDuplicado() {
+  debugger;
+  let id = document.getElementById("botao_visualizar_duplicado").data.id;
+      // Implementar lógica de edição
+      //alert(`Editando kit ${kitId}...`);
+
+      let url = window.location.href;
+
+      // Remove qualquer parâmetro anterior de id e acao (se existirem)
+      url = url
+        .replace(/(&|\?)id=\d+/g, '')
+        .replace(/(&|\?)acao=editar/g, '')
+        .replace(/[?&]+$/, ''); // remove ? ou & sobrando no final
+
+      // Adiciona os novos parâmetros corretamente
+      if (url.includes("?")) {
+        window.location.href = `${url}&id=${id}&acao=editar`;
+      } else {
+        window.location.href = `${url}?id=${id}&acao=editar`;
+      }
+}
     
     function editarKit(kitId) {
       debugger;
