@@ -9593,6 +9593,7 @@ try {
             if (resposta_empresa && resposta_empresa.length > 0) {
               for (let i = 0; i < resposta_empresa.length; i++) {
                 const emp = resposta_empresa[i];
+                window.recebe_id_empresa_assinante = emp.empresa_id;
                 let nomeCidade = '';
                 let nomeEstado = '';
 
@@ -9620,6 +9621,30 @@ try {
                   error: function(){ console.error('Erro ao buscar estado ID:', emp.id_estado); }
                 });
 
+                // Consulta total pessoas empresa
+                await $.ajax({
+                  url: `cadastros/processa_empresa.php`,
+                  method: "GET",
+                  dataType: "json",
+                  data:{
+                    processo_empresa: "buscar_totalizacoes",
+                    valor_id_empresa: window.recebe_id_empresa_assinante
+                  },
+                  success: function(resposta){
+                    console.log(resposta);
+
+                    // Atribui às variáveis globais
+                    window.total_pessoas = resposta.total_pessoas;
+                    window.total_clinicas = resposta.total_clinicas;
+
+                    console.log("Total pessoas:", window.total_pessoas);
+                    console.log("Total clínicas:", window.total_clinicas);
+                  },
+                  error: function(){
+                    console.error('Erro ao buscar totalizações:', window.recebe_id_empresa_assinante);
+                  }
+                });
+
                 empresas.push({
                   id: emp.id,
                   nome: emp.nome,
@@ -9631,8 +9656,8 @@ try {
                   estado: nomeEstado,
                   cep: emp.cep,
                   ativo: true,
-                  quantidadeVidas: 10,
-                  quantidadeClinicas: 5
+                  quantidadeVidas: window.total_pessoas,
+                  quantidadeClinicas: window.total_clinicas
                 });
               }
 
@@ -9870,7 +9895,7 @@ try {
 }
 
   function buscarECP(tipo, inputId, resultadoId, chave) {
-    debugger;
+    //debugger;
     console.log('buscarECP chamada com parâmetros:', {tipo, inputId, resultadoId, chave});
     console.log('ecpData no início da busca:', ecpData);
     console.log('Dados disponíveis para busca:', ecpData[tipo]);

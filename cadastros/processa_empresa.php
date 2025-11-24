@@ -268,6 +268,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_total_empresas->execute();
         $resultado_busca_total_empresas = $comando_busca_total_empresas->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_total_empresas);
+    } else if ($recebe_processo_empresa === "buscar_totalizacoes") {
+        $instrucao_busca_total_pessoas_empresa = "
+    select count(id) as total_pessoas
+    from pessoas
+    where empresa_id = :recebe_empresa_id
+";
+        $comando_busca_total_pessoas_empresa = $pdo->prepare($instrucao_busca_total_pessoas_empresa);
+        $comando_busca_total_pessoas_empresa->bindValue(":recebe_empresa_id", $_GET["valor_id_empresa"]);
+        $comando_busca_total_pessoas_empresa->execute();
+        $resultado_busca_total_pessoas_empresa = $comando_busca_total_pessoas_empresa->fetch(PDO::FETCH_ASSOC);
+
+        $instrucao_busca_total_clinicas_empresa = "
+    select count(id) as total_clinicas
+    from clinicas
+    where empresa_id = :recebe_empresa_id
+";
+        $comando_busca_total_clinicas_empresa = $pdo->prepare($instrucao_busca_total_clinicas_empresa);
+        $comando_busca_total_clinicas_empresa->bindValue(":recebe_empresa_id", $_GET["valor_id_empresa"]);
+        $comando_busca_total_clinicas_empresa->execute();
+        $resultado_busca_total_clinicas_empresa = $comando_busca_total_clinicas_empresa->fetch(PDO::FETCH_ASSOC);
+
+        // Retorno JSON
+        echo json_encode([
+            "total_pessoas" => $resultado_busca_total_pessoas_empresa["total_pessoas"],
+            "total_clinicas" => $resultado_busca_total_clinicas_empresa["total_clinicas"]
+        ]);
+        exit;
     }
 }
 ?>
