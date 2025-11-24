@@ -6631,7 +6631,7 @@ function gravar_informacoes_bancarias_agencia_conta(valor_informacoes_bancarias)
     async: false,
     data: emEdicao ? {
       processo_geracao_kit: "atualizar_kit",
-      valor_informacoes_bancarias: window.valor_informacoes_bancarias,
+      valor_informacoes_bancarias_agencia_conta: window.valor_informacoes_bancarias_agencia_conta,
       valor_id_kit: window.recebe_id_kit
     } : {
       processo_geracao_kit: "incluir_valores_kit",
@@ -6681,7 +6681,7 @@ function gravar_informacoes_bancarias_pix(valor_informacoes_bancarias) {
     async: false,
     data: emEdicao ? {
       processo_geracao_kit: "atualizar_kit",
-      valor_informacoes_bancarias: window.valor_informacoes_bancarias,
+      valor_informacoes_bancarias_pix: window.valor_informacoes_bancarias_pix,
       valor_id_kit: window.recebe_id_kit
     } : {
       processo_geracao_kit: "incluir_valores_kit",
