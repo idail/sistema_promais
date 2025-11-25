@@ -2061,12 +2061,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $instrucao_duplicar_kit = "insert into kits(tipo_exame,status,empresa_id_principal,empresa_id,clinica_id,cargo_id,pessoa_id,
         motorista,medico_coordenador_id,medico_clinica_id,riscos_selecionados,treinamentos_selecionados
         ,insalubridade,porcentagem,periculosidade,aposentado_especial,agente_nocivo,ocorrencia_gfip,aptidoes_selecionadas,
-        exames_selecionados,tipo_orcamento,tipo_dado_bancario,dado_bancario_agencia_conta,dado_bancario_pix,assinatura_digital,valor_total,modelos_selecionados,usuario_id)
+        exames_selecionados,tipo_orcamento,tipo_dado_bancario,dado_bancario_agencia_conta,dado_bancario_pix,informacoes_dados_bancarios_qrcode,informacoes_dados_bancarios_agenciaconta,
+        informacoes_dados_bancarios_pix,assinatura_digital,valor_total,modelos_selecionados,usuario_id)
         values(:recebe_tipo_exame,:recebe_status,:recebe_empresa_id_principal,:recebe_empresa_id,:recebe_clinica_id,:recebe_cargo_id,:recebe_pessoa_id,
         :recebe_motorista,:recebe_medico_coordenador_id,:recebe_medico_clinica_id,:recebe_riscos_selecionados,:recebe_treinamentos_selecionados,
         :recebe_insalubridade,:recebe_porcentagem,:recebe_periculosidade,:recebe_aposentado_especial,:recebe_agente_nocivo,:recebe_ocorrencia_gfip,:recebe_aptidoes_selecionadas,
-        :recebe_exames_selecionados,:recebe_tipo_orcamento,:recebe_tipo_dado_bancario,:recebe_dado_bancario_agencia_conta,:recebe_dado_bancario_pix,
-        :recebe_assinatura_digital,:recebe_valor_total,:recebe_modelos_selecionados,:recebe_usuario_id)";
+        :recebe_exames_selecionados,:recebe_tipo_orcamento,:recebe_tipo_dado_bancario,:recebe_dado_bancario_agencia_conta,:recebe_dado_bancario_pix,:recebe_informacoes_dados_bancarios_qrcode,
+        :recebe_informacoes_dados_bancarios_agenciaconta,:recebe_informacoes_dados_bancarios_pix,:recebe_assinatura_digital,:recebe_valor_total,:recebe_modelos_selecionados,:recebe_usuario_id)";
 
 
         $comando_duplicar_kit = $pdo->prepare($instrucao_duplicar_kit);
@@ -2096,6 +2097,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $valor_tipo_dado_bancario  = $recebe_valores_kit_duplicar["tipo_dado_bancario"] ?? null;
         $valor_dado_bancario_agencia_conta  = $recebe_valores_kit_duplicar["dado_bancario_agencia_conta"] ?? null;
         $valor_dado_bancario_pix  = $recebe_valores_kit_duplicar["dado_bancario_pix"] ?? null;
+        $valor_informacoes_dados_bancarios_qrcode = $recebe_valores_kit_duplicar["informacoes_dados_bancarios_qrcode"] ?? null;
+        $valor_informacoes_dados_bancarios_agenciaconta = $recebe_valores_kit_duplicar["informacoes_dados_bancarios_agenciaconta"] ?? null;
+        $valor_informacoes_dados_bancarios_pix = $recebe_valores_kit_duplicar["informacoes_dados_bancarios_pix"];
         $valor_assinatura_digital  = $recebe_valores_kit_duplicar["assinatura_digital"] ?? null;
         $valor_total  = $recebe_valores_kit_duplicar["valor_total"] ?? null;
         $valor_modelos_selecionados = $recebe_valores_kit_duplicar["modelos_selecionados"] ?? null;
@@ -2268,6 +2272,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $comando_duplicar_kit->bindValue(":recebe_dado_bancario_pix", null, PDO::PARAM_NULL);
         }else{
             $comando_duplicar_kit->bindValue(":recebe_dado_bancario_pix", $valor_dado_bancario_pix, PDO::PARAM_STR);
+        }
+
+        if($valor_informacoes_dados_bancarios_qrcode === null || $valor_informacoes_dados_bancarios_qrcode === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_informacoes_dados_bancarios_qrcode", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_informacoes_dados_bancarios_qrcode", $valor_informacoes_dados_bancarios_qrcode, PDO::PARAM_STR);
+        }
+
+        if($valor_informacoes_dados_bancarios_agenciaconta === null || $valor_informacoes_dados_bancarios_agenciaconta === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_informacoes_dados_bancarios_agenciaconta", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_informacoes_dados_bancarios_agenciaconta", $valor_informacoes_dados_bancarios_agenciaconta, PDO::PARAM_STR);
+        }
+
+        if($valor_informacoes_dados_bancarios_pix === null || $valor_informacoes_dados_bancarios_pix === "")
+        {
+            $comando_duplicar_kit->bindValue(":recebe_informacoes_dados_bancarios_pix", null, PDO::PARAM_NULL);
+        }else{
+            $comando_duplicar_kit->bindValue(":recebe_informacoes_dados_bancarios_pix", $valor_informacoes_dados_bancarios_pix, PDO::PARAM_STR);
         }
 
         if($valor_assinatura_digital === null || $valor_assinatura_digital === "")

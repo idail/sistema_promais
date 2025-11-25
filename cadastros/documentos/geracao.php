@@ -10,6 +10,8 @@ $username = 'idailneto06';
 $password = 'Sei20020615';
 
 require_once "./phpqrcode/phpqrcode.php";
+// require __DIR__ . '/../../vendor/autoload.php';
+// use Dompdf\Dompdf;
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -309,7 +311,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     }
                 }
 
-                $html_assinatura = "_______________________________";
+                $html_assinatura_medico = "_______________________________";
 
                 if (!empty($resultado_dados_kit["medico_coordenador_id"])) {
                     $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
@@ -341,16 +343,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
                     }
+
+                    //var_dump($html_assinatura_medico);
+
                 }
 
+                $html_assinatura_fono = "";
                 if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
                     $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
                     $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
@@ -358,15 +385,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $comando_busca_medico_fonoaudiologo->execute();
                     $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
 
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
+
+                // var_dump($html_assinatura_fono);
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
                 // $riscosTabela = '';
@@ -827,14 +874,79 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -1158,7 +1270,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             //         $aptidoesTabela .= '
             // </table>';
             //     }
-
+            // INICIA O BUFFER PARA CAPTURAR TODO O HTML
+            
 
             echo '
         <style>
@@ -1300,9 +1413,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
+                    </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
                     <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
+                        <img src="'.$logo.'" alt="Logo">
                     </td>
                 </tr>
             </table>
@@ -1423,56 +1538,124 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>';
 
             echo '
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarGuiaEncaminhamento()">Enviar por email</button>
+        <input type="text" id="emailClinica" placeholder="Informe o e-mail"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
+
 </div>
 
         ';
 
-        echo '
-        <script>
-function enviarClinica() {
-    let email = document.getElementById("emailClinica").value.trim();
 
-    if(email === "") {
-        alert("Informe um e-mail antes de enviar!");
+        echo '
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+        <script>
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarGuiaEncaminhamento() {
+     debugger;
+    let emails = document.getElementById("emailClinica").value.trim();
+    let destino = document.getElementById("tipoContabilidade").value;
+
+    let tipo = "guia_encaminhamento";
+    if (emails === "") {
+        alert("Informe ao menos um e-mail");
         return;
     }
 
-    alert("Enviar para clínica:", email);
-    // sua lógica futura aqui...
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: emails,
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
 }
 
 function enviarEmpresa() {
-    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
 
-    if(whatsapp === "") {
-        alert("Informe um WhatsApp antes de enviar!");
+    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
         return;
     }
+    whatsapp = whatsapp.replace(/\D/g, "");
 
-    alert("Enviar para empresa:", whatsapp);
-    // sua lógica futura aqui...
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "guia_encaminhamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
 }
 </script>
 
@@ -1613,7 +1796,7 @@ function enviarEmpresa() {
 
         <div class="page-break"></div>
 
-        <div class="guia-container">
+        <div class="guia-container aso">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
@@ -1628,9 +1811,11 @@ function enviarEmpresa() {
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
+                    </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
                     <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
+                        <img src="'.$logo.'" alt="Logo">
                     </td>
                 </tr>
             </table>
@@ -1770,7 +1955,7 @@ function enviarEmpresa() {
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -1791,30 +1976,128 @@ function enviarEmpresa() {
 
             echo '
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeASO" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarASO()">Enviar por email</button>
+        <input type="text" id="emailClinicaASO" placeholder="Informe o e-mail"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
             </div>
 ';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarASO() {
+     debugger;
+    let emails = document.getElementById("emailClinicaASO").value.trim();
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "guia_encaminhamento";
+    if (emails === "") {
+        alert("Informe ao menos um e-mail");
+        return;
+    }
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: emails,
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarEmpresaASO() {
+            debugger;
+    let whatsapp = document.getElementById("whatsEmpresaASO").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "aso";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
+
+
+
 
             echo '
         
@@ -2313,7 +2596,7 @@ function enviarEmpresa() {
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -2681,7 +2964,7 @@ function enviarEmpresa() {
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -3149,7 +3432,7 @@ function enviarEmpresa() {
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -3942,36 +4225,48 @@ img {
     </tr>
 
     <tr>
-        <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+            <!-- Assinatura médico -->
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
+
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -4715,7 +5010,7 @@ img {
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
@@ -6729,7 +7024,7 @@ echo '
                     }
                 }
 
-                $html_assinatura = "_______________________________";
+                $html_assinatura_medico = "_______________________________";
 
                 if (!empty($resultado_dados_kit["medico_coordenador_id"])) {
                     $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
@@ -6761,13 +7056,68 @@ echo '
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
+                    }
+                }
+
+                $html_assinatura_fono = "";
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
+                    if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                    } else {
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
 
@@ -7118,14 +7468,79 @@ echo '
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -8598,7 +9013,7 @@ echo '
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -9654,7 +10069,7 @@ echo '
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -10369,7 +10784,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -11292,7 +11707,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -12799,35 +13214,46 @@ img {
 
     <tr>
         <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -14338,7 +14764,7 @@ echo '
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
@@ -16429,7 +16855,7 @@ echo '
                     }
                 }
 
-                $html_assinatura = "_______________________________";
+                $html_assinatura_medico = "_______________________________";
 
                 if (!empty($resultado_dados_kit["medico_coordenador_id"])) {
                     $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
@@ -16461,13 +16887,68 @@ echo '
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
+                    }
+                }
+
+                $html_assinatura_fono = "";
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
+                    if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                    } else {
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
 
@@ -16818,14 +17299,79 @@ echo '
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -19357,7 +19903,7 @@ echo '
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -20070,7 +20616,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -20992,7 +21538,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -22494,35 +23040,46 @@ img {
 
     <tr>
         <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -24031,7 +24588,7 @@ echo '
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
@@ -25658,7 +26215,7 @@ echo '
                     }
                 }
 
-                $html_assinatura = "_______________________________";
+                $html_assinatura_medico = "_______________________________";
 
                 if (!empty($resultado_dados_kit["medico_coordenador_id"])) {
                     $instrucao_busca_medico_coordenador = "select * from medicos where id = :recebe_id_medico_coordenador";
@@ -25690,13 +26247,68 @@ echo '
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
+                    }
+                }
+
+                $html_assinatura_fono = "";
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
+                    if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                    } else {
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
 
@@ -26047,14 +26659,79 @@ echo '
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -27525,7 +28202,7 @@ echo '
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -28585,7 +29262,7 @@ echo '
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -29297,7 +29974,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -30220,7 +30897,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -31723,35 +32400,47 @@ img {
 
     <tr>
         <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+        <!-- Assinatura médico -->
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -33261,7 +33950,7 @@ echo '
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
@@ -35443,13 +36132,68 @@ $informacoes_clinica;
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
+                    }
+                }
+
+                $html_assinatura_fono = "";
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
+                    if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                    } else {
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
 
@@ -35807,14 +36551,79 @@ $informacoes_clinica;
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -37287,7 +38096,7 @@ echo '
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -38345,7 +39154,7 @@ echo '
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -39054,7 +39863,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -39974,7 +40783,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -41477,35 +42286,47 @@ img {
 
     <tr>
         <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+        <!-- Assinatura médico -->
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -43014,7 +43835,7 @@ echo '
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
@@ -45104,13 +45925,68 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
+                    }
+                }
+
+                $html_assinatura_fono = "";
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
+                    if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                    } else {
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
 
@@ -45461,14 +46337,79 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -46942,7 +47883,7 @@ echo '
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -48001,7 +48942,7 @@ echo '
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -48712,7 +49653,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -49632,7 +50573,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -51135,35 +52076,46 @@ img {
 
     <tr>
         <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -52679,7 +53631,7 @@ echo '
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
@@ -54643,13 +55595,68 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
                     //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                    // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
                     if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                        // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                        $html_assinatura = "<img src='assinaturas/"
-                            . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                            . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                        // limpeza
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                     } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                        $html_assinatura = "_______________________________";
+                        $html_assinatura_medico = "_______________________________";
+                    }
+                }
+
+                $html_assinatura_fono = "";
+                if (!empty($resultado_dados_kit["medico_fonoaudiologo"])) {
+                    $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_relacionado_clinica";
+                    $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                    $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_relacionado_clinica", $resultado_dados_kit["medico_fonoaudiologo"]);
+                    $comando_busca_medico_fonoaudiologo->execute();
+                    $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                    // if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+                    //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                    //     $html_assinatura = "<img src='assinaturas/"
+                    //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                    //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                    // } else {
+                    //     $html_assinatura = "_______________________________";
+                    // }
+
+                    if ($resultado_dados_kit["assinatura_digital"] === "Sim") {
+
+                        $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                        $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                        $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                        $arquivo_assinatura = strtolower($arquivo_assinatura);
+                        $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                        $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                        $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                    } else {
+                        $html_assinatura_fono = "_______________________________";
                     }
                 }
 
@@ -55000,14 +56007,79 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
                             //var_dump($resultado_verifica_marcacao_assinatura_digital);
 
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
+                            //     $html_assinatura = "_______________________________";
+                            // }
+
+                            $html_assinatura_medico = "_______________________________";
+
                             if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
-                                // supondo que o campo no banco seja "assinatura" com o nome do arquivo
-                                $html_assinatura = "<img src='assinaturas/"
-                                    . htmlspecialchars($resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '')
-                                    . "' alt='Assinatura do Médico' class='assinatura'>";
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_relacionado_clinica['imagem_assinatura'] ?? '';
+
+                                // limpeza
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_medico = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
                             } else if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Nao") {
-                                $html_assinatura = "_______________________________";
+                                $html_assinatura_medico = "_______________________________";
                             }
+                        }
+
+                        $html_assinatura_fono = "";
+                        if (isset($_SESSION["medico_fonoaudiologo_selecionado"]) && $_SESSION["medico_fonoaudiologo_selecionado"] !== "") {
+                            $instrucao_busca_medico_fonoaudiologo = "select * from medicos where id = :recebe_id_medico_psicologo";
+                            $comando_busca_medico_fonoaudiologo = $pdo->prepare($instrucao_busca_medico_fonoaudiologo);
+                            $comando_busca_medico_fonoaudiologo->bindValue(":recebe_id_medico_psicologo", $_SESSION["medico_fonoaudiologo_selecionado"]);
+                            $comando_busca_medico_fonoaudiologo->execute();
+                            $resultado_medico_fonoaudiologo = $comando_busca_medico_fonoaudiologo->fetch(PDO::FETCH_ASSOC);
+
+                            $instrucao_verifica_marcacao_assinatura_digital = "select * from kits where id = :recebe_id_kit";
+                            $comando_verifica_marcacao_assinatura_digital = $pdo->prepare($instrucao_verifica_marcacao_assinatura_digital);
+                            $comando_verifica_marcacao_assinatura_digital->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                            $comando_verifica_marcacao_assinatura_digital->execute();
+                            $resultado_verifica_marcacao_assinatura_digital = $comando_verifica_marcacao_assinatura_digital->fetch(PDO::FETCH_ASSOC);
+
+                            if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+
+                                $base_url_assinaturas = "https://www.idailneto.com.br/promais/cadastros/documentos/assinaturas/";
+
+                                $arquivo_assinatura = $resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '';
+
+                                $arquivo_assinatura = html_entity_decode($arquivo_assinatura);
+                                $arquivo_assinatura = strtolower($arquivo_assinatura);
+                                $arquivo_assinatura = rawurlencode($arquivo_assinatura);
+
+                                $url_final_assinatura = $base_url_assinaturas . $arquivo_assinatura;
+
+                                $html_assinatura_fono = "<img src='{$url_final_assinatura}' class='assinatura' />";
+
+                            } else {
+                                $html_assinatura_fono = "_______________________________";
+                            }
+
+                            // var_dump($html_assinatura_fono);
+
+                            // if ($resultado_verifica_marcacao_assinatura_digital["assinatura_digital"] === "Sim") {
+                            //     // supondo que o campo no banco seja "assinatura" com o nome do arquivo
+                            //     $html_assinatura = "<img src='assinaturas/"
+                            //         . htmlspecialchars($resultado_medico_fonoaudiologo['imagem_assinatura'] ?? '')
+                            //         . "' alt='Assinatura do Médico' class='assinatura'>";
+                            // } else {
+                            //     $html_assinatura = "_______________________________";
+                            // }
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
@@ -56478,7 +57550,7 @@ echo '
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -57539,7 +58611,7 @@ echo '
                 <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -58248,7 +59320,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -59168,7 +60240,7 @@ echo '
     <tr>
         <!-- Espaço para assinatura -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . ' <br>
+            ' . $html_assinatura_medico . ' <br>
             _____________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -60670,35 +61742,47 @@ img {
 
     <tr>
         <!-- Assinatura médico -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            ' . $html_assinatura . '<br>
-            ____________________________<br>
-            <span>Assinatura</span><br>
-            <span>' .
-                (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')
-                ) .
-            '</span><br>
-            <span>' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) . 
-                ' — ' .
-                htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                        : (!empty($resultado_medico_relacionado_clinica['crm'])
+        <!-- Assinatura médico -->
+            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+
+        ' . (
+            !empty($html_assinatura_fono)
+                ? $html_assinatura_fono
+                : $html_assinatura_medico
+        ) . '<br>
+
+        ____________________________<br>
+
+        <span>Assinatura</span><br>
+
+        <span>' .
+            (!empty($resultado_medico_fonoaudiologo['nome'])
+                ? 'Fonoaudiólogo Examinador'
+                : (!empty($resultado_medico_relacionado_clinica['nome'])
+                    ? 'Médico Examinador'
+                    : '')
+            ) .
+        '</span><br>
+
+        <span>' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? $resultado_medico_fonoaudiologo['nome']
+                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+            ) .
+            ' — ' .
+            htmlspecialchars(
+                !empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
+                    : (
+                        !empty($resultado_medico_relacionado_clinica['crm'])
                             ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
                             : ''
-                        )
-                ) .
-            '</span>
-        </td>
+                    )
+            ) .
+        '</span>
+
+    </td>
 
         <!-- Assinatura funcionário -->
         <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
@@ -62204,7 +63288,7 @@ echo '
         <tr>
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; line-height:1.2;">
-                    ' . $html_assinatura . '<br>
+                    ' . $html_assinatura_medico . '<br>
                     ____________________________
                     <span style="display:block; margin-top:-1px;">Assinatura</span>
                     <span style="display:block;margin-top:-1px;">Médico Examinador</span>
