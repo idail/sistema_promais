@@ -564,5 +564,81 @@ table, tr, td, th, div, p, span {
 
     echo "https://www.idailneto.com.br/promais/cadastros/documentos/$nome";
     exit;
+}else if($tipo === "exame_toxicologico")
+{
+// CSS exclusivo
+$css = '
+<style>
+body { font-family: Arial, sans-serif; background:#fff; margin:0; padding:0; }
+table { border-collapse:collapse; width:100%; font-size:12px; }
+th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+.titulo-guia { background:#eaeaea; font-weight:bold; text-align:center; }
+.section-title { background:#eaeaea; font-weight:bold; }
+
+/* NOME DA CLÍNICA — QUEDA AUTOMÁTICA */
+.hospital-nome {
+    font-weight:bold;
+    text-decoration:underline;
+    display:block !important;         
+    margin-bottom:4px !important;    
+}
+
+/* Coluna da logo */
+td.logo {
+    width: 25%; /* Largura da coluna da logo */
+    text-align: center; /* Centraliza horizontalmente */
+    vertical-align: middle; /* Centraliza verticalmente */
+    padding: 1px;
+}
+
+/* LOGO */
+td.logo img {
+    width: 80px !important; 
+    height: auto !important;
+    object-fit: contain;
+    max-height: 40px !important;
+    display: inline-block; /* mantém centralizado */
+}
+
+/* ASSINATURA - ocupa 100% da linha */
+td.assinatura {
+    width: 100% !important;  /* força a célula ocupar toda a largura */
+    text-align:center;        /* centraliza horizontalmente */
+    vertical-align:bottom;    /* alinha na parte inferior */
+    padding: 2px;             /* padding reduzido */
+    border:1px solid #000;    /* garante borda completa */
+}
+td.assinatura img {
+    width: 140px !important;
+    max-height: 60px !important;
+    object-fit: contain !important;
+    display: block;
+    margin: 0 auto 2px auto !important;
+}
+
+/* Evita quebras */
+table, tr, td, th, div, p, span {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+</style>
+';
+
+// HTML FINAL
+    $html_final = $css . $html_recebido;
+
+    // GERA PDF
+    $dompdf->loadHtml($html_final);
+    $dompdf->setPaper("A4", "portrait");
+    $dompdf->render();
+
+    // NOME ÚNICO
+    $nome = "psicossocial" . time() . ".pdf";
+    $caminho = __DIR__ . "/$nome";
+
+    file_put_contents($caminho, $dompdf->output());
+
+    echo "https://www.idailneto.com.br/promais/cadastros/documentos/$nome";
+    exit;
 }
 ?>

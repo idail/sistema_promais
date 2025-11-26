@@ -3906,7 +3906,7 @@ td[style*="height:80px"] {
 
         </style>
 
-        <div class="guia-container">
+        <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
 
             <table>
@@ -3923,9 +3923,11 @@ td[style*="height:80px"] {
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
+                    </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
                     <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
+                        <img src="'.$logo.'" alt="Logo">
                     </td>
                 </tr>
             </table>
@@ -3999,54 +4001,147 @@ td[style*="height:80px"] {
                 </tr>
             </table>
 
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">Assinatura</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:6px;">
-                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+    <tr>
+        <td class="section-title" style="font-weight:bold; background:#eaeaea; text-align:left; padding:4px;">
+            Assinatura
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; padding:6px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <td style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            _______________________________<br>
+            Assinatura do Funcionário <br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+        </td>
+    </tr>
+</table>
 
-                <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                                    <br>
-                                    
-                                    <br>
-                                    _______________________________<br>
-                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                </td>
-            </table>
+
 
 
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeExameToxicologico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailExameToxicologico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappExameToxicologico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsExameToxicologico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailExameToxicologico() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeExameToxicologico").value;
+
+    let tipo = "exame_toxicologico";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappExameToxicologico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsExameToxicologico").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "exame_toxicologico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
            echo '
@@ -4215,7 +4310,7 @@ img {
 
 
 
-<div class="guia-container">
+<div class="guia-container audiometria">
 
 
 <!-- ===================== -->
@@ -4236,10 +4331,12 @@ img {
             ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
             ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
             ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>
-        <td class="logo">
-            <img src="logo.jpg" alt="Logo">
-        </td>
+        </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
+                    <td class="logo">
+                        <img src="'.$logo.'" alt="Logo">
+                    </td>
     </tr>
 </table>
 
@@ -4248,18 +4345,41 @@ img {
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
                 </tr>
                 <tr>
-                    <td class="dados-hospital" colspan="2">
-                        ' . (!empty($resultado_empresa_selecionada['nome'])
-                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+    <td class="dados-hospital" colspan="2">
+
+        ' . (!empty($resultado_empresa_selecionada['nome'])
+            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+            : '') . '
+
+        <div class="empresa-info">
+            ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) . ' '
                 : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
-                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
-                    </td>
-                </tr>
+
+            ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) . ' '
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) . ', '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? 'TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
+        </div>
+
+    </td>
+</tr>
+
             </table>
 
             <table>
@@ -4290,7 +4410,7 @@ img {
             </table>
 
             <!-- Tabela de Meatoscopia -->
-            <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <table class="tabela-meatoscopia" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
             <tr style="font-weight:bold; background-color:#f2f2f2;">
                 <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
             </tr>
@@ -4318,8 +4438,12 @@ img {
                 <!-- Orelha Direita -->
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-                    <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <!-- Ajuste nas imagens dos audiogramas -->';
+                    $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -4339,7 +4463,10 @@ img {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    ';
+                    $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -4364,9 +4491,9 @@ img {
     </tr>
     <tr>
         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
-                <tr>
+        <td class="logo-col1" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio .logo-col1" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE RECONHECIMENTO DE FALA
                     </td>
@@ -4377,7 +4504,7 @@ img {
                         <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
                         <strong>OE:</strong>
                         <span style="float:right; font-weight:bold;">dB</span>
@@ -4387,8 +4514,8 @@ img {
         </td>
 
         <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
-        <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
+        <td class="logo-col2" style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio tabela-centro blocos-audio" style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
                 <tr>
                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
                         ÍNDICE DE RECONHECIMENTO DE FALA
@@ -4422,8 +4549,8 @@ img {
         </td>
 
         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
+        <td class="logo-col3" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio" style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE DETECTABILIDADE DE FALA
@@ -4447,7 +4574,7 @@ img {
 </table>
 
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
+<table class="audiometro" style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -4459,18 +4586,18 @@ img {
 </table>
 
 
-<table class="no-break parecer-fono" style="width:100%; border-collapse:collapse; margin-top:5px;">
+<table class="no-break parecer-fono-tabela" style="width:100%; border-collapse:collapse; margin-top:5px;">
 
 
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+        <td colspan="6" class="parecer-fono titulo" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
             PARECER FONOAUDIOLÓGICO
         </td>
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
             (&nbsp;&nbsp;&nbsp;  ) | OD |  
             (&nbsp;&nbsp;&nbsp;  ) | OE |
@@ -4478,7 +4605,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
             (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -4487,7 +4614,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
             (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -4499,10 +4626,10 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
-            <strong>Obs:</strong>
-        </td>
-    </tr>
+    <td colspan="6" class="obs-linha" style="border:1px solid #000; vertical-align:top;">
+        <strong>Obs:</strong> 
+    </td>
+</tr>
 
     <tr>
         <td colspan="6" style="border:1px solid #000; padding:4px;">
@@ -4510,65 +4637,170 @@ img {
         </td>
     </tr>
 
-    <tr>
-            <!-- Assinatura médico -->
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
 
-        ' . (
-            !empty($html_assinatura_fono)
-                ? $html_assinatura_fono
-                : $html_assinatura_medico
-        ) . '<br>
+    
 
-        ____________________________<br>
-
-        <span>Assinatura</span><br>
-
-        <span>' .
-            (!empty($resultado_medico_fonoaudiologo['nome'])
-                ? 'Fonoaudiólogo Examinador'
-                : (!empty($resultado_medico_relacionado_clinica['nome'])
-                    ? 'Médico Examinador'
-                    : '')
-            ) .
-        '</span><br>
-
-        <span>' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? $resultado_medico_fonoaudiologo['nome']
-                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-            ) .
-            ' — ' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                    : (
-                        !empty($resultado_medico_relacionado_clinica['crm'])
-                            ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
-                            : ''
-                    )
-            ) .
-        '</span>
-
+   <tr>
+    <!-- Assinatura médico -->
+    <td class="assinaturas" style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; padding: 10px;">
+        <div class="assinatura-container" style="display: inline-block; text-align: center; width: 100%;">
+            ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : 
+                (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+            <div style="border-top: 1px solid #000; width: 80%; margin: 15px auto 3px;"></div>
+            <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+            <div style="font-size: 10px; margin-bottom: 2px;">
+                ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'Fonoaudiólogo Examinador'
+                    : (!empty($resultado_medico_relacionado_clinica['nome'])
+                        ? 'Médico Examinador'
+                        : '')) . '
+            </div>
+            <div class="assinatura-container" style="font-size: 10px;">
+                ' . htmlspecialchars(
+                    !empty($resultado_medico_fonoaudiologo['nome'])
+                        ? $resultado_medico_fonoaudiologo['nome']
+                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                ) .
+                (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                    ? ' — CRM: ' . 
+                      (!empty($resultado_medico_fonoaudiologo['crm'])
+                        ? $resultado_medico_fonoaudiologo['crm']
+                        : $resultado_medico_relacionado_clinica['crm'])
+                    : '') . '
+            </div>
+        </div>
     </td>
 
-
-        <!-- Assinatura funcionário -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            _______________________________<br>
-            Assinatura do Funcionário <br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </td>
-    </tr>
+    <!-- Assinatura funcionário -->
+    <td class="assinaturas" style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; padding: 10px;">
+        <div style="display: inline-block; text-align: center; width: 100%;">
+            <div style="border-top: 1px solid #000; width: 80%; margin: 5px auto 3px;"></div>
+            <div style="font-weight: bold; margin: 3px 0;">Assinatura do Funcionário</div>
+            <div style="font-size: 9px;">
+                ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') . 
+                (!empty($resultado_pessoa_selecionada['cpf']) 
+                    ? ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf']) 
+                    : '') . '
+            </div>
+        </div>
+    </td>
+</tr>
 </table>
 </div>
 
-<div class="actions" style="display:flex; gap:20px; justify-content:center;">
-    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+<div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
+
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeAudiometria" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
+
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailAudiometria()">Enviar por email</button>
+        
+    </div>
+
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappAudiometria()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsAudiometria" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
+
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
 </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailAudiometria() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "audiometria";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappAudiometria() {
+            debugger;
+    let whatsapp = document.getElementById("whatsAudiometria").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "audiometria";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
        echo '
