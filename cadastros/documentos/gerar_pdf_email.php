@@ -927,6 +927,12 @@ table.tabela-centro tr:first-child td {
   padding-right: 6px !important;
 }
 
+/* Garantia extra: % da linha inicial do OE (4ª linha) */
+.logo-col2 table.tabela-centro tr:nth-child(4) > td:nth-of-type(3) {
+  text-align: right !important;
+  padding-right: 6px !important;
+}
+
 /* Nas linhas 3 e 5 a célula de % é a primeira (por causa do rowspan) */
 .logo-col2 table.tabela-centro tr:nth-child(3) > td:first-child,
 .logo-col2 table.tabela-centro tr:nth-child(5) > td:first-child {

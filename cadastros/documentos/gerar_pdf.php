@@ -737,6 +737,69 @@ table.tabela-centro tr:first-child td {
   line-height: 15px !important;      /* linhas mais baixas */
   font-size: 10px !important;        /* fonte menor que as laterais */
   height: auto !important;
+  text-align: right !important;
+  padding-right: 4px !important;
+}
+
+/* Primeira coluna (OD/OE) centralizada */
+.logo-col2 table.tabela-centro td[style*="width:10%"] {
+  text-align: center !important;
+  padding-right: 0 !important;
+}
+
+/* Segunda coluna (dB/NS) levemente à direita para não invadir a célula do OE */
+.logo-col2 table.tabela-centro td[style*="width:15%"] {
+  text-align: center !important; /* aplica ao OD (tem width:15%) */
+  padding-right: 0 !important;
+}
+
+/* Última coluna (Monossílabos/Dissílabos) alinhada à esquerda */
+.logo-col2 table.tabela-centro td[style*="width:35%"] {
+  text-align: left !important;
+  padding-right: 0 !important;
+}
+
+/* Coluna das porcentagens (3ª coluna) sempre alinhada à direita com o mesmo padding */
+.logo-col2 table.tabela-centro tr > td:nth-of-type(3) {
+  text-align: right !important;
+  padding-right: 6px !important;
+}
+
+/* Garantia extra: % da linha inicial do OE (4ª linha) */
+.logo-col2 table.tabela-centro tr:nth-child(4) > td:nth-of-type(3) {
+  text-align: right !important;
+  padding-right: 6px !important;
+}
+
+/* Nas linhas 3 e 5 a célula de % é a primeira (por causa do rowspan) */
+.logo-col2 table.tabela-centro tr:nth-child(3) > td:first-child,
+.logo-col2 table.tabela-centro tr:nth-child(5) > td:first-child {
+  text-align: right !important;
+  padding-right: 6px !important;
+}
+
+/* Específico: linha inicial do OE -> a 2ª célula (dB/NS) alinhada à direita */
+.logo-col2 table.tabela-centro tr:nth-child(4) > td:nth-of-type(2),
+.logo-col2 table.tabela-centro tr:nth-child(4) > td + td,
+.logo-col2 table.tabela-centro tr:nth-of-type(4) > td:nth-child(2) {
+  text-align: center !important; /* igual ao dB/NS do OD */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Específico: segunda linha do OE (por garantia) -> manter alinhada à direita */
+.logo-col2 table.tabela-centro tr:nth-child(5) > td:nth-of-type(2),
+.logo-col2 table.tabela-centro tr:nth-child(5) > td + td,
+.logo-col2 table.tabela-centro tr:nth-of-type(5) > td:nth-child(2) {
+  text-align: center !important; /* igual ao dB/NS do OD */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Cabeçalho central permanece centralizado */
+.logo-col2 table.tabela-centro tr:first-child td {
+  text-align: center !important;
+  padding-right: 0 !important;
 }
 
 /* Cabeçalho do meio: 1 linha e baixo */
@@ -1624,6 +1687,10 @@ table.parecer-fono-tabela, table.assinaturas-separadas {
 .assinaturas-separadas
 {
 margin-top:-10px !important;
+}
+
+.ajuste{
+padding-left: 6px !important;
 }
 </style> ';
 
