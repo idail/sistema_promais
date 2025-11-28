@@ -4722,7 +4722,7 @@ table.parecer-fono-tabela {
                     $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
                     echo '
                     
-                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
                 
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
@@ -4746,7 +4746,7 @@ table.parecer-fono-tabela {
                     ';
                     $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
                     echo '
-                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -5051,7 +5051,7 @@ function enviarEmailAudiometria() {
     whatsapp = whatsapp.replace(/\D/g, "");
 
     // HTML do formulário
-    let guiaHTML = document.querySelector(".aso").outerHTML;
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
 
     // 🔥 DEFINE o tipo deste formulário
     let tipoFormulario = "audiometria";
