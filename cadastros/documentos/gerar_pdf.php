@@ -1833,5 +1833,127 @@ table, tr, td, th, div, p, span {
 
     echo "https://www.idailneto.com.br/promais/cadastros/documentos/$nome";
     exit;
+}else if($tipo === "teste_romberg")
+{
+    // CSS exclusivo
+    $css = '
+<style>
+body { 
+    font-family: Arial, sans-serif; 
+    background: #fff; 
+    margin: 0;
+    padding: 0;
+    font-size: 10px; /* Fonte menor para caber na página */
+}
+
+/* Evita que o conteúdo do formulário quebre */
+.guia-container {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    width: 100%;
+    padding: 2px 5px; /* Padding reduzido */
+    margin: 0;
+    line-height: 1.1; /* Linha mais compacta */
+}
+
+/* Tabelas */
+table { 
+    border-collapse: collapse; 
+    width: 100%; 
+    font-size: 10px;
+    table-layout: fixed; /* Garante que colspan ocupe a largura total */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Células */
+th, td { 
+    border: 1px solid #000; 
+    padding: 2px 3px; /* Padding menor */
+    word-wrap: break-word; /* Evita ultrapassar a largura */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Título da guia */
+.titulo-guia { 
+    background: #eaeaea; 
+    font-weight: bold; 
+    text-align: center; 
+    font-size: 11px; 
+    padding: 2px 4px;
+}
+
+/* Seções */
+.section-title { 
+    background: #eaeaea; 
+    font-weight: bold; 
+    font-size: 10px;
+    padding: 1px 0;
+}
+
+/* Nome da clínica */
+.hospital-nome {
+    font-weight: bold;
+    text-decoration: underline;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 10px;
+}
+
+/* Coluna da logo */
+td.logo {
+    width: 100px; /* largura menor da coluna da logo */
+    text-align: center; /* centraliza a logo horizontalmente */
+    vertical-align: middle; /* centraliza a logo verticalmente */
+    padding: 2px;
+}
+
+/* LOGO */
+td.logo img {
+    width: 80px !important; 
+    height: auto !important;
+    object-fit: contain;
+    max-height: 40px !important;
+    display: inline-block; /* mantém centralizado */
+}
+
+td.logo{
+    width:25%; !important;
+}
+
+/* ASSINATURA */
+td img {
+    width: 120px !important;
+    max-height: 50px !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 2px auto !important;
+}
+
+/* Evita quebras em qualquer conteúdo */
+table, tr, td, th, div, p, span {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+</style>
+';
+
+    // HTML FINAL
+    $html_final = $css . $html_recebido;
+
+    // GERA PDF
+    $dompdf->loadHtml($html_final);
+    $dompdf->setPaper("A4", "portrait");
+    $dompdf->render();
+
+    // NOME ÚNICO
+    $nome = "teste_romberg" . time() . ".pdf";
+    $caminho = __DIR__ . "/$nome";
+
+    file_put_contents($caminho, $dompdf->output());
+
+    echo "https://www.idailneto.com.br/promais/cadastros/documentos/$nome";
+    exit;
 }
 ?>

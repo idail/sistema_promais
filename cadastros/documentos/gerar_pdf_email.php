@@ -2069,5 +2069,164 @@ table, tr, td, th, div, p, span {
         echo json_encode(["mensagem" => "Erro ao enviar: {$mail->ErrorInfo}"]);
         exit;
     }
+}else if($tipo === "teste_romberg")
+{
+    // CSS exclusivo
+    $css = '
+<style>
+body { 
+    font-family: Arial, sans-serif; 
+    background: #fff; 
+    margin: 0;
+    padding: 0;
+    font-size: 10px; /* Fonte menor para caber na página */
+}
+
+/* Evita que o conteúdo do formulário quebre */
+.guia-container {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    width: 100%;
+    padding: 2px 5px; /* Padding reduzido */
+    margin: 0;
+    line-height: 1.1; /* Linha mais compacta */
+}
+
+/* Tabelas */
+table { 
+    border-collapse: collapse; 
+    width: 100%; 
+    font-size: 10px;
+    table-layout: fixed; /* Garante que colspan ocupe a largura total */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Células */
+th, td { 
+    border: 1px solid #000; 
+    padding: 2px 3px; /* Padding menor */
+    word-wrap: break-word; /* Evita ultrapassar a largura */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Título da guia */
+.titulo-guia { 
+    background: #eaeaea; 
+    font-weight: bold; 
+    text-align: center; 
+    font-size: 11px; 
+    padding: 2px 4px;
+}
+
+/* Seções */
+.section-title { 
+    background: #eaeaea; 
+    font-weight: bold; 
+    font-size: 10px;
+    padding: 1px 0;
+}
+
+/* Nome da clínica */
+.hospital-nome {
+    font-weight: bold;
+    text-decoration: underline;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 10px;
+}
+
+/* Coluna da logo */
+td.logo {
+    width: 100px; /* largura menor da coluna da logo */
+    text-align: center; /* centraliza a logo horizontalmente */
+    vertical-align: middle; /* centraliza a logo verticalmente */
+    padding: 2px;
+}
+
+/* LOGO */
+td.logo img {
+    width: 80px !important; 
+    height: auto !important;
+    object-fit: contain;
+    max-height: 40px !important;
+    display: inline-block; /* mantém centralizado */
+}
+
+td.logo{
+    width:25%; !important;
+}
+
+/* ASSINATURA */
+td img {
+    width: 120px !important;
+    max-height: 50px !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 2px auto !important;
+}
+
+/* Evita quebras em qualquer conteúdo */
+table, tr, td, th, div, p, span {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+</style>
+';
+    $html_final = $css . $html_recebido;
+
+    // =======================
+    // GERA PDF EXCLUSIVO EMAIL
+    // =======================
+    $dompdf = new Dompdf();
+    $dompdf->set_option('isRemoteEnabled', true); // obrigatório para carregar imagens da web
+    $dompdf->set_option('isHtml5ParserEnabled', true);
+    $dompdf->loadHtml($html_final);
+    $dompdf->setPaper("A4", "portrait");
+    $dompdf->render();
+
+    $nome_pdf = "teste_romberg" . time() . ".pdf";
+    $caminho_pdf = __DIR__ . "/" . $nome_pdf;
+
+    file_put_contents($caminho_pdf, $dompdf->output());
+
+    // =======================
+    // ENVIA E-MAIL
+    // =======================
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.kinghost.net';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'idailneto@idailneto.com.br';
+        $mail->Password   = 'Sei#20020615';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        $mail->setFrom('idailneto@idailneto.com.br', 'PDF');
+
+        // SUPORTA VÁRIOS E-MAILS SEPARADOS POR VÍRGULA
+        $lista = array_map('trim', explode(",", $emails));
+        foreach ($lista as $email) {
+            if (!empty($email)) {
+                $mail->addAddress($email);
+            }
+        }
+
+        $mail->Subject = "Teste Romberg";
+        $mail->Body    = "Segue anexo o arquivo da guia solicitada.\nDestino escolhido: " . strtoupper($destino);
+
+        $mail->addAttachment($caminho_pdf);
+
+        $mail->send();
+
+        echo json_encode(["mensagem" => "E-mail enviado com sucesso!"]);
+        exit;
+    } catch (Exception $e) {
+        echo json_encode(["mensagem" => "Erro ao enviar: {$mail->ErrorInfo}"]);
+        exit;
+    }
 }
 ?>
