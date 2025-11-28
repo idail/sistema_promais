@@ -4817,7 +4817,7 @@ table.parecer-fono-tabela {
                 <!-- OE -->
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
-                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;" class="ajuste"><strong>dB/NS</strong></td>
                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
