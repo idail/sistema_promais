@@ -4230,6 +4230,13 @@ th, td {
   margin: 0 auto -6px auto;
 }
 
+/* quando a assinatura é uma imagem, não desenhar a linha na própria imagem */
+img.assinatura {
+  border-bottom: none !important;
+  display: block !important;
+  margin: 0 auto 10px auto !important; /* espaço antes da linha separada abaixo */
+}
+
 table + table {
   margin-top: 1px;
 }
