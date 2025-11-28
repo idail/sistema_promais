@@ -4376,6 +4376,8 @@ img {
     font-size: 7.8px !important;
   }
 
+  
+
   /* EVITA QUEBRA DE TABELA */
   .audiometria table,
   .audiometria tr,
@@ -4952,7 +4954,8 @@ table.parecer-fono-tabela {
                 </td>
                 <td class="assinaturas informacoes_funcionario" style="text-align:center; vertical-align:bottom;">
                     <div class="funcionario" style="display:inline-block; text-align:center; width:100%; margin:0 auto; padding:0;">
-                        <div class="linha-assinatura"></div>
+                        <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
                         <div class="titulo_assinatura">Assinatura do Funcionário</div>
                         <div class="nome_funcionario">
                             ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') .
