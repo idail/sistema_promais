@@ -1134,6 +1134,43 @@ table.parecer-fono tr:last-child > td > div > div[style*="font-size: 9px"] {
     text-align: center !important;
 }
 
+/* --- ENXUGAR APENAS A COLUNA DO FUNCIONÁRIO (direita) para não estourar a largura --- */
+table.parecer-fono tr:last-child > td:last-child {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    white-space: nowrap !important;      /* evita quebra que empurra a borda */
+    overflow: hidden !important;         /* corta excedente sem expandir a célula */
+    text-overflow: ellipsis !important;  /* indica texto cortado, se necessário */
+    font-size: 8px !important;           /* reduz fonte base da célula */
+    line-height: 1.1 !important;         /* reduz altura das linhas */
+}
+
+/* Limita a largura útil do conteúdo interno da coluna do funcionário */
+table.parecer-fono tr:last-child > td:last-child > div {
+    max-width: 100% !important; /* não restringe a largura útil do wrapper interno */
+    margin: 0 auto !important;
+}
+
+/* Linha de assinatura da coluna do funcionário um pouco mais curta para abrir espaço à direita */
+table.parecer-fono tr:last-child > td:last-child > div > div[style*="border-top"] {
+    width: 60% !important;
+    margin: 3px auto !important;
+}
+
+/* Texto "Assinatura do Funcionário" um pouco menor para caber melhor */
+table.parecer-fono tr:last-child > td:last-child > div > div[style*="font-weight: bold"] {
+    font-size: 8px !important;
+    margin: 1px 0 !important;
+}
+
+/* Nome + CPF do funcionário levemente menor para evitar overflow */
+table.parecer-fono tr:last-child > td:last-child > div > div[style*="font-size: 9px"] {
+    font-size: 7.5px !important;
+    line-height: 1.1 !important;
+}
+
 /* Ajustes para impressão */
 @media print {
     @page {
@@ -1350,29 +1387,30 @@ table.tabela-meatoscopia input[type="checkbox"] {
 table.parecer-fono {
     width: 100% !important;
     margin-top: 12px !important;
-    border-collapse: collapse !important;
+    border-collapse: separate !important; /* evita fusão que pode suprimir borda externa no Dompdf */
+    border-spacing: 0 !important;
     table-layout: fixed !important;
     border: 1px solid #000 !important; /* fecha a tabela */
 }
 
 /* === LINHA DAS ASSINATURAS === */
 table.parecer-fono tr.assinaturas td {
-    height: 110px !important;          /* altura fixa */
+    height: 90px !important;           /* altura menor */
     vertical-align: bottom !important; /* força assinatura no rodapé */
     text-align: center !important;
-    padding: 8px !important;
+    padding: 4px 6px !important;       /* menos padding = mais largura útil */
     border: 1px solid #000 !important; /* garante fechamento */
 }
 
 /* COLUNA ESQUERDA - PROFISSIONAL */
 table.parecer-fono tr.assinaturas td:nth-child(1) {
-    width: 60% !important;
+    width: 58% !important; /* libera mais espaço para a coluna do funcionário */
     border-right: none !important;
 }
 
 /* COLUNA DIREITA - FUNCIONÁRIO */
 table.parecer-fono tr.assinaturas td:nth-child(2) {
-    width: 40% !important;
+    width: 42% !important; /* aumenta espaço efetivo para o funcionário */
     border-left: none !important;
 }
 
@@ -1416,7 +1454,8 @@ table.parecer-fono .dados-assinatura {
 /* FECHAMENTO DA TABELA DE ASSINATURAS */
 table.parecer-fono {
     border: 1px solid #000 !important;
-    border-collapse: collapse !important;
+    border-collapse: separate !important; /* manter separada para preservar borda externa */
+    border-spacing: 0 !important;
     margin-bottom: 0 !important;
     width: 100% !important;
     table-layout: fixed !important;
@@ -1433,20 +1472,21 @@ table.parecer-fono tr:last-child {
 }
 
 /* Remove margens e paddings extras */
-table.parecer-fono,
-table.parecer-fono tr,
-table.parecer-fono td {
+/* Evita inflar bordas em todas as células; controlamos bordas onde necessário */
+table.parecer-fono {
     margin: 0 !important;
     padding: 0 !important;
-    border: 1px solid #000 !important;
 }
 
 /* Ajuste para as células de assinatura */
 table.parecer-fono tr:last-child > td {
-    padding: 10px 15px !important;
+    padding: 4px 6px !important; /* reduz o respiro que tomava largura útil */
     vertical-align: bottom !important;
     text-align: center !important;
-    height: 100px !important;
+    height: 90px !important;
+    overflow: hidden !important; /* garante que nada ultrapasse a borda externa */
+    box-sizing: border-box !important; /* inclui borda e padding no cálculo da largura */
+    min-width: 0 !important; /* evita estourar a largura da célula por texto longo */
 }
 
 /* Remove borda direita da primeira célula e esquerda da última */
@@ -1457,7 +1497,8 @@ table.parecer-fono tr:last-child > td:first-child {
 
 table.parecer-fono tr:last-child > td:last-child {
     border-left: none !important;
-    border-right: none !important;
+    border-right: 1px solid #000 !important; /* garante fechamento da borda direita */
+    position: relative !important; /* necessário para o pseudo-elemento */
 }
 
 /* Linha de assinatura */
@@ -1471,9 +1512,282 @@ table.parecer-fono .linha-assinatura {
 table.parecer-fono {
     border-bottom: 1px solid #000 !important;
 }
+
+/* Garante que a borda DIREITA da tabela feche visualmente mesmo com border-collapse */
+table.parecer-fono {
+    border-right: 1px solid #000 !important;
+}
+
+/* Desenho externo independente da colapsagem de bordas (garante o lado direito) */
+table.parecer-fono {
+    outline: 1px solid #000 !important;
+    outline-offset: 0 !important;
+}
+
+/* Fallback explícito: desenha uma "borda" com pseudo-elemento no último TD */
+table.parecer-fono tr:last-child > td:last-child::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    background: #000;
+}
+
+
+
+.parecer-fono .funcionario{
+    max-width:100% !important;          /* usa toda a largura disponível do TD */
+    margin:0 auto !important;
+    padding:0 !important;
+}
+
+/* Reduz e prioriza a célula da coluna do funcionário (override do inline) */
+table.parecer-fono tr:last-child > td.teste {
+    width: 36% !important;              /* encolhe a coluna direita */
+    font-size: 7.2px !important;        /* derruba fonte base do TD */
+    line-height: 1.05 !important;       /* linhas mais baixas */
+    padding: 4px 6px !important;        /* menos padding */
+    height: 90px !important;            /* ligeiramente menor */
+}
+
+.informacoes_medico{
+    width:62% !important;              /* coluna do médico mais larga */
+    padding:4px 6px !important;        /* menos padding */
+    font-size:7.2px !important;        /* base menor para todo o TD */
+    line-height:1.05 !important;
+}
+
+
+
+/* Reduções específicas dentro do TD do MÉDICO (override de inline) */
+table.parecer-fono tr:last-child > td.informacoes_medico > div[style*="border-top"]{
+    width:60% !important;
+    margin:3px auto 2px !important;
+}
+table.parecer-fono tr:last-child > td.informacoes_medico > div[style*="font-weight: bold"]{
+    font-size:7px !important;
+    margin:1px 0 !important;
+}
+table.parecer-fono tr:last-child > td.informacoes_medico > div[style*="font-size: 10px"]{
+    font-size:7px !important;
+    line-height:1.05 !important;
+    margin-bottom:1px !important;
+}
+
+
+/* ===== OVERRIDE FINAL PARECER-FONO — SIMPLES E FECHADO ===== */
+/* Fecha bordas e padroniza 50%/50% na última linha, evitando regras conflitantes anteriores */
+table.parecer-fono {
+    width: 99.5% !important;            /* ligeiramente menor que 100% para evitar corte de borda no Dompdf */
+    margin: 0 !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    table-layout: fixed !important;
+    border: 1px solid #000 !important;
+}
+table.parecer-fono td {
+    border: 1px solid #000 !important;
+    padding: 4px !important;
+}
+table.parecer-fono tr:last-child > td {
+    width: 50% !important;                /* metade/metade */
+    height: 80px !important;              /* um pouco mais alto para acomodar quebras */
+    vertical-align: bottom !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    padding: 3px 4px !important;
+    font-size: 8px !important;            /* reduz tipografia base das duas colunas */
+}
+table.parecer-fono tr:last-child > td img {
+    width: 85px !important;               /* imagem um pouco menor para abrir espaço */
+    max-width: 85px !important;
+    height: auto !important;
+    max-height: 36px !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto 4px auto !important;
+}
+
+/* Compactação do bloco ACIMA das assinaturas (Parecer Fonoaudiológico) */
+/* Aplica tanto à tabela (.parecer-fono-tabela) quanto aos TDs com classe .parecer-fono */
+.parecer-fono-tabela td,
+.parecer-fono-tabela th,
+td.parecer-fono,
+th.parecer-fono {
+    font-size: 7.6px !important;
+    line-height: 1.06 !important;
+    padding: 1px 2px !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+    letter-spacing: -0.1px !important;
+    word-spacing: -0.4px !important;
+}
+/* Células com colspan tendem a estourar — reduzir mais */
+.parecer-fono-tabela td[colspan],
+td.parecer-fono[colspan] {
+    font-size: 7.4px !important;
+    line-height: 1.05 !important;
+}
+/* Título do bloco */
+td.parecer-fono.titulo,
+.parecer-fono-tabela td.titulo {
+    font-size: 7.8px !important;
+    padding: 2px !important;
+}
+/* Negritos dentro do parecer mais compactos */
+td.parecer-fono strong,
+.parecer-fono-tabela td strong {
+    font-size: 7.6px !important;
+    font-weight: 700 !important;
+}
+
+/* Compactação específica da célula do Funcionário para evitar estouro */
+table.parecer-fono tr:last-child > td:last-child {
+    font-size: 7.4px !important;          /* ainda mais compacto para caber sempre */
+    line-height: 1.05 !important;
+    text-align: left !important;           /* alinha à esquerda para ganhar espaço útil */
+    padding: 2px 2px !important;           /* respiro mínimo */
+    white-space: normal !important;        /* permite quebra */
+    overflow-wrap: anywhere !important;    /* força quebra se necessário */
+    word-break: break-word !important;
+    letter-spacing: -0.1px !important;     /* compacta ligeiramente */
+    word-spacing: -0.3px !important;
+}
+table.parecer-fono tr:last-child > td:last-child > div {
+    max-width: 96% !important;             /* evita tocar a borda */
+    margin: 0 !important;
+}
+table.parecer-fono tr:last-child > td:last-child .linha-assinatura {
+    width: 58% !important;                 /* ainda menor p/ sobrar espaço à direita */
+    margin: 3px 0 2px 0 !important;        /* encosta à esquerda */
+}
+
+/* ================= Fallback: Tabela de assinaturas separada ================= */
+/* Caso você mova as assinaturas para uma tabela própria (sem TH), use:
+   <table class="assinaturas-separadas"> ... </table> */
+table.assinaturas-separadas {
+    width: 100% !important;             /* ocupa toda a largura do formulário */
+    border: 1px solid #000 !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    table-layout: fixed !important;
+    margin-top: 0px !important;
+    margin-bottom: 0 !important;         /* evita espaço/linha visual abaixo */
+    page-break-inside: avoid !important;
+}
+table.assinaturas-separadas td {
+    border: 1px solid #000 !important;
+    width: 50% !important;
+    height: 80px !important;
+    vertical-align: middle !important;     /* centraliza verticalmente o conteúdo */
+    text-align: center !important;          /* centraliza horizontalmente */
+    padding: 3px 4px !important;
+    font-size: 8px !important;
+    box-sizing: border-box !important;
+}
+/* Remove a borda inferior do container (última linha) para não aparecer linha abaixo */
+.parecer-fono-tabela tr:last-child > td {
+    border-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Garante que a tabela de assinaturas ocupe 100% e fique colada ao bloco anterior */
+table.assinaturas-separadas {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    display: table !important;
+    border-left: 1px solid #000 !important;
+    border-right: 1px solid #000 !important;
+}
+
+table.assinaturas-separadas td img {
+    width: 85px !important;
+    max-height: 36px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;             /* garante bloco para centralização */
+    margin: 0px 0px 0px 120px !important;    /* centraliza a imagem ao meio */
+}
+
+
+
+/* Centralização específica da imagem do MÉDICO (primeira coluna) */
+table.assinaturas-separadas td.informacoes_medico img {
+    display: block !important;
+    margin: 0 auto 0px 120px !important;  /* ao centro, imediatamente acima da linha */
+    float: none !important;               /* remove qualquer flutuação herdada */
+}
+/* Garante centralização de qualquer conteúdo no TD do médico */
+table.assinaturas-separadas td.informacoes_medico {
+    text-align: center !important;
+}
+/* Linha de assinatura do médico centralizada */
+table.assinaturas-separadas td.informacoes_medico .linha-assinatura {
+    margin: 4px auto 2px auto !important;
+}
+/* Coluna direita (funcionário) — centralizada como a esquerda */
+table.assinaturas-separadas td:last-child {
+    font-size: 7.4px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;        /* centraliza textos */
+    padding: 2px 2px !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
+table.assinaturas-separadas .linha-assinatura { border-top:1px solid #000 !important; width:60% !important; margin:4px auto 2px auto !important; }
+
+/* ===== FIX: Colar assinaturas no parecer e ocupar 100% ===== */
+/* Zera qualquer respiro do container de assinaturas que vem logo após o parecer */
+tr.assinaturas-container > td {
+    padding: 0 !important;
+    border: 0 !important;
+    line-height: 0 !important;
+}
+/* Remove a linha/borda extra da última linha do parecer para não ficar dupla */
+.parecer-fono-tabela tr:last-child > td {
+    border-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* ===== Quando as tabelas são SEPARADAS ===== */
+/* Remove qualquer espaço visual entre as tabelas e evita borda dupla */
+table.parecer-fono-tabela {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    margin-bottom: 0 !important;
+    page-break-after: avoid !important;
+}
+
+/* Remove somente a borda inferior geral do bloco de parecer para não duplicar */
+table.parecer-fono-tabela { border-bottom: 0 !important; }
+
+/* E garante que a assinatura feche com a borda superior */
+table.assinaturas-separadas {
+    border-top: 1px solid #000 !important;
+    margin-top: 0 !important;
+    page-break-before: avoid !important;
+}
+
+/* Evita quebra entre as duas tabelas */
+table.parecer-fono-tabela, table.assinaturas-separadas {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+.assinaturas-separadas
+{
+margin-top:-10px !important;
+}
 </style> ';
-
-
 
 
     $html_final = $css . $html_recebido;

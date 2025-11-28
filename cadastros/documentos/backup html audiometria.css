@@ -1,0 +1,685 @@
+echo '
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+}
+
+/* Reduz margens internas gerais */
+.guia-container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 1mm auto;
+  padding: 2px 4px;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+/* Fontes menores + células mais compactas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 1px 2px;
+  vertical-align: top;
+}
+
+.titulo-guia {
+  background: #eaeaea;
+  font-weight: bold;
+  text-align: center;
+  font-size: 10px;
+  padding: 2px;
+  height: 14px;
+}
+
+/* Títulos das seções */
+.section-title {
+  background: #eaeaea;
+  border: 1px solid #666;
+  font-weight: bold;
+  font-size: 9px;
+  padding: 2px 2px;
+  text-align: left;
+}
+
+/* Dados reduzidos */
+.dados-hospital {
+  font-size: 9px;
+  line-height: 1.1;
+}
+
+.hospital-nome {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: underline;
+  display: block;
+  margin-bottom: 0px;
+  font-size: 9.5px;
+}
+
+/* Logo menor */
+.logo img {
+  max-height: 26px;
+}
+
+/* Tabelas internas */
+.table-riscos td,
+.table-exames td {
+  font-size: 9px;
+  padding: 1px 2px;
+}
+
+.assinatura {
+  width: 100px;
+  height: 50px !important;
+  border-bottom: 1px solid #000;
+  display: block;
+  margin: 0 auto -6px auto;
+}
+
+table + table {
+  margin-top: 1px;
+}
+
+/* Imagens reduzidas */
+img {
+  max-width: 85%;
+  height: auto;
+}
+
+/* Evitar quebra */
+.no-break,
+.no-break * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Impressão */
+@media print {
+ * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .actions {
+    display: none !important;
+  }
+
+  table, tr, td, th {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ============================= */
+  /* AJUSTE DE LARGURA NA IMPRESSÃO */
+  /* ============================= */
+
+  .parecer-fono-tabela,
+  .parecer-fono {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+  }
+
+  .parecer-fono table {
+      width: 100% !important;
+      table-layout: fixed !important;
+  }
+
+  .parecer-fono-tabela tr:last-child td {
+      width: 50% !important;
+  }
+
+  .assinatura {
+      width: 90% !important;
+      max-width: 100% !important;
+      margin: 0 auto !important;
+  }
+
+  .assinatura img {
+      width: 100% !important;
+      height: auto !important;
+  }
+}
+
+ /* ============================= */
+/* AJUSTE FINO DO PARECER FONO   */
+/* NÃO MEXE NA LARGURA           */
+/* ============================= */
+
+.parecer-fono-tabela {
+    margin-top: 2px !important;
+}
+
+/* Texto geral do parecer */
+.parecer-fono-tabela td {
+    font-size: 7.2px !important;
+    line-height: 1.05 !important;
+    padding: 2px 3px !important;
+}
+
+/* Título "PARECER FONOAUDIOLÓGICO" */
+.parecer-fono-tabela .titulo {
+    font-size: 8px !important;
+    padding: 2px !important;
+}
+
+/* Linhas descritivas (bullets) */
+.parecer-fono {
+    padding: 2px 3px !important;
+}
+
+/* Obs */
+.obs-linha {
+    height: 30px !important;
+    font-size: 7px !important;
+}
+
+/* Linha data */
+.parecer-fono-tabela tr:nth-last-child(3) td {
+    font-size: 7px !important;
+    padding: 2px !important;
+}
+
+/* NÃO mexe nas assinaturas */
+.parecer-fono-tabela tr:last-child td {
+    font-size: 11px !important;
+}
+
+
+
+
+/* ============================= */
+/* AJUSTE FINO DO PARECER FONO   */
+/* NÃO MEXE NA LOGOAUDIOMETRIA   */
+/* NÃO MEXE NO AUDIÔMETRO        */
+/* ============================= */
+
+.parecer-fono-tabela {
+    margin-top: 1px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+/* Texto geral do parecer */
+.parecer-fono-tabela td {
+    font-size: 7px !important;
+    line-height: 1.00 !important;
+    padding: 1.5px 2px !important;
+}
+
+/* Título */
+.parecer-fono-tabela .titulo {
+    font-size: 8px !important;
+    padding: 2px !important;
+}
+
+/* Texto do conteúdo */
+.parecer-fono {
+    padding: 1.5px 2px !important;
+    margin: 0 !important;
+}
+
+/* Campo OBS */
+.obs-linha {
+    height: 22px !important;
+    font-size: 6.8px !important;
+    padding: 2px !important;
+}
+
+/* Data */
+.parecer-fono-tabela tr:nth-last-child(3) td {
+    font-size: 6.8px !important;
+    padding: 1.5px !important;
+}
+
+/* Assinaturas — NÃO alterar tamanho */
+.parecer-fono-tabela tr:last-child td {
+    font-size: 11px !important;
+    padding: 6px 8px !important;
+    vertical-align: bottom !important;
+}
+
+/* Evita quebra entre linhas */
+.parecer-fono-tabela,
+.parecer-fono-tabela * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+
+
+
+/* ============================= */
+/* AJUSTES FINAIS – ASSINATURA E AUDIOMETRIA */
+/* ============================= */
+
+/* Imagem da assinatura do médico menor */
+.assinatura img {
+    max-height: 32px !important;
+    width: auto !important;
+}
+
+/* Menos espaço nas áreas de assinatura */
+.assinatura {
+    height: 38px !important;
+    margin-bottom: -4px !important;
+}
+
+/* Assinaturas da tabela do parecer */
+.parecer-fono-tabela tr:last-child td {
+    padding-top: 4px !important;
+    padding-bottom: 2px !important;
+}
+
+/* ============================= */
+/* AUDIÔMETRO – reduzir altura das linhas */
+/* ============================= */
+
+/* Aplica SOMENTE nas tabelas do audiômetro */
+.audiometro table td,
+.audiometro table th {
+    padding-top: 0.5px !important;
+    padding-bottom: 0.5px !important;
+    line-height: 1 !important;
+}
+
+/* Reduz um pouco a altura das linhas do gráfico */
+.audiometro td {
+    height: 14px !important;
+}
+
+
+
+</style>
+
+
+
+<div class="guia-container audiometria">
+
+
+<!-- ===================== -->
+<!-- CABEÇALHO AUDIOMETRIA -->
+<!-- ===================== -->
+
+<table>
+    <tr>
+        <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
+    </tr>
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+        </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
+                    <td class="logo">
+                        <img src="'.$logo.'" alt="Logo">
+                    </td>
+    </tr>
+</table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
+                </tr>
+                <tr>
+    <td class="dados-hospital" colspan="2">
+
+        ' . (!empty($resultado_empresa_selecionada['nome'])
+            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+            : '') . '
+
+        <div class="empresa-info">
+            ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) . ' '
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) . ', '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? 'TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
+        </div>
+
+    </td>
+</tr>
+
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
+                        ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
+                        ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['titulo_cargo']) ? 'CARGO: ' . $resultado_busca_cargo_pessoa['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
+                        ' . (!empty($resultado_busca_cargo_pessoa['codigo_cargo']) ? 'CBO: ' . $resultado_busca_cargo_pessoa['codigo_cargo'] : '') . '
+                    </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td colspan="2" class="section-title">TIPO DE EXAME / PROCEDIMENTO: Admissional ' . marcar("admissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Periódico ' . marcar("periodico", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Demissional ' . marcar("demissional", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Mudança de Risco/Função ' . marcar("mudanca", $recebe_exame) . ' &nbsp;&nbsp;&nbsp;&nbsp;
+                        Retorno ao Trabalho ' . marcar("retorno", $recebe_exame) . '</td>
+                </tr>
+            </table>
+
+            <!-- Tabela de Meatoscopia -->
+            <table class="tabela-meatoscopia" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <tr style="font-weight:bold; background-color:#f2f2f2;">
+                <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
+            </tr>
+            <tr>
+                <!-- OD -->
+                <td style="width:50%; border:1px solid #000; padding:6px;">
+                <strong>OD</strong><br>
+                <label><input type="checkbox" name="od_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="od_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="od_total" /> Obstrução Total</label>
+                </td>
+
+                <!-- OE -->
+                <td style="width:50%; border:1px solid #000; padding:6px;">
+                <strong>OE</strong><br>
+                <label><input type="checkbox" name="oe_sem" /> Sem Obstrução</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="oe_parcial" /> Obstrução Parcial</label>&nbsp;&nbsp;
+                <label><input type="checkbox" name="oe_total" /> Obstrução Total</label>
+                </td>
+            </tr>
+            </table>
+
+            <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+            <tr>
+                <!-- Orelha Direita -->
+                <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+                    <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
+                    <!-- Ajuste nas imagens dos audiogramas -->';
+                    $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                
+            
+                    <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Média: __________________________________ dB
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Masc. VO: Tipo: __________________________________
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+                <!-- Orelha Esquerda -->
+                <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
+                    <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
+                    <!-- Ajuste nas imagens dos audiogramas -->
+                    ';
+                    $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+            
+                    <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Média: __________________________________ dB
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 4px; text-align:left;border: 0px solid #000;">
+                                Masc. VA: Tipo: __________________________________
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+<!-- SEÇÃO LOGOAUDIOMETRIA -->
+<table style="width:100%; border-collapse:collapse; margin-top:0px;">
+    <tr>
+        <td colspan="3" class="section-title" style="text-align:center">LOGOAUDIOMETRIA</td>
+    </tr>
+    <tr>
+        <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
+        <td class="logo-col1" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio .logo-col1" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr class="linha-final">
+                    <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
+                        LIMIAR DE RECONHECIMENTO DE FALA
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OD:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
+                    </td>
+                </tr>
+                <tr class="linha-final">
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OE:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
+        <td class="logo-col2" style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio tabela-centro blocos-audio" style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
+                <tr>
+                    <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
+                        ÍNDICE DE RECONHECIMENTO DE FALA
+                    </td>
+                </tr>
+
+                <!-- OD -->
+                <tr>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; width:10%; text-align:center; vertical-align:middle;"><strong>OD</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; width:15%; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td style="border:1px solid #000; padding:6px; width:50%;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px; width:35%;">Monossílabos</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
+                </tr>
+
+                <!-- OE -->
+                <tr>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
+                    <td style="border:1px solid #000; padding:6px;">Dissílabos</td>
+                </tr>
+            </table>
+        </td>
+
+        <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
+        <td class="logo-col3" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
+                        LIMIAR DE DETECTABILIDADE DE FALA
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OD:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border:1px solid #000; padding:6px;">
+                        <strong>OE:</strong>
+                        <span style="float:right; font-weight:bold;">dB</span>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<table class="audiometro" style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
+    <tr>
+        <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
+        <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 
+        Modelo: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+        Data de calibração: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+</table>
+
+
+<table class="no-break parecer-fono-tabela" style="width:100%; border-collapse:collapse; margin-top:5px;">
+
+
+
+    <tr>
+        <td colspan="6" class="parecer-fono titulo" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+            PARECER FONOAUDIOLÓGICO
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
+            <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
+            (&nbsp;&nbsp;&nbsp;  ) | OD |  
+            (&nbsp;&nbsp;&nbsp;  ) | OE |
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
+            <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
+            (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Neurosensorial | OD | (&nbsp;&nbsp;&nbsp;  ) OE
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
+            <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
+            (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Moderada | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Moderada Severa | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Severa | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
+            (&nbsp;&nbsp;&nbsp;  ) Profunda | OD | (&nbsp;&nbsp;&nbsp;  ) OE
+        </td>
+    </tr>
+
+    <tr>
+    <td colspan="6" class="obs-linha" style="border:1px solid #000; vertical-align:top;">
+        <strong>Obs:</strong> 
+    </td>
+</tr>
+
+    <tr>
+        <td colspan="6" style="border:1px solid #000; padding:4px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+
+
+    
+
+   <tr class="verificando">
+    <!-- Assinatura médico -->
+    <td class="assinaturas" style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; padding: 10px;">
+        <div class="assinatura-container" style="display: inline-block; text-align: center; width: 100%;">
+            ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : 
+                (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+            <div style="border-top: 1px solid #000; width: 80%; margin: 15px auto 3px;"></div>
+            <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+            <div style="font-size: 10px; margin-bottom: 2px;">
+                ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                    ? 'Fonoaudiólogo Examinador'
+                    : (!empty($resultado_medico_relacionado_clinica['nome'])
+                        ? 'Médico Examinador'
+                        : '')) . '
+            </div>
+            <div class="assinatura-container" style="font-size: 10px;">
+                ' . htmlspecialchars(
+                    !empty($resultado_medico_fonoaudiologo['nome'])
+                        ? $resultado_medico_fonoaudiologo['nome']
+                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                ) .
+                (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                    ? ' — CRM: ' . 
+                      (!empty($resultado_medico_fonoaudiologo['crm'])
+                        ? $resultado_medico_fonoaudiologo['crm']
+                        : $resultado_medico_relacionado_clinica['crm'])
+                    : '') . '
+            </div>
+        </div>
+    </td>
+
+    <!-- Assinatura funcionário -->
+    <td class="assinaturas" style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; padding: 10px;">
+        <div style="display: inline-block; text-align: center; width: 100%;">
+            <div style="border-top: 1px solid #000; width: 80%; margin: 5px auto 3px;"></div>
+            <div style="font-weight: bold; margin: 3px 0;">Assinatura do Funcionário</div>
+            <div style="font-size: 9px;">
+                ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') . 
+                (!empty($resultado_pessoa_selecionada['cpf']) 
+                    ? ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf']) 
+                    : '') . '
+            </div>
+        </div>
+    </td>
+</tr>
+</table>
+</div>

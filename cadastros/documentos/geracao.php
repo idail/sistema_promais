@@ -4247,23 +4247,205 @@ img {
     break-inside: avoid !important;
 }
 
-/* Impressão */
+/* ======================= */
+/* AJUSTE SÓ NA AUDIOMETRIA */
+/* ======================= */
 @media print {
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  .page-break {
-        page-break-before: always;
+
+  /* TODAS AS TABELAS DA AUDIOMETRIA */
+  .audiometria table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
   }
-  .actions {
-    display: none !important;
+
+  .audiometria th,
+  .audiometria td {
+    padding: 1px 2px !important;
+    line-height: 1.1 !important;
   }
-  table, tr, td, th {
+
+  /* TÍTULOS */
+  .audiometria .titulo-guia,
+  .audiometria .section-title {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+  }
+
+  /* DADOS */
+  .audiometria .dados-hospital,
+  .audiometria .hospital-nome,
+  .audiometria .empresa-info {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* IDENTIFICAÇÃO DO FUNCIONÁRIO */
+  .audiometria td[style*="font-size:12px"],
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* MEATOSCOPIA */
+  .audiometria .tabela-meatoscopia td,
+  .audiometria .tabela-meatoscopia label {
+    font-size: 8px !important;
+    padding: 2px !important;
+  }
+
+  /* LOGOAUDIOMETRIA */
+  .audiometria .logo-audio td {
+    font-size: 7.8px !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .logo-audio {
+    height: 105px !important;
+  }
+
+  /* AUDIOGRAMAS */
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+  }
+
+  /* AUDIÔMETRO */
+  .audiometria .audiometro th,
+  .audiometria .audiometro td {
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+
+  /* ======================== */
+  /* PARECER FONOAUDIOLÓGICO */
+  /* ======================== */
+  .audiometria .parecer-fono,
+  .audiometria .parecer-fono * {
+    font-size: 7.7px !important;
+    line-height: 1.1 !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .parecer-fono table {
+    width: 100% !important;
+  }
+
+  .audiometria .parecer-fono.titulo {
+    font-size: 8.2px !important;
+  }
+
+  .audiometria .obs-linha {
+    height: 25px !important;
+  }
+
+  /* ======================== */
+  /* ASSINATURAS */
+  /* ======================== */
+  .audiometria .assinaturas-container {
+    margin-top: 3px !important;
+  }
+
+  .audiometria .linha-assinatura {
+    margin: 5px auto 2px !important;
+  }
+
+  .audiometria .assinaturas,
+  .audiometria .assinaturas * {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .audiometria .titulo_assinatura {
+    font-size: 8px !important;
+    margin: 2px 0 !important;
+  }
+
+  .audiometria .nome_funcionario {
+    font-size: 7.8px !important;
+  }
+
+  /* EVITA QUEBRA DE TABELA */
+  .audiometria table,
+  .audiometria tr,
+  .audiometria td,
+  .audiometria th {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  .actions {
+    display: none !important;
+  }
+
+  .audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  .audiometria table.parecer-fono-tabela tr,
+  .audiometria table.parecer-fono-tabela td,
+  .audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+  }
+
+  /* reforço: garantir 100% da largura do formulário para a tabela do parecer */
+  .guia-container.audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+      display: table !important;
+  }
+
+  /* células sem largura fixa e respeitando a largura total */
+  .guia-container.audiometria table.parecer-fono-tabela td,
+  .guia-container.audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      box-sizing: border-box !important;
+  }
+
+  /* força a tabela a pegar 100% */
+  .parecer-fono table,
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  /* força cada célula a NÃO ter largura fixa */
+  .parecer-fono table td,
+  .parecer-fono table th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+  }
+
+  .parecer-fono .assinatura {
+      margin-top: 6px !important;
+  }
+
+  /* linha propriamente dita */
+  .parecer-fono .assinatura .linha-assinatura {
+      margin-top: 8px !important;   /* aqui controla a distância da linha */
+      border-bottom: 1px solid #000 !important;
+      height: 40px !important;      /* altura da área da linha */
+  }
 }
+
 
  /* Bloco do Parecer Fonoaudiológico */
 .parecer-fono {
@@ -4277,7 +4459,6 @@ img {
     font-size: 8.5px !important;
     padding: 0px !important;
     line-height: 1.12 !important;
-    width: 65% !important;
 }
 
 /* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
@@ -4305,7 +4486,97 @@ img {
 }
 
 
+@media print {
 
+    /* Força a tabela EXATA da audiometria a ocupar 100% */
+    table.parecer-fono-tabela {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+    }
+
+    /* Todas as células expandem normalmente */
+    table.parecer-fono-tabela td,
+    table.parecer-fono-tabela th {
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 2px !important;
+    }
+}
+
+/* ===========================
+   AJUSTE FINAL DO PARECER
+   =========================== */
+
+@media print {
+
+  /* força a tabela a ocupar toda a largura */
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+  }
+
+  /* remove larguras internas que limitam expansão */
+  table.parecer-fono-tabela td,
+  table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+      line-height: 1.15 !important;
+  }
+
+  /* remove atributos width vindo do HTML */
+  table.parecer-fono-tabela [width],
+  table.parecer-fono-tabela td[width],
+  table.parecer-fono-tabela th[width] {
+      width: auto !important;
+  }
+
+  /* corrige assinatura descendo a linha */
+  .parecer-fono .assinatura {
+      margin-top: 8px !important;
+      padding-top: 4px !important;
+      height: auto !important;
+  }
+
+  .parecer-fono .assinatura .linha-assinatura {
+      height: 40px !important;
+      border-bottom: 1px solid #000 !important;
+      margin-top: 6px !important;
+  }
+}
+/* ============================================
+   FORÇA TODAS AS TABELAS DO PARECER A EXPANDIREM
+   ============================================ */
+.parecer-fono table,
+table.parecer-fono-tabela {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Células sem largura fixa */
+.parecer-fono table td,
+.parecer-fono table th {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    padding: 2px !important;
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
 </style>
 
 
@@ -4631,61 +4902,61 @@ img {
     </td>
 </tr>
 
-    <tr>
+    <tr class="verificando">
         <td colspan="6" style="border:1px solid #000; padding:4px;">
             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
+      </td>
     </tr>
 
 
     
 
-   <tr>
-    <!-- Assinatura médico -->
-    <td class="assinaturas" style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; padding: 10px;">
-        <div class="assinatura-container" style="display: inline-block; text-align: center; width: 100%;">
-            ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : 
-                (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
-            <div style="border-top: 1px solid #000; width: 80%; margin: 15px auto 3px;"></div>
-            <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
-            <div style="font-size: 10px; margin-bottom: 2px;">
-                ' . (!empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'Fonoaudiólogo Examinador'
-                    : (!empty($resultado_medico_relacionado_clinica['nome'])
-                        ? 'Médico Examinador'
-                        : '')) . '
-            </div>
-            <div class="assinatura-container" style="font-size: 10px;">
-                ' . htmlspecialchars(
-                    !empty($resultado_medico_fonoaudiologo['nome'])
-                        ? $resultado_medico_fonoaudiologo['nome']
-                        : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-                ) .
-                (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
-                    ? ' — CRM: ' . 
-                      (!empty($resultado_medico_fonoaudiologo['crm'])
-                        ? $resultado_medico_fonoaudiologo['crm']
-                        : $resultado_medico_relacionado_clinica['crm'])
-                    : '') . '
-            </div>
-        </div>
-    </td>
-
-    <!-- Assinatura funcionário -->
-    <td class="assinaturas" style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000; padding: 10px;">
-        <div style="display: inline-block; text-align: center; width: 100%;">
-            <div style="border-top: 1px solid #000; width: 80%; margin: 5px auto 3px;"></div>
-            <div style="font-weight: bold; margin: 3px 0;">Assinatura do Funcionário</div>
-            <div style="font-size: 9px;">
-                ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') . 
-                (!empty($resultado_pessoa_selecionada['cpf']) 
-                    ? ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf']) 
-                    : '') . '
-            </div>
-        </div>
+   <tr class="">
+    <td colspan="6" style="border:0; padding:0; line-height:0;">
+        
     </td>
 </tr>
 </table>
+
+<table class="assinaturas-separadas assinaturas-container">
+            <tr>
+                <td class="assinaturas informacoes_medico" style="text-align:center; vertical-align:bottom;">
+                    ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+                    <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                    <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+                    <div style="margin-bottom: 2px;">
+                        ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                            ? 'Fonoaudiólogo Examinador'
+                            : (!empty($resultado_medico_relacionado_clinica['nome'])
+                                ? 'Médico Examinador'
+                                : '')) . '
+                    </div>
+                    ' . htmlspecialchars(
+                        !empty($resultado_medico_fonoaudiologo['nome'])
+                            ? $resultado_medico_fonoaudiologo['nome']
+                            : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                    ) .
+                    (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                        ? ' — CRM: ' . (!empty($resultado_medico_fonoaudiologo['crm'])
+                            ? $resultado_medico_fonoaudiologo['crm']
+                            : $resultado_medico_relacionado_clinica['crm'])
+                        : '') . '
+                </td>
+                <td class="assinaturas informacoes_funcionario" style="text-align:center; vertical-align:bottom;">
+                    <div class="funcionario" style="display:inline-block; text-align:center; width:100%; margin:0 auto; padding:0;">
+                        <div class="linha-assinatura"></div>
+                        <div class="titulo_assinatura">Assinatura do Funcionário</div>
+                        <div class="nome_funcionario">
+                            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') .
+                            (!empty($resultado_pessoa_selecionada['cpf'])
+                                ? 'CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'])
+                                : '') . '
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
 
 <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
@@ -13725,7 +13996,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" style="border:1px solid #000; border-bottom:0; padding:4px;">
             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
         </td>
     </tr>
