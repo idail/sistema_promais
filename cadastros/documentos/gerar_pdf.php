@@ -1955,5 +1955,204 @@ table, tr, td, th, div, p, span {
 
     echo "https://www.idailneto.com.br/promais/cadastros/documentos/$nome";
     exit;
+}else if($tipo === "faturamento")
+{
+    // CSS exclusivo
+$css = '
+<style>
+/* Base existente (mantida) */
+body { font-family: Arial, sans-serif; background:#fff; margin:0; padding:0; font-size:10px; }
+.guia-container { page-break-inside:avoid !important; break-inside:avoid !important; width:100%; padding:2px 5px; margin:0; line-height:1.1; }
+table { border-collapse:collapse; width:100%; font-size:10px; table-layout:fixed; page-break-inside:avoid !important; break-inside:avoid !important; }
+th, td { border:1px solid #000; padding:2px 3px; word-wrap:break-word; page-break-inside:avoid !important; break-inside:avoid !important; }
+.titulo-guia { background:#eaeaea; font-weight:bold; text-align:center; font-size:11px; padding:2px 4px; }
+.section-title { background:#eaeaea; font-weight:bold; font-size:10px; padding:1px 0; }
+.hospital-nome { font-weight:bold; text-decoration:underline; display:block; margin-bottom:2px; font-size:10px; }
+td.logo { width:25% !important; text-align:center; vertical-align:middle; padding:2px; }
+td.logo img { width:80px !important; height:auto !important; object-fit:contain; max-height:40px !important; display:inline-block; }
+td img { width:120px !important; max-height:50px !important; object-fit:contain; display:block; margin:0 auto 2px auto !important; }
+table, tr, td, th, div, p, span { break-inside:avoid !important; page-break-inside:avoid !important; }
+
+/* ---------------- Ajustes para bloco bancário ---------------- */
+
+/* Container gerado pela função (tem display:flex e gap inline) */
+.guia-container div[style*="display:flex"][style*="gap:15px"]{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:14px !important;
+  flex-wrap:nowrap !important;             /* NUNCA quebrar linha */
+  white-space:nowrap !important;           /* impede quebra entre blocos */
+  width:100% !important;
+  position:relative !important;
+  clear:both !important;
+  margin-top:15px !important;              /* seu ajuste */
+  margin-bottom:0px !important;            /* seu ajuste */
+}
+
+/* Cada bloco de info bancária: não permitir largura mínima que force quebra */
+.dados-bancarios{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  margin:0 2px 0 0 !important;            /* sem margin-top */
+  min-width:0 !important;                  /* permite encolher */
+  flex:0 1 auto !important;                /* divide a linha sem quebrar */
+  border:0 !important;
+}
+
+/* QR menor e fixo à esquerda */
+.dados-bancarios:first-child img{
+  width:50px !important;                   /* menor para caber tudo */
+  height:auto !important;
+  display:block !important;
+}
+
+/* Texto do primeiro bloco (Chave) EM LINHA AO LADO do QR */
+.dados-bancarios:first-child > div{
+  display:inline-flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  gap:6px !important;
+  white-space:nowrap !important;
+  margin:0 !important;
+  position: relative;
+  top: 12px;  
+}
+
+/* PIX e Agência/Conta também em linha única (label + valor) */
+.dados-bancarios p{
+  display:inline !important;               /* impede empilhar */
+  margin:0 6px 0 0 !important;             /* pequeno espaçamento horizontal */
+  white-space:nowrap !important;
+}
+
+/* Se "Dados para Transferência" vier como 2 <p>, mantém em linha */
+.dados-bancarios:not(:first-child) p + p{
+  margin-left:4px !important;              /* valor encostado no label */
+}
+
+/* Segurança na impressão */
+@media print{
+  .guia-container div[style*="display:flex"][style*="gap:15px"]{
+    flex-wrap:nowrap !important;
+    white-space:nowrap !important;
+  }
+}
+
+/* Mantém tudo em uma única linha */
+.guia-container div[style*="display:flex"][style*="gap:15px"]{
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+}
+
+/* Força o bloco “Dados para Transferência” a ser em linha (label + valor) */
+.dados-bancarios:last-child{
+  display: inline-flex !important;
+  flex-direction: row !important;      /* rótulo e valor lado a lado */
+  align-items: center !important;
+  gap: 6px !important;
+  margin-top: 0 !important;            /* remove o empurrão para baixo */
+  min-width: 0 !important;             /* permite encolher sem quebrar */
+}
+
+/* Rótulo em negrito (à esquerda) */
+.dados-bancarios:last-child > p{
+  display: inline !important;
+  margin: 0 !important;
+  font-weight: bold !important;
+  white-space: nowrap !important;
+}
+
+/* Valor (à direita do rótulo) */
+.dados-bancarios:last-child > div{
+  display: inline !important;
+  margin: 0 !important;
+  white-space: nowrap !important;      /* mantém “Ag 3859 • C/C 5452-6” em uma linha */
+}
+
+/* Cada fragmento do valor também inline */
+.dados-bancarios:last-child > div p{
+  display: inline !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Não deixar nada quebrar de linha */
+.guia-container div[style*="display:flex"][style*="gap:15px"]{
+  gap:1px !important;               /* menos espaço entre blocos */
+  flex-wrap:nowrap !important;
+  white-space:nowrap !important;
+}
+
+/* Espaços menores entre colunas */
+.dados-bancarios{
+  margin:0 12px 0 0 !important;
+  min-width:0 !important;
+  flex:0 1 auto !important;
+}
+
+/* QR menor para ganhar largura útil */
+.dados-bancarios:first-child img{
+  width:55px !important;
+  height:65px !important;
+}
+
+/* “Dados para Transferência” = label + valor NA MESMA LINHA */
+.dados-bancarios:last-child{
+  display:inline-flex !important;
+  flex-direction:row !important;
+  align-items:baseline !important;     /* alinha com a base dos textos dos outros */
+  gap:6px !important;
+  margin-top:0 !important;
+  min-width:0 !important;
+  flex:1 1 auto !important;            /* deixa esta coluna usar o espaço restante */
+}
+
+/* Label à esquerda, em negrito */
+.dados-bancarios:last-child > p{
+  display:inline-block !important;
+  margin:0 !important;
+  font-weight:bold !important;
+  white-space:nowrap !important;
+}
+
+/* Valor imediatamente à direita do label (sem quebrar) */
+.dados-bancarios:last-child > div{
+  display:inline-block !important;
+  margin:0 !important;
+  white-space:nowrap !important;
+}
+
+/* Cada fragmento do valor inline */
+.dados-bancarios:last-child > div p{
+  display:inline !important;
+  margin:0 !important;
+  white-space:nowrap !important;
+}
+
+.guia-container div[style*="display:flex"][style*="gap:15px"],
+.guia-container .dados-bancarios{
+  font-size: 9px !important;
+}
+</style>
+';
+
+    // HTML FINAL
+    $html_final = $css . $html_recebido;
+
+    // GERA PDF
+    $dompdf->loadHtml($html_final);
+    $dompdf->setPaper("A4", "portrait");
+    $dompdf->render();
+
+    // NOME ÚNICO
+    $nome = "faturamento" . time() . ".pdf";
+    $caminho = __DIR__ . "/$nome";
+
+    file_put_contents($caminho, $dompdf->output());
+
+    echo "https://www.idailneto.com.br/promais/cadastros/documentos/$nome";
+    exit;
 }
 ?>
