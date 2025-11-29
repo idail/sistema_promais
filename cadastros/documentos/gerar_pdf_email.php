@@ -2259,7 +2259,7 @@ table, tr, td, th, div, p, span { break-inside:avoid !important; page-break-insi
   width:100% !important;
   position:relative !important;
   clear:both !important;
-  margin-top:30px !important;              /* seu ajuste */
+  margin-top:15px !important;              /* seu ajuste */
   margin-bottom:0px !important;            /* seu ajuste */
 }
 
@@ -2367,8 +2367,8 @@ table, tr, td, th, div, p, span { break-inside:avoid !important; page-break-insi
 
 /* QR menor para ganhar largura útil */
 .dados-bancarios:first-child img{
-  width:48px !important;
-  height:auto !important;
+  width:55px !important;
+  height:65px !important;
 }
 
 /* “Dados para Transferência” = label + valor NA MESMA LINHA */
