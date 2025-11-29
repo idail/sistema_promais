@@ -633,7 +633,7 @@ table, tr, td, th, div, p, span {
     $dompdf->render();
 
     // NOME ÚNICO
-    $nome = "psicossocial" . time() . ".pdf";
+    $nome = "exame_toxicologico" . time() . ".pdf";
     $caminho = __DIR__ . "/$nome";
 
     file_put_contents($caminho, $dompdf->output());

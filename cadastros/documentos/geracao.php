@@ -13690,7 +13690,7 @@ td[style*="height:80px"] {
 
         </style>
 
-        <div class="guia-container">
+        <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
 
             <table>
@@ -13707,9 +13707,11 @@ td[style*="height:80px"] {
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
+                    </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
                     <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
+                        <img src="'.$logo.'" alt="Logo">
                     </td>
                 </tr>
             </table>
@@ -13783,57 +13785,146 @@ td[style*="height:80px"] {
                 </tr>
             </table>
 
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">Assinatura</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:6px;">
-                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                
-
-                <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                                    <br>
-                                    
-                                    <br>
-                                    _______________________________<br>
-                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                </td>
-            </table>
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+    <tr>
+        <td class="section-title" style="font-weight:bold; background:#eaeaea; text-align:left; padding:4px;">
+            Assinatura
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; padding:6px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <td style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            _______________________________<br>
+            Assinatura do Funcionário <br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+        </td>
+    </tr>
+</table>
 
 
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeExameToxicologico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailExameToxicologico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappExameToxicologico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsExameToxicologico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         ';
 
 
+echo '
 
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailExameToxicologico() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeExameToxicologico").value;
+
+    let tipo = "exame_toxicologico";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappExameToxicologico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsExameToxicologico").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "exame_toxicologico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
