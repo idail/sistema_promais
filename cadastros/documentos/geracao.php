@@ -3127,7 +3127,7 @@ echo '
 function enviarEmailTesteAcuidadade() {
      debugger;
     
-    let destino = document.getElementById("tipoContabilidadeASO").value;
+    let destino = document.getElementById("tipoContabilidadeTesteAcuidade").value;
 
     let tipo = "teste_acuidade";
     
@@ -12212,7 +12212,7 @@ echo '
 function enviarEmailTesteAcuidadade() {
      debugger;
     
-    let destino = document.getElementById("tipoContabilidadeASO").value;
+    let destino = document.getElementById("tipoContabilidadeTesteAcuidade").value;
 
     let tipo = "teste_acuidade";
     
@@ -12864,7 +12864,7 @@ function enviarEmailTesteAcuidadade() {
 
         </style>
 
-        <div class="guia-container">
+        <div class="guia-container psicossocial">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
@@ -12879,9 +12879,10 @@ function enviarEmailTesteAcuidadade() {
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
+                    </td>';
+                    echo '
                     <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
+                        <img src="'.$logo.'" alt="Logo">
                     </td>
                 </tr>
             </table>
@@ -13185,30 +13186,121 @@ function enviarEmailTesteAcuidadade() {
 
             </div>
             
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadePsicossocial" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailPsicossocial()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappPsicossocial()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsPsicossocial" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
 
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailPsicossocial() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadePsicossocial").value;
+
+    let tipo = "psicossocial";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappPsicossocial() {
+            debugger;
+    let whatsapp = document.getElementById("whatsPsicossocial").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "psicossocial";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
