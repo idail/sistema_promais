@@ -2214,6 +2214,21 @@ table, tr, td, th, div, p, span {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
 }
+
+/* ===== Alinhamento do checkbox "O colaborador esta" – Teste de Romberg ===== */
+.teste-romberg td.section-subtitle {
+    vertical-align: middle;   /* texto e checkbox centralizados na célula   */
+    line-height: 1.2;         /* altura de linha um pouco maior             */
+    font-size: 11px;          /* mantém proporção parecida com o resto      */
+}
+
+.teste-romberg td.section-subtitle input[type="checkbox"] {
+    margin: 0 3px 0 6px;      /* espaço antes e depois do checkbox          */
+    vertical-align: middle;   /* alinha com a linha do texto                */
+    position: relative;
+    top: 5px;                 /* 🔹 se ainda ficar alto, aumente para 2px   */
+    transform: scale(0.9);    /* um pouco menor para ficar mais “leve”      */
+}
 </style>
 ';
     $html_final = $css . $html_recebido;
