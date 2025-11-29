@@ -1912,15 +1912,16 @@ padding-left: 6px !important;
         exit;
     }
 } else if ($tipo === "resumo_laudo") {
+    
     // CSS exclusivo
-    $css = '
+$css = '
 <style>
 body { 
     font-family: Arial, sans-serif; 
     background: #fff; 
     margin: 0;
     padding: 0;
-    font-size: 10px; /* Fonte menor para caber na página */
+    font-size: 10px;
 }
 
 /* Evita que o conteúdo do formulário quebre */
@@ -1928,9 +1929,9 @@ body {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     width: 100%;
-    padding: 2px 5px; /* Padding reduzido */
+    padding: 2px 5px;
     margin: 0;
-    line-height: 1.1; /* Linha mais compacta */
+    line-height: 1.1;
 }
 
 /* Tabelas */
@@ -1938,7 +1939,7 @@ table {
     border-collapse: collapse; 
     width: 100%; 
     font-size: 10px;
-    table-layout: fixed; /* Garante que colspan ocupe a largura total */
+    table-layout: fixed;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
 }
@@ -1946,10 +1947,11 @@ table {
 /* Células */
 th, td { 
     border: 1px solid #000; 
-    padding: 2px 3px; /* Padding menor */
-    word-wrap: break-word; /* Evita ultrapassar a largura */
+    padding: 2px 3px;
+    word-wrap: break-word;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    vertical-align: middle;   /* 🔹 alinha o conteúdo no meio da célula */
 }
 
 /* Título da guia */
@@ -1980,9 +1982,9 @@ th, td {
 
 /* Coluna da logo */
 td.logo {
-    width: 100px; /* largura menor da coluna da logo */
-    text-align: center; /* centraliza a logo horizontalmente */
-    vertical-align: middle; /* centraliza a logo verticalmente */
+    width: 100px;
+    text-align: center;
+    vertical-align: middle;
     padding: 2px;
 }
 
@@ -1992,11 +1994,11 @@ td.logo img {
     height: auto !important;
     object-fit: contain;
     max-height: 40px !important;
-    display: inline-block; /* mantém centralizado */
+    display: inline-block;
 }
 
 td.logo{
-    width:25%; !important;
+    width:25% !important;
 }
 
 /* ASSINATURA */
@@ -2008,13 +2010,53 @@ td img {
     margin: 0 auto 2px auto !important;
 }
 
+/* ===== ALINHAMENTO DOS CHECKBOXES ===== */
+label {
+    display: inline-flex;
+    align-items: center;   /* centraliza verticalmente texto + checkbox */
+    gap: 2px;              /* pequeno espaço entre texto e checkbox */
+    white-space: nowrap;   /* evita quebra entre texto e checkbox */
+}
+
+.checkbox-group label {
+    margin-right: 8px;     /* espaço entre opções */
+}
+
+input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+    transform: scale(0.9); /* ligeiramente menor no PDF */
+}
+
 /* Evita quebras em qualquer conteúdo */
 table, tr, td, th, div, p, span {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
 }
+
+/* ===== Alinhamento dos títulos e checkboxes – Resumo do Laudo (PDF) ===== */
+.resumo-laudo td {
+    vertical-align: middle;
+}
+
+.resumo-laudo label {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+    line-height: 1.2;      /* um pouco maior para centralizar melhor */
+}
+
+.resumo-laudo input[type="checkbox"] {
+    margin: 0 1px 0 0;
+    vertical-align: middle;
+    transform: scale(0.9);
+    position: relative;
+    top: 5px;              /* 🔹 move o checkbox levemente PARA BAIXO */
+}
 </style>
 ';
+
     $html_final = $css . $html_recebido;
 
     // =======================

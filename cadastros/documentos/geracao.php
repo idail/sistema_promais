@@ -5241,7 +5241,28 @@ function enviarEmailAudiometria() {
         page-break-before: always;
     }
 }
+/* ===== Alinhamento dos títulos e checkboxes – Resumo do Laudo ===== */
+.resumo-laudo td {
+    vertical-align: middle;       /* título e checkbox no meio da célula */
+}
 
+/* texto + checkbox na mesma linha e alinhados */
+.resumo-laudo label {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+    line-height: 1;               /* reduz altura da linha */
+}
+
+/* corrige posição do checkbox em relação ao texto */
+.resumo-laudo input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+    transform: scale(0.9);        /* levemente menor para caber melhor */
+    position: relative;
+    top: -1px;                    /* ajuste fino: sobe um pouco o checkbox */
+}
         </style>
 
         <div class="page-break"></div>
