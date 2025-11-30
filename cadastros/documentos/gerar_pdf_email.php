@@ -39,23 +39,27 @@ th, td { border:1px solid #000; padding:4px; }
     margin-bottom:4px !important;     /* espaço entre linhas */
 }
 
-/* -------- LOGO -------- */
-.logo img {
-    width: 90px !important;
-    height: auto !important;
-    object-fit: contain !important;
-    text-align:center;
-    max-height:45px;
+/* -------- COLUNA DA LOGO (TRAVADA) -------- */
+td.logo {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
 }
 
-/* -------- ASSINATURA (imagem pura sem div) -------- */
-td img {
-    width: 140px !important;
-    max-height: 60px !important;
-    object-fit: contain !important;
+/* -------- LOGO (IMAGEM CONTROLADA) -------- */
+td.logo img {
+    max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
     display: block;
-    margin: 0 auto 2px auto !important;
+    margin: 0 auto;
 }
+
 </style>
 ';
 
@@ -280,16 +284,22 @@ th, td {
 }
 
 td.logo {
-    text-align: center !important;
-    vertical-align: middle !important;
-    padding: 2px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
 }
 
 td.logo img {
-    max-width: 70px !important;
-    max-height: 35px !important;
-    display: block !important;
-    margin: 0 auto !important;
+   max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
 }
 
 
