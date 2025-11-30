@@ -239,7 +239,7 @@ table {
     border-collapse: collapse; 
     width: 100%; 
     font-size: 10px;
-    table-layout: fixed; /* Garante que colspan ocupe a largura total */
+    table-layout: auto !important; /* Garante que colspan ocupe a largura total */
     page-break-inside: avoid !important;
     break-inside: avoid !important;
 }
@@ -279,26 +279,19 @@ th, td {
     font-size: 10px;
 }
 
-/* Coluna da logo */
 td.logo {
-    width: 100px; /* largura menor da coluna da logo */
-    text-align: center; /* centraliza a logo horizontalmente */
-    vertical-align: middle; /* centraliza a logo verticalmente */
-    padding: 2px;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 2px !important;
 }
 
-/* LOGO */
 td.logo img {
-    width: 80px !important; 
-    height: auto !important;
-    object-fit: contain;
-    max-height: 40px !important;
-    display: inline-block; /* mantém centralizado */
+    max-width: 70px !important;
+    max-height: 35px !important;
+    display: block !important;
+    margin: 0 auto !important;
 }
 
-td.logo{
-    width:25%; !important;
-}
 
 /* ASSINATURA */
 td img {
