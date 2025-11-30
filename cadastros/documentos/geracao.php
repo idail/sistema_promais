@@ -15676,9 +15676,18 @@ function enviarEmailAudiometria() {
 //                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
 //             </div>';
 
+                // Se a sessão existir e não estiver vazia, usa ela
+                if (isset($_SESSION["codigo_kit"]) && !empty($_SESSION["codigo_kit"])) {
+                    $id_kit = $_SESSION["codigo_kit"];
+                }
+                // Senão, se a variável tiver valor, usa ela
+                elseif (isset($valor_id_kit) && !empty($valor_id_kit)) {
+                    $id_kit = $valor_id_kit;
+                }
+
                 $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
-                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
                 $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
 
