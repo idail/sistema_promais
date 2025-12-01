@@ -2339,14 +2339,32 @@ $css = '
 /* Base existente (mantida) */
 body { font-family: Arial, sans-serif; background:#fff; margin:0; padding:0; font-size:10px; }
 .guia-container { page-break-inside:avoid !important; break-inside:avoid !important; width:100%; padding:2px 5px; margin:0; line-height:1.1; }
-table { border-collapse:collapse; width:100%; font-size:10px; table-layout:fixed; page-break-inside:avoid !important; break-inside:avoid !important; }
+table { border-collapse:collapse; width:100%; font-size:10px; page-break-inside:avoid !important; break-inside:avoid !important; }
 th, td { border:1px solid #000; padding:2px 3px; word-wrap:break-word; page-break-inside:avoid !important; break-inside:avoid !important; }
 .titulo-guia { background:#eaeaea; font-weight:bold; text-align:center; font-size:11px; padding:2px 4px; }
 .section-title { background:#eaeaea; font-weight:bold; font-size:10px; padding:1px 0; }
 .hospital-nome { font-weight:bold; text-decoration:underline; display:block; margin-bottom:2px; font-size:10px; }
-td.logo { width:25% !important; text-align:center; vertical-align:middle; padding:2px; }
-td.logo img { width:80px !important; height:auto !important; object-fit:contain; max-height:40px !important; display:inline-block; }
-td img { width:120px !important; max-height:50px !important; object-fit:contain; display:block; margin:0 auto 2px auto !important; }
+/* -------- COLUNA DA LOGO (TRAVADA) -------- */
+td.logo {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* -------- LOGO (IMAGEM CONTROLADA) -------- */
+td.logo img {
+    max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+img.assinatura { width:120px !important; max-height:50px !important; object-fit:contain; display:block; margin:0 auto 2px auto !important; }
 table, tr, td, th, div, p, span { break-inside:avoid !important; page-break-inside:avoid !important; }
 
 /* ---------------- Ajustes para bloco bancário ---------------- */

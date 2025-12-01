@@ -1309,11 +1309,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
+            .dados-hospital { font-size:12px; line-height:1.4; font-size: 14px !important;}
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img { max-height:49px; }
 
             /* QR Code */
             .qrcode img {
@@ -1400,26 +1400,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <div class="guia-container">
             <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
-
-    <tr>
-        <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
-    </tr>
-
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>';
+                <tr>
+                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>';
         
 $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
@@ -1427,9 +1421,8 @@ echo '
         <td class="logo">
             <img src="'.$logo.'" alt="Logo">
         </td>
-    </tr>
-</table>
-
+                </tr>
+            </table>
 
             <table>
                 <tr>
@@ -1801,38 +1794,27 @@ function enviarEmpresa() {
 
         <div class="page-break"></div>
 
-        <div class="guia-container aso">
+        <div class="guia-container">
             <table>
-    <colgroup>
-        <col> <!-- dados -->
-        <col style="width:150px;"> <!-- LOGO travada -->
-    </colgroup>
-
-    <tr>
-        <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
-    </tr>
-
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>';
-
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
-
+                <tr>
+                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
+                </tr>
+                <tr>
+                    <td class="dados-hospital">
+                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                    </td>
+                    <td class="logo">
+                        <img src="logo.jpg" alt="Logo">
+                    </td>
+                </tr>
+            </table>
 
             <table>
                 <tr>
@@ -3907,7 +3889,7 @@ function enviarEmailPsicossocial() {
                 text-align:left;
             }
             .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img { max-height:45px; }
@@ -4021,6 +4003,7 @@ td[style*="dados-hospital"] {
     padding-top: 1px !important;
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
+    font-size:14px !important;
 }
 
 /* 🔹 Ajusta definitivamente qualquer célula da linha */
@@ -4031,7 +4014,7 @@ td[style*="dados-hospital"] {
 
 /* 🔹 Diminui ainda mais a altura da logo sem distorcer */
 .logo img {
-    max-height: 28px !important; /* antes 35px */
+    max-height: 50px !important; /* antes 35px */
     display: block;
     margin: 0 auto !important;
     padding: 0 !important;
@@ -7651,30 +7634,67 @@ $dadosBancarios = [
         <div class="guia-container faturamento">
 
         <table>
-                <!-- Linha do título -->
-                <tr>
-                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
-                </tr>
-                <!-- Linha dados hospital + logo -->
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
 
-                    </td>';
-                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-                    echo '
-                    <td class="logo">
-                        <img src="'.$logo.'" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <!-- Linha do título -->
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            Faturamento / Orçamento
+        </th>
+    </tr>
+
+    <!-- Linha dados hospital + logo -->
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
