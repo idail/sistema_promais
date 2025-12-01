@@ -844,13 +844,33 @@ table, tr, td, th, div, p, span {
     .hospital-nome { font-weight:bold; text-decoration:underline; display:block !important; margin-bottom:4px !important; } 
 
     /* LOGO */ 
-    .logo img { width: 90px !important; height: auto !important; max-height:45px !important; display:block; margin: 0 auto !important; } 
+    /* -------- COLUNA DA LOGO (TRAVADA) -------- */
+td.logo {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* -------- LOGO (IMAGEM CONTROLADA) -------- */
+td.logo img {
+    max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
 
     /* ASSINATURA - ocupa 100% da linha */ 
     td.assinatura { width: 100% !important; /* força a célula ocupar toda a largura */ text-align:center; /* centraliza horizontalmente */ vertical-align:bottom; /* alinha na parte inferior */ padding: 2px; /* padding reduzido */ border:1px solid #000; 
     /* garante borda completa */ } 
 
-    td.assinatura img { width: 140px !important; max-height: 60px !important; object-fit: contain !important; display: block; margin: 0 auto 2px auto !important; } 
+    img.asstura { width: 140px !important; max-height: 60px !important; object-fit: contain !important; display: block; margin: 0 auto 2px auto !important; } 
 
     /* Evita quebras */ 
     table, tr, td, th, div, p, span { break-inside: avoid !important; page-break-inside: avoid !important; } 
