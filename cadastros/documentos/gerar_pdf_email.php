@@ -138,24 +138,37 @@ th, td { border:1px solid #000; padding:4px; }
     margin-bottom:4px !important;     /* espaço entre linhas */
 }
 
-/* -------- LOGO -------- */
-.logo img {
-    width: 90px !important;
-    height: auto !important;
-    
-    text-align:center !important;
-    max-height:45px !important;
-    margin-right:40px !important;
+/* -------- COLUNA DA LOGO -------- */
+td.logo {
+    width: 115px !important;
+    min-width: 115px !important;
+    max-width: 115px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
 }
 
-/* -------- ASSINATURA (imagem pura sem div) -------- */
-td img {
+/* -------- IMAGEM DA LOGO -------- */
+td.logo img {
+    max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+
+/* -------- ASSINATURA E OUTRAS IMAGENS -------- */
+img.assinatura {
     width: 140px !important;
     max-height: 60px !important;
     object-fit: contain !important;
     display: block;
     margin: 0 auto 2px auto !important;
 }
+
 </style>
 ';
 
