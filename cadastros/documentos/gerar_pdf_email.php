@@ -725,13 +725,25 @@ th, td { border:1px solid #000; padding:4px; vertical-align:top; }
     margin-bottom:4px !important;    
 }
 
-/* LOGO */
-.logo img {
-    width: 90px !important;
+/* -------- COLUNA DA LOGO (TRAVADA) -------- */
+td.logo {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* -------- LOGO (IMAGEM CONTROLADA) -------- */
+td.logo img {
+    max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
     height: auto !important;
-    max-height:45px !important;
-    display:block;
-    margin: 0 auto !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
 }
 
 /* ASSINATURA - ocupa 100% da linha */
@@ -742,7 +754,7 @@ td.assinatura {
     padding: 2px;             /* padding reduzido */
     border:1px solid #000;    /* garante borda completa */
 }
-td.assinatura img {
+img.assinatura {
     width: 140px !important;
     max-height: 60px !important;
     object-fit: contain !important;

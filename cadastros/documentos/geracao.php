@@ -4007,34 +4007,106 @@ td[style*="height:80px"] {
         page-break-inside: auto !important;
     }
 }
+/* 🔹 Remove qualquer espaço extra nas informações da clínica */
+.dados-hospital {
+    font-size: 11px !important;
+    line-height: 1.05 !important;  /* ainda menor */
+    padding: 1px 3px !important;
+    margin: 0 !important;
+}
+
+/* 🔹 Remove altura extra da célula onde fica a clínica */
+td.dados-hospital,
+td[style*="dados-hospital"] {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+}
+
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 2px 3px !important;
+    line-height: 1.05 !important;
+}
+
+/* 🔹 Diminui ainda mais a altura da logo sem distorcer */
+.logo img {
+    max-height: 28px !important; /* antes 35px */
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
+
+/* 🔹 Impede que a célula da logo crie altura por padding */
+.logo {
+    vertical-align: middle !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 
         </style>
 
         <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
 
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>';
-                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-                    echo '
-                    <td class="logo">
-                        <img src="'.$logo.'" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+       
+<table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+        
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+
         </div>
             <table>
                 <tr>
