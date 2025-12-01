@@ -5482,27 +5482,64 @@ function enviarEmailAudiometria() {
 
         <div class="guia-container resumo-laudo">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>';
-                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-                    echo '
-                    <td class="logo">
-                        <img src="'.$logo.'" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            RESUMO DO LAUDO
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+
 
             <table>
                 <tr>
