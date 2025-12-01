@@ -1313,7 +1313,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:49px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -1700,7 +1705,12 @@ function enviarEmpresa() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -2136,7 +2146,12 @@ function enviarEmailASO() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -2824,7 +2839,12 @@ function enviaremailProntuarioMedico() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -3290,7 +3310,12 @@ function enviarEmailTesteAcuidadade() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -3892,7 +3917,12 @@ function enviarEmailPsicossocial() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -5320,7 +5350,12 @@ function enviarEmailAudiometria() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -5849,7 +5884,12 @@ function enviarEmailResumoLaudo() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -7586,7 +7626,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -9274,7 +9319,12 @@ function enviarEmailFaturamento() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//    max-height: 50px !important;
+//    display: block;
+//    margin: 0 auto !important;
+//    padding: 0 !important;
+//}
 
 //             /* QR Code */
 //             .qrcode img {
@@ -9539,7 +9589,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -9923,7 +9978,12 @@ function enviarEmpresa() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -10236,7 +10296,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -10667,7 +10732,12 @@ function enviarEmailASO() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -11183,7 +11253,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -11832,7 +11907,12 @@ function enviaremailProntuarioMedico() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -12174,7 +12254,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -12633,7 +12718,12 @@ function enviarEmailTesteAcuidadade() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -13085,7 +13175,12 @@ function enviarEmailTesteAcuidadade() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -13650,7 +13745,12 @@ function enviarEmailPsicossocial() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -13897,7 +13997,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -15678,7 +15783,12 @@ function enviarEmailAudiometria() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -16073,7 +16183,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -16565,7 +16680,12 @@ function enviarEmailResumoLaudo() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -16942,7 +17062,12 @@ function enviarEmailResumoLaudo() {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -18229,7 +18354,12 @@ function enviarEmailTesteRomberg() {
         //     .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
         //     .logo { text-align:center; }
-        //     .logo img { max-height:45px; }
+        //     .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
         //     /* 🔹 QR Code - garante que apareça na tela e na impressão */
         //     .qrcode img {
@@ -18784,7 +18914,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -20364,7 +20499,12 @@ function enviarEmailFaturamento() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -20628,7 +20768,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -20948,7 +21093,12 @@ function enviarEmpresa() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -21260,7 +21410,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -21603,7 +21758,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -22120,7 +22280,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -22660,7 +22825,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -23002,7 +23172,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -23369,7 +23544,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -23821,7 +24001,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -24294,7 +24479,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -24540,7 +24730,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -25808,7 +26003,12 @@ img {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -26193,7 +26393,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -26573,7 +26778,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -26950,7 +27160,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -28287,7 +28502,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -29724,7 +29944,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -29988,7 +30213,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -30307,7 +30537,12 @@ function enviarEmpresa() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -30620,7 +30855,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -30964,7 +31204,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -31479,7 +31724,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -32018,7 +32268,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -32360,7 +32615,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -32727,7 +32987,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -33180,7 +33445,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -33654,7 +33924,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -33900,7 +34175,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -35170,7 +35450,12 @@ img {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -35556,7 +35841,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -35935,7 +36225,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -36312,7 +36607,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -37649,7 +37949,12 @@ $dadosBancarios = [
     //         .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
     //         .logo { text-align:center; }
-    //         .logo img { max-height:45px; }
+    //         .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
     //         /* 🔹 QR Code - garante que apareça na tela e na impressão */
     //         .qrcode img {
@@ -38060,7 +38365,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -39616,7 +39926,12 @@ $informacoes_clinica;
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -39879,11 +40194,14 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { font-size:14px !important; line-height: 1.05 !important;padding-bottom: 1px !important;padding-top: 1px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img { max-height: 50px !important;
+    display: block !important;
+    margin: 0 auto !important;
+    padding: 0 !important; }
 
             /* QR Code */
             .qrcode img {
@@ -39983,10 +40301,14 @@ echo '
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
+                    </td>';
+        
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
                 </tr>
             </table>
 
@@ -40202,7 +40524,12 @@ function enviarEmpresa() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -40514,7 +40841,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -40856,7 +41188,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -41371,7 +41708,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -41908,7 +42250,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -42249,7 +42596,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -42614,7 +42966,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -43066,7 +43423,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -43539,7 +43901,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -43786,7 +44153,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -45054,7 +45426,12 @@ img {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -45442,7 +45819,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -45820,7 +46202,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -46197,7 +46584,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -47539,7 +47931,12 @@ $dadosBancarios = [
         //     .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
         //     .logo { text-align:center; }
-        //     .logo img { max-height:45px; }
+        //     .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
         //     /* 🔹 QR Code - garante que apareça na tela e na impressão */
         //     .qrcode img {
@@ -47859,7 +48256,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -49402,7 +49804,12 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -49667,7 +50074,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -49988,7 +50400,12 @@ function enviarEmpresa() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -50301,7 +50718,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -50644,7 +51066,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -51159,7 +51586,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -51697,7 +52129,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -52039,7 +52476,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -52404,7 +52846,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -52856,7 +53303,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -53329,7 +53781,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -53575,7 +54032,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -54845,7 +55307,12 @@ img {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -55239,7 +55706,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -55617,7 +56089,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -55993,7 +56470,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -57201,7 +57683,12 @@ $dadosBancarios = [
         //     .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
         //     .logo { text-align:center; }
-        //     .logo img { max-height:45px; }
+        //     .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
         //     /* 🔹 QR Code - garante que apareça na tela e na impressão */
         //     .qrcode img {
@@ -57528,7 +58015,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -59072,7 +59564,12 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -59336,7 +59833,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -59655,7 +60157,12 @@ function enviarEmpresa() {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -59968,7 +60475,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -60313,7 +60825,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -60828,7 +61345,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -61365,7 +61887,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -61706,7 +62233,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -62071,7 +62603,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -62523,7 +63060,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -62996,7 +63538,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -63242,7 +63789,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -64510,7 +65062,12 @@ img {
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -64895,7 +65452,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -65273,7 +65835,12 @@ echo '
 //             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
 //             .logo { text-align:center; }
-//             .logo img { max-height:45px; }
+//             .logo img {
+//     max-height: 50px !important;
+//     display: block;
+//     margin: 0 auto !important;
+//     padding: 0 !important;
+// }
 
 //             /* QR Code */
 //             .qrcode img {
@@ -65650,7 +66217,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -66967,7 +67539,12 @@ $dadosBancarios = [
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -67851,7 +68428,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* 🔹 QR Code - garante que apareça na tela e na impressão */
             .qrcode img {
@@ -69135,7 +69717,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -70153,7 +70740,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -71102,7 +71694,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -72258,7 +72855,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -73234,7 +73836,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -74377,7 +74984,12 @@ echo '
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -76555,7 +77167,12 @@ table.no-break strong {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -77608,7 +78225,12 @@ table.no-break strong {
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
-            .logo img { max-height:45px; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
