@@ -296,17 +296,19 @@ th, td {
     font-size: 10px;
 }
 
+/* -------- COLUNA DA LOGO (TRAVADA) -------- */
 td.logo {
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
+    width: 99px !important;
+    min-width: 99px !important;
+    max-width: 99px !important;
     padding: 3px !important;
     text-align: center;
     vertical-align: middle;
 }
 
+/* -------- LOGO (IMAGEM CONTROLADA) -------- */
 td.logo img {
-   max-width: 70px !important;
+    max-width: 70px !important;
     max-height: 40px !important;
     width: auto !important;
     height: auto !important;
@@ -317,7 +319,7 @@ td.logo img {
 
 
 /* ASSINATURA */
-td img {
+img.assinatura {
     width: 120px !important;
     max-height: 50px !important;
     object-fit: contain;
