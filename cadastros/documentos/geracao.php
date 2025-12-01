@@ -3396,26 +3396,62 @@ function enviarEmailTesteAcuidadade() {
 
         <div class="guia-container psicossocial">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>';
-                    echo '
-                    <td class="logo">
-                        <img src="'.$logo.'" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col> <!-- Coluna do texto -->
+        <col style="width:150px;"> <!-- Coluna fixa da logo -->
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            PSICOSSOCIAL
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+    </tr>
+</table>
+
 
             <table>
                 <tr>
