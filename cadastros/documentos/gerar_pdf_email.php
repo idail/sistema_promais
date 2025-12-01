@@ -420,15 +420,7 @@ body {
     line-height: 1.1; /* Linha mais compacta */
 }
 
-/* Tabelas */
-table { 
-    border-collapse: collapse; 
-    width: 100%; 
-    font-size: 10px;
-    table-layout: fixed; /* Garante que colspan ocupe a largura total */
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-}
+table { border-collapse:collapse; width:100%; font-size:12px; }
 
 /* Células */
 th, td { 
@@ -465,29 +457,29 @@ th, td {
     font-size: 10px;
 }
 
-/* Coluna da logo */
+/* -------- COLUNA DA LOGO (TRAVADA) -------- */
 td.logo {
-    width: 100px; /* largura menor da coluna da logo */
-    text-align: center; /* centraliza a logo horizontalmente */
-    vertical-align: middle; /* centraliza a logo verticalmente */
-    padding: 2px;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding: 3px !important;
+    text-align: center;
+    vertical-align: middle;
 }
 
-/* LOGO */
+/* -------- LOGO (IMAGEM CONTROLADA) -------- */
 td.logo img {
-    width: 80px !important; 
+    max-width: 70px !important;
+    max-height: 40px !important;
+    width: auto !important;
     height: auto !important;
     object-fit: contain;
-    max-height: 40px !important;
-    display: inline-block; /* mantém centralizado */
-}
-
-td.logo{
-    width:25%; !important;
+    display: block;
+    margin: 0 auto;
 }
 
 /* ASSINATURA */
-td img {
+img.assinatura {
     width: 120px !important;
     max-height: 50px !important;
     object-fit: contain;
