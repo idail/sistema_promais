@@ -1074,9 +1074,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         // </table>';
                     }
 
+                    // Se a sessão existir e não estiver vazia, usa ela
+                if (isset($_SESSION["codigo_kit"]) && !empty($_SESSION["codigo_kit"])) {
+                    $id_kit = $_SESSION["codigo_kit"];
+                }
+                // Senão, se a variável tiver valor, usa ela
+                elseif (isset($valor_id_kit) && !empty($valor_id_kit)) {
+                    $id_kit = $valor_id_kit;
+                }
+
                 $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
-                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
                 $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
 
@@ -1309,8 +1318,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; font-size: 14px !important;}
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -1404,6 +1416,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="page-break"></div>
 
         <div class="guia-container">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
@@ -1428,7 +1441,7 @@ echo '
         </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -1701,8 +1714,11 @@ function enviarEmpresa() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -2142,8 +2158,11 @@ function enviarEmailASO() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -2835,8 +2854,11 @@ function enviaremailProntuarioMedico() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -3306,8 +3328,11 @@ function enviarEmailTesteAcuidadade() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -3913,7 +3938,10 @@ function enviarEmailPsicossocial() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
@@ -4021,10 +4049,10 @@ td[style*="height:80px"] {
 }
 /* 🔹 Remove qualquer espaço extra nas informações da clínica */
 .dados-hospital {
-    font-size: 11px !important;
-    line-height: 1.05 !important;  /* ainda menor */
-    padding: 1px 3px !important;
-    margin: 0 !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 /* 🔹 Remove altura extra da célula onde fica a clínica */
@@ -4038,7 +4066,7 @@ td[style*="dados-hospital"] {
 
 /* 🔹 Ajusta definitivamente qualquer célula da linha */
 .bloco-cabecalho td {
-    padding: 2px 3px !important;
+    padding: 5px 3px !important;
     line-height: 1.05 !important;
 }
 
@@ -4386,8 +4414,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -4396,7 +4426,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -4423,7 +4453,8 @@ th, td {
 img.assinatura {
   border-bottom: none !important;
   display: block !important;
-  margin: 0 auto 10px auto !important; /* espaço antes da linha separada abaixo */
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 85px !important;
 }
 
 table + table {
@@ -5346,8 +5377,11 @@ function enviarEmailAudiometria() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -5880,7 +5914,10 @@ function enviarEmailResumoLaudo() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
@@ -7622,8 +7659,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -9585,8 +9625,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -9676,10 +9719,17 @@ echo '
             text-align: center;
             font-size: 14px;
         }
+
+            /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
 </style>
         <div class="page-break"></div>
 
         <div class="guia-container">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
@@ -9702,7 +9752,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -10292,8 +10342,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -10396,6 +10449,7 @@ echo '
         <div class="page-break"></div>
 
         <div class="guia-container aso">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
@@ -10418,7 +10472,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -11249,8 +11303,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -11342,6 +11399,7 @@ echo '
         <div class="page-break"></div>
 
         <div class="guia-container prontuario-medico">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
@@ -11364,7 +11422,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -11547,6 +11605,7 @@ echo '
             </div>
 
             <div class="guia-container prontuario-medico">
+            <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
@@ -11569,7 +11628,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -12250,8 +12309,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -12348,6 +12410,7 @@ echo '
 </style>
 <div class="page-break"></div>
 <div class="guia-container teste-acuidade">
+<div class="bloco-cabecalho">
 
     <!-- Cabeçalho Clínica -->
     <table>
@@ -12372,7 +12435,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -13171,8 +13234,11 @@ function enviarEmailTesteAcuidadade() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -13267,6 +13333,7 @@ function enviarEmailTesteAcuidadade() {
         </style>
 
         <div class="guia-container psicossocial">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
@@ -13288,7 +13355,7 @@ function enviarEmailTesteAcuidadade() {
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -13993,8 +14060,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -14856,8 +14926,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -14866,7 +14938,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -14893,7 +14965,8 @@ th, td {
 img.assinatura {
   border-bottom: none !important;
   display: block !important;
-  margin: 0 auto 10px auto !important; /* espaço antes da linha separada abaixo */
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 85px !important;
 }
 
 table + table {
@@ -15250,7 +15323,7 @@ table.parecer-fono-tabela {
 
 
 <div class="guia-container audiometria">
-
+<div class="bloco-cabecalho">
 
 <!-- ===================== -->
 <!-- CABEÇALHO AUDIOMETRIA -->
@@ -15278,7 +15351,7 @@ table.parecer-fono-tabela {
                     </td>
     </tr>
 </table>
-
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -16179,8 +16252,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -16332,6 +16408,7 @@ echo '
         <div class="page-break"></div>
 
         <div class="guia-container resumo-laudo">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
@@ -16354,7 +16431,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+                </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -17058,8 +17135,11 @@ function enviarEmailResumoLaudo() {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -17184,6 +17264,7 @@ function enviarEmailResumoLaudo() {
         </style>
 
         <div class="guia-container teste-romberg">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
@@ -17206,7 +17287,7 @@ function enviarEmailResumoLaudo() {
                     </td>
                 </tr>
             </table>
-
+                </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -18910,8 +18991,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -18961,7 +19045,7 @@ $dadosBancarios = [
         </style>
 
         <div class="guia-container faturamento">
-
+        <div class="bloco-cabecalho">
         <table>
                 <!-- Linha do título -->
                 <tr>
@@ -18987,7 +19071,7 @@ $dadosBancarios = [
                     </td>
                 </tr>
             </table>
-
+            </div>
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
                 <tr>
@@ -20764,8 +20848,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -21406,8 +21493,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -22276,8 +22366,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -23168,8 +23261,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -23997,8 +24093,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -24726,8 +24825,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -25494,8 +25596,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -25504,7 +25608,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -26313,9 +26417,18 @@ img {
 //                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
 //             </div>';
 
+// Se a sessão existir e não estiver vazia, usa ela
+                if (isset($_SESSION["codigo_kit"]) && !empty($_SESSION["codigo_kit"])) {
+                    $id_kit = $_SESSION["codigo_kit"];
+                }
+                // Senão, se a variável tiver valor, usa ela
+                elseif (isset($valor_id_kit) && !empty($valor_id_kit)) {
+                    $id_kit = $valor_id_kit;
+                }
+
 $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
-                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
                 $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
 
@@ -26389,8 +26502,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -27156,8 +27272,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -28498,8 +28617,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -30209,8 +30331,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -30851,8 +30976,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -31720,8 +31848,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -32611,8 +32742,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital {padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -33441,8 +33575,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -34171,8 +34308,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -34939,8 +35079,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -34949,7 +35091,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -35760,10 +35902,18 @@ img {
 //                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
 //             </div>';
 
+// Se a sessão existir e não estiver vazia, usa ela
+                if (isset($_SESSION["codigo_kit"]) && !empty($_SESSION["codigo_kit"])) {
+                    $id_kit = $_SESSION["codigo_kit"];
+                }
+                // Senão, se a variável tiver valor, usa ela
+                elseif (isset($valor_id_kit) && !empty($valor_id_kit)) {
+                    $id_kit = $valor_id_kit;
+                }
 
 		        $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
-                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
                 $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
 
@@ -35837,8 +35987,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -36603,8 +36756,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -38361,8 +38517,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -40194,14 +40353,19 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:14px !important; line-height: 1.05 !important;padding-bottom: 1px !important;padding-top: 1px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important;}
 
             .logo { text-align:center; }
-            .logo img { max-height: 50px !important;
-    display: block !important;
+            .logo img {
+    max-height: 50px !important;
+    display: block;
     margin: 0 auto !important;
-    padding: 0 !important; }
+    padding: 0 !important;
+}
 
             /* QR Code */
             .qrcode img {
@@ -40283,25 +40447,31 @@ echo '
             text-align: center;
             font-size: 14px;
         }
+            /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
 </style>
         <div class="page-break"></div>
 
         <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>';
+        <div class="bloco-cabecalho">
+        <table>
+            <tr>
+                <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+            </tr>
+            <tr>
+                <td class="dados-hospital">
+                    '.(!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">'.$resultado_clinica_selecionada['nome_fantasia'].'</span>' : '').'
+                    '.(!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: '.$resultado_clinica_selecionada['cnpj'].'<br>' : '').'
+                    '.(!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: '.$resultado_clinica_selecionada['endereco'] : '').'
+                    '.(!empty($resultado_clinica_selecionada['numero']) ? ', '.$resultado_clinica_selecionada['numero'] : '').'
+                    '.(!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: '.$resultado_clinica_selecionada['bairro'] : '').'
+                    '.(!empty($recebe_cidade_uf) ? '<br>CIDADE: '.$recebe_cidade_uf : '').'
+                    '.(!empty($resultado_clinica_selecionada['cep']) ? ', CEP: '.$resultado_clinica_selecionada['cep'] : '').'
+                    '.(!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: '.$resultado_clinica_selecionada['telefone'] : '').'
+                </td>';
         
 $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
@@ -40309,9 +40479,9 @@ echo '
         <td class="logo">
             <img src="'.$logo.'" alt="Logo">
         </td>
-                </tr>
-            </table>
-
+            </tr>
+        </table>
+    </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -40428,56 +40598,120 @@ echo '
         </div>';
 
             echo '
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarGuiaEncaminhamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
+
 </div>
 
         ';
 
+
         echo '
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
         <script>
-function enviarClinica() {
-    let email = document.getElementById("emailClinica").value.trim();
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarGuiaEncaminhamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidade").value;
 
-    if(email === "") {
-        alert("Informe um e-mail antes de enviar!");
-        return;
-    }
+    let tipo = "guia_encaminhamento";
+    
 
-    alert("Enviar para clínica:", email);
-    // sua lógica futura aqui...
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
 }
 
 function enviarEmpresa() {
-    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
 
-    if(whatsapp === "") {
-        alert("Informe um WhatsApp antes de enviar!");
+    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
         return;
     }
+    whatsapp = whatsapp.replace(/\D/g, "");
 
-    alert("Enviar para empresa:", whatsapp);
-    // sua lógica futura aqui...
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "guia_encaminhamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
 }
 </script>
 
@@ -40837,8 +41071,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -40941,6 +41178,7 @@ echo '
         <div class="page-break"></div>
 
         <div class="guia-container">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
@@ -40961,7 +41199,7 @@ echo '
                     </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -41118,29 +41356,120 @@ echo '
 
             echo '
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeASO" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailASO()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappASO()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsASO" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
             </div>
-            </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailASO() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "aso";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappASO() {
+            debugger;
+    let whatsapp = document.getElementById("whatsASO").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "aso";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 //             echo '
@@ -41704,8 +42033,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -41796,27 +42128,39 @@ echo '
 </style>
         <div class="page-break"></div>
 
-        <div class="guia-container">
+        <div class="guia-container prontuario-medico">
+        <div class="bloco-cabecalho">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
 
             <table>
                 <tr>
@@ -41999,28 +42343,64 @@ echo '
             </table>
             </div>
 
-            <div class="guia-container">
+            <div class="guia-container prontuario-medico">
+            <div class="bloco-cabecalho">
             <table>
-                <tr>
-                    <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col> <!-- Coluna de texto -->
+        <col style="width:150px;"> <!-- Coluna fixa da logo -->
+    </colgroup>
 
+    <tr>
+        <th colspan="2" class="titulo-guia" style="page-break-before: always;">
+            PRONTUÁRIO MÉDICO - 02
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -42184,30 +42564,135 @@ echo '
 
             </div>
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeProntuarioMedico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviaremailProntuarioMedico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappaProntuarioMedico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsProntuarioMedico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
     </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviaremailProntuarioMedico() {
+    debugger;
+
+    let destino = document.getElementById("tipoContabilidadeProntuarioMedico").value;
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    let tipo = "prontuario_medico";
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo: tipo,
+            id_kit: valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappaProntuarioMedico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsProntuarioMedico").value.trim();
+    
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "prontuario_medico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 //             echo '
@@ -42592,8 +43077,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -42689,30 +43177,41 @@ echo '
 }
 </style>
 <div class="page-break"></div>
-<div class="guia-container">
+<div class="guia-container teste-acuidade">
+<div class="bloco-cabecalho">
 
     <!-- Cabeçalho Clínica -->
-    <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+<table>
+    <colgroup>
+        <col>
+        <col style="width:150px;"> <!-- LOGO travada -->
+    </colgroup>
 
+    <tr>
+        <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -42903,28 +43402,119 @@ echo '
         </div>
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteAcuidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteAcuidadade()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteAcuidade()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteAcuidade" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteAcuidadade() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteAcuidade").value;
+
+    let tipo = "teste_acuidade";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteAcuidade() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteAcuidade").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_acuidade";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 //             echo '
 //         <style>
@@ -43419,8 +44009,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -43514,27 +44107,65 @@ echo '
 
         </style>
 
-        <div class="guia-container">
+        <div class="guia-container psicossocial">
+        <div class="bloco-cabecalho">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col> <!-- Coluna do texto -->
+        <col style="width:150px;"> <!-- Coluna fixa da logo -->
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            PSICOSSOCIAL
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+    </tr>
+</table>
+</div>
 
             <table>
                 <tr>
@@ -43835,30 +44466,121 @@ echo '
 
             </div>
             
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadePsicossocial" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailPsicossocial()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappPsicossocial()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsPsicossocial" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
 
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailPsicossocial() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadePsicossocial").value;
+
+    let tipo = "psicossocial";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappPsicossocial() {
+            debugger;
+    let whatsapp = document.getElementById("whatsPsicossocial").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "psicossocial";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -44149,8 +44871,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -44255,32 +44980,107 @@ td[style*="height:80px"] {
         page-break-inside: auto !important;
     }
 }
+/* 🔹 Remove qualquer espaço extra nas informações da clínica */
+.dados-hospital {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
+}
+
+/* 🔹 Remove altura extra da célula onde fica a clínica */
+td.dados-hospital,
+td[style*="dados-hospital"] {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size:14px !important;
+}
+
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+
+/* 🔹 Diminui ainda mais a altura da logo sem distorcer */
+.logo img {
+    max-height: 50px !important; /* antes 35px */
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
+
+/* 🔹 Impede que a célula da logo crie altura por padding */
+.logo {
+    vertical-align: middle !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 
         </style>
 
-        <div class="guia-container">
+        <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
 
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+       
+<table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+        
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+
         </div>
             <table>
                 <tr>
@@ -44351,54 +45151,147 @@ td[style*="height:80px"] {
                 </tr>
             </table>
 
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">Assinatura</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:6px;">
-                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+    <tr>
+        <td class="section-title" style="font-weight:bold; background:#eaeaea; text-align:left; padding:4px;">
+            Assinatura
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; padding:6px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <td style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            _______________________________<br>
+            Assinatura do Funcionário <br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+        </td>
+    </tr>
+</table>
 
-                <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                                    <br>
-                                    
-                                    <br>
-                                    _______________________________<br>
-                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                </td>
-            </table>
+
 
 
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeExameToxicologico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailExameToxicologico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappExameToxicologico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsExameToxicologico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailExameToxicologico() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeExameToxicologico").value;
+
+    let tipo = "exame_toxicologico";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappExameToxicologico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsExameToxicologico").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "exame_toxicologico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -44917,8 +45810,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -44927,7 +45822,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -44950,6 +45845,14 @@ th, td {
   margin: 0 auto -6px auto;
 }
 
+/* quando a assinatura é uma imagem, não desenhar a linha na própria imagem */
+img.assinatura {
+  border-bottom: none !important;
+  display: block !important;
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 85px !important;
+}
+
 table + table {
   margin-top: 1px;
 }
@@ -44967,23 +45870,207 @@ img {
     break-inside: avoid !important;
 }
 
-/* Impressão */
+/* ======================= */
+/* AJUSTE SÓ NA AUDIOMETRIA */
+/* ======================= */
 @media print {
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  .page-break {
-        page-break-before: always;
+
+  /* TODAS AS TABELAS DA AUDIOMETRIA */
+  .audiometria table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
   }
-  .actions {
-    display: none !important;
+
+  .audiometria th,
+  .audiometria td {
+    padding: 1px 2px !important;
+    line-height: 1.1 !important;
   }
-  table, tr, td, th {
+
+  /* TÍTULOS */
+  .audiometria .titulo-guia,
+  .audiometria .section-title {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+  }
+
+  /* DADOS */
+  .audiometria .dados-hospital,
+  .audiometria .hospital-nome,
+  .audiometria .empresa-info {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* IDENTIFICAÇÃO DO FUNCIONÁRIO */
+  .audiometria td[style*="font-size:12px"],
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* MEATOSCOPIA */
+  .audiometria .tabela-meatoscopia td,
+  .audiometria .tabela-meatoscopia label {
+    font-size: 8px !important;
+    padding: 2px !important;
+  }
+
+  /* LOGOAUDIOMETRIA */
+  .audiometria .logo-audio td {
+    font-size: 7.8px !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .logo-audio {
+    height: 105px !important;
+  }
+
+  /* AUDIOGRAMAS */
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+  }
+
+  /* AUDIÔMETRO */
+  .audiometria .audiometro th,
+  .audiometria .audiometro td {
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+
+  /* ======================== */
+  /* PARECER FONOAUDIOLÓGICO */
+  /* ======================== */
+  .audiometria .parecer-fono,
+  .audiometria .parecer-fono * {
+    font-size: 7.7px !important;
+    line-height: 1.1 !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .parecer-fono table {
+    width: 100% !important;
+  }
+
+  .audiometria .parecer-fono.titulo {
+    font-size: 8.2px !important;
+  }
+
+  .audiometria .obs-linha {
+    height: 25px !important;
+  }
+
+  /* ======================== */
+  /* ASSINATURAS */
+  /* ======================== */
+  .audiometria .assinaturas-container {
+    margin-top: 3px !important;
+  }
+
+  .audiometria .linha-assinatura {
+    margin: 5px auto 2px !important;
+  }
+
+  .audiometria .assinaturas,
+  .audiometria .assinaturas * {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .audiometria .titulo_assinatura {
+    font-size: 8px !important;
+    margin: 2px 0 !important;
+  }
+
+  .audiometria .nome_funcionario {
+    font-size: 7.8px !important;
+  }
+
+  
+
+  /* EVITA QUEBRA DE TABELA */
+  .audiometria table,
+  .audiometria tr,
+  .audiometria td,
+  .audiometria th {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  .actions {
+    display: none !important;
+  }
+
+  .audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  .audiometria table.parecer-fono-tabela tr,
+  .audiometria table.parecer-fono-tabela td,
+  .audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+  }
+
+  /* reforço: garantir 100% da largura do formulário para a tabela do parecer */
+  .guia-container.audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+      display: table !important;
+  }
+
+  /* células sem largura fixa e respeitando a largura total */
+  .guia-container.audiometria table.parecer-fono-tabela td,
+  .guia-container.audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      box-sizing: border-box !important;
+  }
+
+  /* força a tabela a pegar 100% */
+  .parecer-fono table,
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  /* força cada célula a NÃO ter largura fixa */
+  .parecer-fono table td,
+  .parecer-fono table th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+  }
+
+  .parecer-fono .assinatura {
+      margin-top: 6px !important;
+  }
+
+  /* linha propriamente dita */
+  .parecer-fono .assinatura .linha-assinatura {
+      margin-top: 8px !important;   /* aqui controla a distância da linha */
+      border-bottom: 1px solid #000 !important;
+      height: 40px !important;      /* altura da área da linha */
+  }
 }
+
 
  /* Bloco do Parecer Fonoaudiológico */
 .parecer-fono {
@@ -44997,7 +46084,6 @@ img {
     font-size: 8.5px !important;
     padding: 0px !important;
     line-height: 1.12 !important;
-    width: 65% !important;
 }
 
 /* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
@@ -45025,56 +46111,209 @@ img {
 }
 
 
+@media print {
 
+    /* Força a tabela EXATA da audiometria a ocupar 100% */
+    table.parecer-fono-tabela {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+    }
+
+    /* Todas as células expandem normalmente */
+    table.parecer-fono-tabela td,
+    table.parecer-fono-tabela th {
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 2px !important;
+    }
+}
+
+/* ===========================
+   AJUSTE FINAL DO PARECER
+   =========================== */
+
+@media print {
+
+  /* força a tabela a ocupar toda a largura */
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+  }
+
+  /* remove larguras internas que limitam expansão */
+  table.parecer-fono-tabela td,
+  table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+      line-height: 1.15 !important;
+  }
+
+  /* remove atributos width vindo do HTML */
+  table.parecer-fono-tabela [width],
+  table.parecer-fono-tabela td[width],
+  table.parecer-fono-tabela th[width] {
+      width: auto !important;
+  }
+
+  /* corrige assinatura descendo a linha */
+  .parecer-fono .assinatura {
+      margin-top: 8px !important;
+      padding-top: 4px !important;
+      height: auto !important;
+  }
+
+  .parecer-fono .assinatura .linha-assinatura {
+      height: 40px !important;
+      border-bottom: 1px solid #000 !important;
+      margin-top: 6px !important;
+  }
+}
+/* ============================================
+   FORÇA TODAS AS TABELAS DO PARECER A EXPANDIREM
+   ============================================ */
+.parecer-fono table,
+table.parecer-fono-tabela {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Células sem largura fixa */
+.parecer-fono table td,
+.parecer-fono table th {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    padding: 2px !important;
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
 </style>
 
 
 
-<div class="guia-container">
-
+<div class="guia-container audiometria">
+<div class="bloco-cabecalho">
 
 <!-- ===================== -->
 <!-- CABEÇALHO AUDIOMETRIA -->
 <!-- ===================== -->
 
 <table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
     <tr>
-        <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
+        <th colspan="2" class="titulo-guia">
+            AUDIOMETRIA
+        </th>
     </tr>
+
     <tr>
         <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
         <td class="logo">
-            <img src="logo.jpg" alt="Logo">
+            <img src="'.$logo.'" alt="Logo">
         </td>
     </tr>
 </table>
+</div>
+
 
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
                 </tr>
                 <tr>
-                    <td class="dados-hospital" colspan="2">
-                        ' . (!empty($resultado_empresa_selecionada['nome'])
-                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+    <td class="dados-hospital" colspan="2">
+
+        ' . (!empty($resultado_empresa_selecionada['nome'])
+            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+            : '') . '
+
+        <div class="empresa-info">
+            ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) . ' '
                 : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
-                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
-                    </td>
-                </tr>
+
+            ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) . ' '
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) . ', '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? 'TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
+        </div>
+
+    </td>
+</tr>
+
             </table>
 
             <table>
@@ -45105,7 +46344,7 @@ img {
             </table>
 
             <!-- Tabela de Meatoscopia -->
-            <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <table class="tabela-meatoscopia" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
             <tr style="font-weight:bold; background-color:#f2f2f2;">
                 <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
             </tr>
@@ -45133,8 +46372,12 @@ img {
                 <!-- Orelha Direita -->
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-                    <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <!-- Ajuste nas imagens dos audiogramas -->';
+                    $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
+                
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -45154,7 +46397,10 @@ img {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    ';
+                    $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -45179,9 +46425,9 @@ img {
     </tr>
     <tr>
         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
-                <tr>
+        <td class="logo-col1" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio .logo-col1" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE RECONHECIMENTO DE FALA
                     </td>
@@ -45192,7 +46438,7 @@ img {
                         <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
                         <strong>OE:</strong>
                         <span style="float:right; font-weight:bold;">dB</span>
@@ -45202,8 +46448,8 @@ img {
         </td>
 
         <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
-        <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
+        <td class="logo-col2" style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio tabela-centro blocos-audio" style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
                 <tr>
                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
                         ÍNDICE DE RECONHECIMENTO DE FALA
@@ -45225,7 +46471,7 @@ img {
                 <!-- OE -->
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
-                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;" class="ajuste"><strong>dB/NS</strong></td>
                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
@@ -45237,8 +46483,8 @@ img {
         </td>
 
         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
+        <td class="logo-col3" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio" style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE DETECTABILIDADE DE FALA
@@ -45262,7 +46508,7 @@ img {
 </table>
 
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
+<table class="audiometro" style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -45274,18 +46520,18 @@ img {
 </table>
 
 
-<table class="no-break parecer-fono" style="width:100%; border-collapse:collapse; margin-top:5px;">
+<table class="no-break parecer-fono-tabela" style="width:100%; border-collapse:collapse; margin-top:5px;">
 
 
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+        <td colspan="6" class="parecer-fono titulo" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
             PARECER FONOAUDIOLÓGICO
         </td>
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
             (&nbsp;&nbsp;&nbsp;  ) | OD |  
             (&nbsp;&nbsp;&nbsp;  ) | OE |
@@ -45293,7 +46539,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
             (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -45302,7 +46548,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
             (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -45314,76 +46560,182 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
-            <strong>Obs:</strong>
-        </td>
-    </tr>
+    <td colspan="6" class="obs-linha" style="border:1px solid #000; vertical-align:top;">
+        <strong>Obs:</strong> 
+    </td>
+</tr>
 
-    <tr>
+    <tr class="verificando">
         <td colspan="6" style="border:1px solid #000; padding:4px;">
             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
+      </td>
     </tr>
 
-    <tr>
-        <!-- Assinatura médico -->
-        <!-- Assinatura médico -->
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
 
-        ' . (
-            !empty($html_assinatura_fono)
-                ? $html_assinatura_fono
-                : $html_assinatura_medico
-        ) . '<br>
+    
 
-        ____________________________<br>
-
-        <span>Assinatura</span><br>
-
-        <span>' .
-            (!empty($resultado_medico_fonoaudiologo['nome'])
-                ? 'Fonoaudiólogo Examinador'
-                : (!empty($resultado_medico_relacionado_clinica['nome'])
-                    ? 'Médico Examinador'
-                    : '')
-            ) .
-        '</span><br>
-
-        <span>' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? $resultado_medico_fonoaudiologo['nome']
-                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-            ) .
-            ' — ' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                    : (
-                        !empty($resultado_medico_relacionado_clinica['crm'])
-                            ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
-                            : ''
-                    )
-            ) .
-        '</span>
-
+   <tr class="">
+    <td colspan="6" style="border:0; padding:0; line-height:0;">
+        
     </td>
-
-        <!-- Assinatura funcionário -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            _______________________________<br>
-            Assinatura do Funcionário <br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </td>
-    </tr>
+</tr>
 </table>
+
+<table class="assinaturas-separadas assinaturas-container">
+            <tr>
+                <td class="assinaturas informacoes_medico" style="text-align:center; vertical-align:bottom;">
+                    ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+                    <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                    <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+                    <div style="margin-bottom: 2px;">
+                        ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                            ? 'Fonoaudiólogo Examinador'
+                            : (!empty($resultado_medico_relacionado_clinica['nome'])
+                                ? 'Médico Examinador'
+                                : '')) . '
+                    </div>
+                    ' . htmlspecialchars(
+                        !empty($resultado_medico_fonoaudiologo['nome'])
+                            ? $resultado_medico_fonoaudiologo['nome']
+                            : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                    ) .
+                    (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                        ? ' — CRM: ' . (!empty($resultado_medico_fonoaudiologo['crm'])
+                            ? $resultado_medico_fonoaudiologo['crm']
+                            : $resultado_medico_relacionado_clinica['crm'])
+                        : '') . '
+                </td>
+                <td class="assinaturas informacoes_funcionario" style="text-align:center; vertical-align:bottom;">
+                    <div class="funcionario" style="display:inline-block; text-align:center; width:100%; margin:0 auto; padding:0;">
+                        <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                        <div class="titulo_assinatura">Assinatura do Funcionário</div>
+                        <div class="nome_funcionario">
+                            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') .
+                            (!empty($resultado_pessoa_selecionada['cpf'])
+                                ? 'CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'])
+                                : '') . '
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
 
-<div class="actions" style="display:flex; gap:20px; justify-content:center;">
-    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+<div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
+
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeAudiometria" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
+
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailAudiometria()">Enviar por email</button>
+        
+    </div>
+
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappAudiometria()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsAudiometria" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
+
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
 </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailAudiometria() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "audiometria";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappAudiometria() {
+            debugger;
+    let whatsapp = document.getElementById("whatsAudiometria").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "audiometria";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 //             echo '
@@ -45736,11 +47088,18 @@ img {
 //                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
 //             </div>';
 
-
+// Se a sessão existir e não estiver vazia, usa ela
+                if (isset($_SESSION["codigo_kit"]) && !empty($_SESSION["codigo_kit"])) {
+                    $id_kit = $_SESSION["codigo_kit"];
+                }
+                // Senão, se a variável tiver valor, usa ela
+                elseif (isset($valor_id_kit) && !empty($valor_id_kit)) {
+                    $id_kit = $valor_id_kit;
+                }
 
 		$instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
-                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
                 $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
 
@@ -45815,8 +47174,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -45941,32 +47303,93 @@ echo '
         page-break-before: always;
     }
 }
+/* ===== Alinhamento dos títulos e checkboxes – Resumo do Laudo ===== */
+.resumo-laudo td {
+    vertical-align: middle;       /* título e checkbox no meio da célula */
+}
 
+/* texto + checkbox na mesma linha e alinhados */
+.resumo-laudo label {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+    line-height: 1;               /* reduz altura da linha */
+}
+
+/* corrige posição do checkbox em relação ao texto */
+.resumo-laudo input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+    transform: scale(0.9);        /* levemente menor para caber melhor */
+    position: relative;
+    top: -1px;                    /* ajuste fino: sobe um pouco o checkbox */
+}
         </style>
 
         <div class="page-break"></div>
 
-        <div class="guia-container">
+        <div class="guia-container resumo-laudo">
+        <div class="bloco-cabecalho">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            RESUMO DO LAUDO
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
 
             <table>
                 <tr>
@@ -46049,7 +47472,7 @@ echo '
             </tr>
 
             <tr>
-                <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
+                <td style="border: 1px solid #000; padding: 6px;" colspan="5"><strong>Periculosidade?</strong></td>
                 <td style="border: 1px solid #000; padding: 6px;">
                     <label><input type="checkbox" '.$checkedPeriSim.'> Sim</label>
                     <label><input type="checkbox" '.$checkedPeriNao.'> Não</label>
@@ -46137,30 +47560,121 @@ echo '
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeResumoLaudo" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailResumoLaudo()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappResumoLaudo()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsResumoLaudo" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailResumoLaudo() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeResumoLaudo").value;
+
+    let tipo = "resumo_laudo";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappResumoLaudo() {
+            debugger;
+    let whatsapp = document.getElementById("whatsResumoLaudo").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "resumo_laudo";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 //             echo '
 //         <style>
@@ -46580,7 +48094,10 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
             .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
@@ -46705,27 +48222,67 @@ echo '
 
         </style>
 
-        <div class="guia-container">
+        <div class="guia-container teste-romberg">
+        <div class="bloco-cabecalho">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            TESTE DE ROMBERG
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
 
             <table>
                 <tr>
@@ -46917,31 +48474,122 @@ echo '
 </table>
 
         </div>
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteRomberg" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteRomberg()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteRomberg()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteRomberg" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteRomberg() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteRomberg").value;
+
+    let tipo = "teste_romberg";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteRomberg() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteRomberg").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_romberg";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -48252,8 +49900,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -48300,33 +49951,76 @@ $dadosBancarios = [
                 body { background:#fff; }
                 .actions { display: none !important; }
             }
+
+            
+}
+
         </style>
 
-        <div class="guia-container">
-
+        <div class="guia-container faturamento">
+        <div class="bloco-cabecalho">
         <table>
-                <!-- Linha do título -->
-                <tr>
-                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
-                </tr>
-                <!-- Linha dados hospital + logo -->
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
 
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <!-- Linha do título -->
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            Faturamento / Orçamento
+        </th>
+    </tr>
+
+    <!-- Linha dados hospital + logo -->
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
@@ -48388,10 +50082,10 @@ $dadosBancarios = [
            
            <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
             $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
-
+            
             echo '<div class="top-bar"></div>
                 <!-- Produtos / Serviços -->
-    
+            <div style="border-top:1px solid #000; margin:6px 0;"></div>
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
                 <tr>
@@ -50070,8 +51764,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -50714,8 +52411,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -51582,8 +53282,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -52472,8 +54175,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -53299,8 +55005,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -54028,8 +55737,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -54797,8 +56509,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -54807,7 +56521,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -55702,8 +57416,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -56466,8 +58183,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -58011,8 +59731,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -59829,8 +61552,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -60471,8 +62197,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -61341,8 +63070,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital {padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -62229,8 +63961,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -63056,8 +64791,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -63785,8 +65523,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -64553,8 +66294,10 @@ th, td {
 
 /* Dados reduzidos */
 .dados-hospital {
-  font-size: 9px;
-  line-height: 1.1;
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 
 .hospital-nome {
@@ -64563,7 +66306,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 0px;
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 /* Logo menor */
@@ -65372,9 +67115,18 @@ img {
 //                 <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
 //             </div>';
 
+// Se a sessão existir e não estiver vazia, usa ela
+                if (isset($_SESSION["codigo_kit"]) && !empty($_SESSION["codigo_kit"])) {
+                    $id_kit = $_SESSION["codigo_kit"];
+                }
+                // Senão, se a variável tiver valor, usa ela
+                elseif (isset($valor_id_kit) && !empty($valor_id_kit)) {
+                    $id_kit = $valor_id_kit;
+                }
+
 		$instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
-                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
                 $resultado_busca_resumo_laudo = $comando_busca_resumo_laudo->fetch(PDO::FETCH_ASSOC);
 
@@ -65448,8 +67200,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -66213,8 +67968,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -67535,8 +69293,11 @@ $dadosBancarios = [
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -68424,8 +70185,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -69713,8 +71477,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -70736,8 +72503,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -71690,8 +73460,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -72851,8 +74624,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -73832,8 +75608,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -74980,8 +76759,11 @@ echo '
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -76001,8 +77783,10 @@ th, td {
 }
 
 .dados-hospital {
-  font-size: 10.5px;
-  line-height: 1.25;
+ padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
 }
 .hospital-nome {
   font-weight: bold;
@@ -76010,6 +77794,7 @@ th, td {
   text-decoration: underline;
   display: block;
   margin-bottom: 1px;
+  font-size:12px
 }
 
 .logo img {
@@ -77163,8 +78948,11 @@ table.no-break strong {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -78221,8 +80009,11 @@ table.no-break strong {
                 padding:3px 5px;
                 text-align:left;
             }
-            .dados-hospital { font-size:12px; line-height:1.4; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
+            .dados-hospital { padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
 
             .logo { text-align:center; }
             .logo img {
