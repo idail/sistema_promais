@@ -9229,11 +9229,6 @@ try {
 //     console.error("Erro em reaplicarRiscosSelecionadosUI:", e);
 //   } finally {
 //     window._riscosRenderRunning = false;
-//   }
-// }
-
-
-
       function gravar_riscos_selecionados()
       {
         if(window.recebe_acao && window.recebe_acao === "editar")
@@ -9264,8 +9259,16 @@ try {
                   // Remove mensagem anterior se existir
                   $("#riscos-gravado").remove();
 
-                  // Adiciona a nova mensagem acima das abas
-                  $(".tabs-container").before(mensagemSucesso);
+                  // Adiciona a nova mensagem acima da seção "Buscar Riscos"
+                  // Usa o campo de busca de riscos como âncora para posicionar o alerta
+                  var $campoBuscaRiscos = $('#riscos-search-box');
+                  if ($campoBuscaRiscos.length) {
+                    // Sobe até o container de campo (ecp-field) e insere o alerta antes dele
+                    $campoBuscaRiscos.closest('.ecp-field').before(mensagemSucesso);
+                  } else {
+                    // Fallback: mantém o comportamento anterior acima das abas
+                    $(".tabs-container").before(mensagemSucesso);
+                  }
 
                   // Configura o fade out após 5 segundos
                   setTimeout(function () {
@@ -9347,8 +9350,15 @@ try {
                   // Remove mensagem anterior se existir
                   $("#riscos-gravado").remove();
 
-                  // Adiciona a nova mensagem acima das abas
-                  $(".tabs-container").before(mensagemSucesso);
+                  // Adiciona a nova mensagem acima da seção "Buscar Riscos"
+                  // Usa o campo de busca de riscos como âncora para posicionar o alerta
+                  var $campoBuscaRiscos2 = $('#riscos-search-box');
+                  if ($campoBuscaRiscos2.length) {
+                    $campoBuscaRiscos2.closest('.ecp-field').before(mensagemSucesso);
+                  } else {
+                    // Fallback: mantém o comportamento anterior acima das abas
+                    $(".tabs-container").before(mensagemSucesso);
+                  }
 
                   // Configura o fade out após 5 segundos
                   setTimeout(function () {
