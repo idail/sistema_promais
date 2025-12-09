@@ -289,7 +289,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_name']) && isset($_SESS
   <div class="login-container">
     <div class="login-form" id="loginSection">
       <div class="login-header">
-        <img src="./img/logos/logo_p_p.png" alt="Logo">
+        <img src="./img/logos/logo_soft.png" style="height: 75px;width: 100%;" alt="Logo">
         <p class="subtitle">Assessoria em Seguran&#xe7;a do Trabalho - Alto Araguaia - MT</p>
       </div>
 

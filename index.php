@@ -49,7 +49,7 @@
       <div class="flex justify-between items-center h-16">
         <!-- Logo -->
         <div class="flex-shrink-0 logo">
-          <img src="./img/logos/verificando_2.png" alt="Logo">
+          <img src="./img/logos/logo_soft.png" alt="Logo">
         </div>
         <!-- Menu Links -->
         <div class="hidden md:flex space-x-8">
