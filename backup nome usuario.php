@@ -1,0 +1,1 @@
+Bem-vindo, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!
