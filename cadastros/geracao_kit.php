@@ -8187,6 +8187,43 @@ debugger;
       window.searchBox.disabled = false;
     }
 
+    // Destaca em vermelho os grupos que possuem riscos selecionados
+    try {
+      var fonteSelecionados = null;
+      if (window && window.riscosEstadoSalvoDetalhes && typeof window.riscosEstadoSalvoDetalhes === 'object') {
+        fonteSelecionados = window.riscosEstadoSalvoDetalhes;
+      } else if (window && window.selectedRisks && typeof window.selectedRisks === 'object') {
+        fonteSelecionados = window.selectedRisks;
+      }
+
+      var gruposComRiscos = new Set();
+      if (fonteSelecionados) {
+        Object.keys(fonteSelecionados).forEach(function (codigo) {
+          var info = fonteSelecionados[codigo];
+          if (info && info.group) {
+            gruposComRiscos.add(String(info.group));
+          }
+        });
+      }
+
+      var gruposContainer = document.getElementById('group-select-container');
+      if (gruposContainer) {
+        var labels = gruposContainer.querySelectorAll('label.group-option');
+        labels.forEach(function (label) {
+          var cb = label.querySelector('input[type="checkbox"]');
+          if (!cb) return;
+          var g = cb.value;
+          if (g && gruposComRiscos.has(String(g))) {
+            label.style.color = '#b30000';
+            label.style.fontWeight = '600';
+          } else {
+            label.style.color = '';
+            label.style.fontWeight = '';
+          }
+        });
+      }
+    } catch (e) { /* ignore */ }
+
     console.log("✅ reaplicarGruposSelecionadosUI concluído:", gruposSalvos);
   } catch (e) {
     console.error("Erro em reaplicarGruposSelecionadosUI:", e);
@@ -8641,6 +8678,22 @@ debugger;
 
     // atualiza a UI
     updateSelectedRisksDisplay();
+
+    // limpa o campo de busca e esconde a lista de resultados
+    try {
+      if (searchBox) {
+        searchBox.value = '';
+        try {
+          if (typeof updateSearchPlaceholder === 'function') {
+            updateSearchPlaceholder();
+          }
+        } catch (e) { /* ignore */ }
+      }
+      if (searchResults) {
+        searchResults.innerHTML = '';
+        searchResults.style.display = 'none';
+      }
+    } catch (e) { /* ignore */ }
 
     // Não reexecuta performSearch; mantém a listagem atual
   }
