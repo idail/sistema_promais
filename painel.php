@@ -77,9 +77,9 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
     <div class="mobile-overlay"></div>
     <div class="container">
         <aside class="sidebar">
-            <h1>Medicina do Trabalho</h1>
+            <!-- <h1>Medicina do Trabalho</h1> -->
             <div class="welcome-message">
-                Bem-vindo, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!
+                Bem-vindo ao Sistema Promais – Software de Medicina e Segurança do Trabalho
             </div>
             <nav>
                 <ul class="nav-menu">
@@ -219,7 +219,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-info">
-                        <div class="user-name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></div>
+                        <div class="user-name">Olá, <?php echo htmlspecialchars($_SESSION['user_name']); ?></div>
                         <div class="user-role"><?php echo isset($_SESSION['user_access_level']) ? htmlspecialchars($_SESSION['user_access_level']) : 'Usuário'; ?></div>
                     </div>
                 </button>
