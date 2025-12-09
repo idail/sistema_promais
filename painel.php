@@ -136,12 +136,12 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                             
                         </a>
                     </li> -->
-                    <li>
+                    <!-- <li>
                         <a href="?pg=config">
                             <i class="fas fa-cogs"></i>
                             Configura&#xe7;&#xf5;es
                         </a>
-                    </li>
+                    </li> -->
                     <!-- <li>
                         <a href="?pg=usuarios">
                             <i class="fas fa-users"></i>
