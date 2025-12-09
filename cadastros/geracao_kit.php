@@ -1520,6 +1520,20 @@
     </div>
   </div>
 
+  <style>
+    .exam-card{
+    position: relative;
+    overflow: hidden;
+    padding: 24px;
+    text-align: center;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    transition: all .3s ease;
+    height: 215px;
+    }
+  </style>
+
   <div class="tab-content" id="tabContent">
     <div class="step-header">
       <div class="title-icon">
@@ -1559,11 +1573,11 @@
         <h3>Mudança de Função</h3>
         <p>Quando há alteração nas atividades do funcionário</p>
       </div>
-      <div class="exam-card" data-exam="exame_laudo" style="margin-bottom: 10px;">
+      <!-- <div class="exam-card" data-exam="exame_laudo" style="margin-bottom: 10px;">
         <img src="./img/svg/exame_laudo.svg" alt="Exame com Laudo" width="60" height="60">
         <h3>Exame com Laudo</h3>
         <p>Exames que requerem análise detalhada</p>
-      </div>
+      </div> -->
     </div>
 
     <!-- Mensagem de sucesso -->
@@ -9555,7 +9569,7 @@ try {
       if(window.recebe_acao === "editar")
       {
         if (!$('#kit-toast-style').length) {
-            $('head').append('<style id="kit-toast-style">\n              #kit-toast {\n                position: fixed;\n                top: 10px;\n                right: 10px;\n                background: #28a745; /* verde similar ao totalizador */\n                color: #fff;\n                padding: 8px 16px;\n                border-radius: 4px;\n                font-weight: 600;\n                z-index: 9999;\n                display: none;\n                box-shadow: 0 2px 6px rgba(0,0,0,.2);\n              }\n            </style>');
+            $('head').append('<style id="kit-toast-style">\n              #kit-toast {\n                position: fixed;\n                top: 10px;\n                right: 10px;\n                background: #28a745; /* verde similar ao totalizador */\n                color: #fff;\n                padding: 8px 16px;\n                border-radius: 4px;\n                font-weight: 600;\n                z-index: 9999;\n                display: none;\n                box-shadow: 0 2px 6px rgba(0,0,0,.2);\n              }\n            </styl:>');
           }
 
           // Cria (ou reusa) o banner

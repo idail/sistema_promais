@@ -30,9 +30,13 @@
     }
 
     .logo img {
-      max-width: 150px;
-      /* Tamanho ajustado da logo */
+      width: 150px;
+      /* ajuste como desejar */
       height: auto;
+      /* mantém a proporção correta */
+      /* object-fit: contain;
+      display: block; */
+      /* evita espaços extras */
     }
   </style>
 </head>
@@ -45,7 +49,7 @@
       <div class="flex justify-between items-center h-16">
         <!-- Logo -->
         <div class="flex-shrink-0 logo">
-          <img src="./img/logos/logo_p.png" alt="Logo">
+          <img src="./img/logos/verificando_2.png" alt="Logo">
         </div>
         <!-- Menu Links -->
         <div class="hidden md:flex space-x-8">
