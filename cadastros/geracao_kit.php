@@ -8731,6 +8731,26 @@ try {
       risksByGroup[grupo].push({ code: codigo, name: descricao });
     }
 
+    // Atualiza cor dos grupos no container de grupos de riscos
+    try {
+      const gruposContainer = document.getElementById('group-select-container');
+      if (gruposContainer) {
+        const labels = gruposContainer.querySelectorAll('label.group-option');
+        labels.forEach(function (label) {
+          const cb = label.querySelector('input[type="checkbox"]');
+          if (!cb) return;
+          const g = cb.value;
+          if (g && risksByGroup[g] && risksByGroup[g].length > 0) {
+            label.style.color = '#b30000';
+            label.style.fontWeight = '600';
+          } else {
+            label.style.color = '';
+            label.style.fontWeight = '';
+          }
+        });
+      }
+    } catch (e) { /* ignore */ }
+
     for (const [group, risks] of Object.entries(risksByGroup)) {
       const groupName = risksData[group]?.name || group;
       const groupEl = document.createElement('div');
@@ -9212,6 +9232,33 @@ try {
                     }
                     window._riscosDirty = false;
                   } catch (e) { /* ignore */ }
+                  try {
+                    var gruposContainer = document.getElementById('group-select-container');
+                    if (gruposContainer) {
+                      var cbs = gruposContainer.querySelectorAll('input[type="checkbox"]');
+                      cbs.forEach(function (cb) { cb.checked = false; });
+                    }
+
+                    if (window) {
+                      window.selectedGroups = [];
+                      window.riscosGruposEstadoSalvo = [];
+                    }
+
+                    if (window && window.searchBox) {
+                      window.searchBox.value = '';
+                      try {
+                        if (typeof window.updateSearchPlaceholder === 'function') {
+                          window.updateSearchPlaceholder();
+                        }
+                      } catch (e) { /* ignore */ }
+                    }
+
+                    var resultados = document.getElementById('riscos-search-results');
+                    if (resultados) {
+                      resultados.innerHTML = '';
+                      resultados.style.display = 'none';
+                    }
+                  } catch (e) { /* ignore */ }
                   resolve(retorno_exame_geracao_kit);
                 },
                 error: function (xhr, status, error) {
@@ -9268,6 +9315,25 @@ try {
                     }
                     window._riscosDirty = false;
                   } catch (e) { /* ignore */ }
+
+                  // Limpa apenas a busca/lista de riscos apos incluir o kit (mantem grupos marcados)
+                  try {
+                    if (window && window.searchBox) {
+                      window.searchBox.value = '';
+                      try {
+                        if (typeof window.updateSearchPlaceholder === 'function') {
+                          window.updateSearchPlaceholder();
+                        }
+                      } catch (e) { /* ignore */ }
+                    }
+
+                    var resultados2 = document.getElementById('riscos-search-results');
+                    if (resultados2) {
+                      resultados2.innerHTML = '';
+                      resultados2.style.display = 'none';
+                    }
+                  } catch (e) { /* ignore */ }
+
                   resolve(retorno_exame_geracao_kit);
                 },
                 error: function (xhr, status, error) {
