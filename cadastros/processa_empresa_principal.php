@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_bairro_empresa = !empty($_POST["valor_bairro_empresa"]) ? $_POST["valor_bairro_empresa"] : null;
         $recebe_cep_empresa = !empty($_POST["valor_cep_empresa"]) ? $_POST["valor_cep_empresa"] : null;
         $recebe_complemento_empresa = !empty($_POST["valor_complemento_empresa"]) ? $_POST["valor_complemento_empresa"] : null;
-        $recebe_chave_id_empresa = $_SESSION["user_plan"]; // Sempre presente pela sessão
+        $recebe_chave_id_empresa = $_SESSION["id_chave_liberacao"]; // Sempre presente pela sessão
 
         $instrucao_cadastra_empresa_principal = "INSERT INTO empresas
         (nome,cnpj,endereco,id_cidade,id_estado,telefone,email,chave_id,razao_social,

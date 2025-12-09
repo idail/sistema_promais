@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_nome_contabilidade = !empty($_POST["valor_nome_contabilidade"]) ? $_POST["valor_nome_contabilidade"] : null;
         $recebe_email_contabilidade = !empty($_POST["valor_email_contabilidade"]) ? $_POST["valor_email_contabilidade"] : null;
         $recebe_empresa_id = $_SESSION["empresa_id"];
-        $recebe_chave_id_empresa = $_SESSION["user_plan"]; // Sempre presente pela sessão
+        $recebe_chave_id_empresa = $_SESSION["id_chave_liberacao"]; // Sempre presente pela sessão
 
         // Query
         $instrucao_cadastra_empresa = "INSERT INTO empresas_novas

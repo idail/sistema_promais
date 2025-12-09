@@ -2666,7 +2666,7 @@ $(document).on("change", "#fonoaudiologos", async function (e) {
 
   window.idSelecionado = parseInt($(this).val());
   console.log("👂 ID do fonoaudiólogo selecionado:", window.idSelecionado);
-  alert("Alterado — ID: " + window.idSelecionado);
+  //alert("Alterado — ID: " + window.idSelecionado);
 
   window.medico_fonoaudiologo = true;
 
@@ -20104,7 +20104,7 @@ function renderizarCheckboxes() {
       debugger;
       try {
         window.fatProdutosSelecionadosJSON = JSON.stringify(window.fatProdutosSelecionados || []);
-        alert(window.fatProdutosSelecionadosJSON);
+        //alert(window.fatProdutosSelecionadosJSON);
       } catch(e) {
         console.warn('Falha ao serializar produtos selecionados:', e);
       }

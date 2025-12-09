@@ -620,7 +620,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // var_dump($resultado_dados_kit);
             } else {
 
-
+                if(isset($_SESSION['codigo_kit']) && $_SESSION['codigo_kit'] !== '')
+                {
+                    $valor_id_kit = $_SESSION['codigo_kit'];
+                }
 
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
                     salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
@@ -1400,18 +1403,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             padding: 4px;
         }
 
-        .assinatura {
-                width: 150px;
-    height: 60px;
-    border-bottom: 1px solid #000;
-    display: block;
-    margin: 0px auto -15px auto;
-        }
+        img.assinatura {
+    border-bottom: none !important;
+    display: block !important;
+    margin: 0 auto -3px auto !important;
+    height: 61px !important;
+}
 
         .legenda {
             text-align: center;
             font-size: 14px;
         }
+
+            /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
 </style>
         <div class="page-break"></div>
 
@@ -1815,32 +1823,74 @@ function enviarEmpresa() {
     margin: 0px auto -10px !important;
         }
 
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="page-break"></div>
 
         <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                ASO - Atestado de Saúde Ocupacional
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["numero"])
+                    ? ', ' . $resultado_clinica_selecionada["numero"]
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["bairro"])
+                    ? ' - BAIRRO: ' . $resultado_clinica_selecionada["bairro"]
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["cep"])
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"])
+                    ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:90px;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -2250,40 +2300,74 @@ function enviarEmailASO() {
             text-align: center;
             font-size: 14px;
         }
-</style>
-        <div class="page-break"></div>
 
-        <div class="guia-container prontuario-medico">
-            <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
-    </tr>
-
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>';
-
+        /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
 $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
 echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+        <div class="page-break"></div>
+
+        <div class="guia-container prontuario-medico">
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                PRONTUÁRIO MÉDICO - 01
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["numero"])
+                    ? ', ' . $resultado_clinica_selecionada["numero"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["bairro"])
+                    ? ' - BAIRRO: ' . $resultado_clinica_selecionada["bairro"]
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cep"])
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"])
+                    ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:90px;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
 
             <table>
@@ -2468,61 +2552,60 @@ echo '
             </div>
 
             <div class="guia-container prontuario-medico">
-            <table>
-    <colgroup>
-        <col> <!-- Coluna de texto -->
-        <col style="width:150px;"> <!-- Coluna fixa da logo -->
-    </colgroup>
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-    <tr>
-        <th colspan="2" class="titulo-guia" style="page-break-before: always;">
-            PRONTUÁRIO MÉDICO - 02
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia" style="page-break-before: always;">
+                PRONTUÁRIO MÉDICO - 02
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
-                : '') . '
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada["endereco"])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') .
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
-                : '') . '
+                (!empty($resultado_clinica_selecionada["numero"])
+                    ? ', ' . $resultado_clinica_selecionada["numero"]
+                    : '') .
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? '<br>CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                (!empty($resultado_clinica_selecionada["bairro"])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"]
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') .
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                (!empty($resultado_clinica_selecionada["cep"])
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"]
+                    : '') . '
 
-        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada["telefone"])
+                    ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:90px;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -2952,41 +3035,74 @@ function enviaremailProntuarioMedico() {
         page-break-before: always;
     }
 }
-</style>
-<div class="page-break"></div>
-<div class="guia-container teste-acuidade">
 
-    <!-- Cabeçalho Clínica -->
-<table>
-    <colgroup>
-        <col>
-        <col style="width:150px;"> <!-- LOGO travada -->
-    </colgroup>
-
-    <tr>
-        <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
-    </tr>
-
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>';
+    /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
 
 $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
 echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+<div class="page-break"></div>
+<div class="guia-container teste-acuidade">
+
+    <!-- Cabeçalho Clínica -->
+<div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+        <tr>
+            <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="font-weight:bold;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo"
+                     style="max-height:70px !important; display:block; margin:0 auto;">
+            </td>
+        </tr>
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -3423,66 +3539,77 @@ function enviarEmailTesteAcuidadade() {
     page-break-inside: avoid;
   }
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="guia-container psicossocial">
-            <table>
-    <colgroup>
-        <col> <!-- Coluna do texto -->
-        <col style="width:150px;"> <!-- Coluna fixa da logo -->
-    </colgroup>
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            PSICOSSOCIAL
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                PSICOSSOCIAL
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
-                : '') . '
+        <tr>
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="font-weight:bold;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? '<br>CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-    </tr>
-</table>
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo" 
+                     style="max-height:70px !important; display:block; margin:0 auto;">
+            </td>
+
+        </tr>
+
+    </table>
+</div>
+
 
 
             <table>
@@ -4085,70 +4212,71 @@ td[style*="dados-hospital"] {
     margin: 0 !important;
 }
 
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-       
-<table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+            </th>
+        </tr>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
-        </th>
-    </tr>
+        <tr>
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf)
+                    ? 'CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
-        
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            </td>
 
-        </div>
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:70px; display:block; margin:0 auto;">
+            </td>
+        </tr>
+
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -4454,18 +4582,14 @@ img.assinatura {
   border-bottom: none !important;
   display: block !important;
   margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
-      height: 85px !important;
+      height: 61px !important;
 }
 
 table + table {
   margin-top: 1px;
 }
 
-/* Imagens reduzidas */
-img {
-  max-width: 85%;
-  height: auto;
-}
+
 
 /* Evitar quebra */
 .no-break,
@@ -4806,9 +4930,11 @@ table.parecer-fono-tabela {
     width: 100% !important;
     display: table-cell !important;
 }
-</style>
+</style>';
 
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
+echo '
 
 <div class="guia-container audiometria">
 
@@ -4817,11 +4943,9 @@ table.parecer-fono-tabela {
 <!-- CABEÇALHO AUDIOMETRIA -->
 <!-- ===================== -->
 
-<table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+<div class="bloco-cabecalho">
+
+<table style="width:100%; border-collapse:collapse;">
 
     <tr>
         <th colspan="2" class="titulo-guia">
@@ -4830,51 +4954,54 @@ table.parecer-fono-tabela {
     </tr>
 
     <tr>
-        <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
+        <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+            ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                ? '<span class="hospital-nome" style="font-weight:bold; margin-bottom:-10px !important;">'
+                    . $resultado_clinica_selecionada["nome_fantasia"] .
+                  '</span><br>'
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+            ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+            ' . (!empty($resultado_clinica_selecionada["endereco"])
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
+            ' . (!empty($resultado_clinica_selecionada["numero"])
+                ? ', ' . $resultado_clinica_selecionada["numero"]
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+            ' . (!empty($resultado_clinica_selecionada["bairro"])
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"] . '<br>'
                 : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . $recebe_cidade_uf
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+            ' . (!empty($resultado_clinica_selecionada["cep"])
+                ? ', CEP: ' . $resultado_clinica_selecionada["cep"] . '<br>'
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+            ' . (!empty($resultado_clinica_selecionada["telefone"])
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
                 : '') . '
-        </td>';
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
         </td>
+
+        <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+            <img src="' . $logo . '" alt="Logo" style="max-height:80px; display:block; margin:0 auto;">
+        </td>
+
     </tr>
+
 </table>
+
+</div>
 
 
             <table>
@@ -5528,69 +5655,77 @@ function enviarEmailAudiometria() {
     position: relative;
     top: -1px;                    /* ajuste fino: sobe um pouco o checkbox */
 }
-        </style>
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
+
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
         <div class="page-break"></div>
 
         <div class="guia-container resumo-laudo">
-            <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+            <div class="bloco-cabecalho">
+    <table>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            RESUMO DO LAUDO
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                RESUMO DO LAUDO
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+            </td>
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
 
             <table>
@@ -6039,68 +6174,73 @@ function enviarEmailResumoLaudo() {
         padding: 0;
     }
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
         <div class="guia-container teste-romberg">
-            <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+            <div class="bloco-cabecalho">
+    <table>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            TESTE DE ROMBERG
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                TESTE DE ROMBERG
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+            </td>
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
 
 
             <table>
@@ -7713,72 +7853,77 @@ $dadosBancarios = [
 
             
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
-        </style>
+echo'
+
 
         <div class="guia-container faturamento">
 
-        <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+        <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-    <!-- Linha do título -->
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            Faturamento / Orçamento
-        </th>
-    </tr>
+        <!-- Linha do título -->
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                Faturamento / Orçamento
+            </th>
+        </tr>
 
-    <!-- Linha dados hospital + logo -->
-    <tr>
-        <td class="dados-hospital">
+        <!-- Linha dados hospital + logo -->
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
 
-        </td>';
+            </td>
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+    </table>
+</div>
+
 
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
@@ -8708,8 +8853,10 @@ function enviarEmailFaturamento() {
 
                 // var_dump($resultado_dados_kit);
             } else {
-
-
+                if (isset($_SESSION['codigo_kit']) && $_SESSION['codigo_kit'] !== '') {
+                    $valor_id_kit = $_SESSION["codigo_kit"];
+                }
+                
 
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
                     salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
@@ -9714,6 +9861,8 @@ echo '
     display: block;
     margin: 0px auto -15px auto;
         }
+
+        
 
         .legenda {
             text-align: center;
@@ -14966,18 +15115,14 @@ img.assinatura {
   border-bottom: none !important;
   display: block !important;
   margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
-      height: 85px !important;
+      height: 61px !important;
 }
 
 table + table {
   margin-top: 1px;
 }
 
-/* Imagens reduzidas */
-img {
-  max-width: 85%;
-  height: auto;
-}
+
 
 /* Evitar quebra */
 .no-break,
@@ -17885,12 +18030,36 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $valor_id_kit);
                 $comando_busca_dados_bancarios->execute();
                 $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
+                $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
+                $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $valor_id_kit);
+                $comando_busca_dados_bancarios->execute();
+                $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_qrcode = "select informacoes_dados_bancarios_qrcode from kits where id = :recebe_id_kit";
+                $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
+                $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$valor_id_kit);
+                $comando_busca_informativo_bancario_qrcode->execute();
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
+                $comando_busca_informativo_bancario_agenciaconta->execute();
+                $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
+                $comando_busca_informativo_bancario_pix->execute();
+                $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
             } else {
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
 
                     $instrucao_busca_clinica = "select * from clinicas where id = :recebe_clinica_id";
                     $comando_busca_clinica = $pdo->prepare($instrucao_busca_clinica);
-                    $comando_busca_clinica->bindValue(":recebe_clinica_id", $_SESSION["clinica_selecionado"]);
+                    $comando_busca_clinica->bindValue(":recebe_clinica_id", $valor_id_kit);
                     $comando_busca_clinica->execute();
                     $resultado_clinica_selecionada = $comando_busca_clinica->fetch(PDO::FETCH_ASSOC);
 
@@ -18147,9 +18316,8 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_pix->execute();
                 $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
-            
 
-                // function deve_exibir_banco($categoria, $valorConfig, $tipoCampo) {
+//                 function deve_exibir_banco($categoria, $valorConfig, $tipoCampo) {
 //     // Se usuário não selecionou nada para esse tipo, não exibe
 //     if (empty($valorConfig)) return false;
 
@@ -18390,418 +18558,104 @@ function enviarEmailTesteRomberg() {
 //     "pix"           => trim($resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? ""),
 //     "agencia_conta" => trim($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "")
 // ];
-            
 
 
+// function deve_exibir_banco($categoria, $valorSelecionado) {
+//     if (empty($valorSelecionado)) return false;
 
+//     $categoriasPermitidas = explode('_', strtolower(trim($valorSelecionado)));
+//     $categoria = strtolower(trim($categoria));
 
-        //     echo '
-        // <style>
-        //                 body {
-        //         font-family: Arial, sans-serif;
-        //         background:#f2f2f2;
-        //         margin:0;
-        //         padding:0;
-        //     }
-        //     .guia-container {
-        //         width: 210mm;
-        //         min-height: 297mm;
-        //         margin:5mm auto;
-        //         padding:10px;
-        //         background:#fff;
-        //         border:1px solid #000;
-        //     }
-        //     table { width:100%; border-collapse:collapse; font-size:12px; }
-        //     th, td { border:1px solid #000; padding:4px; vertical-align:top; }
-
-        //     .titulo-guia {
-        //         background:#eaeaea;
-        //         border:1px solid #000;
-        //         font-weight:bold;
-        //         text-align:center;
-        //         font-size:14px;
-        //         padding:5px;
-        //         height:22px;
-        //     }
-        //     .section-title {
-        //         background:#eaeaea;
-        //         border:1px solid #666;
-        //         font-weight:bold;
-        //         font-size:12px;
-        //         padding:3px 5px;
-        //         text-align:left;
-        //     }
-        //     .dados-hospital { font-size:12px; line-height:1.4; }
-        //     .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
-
-        //     .logo { text-align:center; }
-        //     .logo img {
-//     max-height: 50px !important;
-//     display: block;
-//     margin: 0 auto !important;
-//     padding: 0 !important;
+//     return in_array($categoria, $categoriasPermitidas, true);
 // }
 
-        //     /* 🔹 QR Code - garante que apareça na tela e na impressão */
-        //     .qrcode img {
-        //         display:block;
-        //         width:120px;
-        //         height:auto;
-        //         margin-top:5px;
-        //     }
+// function exibe_info_bancaria($tipos, $dados) {
 
-        //     /* 🔹 Botões - agora fora do @media print */
-        //     .actions {
-        //         margin:10px 0;
-        //         text-align:center;
-        //     }
-        //     .btn {
-        //         padding:10px 18px;
-        //         font-size:14px;
-        //         font-weight:bold;
-        //         border:none;
-        //         border-radius:5px;
-        //         cursor:pointer;
-        //         color:#fff;
-        //         box-shadow:0 2px 5px rgba(0,0,0,.2);
-        //         margin:0 5px;
-        //     }
-        //     .btn-email { background:#007bff; }
-        //     .btn-whatsapp { background:#25d366; }
-        //     .btn-print { background:#6c757d; }
-        //     .btn:hover { opacity:.9; }
+//     if (!is_array($tipos)) $tipos = [];
 
-        //     @media print {
-        //         * {
-        //             -webkit-print-color-adjust: exact !important;
-        //             print-color-adjust: exact !important;
-        //         }
-        //         body { background:#fff; }
-        //         .actions { display: none !important; }
-        //     }
-        // </style>
+//     $temQrCode        = in_array("qrcode", $tipos);
+//     $temPix           = in_array("pix", $tipos);
+//     $temAgenciaConta  = in_array("agencia-conta", $tipos);
 
-        // <div class="guia-container">
+//     if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
 
-        // <table>
-        //         <!-- Linha do título -->
-        //         <tr>
-        //             <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
-        //         </tr>
-        //         <!-- Linha dados hospital + logo -->
-        //         <tr>
-        //             <td class="dados-hospital">
-        //                 ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-        //                 ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-        //                 ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-        //                 ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-        //                 ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-        //                 ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-        //                 ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-        //                 ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+//     // Normaliza dados possíveis
+//     $pixValor = $dados['pix'] 
+//         ?? $dados['dado_bancario_pix'] 
+//         ?? '';
 
-        //             </td>
-        //             <td class="logo">
-        //                 <img src="logo.jpg" alt="Logo">
-        //             </td>
-        //         </tr>
-        //     </table>
+//     $agenciaConta = $dados['agencia_conta'] 
+//         ?? $dados['dado_bancario_agencia_conta'] 
+//         ?? '';
 
-        //     <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
-        //     <table>
-        //         <tr>
-        //             <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
-        //         </tr>
-        //         <tr>
-        //             <td class="dados-hospital" colspan="2">
-        //                 ' . (!empty($resultado_empresa_selecionada['nome'])
-        //         ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
-        //         : '') . '
+//     // ======================================================
+//     // 🔥 AJUSTE PARA SEMPRE MOSTRAR ESTA CHAVE:
+//     // TELEFONE:66999150098
+//     // ======================================================
 
-        //                 ' . (!empty($resultado_empresa_selecionada['cnpj'])
-        //         ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj'])
-        //         : '') . '
-        //             ' . (!empty($resultado_empresa_selecionada['endereco'])
-        //         ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco'])
-        //         : '') . '
-        //             ' . (!empty($resultado_empresa_selecionada['bairro'])
-        //         ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro'])
-        //         : '') . '
-        //             ' . (!empty($recebe_cidade_uf)
-        //         ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf)
-        //         : '') . '
-        //             ,
-        //                                     ' . (!empty($resultado_empresa_selecionada['cep'])
-        //         ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep'])
-        //         : '') . '
+//     if ($temQrCode) {
+//         $qrChave = "TELEFONE:66999150098";
+//     } else {
+//         // Se não é QR Code, mantém a lógica normal
+//         $qrChave = $dados['qr']
+//             ?? $dados['qrcode']
+//             ?? $dados['dado_bancario_qr']
+//             ?? '';
+//     }
 
-        //             ' . (!empty($resultado_empresa_selecionada['telefone'])
-        //         ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
-        //         : '') . '
-        //             </td>
-        //         </tr>
-        //     </table>
+//     echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
 
-        //     <!-- 🔹 Seção IDENTIFICAÇÃO DO FUNCIONÁRIO -->
-        //     <table>
-        //         <tr>
-        //             <td colspan="2" class="section-title">IDENTIFICAÇÃO DO FUNCIONÁRIO:</td>
-        //         </tr>
-        //         <tr>
-        //             <td colspan="2" style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;">
-        //                 ' . (!empty($resultado_pessoa_selecionada['nome']) ? 'NOME DO FUNCIONÁRIO:' . $resultado_pessoa_selecionada['nome'] . '<br>' : '') . '
-        //                 ' . (!empty($resultado_pessoa_selecionada['cpf']) ? 'CPF:' . $resultado_pessoa_selecionada['cpf'] . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
-        //                 ' . (!empty($recebe_nascimento_colaborador) ? 'DATA DE NASCIMENTO: ' . $recebe_nascimento_colaborador . '&nbsp;&nbsp;&nbsp;&nbsp' : '') . '
-        //                 ' . (!empty($idade) ? 'Idade: ' . $idade . ' anos &nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
-        //                 ' . (!empty($resultado_pessoa_selecionada['telefone']) ? 'TELEFONE: ' . $resultado_pessoa_selecionada['telefone'] . '<br>' : '') . '
-        //                 ' . (!empty($resultado_cargo_selecionado['titulo_cargo']) ? 'CARGO: ' . $resultado_cargo_selecionado['titulo_cargo'] . '&nbsp;&nbsp;&nbsp;&nbsp;' : '') . '
-        //                 ' . (!empty($resultado_cargo_selecionado['codigo_cargo']) ? 'CBO: ' . $resultado_cargo_selecionado['codigo_cargo'] : '') . '
-        //             </td>
-        //         </tr>
-        //     </table>
+//     // --- QR CODE ---
+//     if ($temQrCode) {
 
-        //     <h4 style="font-size:12px; font-weight:bold; text-transform:uppercase; line-height:1.5;text-align:center;">Faturamento / Orçamento</h4>
+//         // Sempre gera o QR pela chave TELEFONE:66999150098
+//         ob_start();
+//         QRcode::png($qrChave, null, QR_ECLEVEL_L, 4, 2);
+//         $imageData = ob_get_clean();
+//         $imageString = base64_encode($imageData);
 
-        //     <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
-        //         $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
+//         echo '
+//         <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+//             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
+//             <div>
+//                 <p style="margin:0; font-weight:bold;">Chave:</p>
+//                 <p style="margin:0;">' . htmlspecialchars($qrChave) . '</p>
+//             </div>
+//         </div>';
+//     }
 
-        //         echo '<div class="top-bar"></div>
-        //         <!-- Produtos / Serviços -->
-    
+//     // --- PIX
+//     if ($temPix && !empty($pixValor)) {
+//         echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+//                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+//                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
+//               </div>';
+//     }
 
-        //     <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
-        //         <tr>
-        //             <th style="padding:3px;">Código</th>
-        //             <th style="padding:3px;">Descrição dos produtos/serviços</th>
-        //             <th style="padding:3px;">Und</th>
-        //             <th style="padding:3px;">Pço.Unt.</th>
-        //             <th style="padding:3px;">Quant.</th>
-        //             <th style="padding:3px;">Total do item</th>
-        //         </tr>
-        // ';
+//     // --- Agência e Conta
+//     if ($temAgenciaConta && !empty($agenciaConta)) {
+//         $linhas = is_string($agenciaConta)
+//             ? explode('|', $agenciaConta)
+//             : (is_array($agenciaConta) ? $agenciaConta : []);
 
-        //         // Total geral e número de itens
-        //         $totalGeral = 0;
-        //         $numeroItens = count($exames_count); // Número de linhas = número de itens distintos
+//         echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+//                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+//                 <div>';
+//         foreach ($linhas as $linha) {
+//             echo '<p style="margin:0;">' . htmlspecialchars(trim($linha)) . '</p>';
+//         }
+//         echo '</div></div>';
+//     }
 
-        //         foreach ($exames_count as $item) {
-        //             $quantidade = 1; // Cada linha representa 1 item
-        //             $totalItem = $quantidade * $item['valor'];
-        //             $totalGeral += $totalItem;
-
-        //             echo '<tr>
-        //             <td style="padding:3px;">' . htmlspecialchars($item["codigo"]) . '</td>
-        //             <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
-        //             <td style="padding:3px; text-align:right;">un</td>
-        //             <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
-        //             <td style="padding:3px; text-align:right;">' . $quantidade . '</td>
-        //             <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
-        //         </tr>';
-        //         }
+//     echo '</div>';
+// }
 
 
 
-        //         // Define o fuso horário do Brasil (evita diferenças)
-        //         date_default_timezone_set('America/Sao_Paulo');
-
-        //         // Data atual no formato brasileiro
-        //         $dataAtual = date('d/m/Y');
-
-        //         echo '</table>
-
-        //     <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
-        //         <tr>
-        //             <td style="padding:3px;">' . $dataAtual . '</td>
-        //             <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
-        //         </tr>
-        //         <tr>
-        //             <td style="padding:3px;">Formas de Pagamento:</td>
-        //             <td style="padding:3px;">Total dos Produtos: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
-        //         </tr>
-        //         <tr>
-        //             <td></td>
-        //             <td style="padding:3px;">Desconto Concedido: <strong>R$ 0,00</strong></td>
-        //         </tr>
-        //         <tr>
-        //             <td></td>
-        //             <td style="padding:3px;">Total do Orçamento: <strong>R$ ' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
-        //         </tr>
-        //     </table>
-
-
-        //     <!-- Rodapé -->
-        //     <p style="margin:4px 0;"><strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
-        //             (!empty($prazo_entrega) ? $prazo_entrega : '<span style="font-size:11px;">A combinar</span>') .
-        //             '</p>
-
-        //     <p style="margin:4px 0;"><strong style="font-size:11px;">Observações:</strong> ' .
-        //             (!empty($observacoes) ? $observacoes : '<span style="font-size:11px;">Nenhuma</span>') .
-        //             '</p>
-
-        //     <div class="top-bar"></div>
-        //     <div class="top-bar" style="margin-top: 10px;"></div>';
-
-        //         echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
-        //         $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
-
-        //         echo '<div class="top-bar"></div>
-        //     <!-- Produtos / Serviços -->
-
-        //         <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
-        //     <tr>
-        //         <th style="padding:3px;">Código</th>
-        //         <th style="padding:3px;">Descrição dos produtos/serviços</th>
-        //         <th style="padding:3px;">Und</th>
-        //         <th style="padding:3px;">Pço.Unt.</th>
-        //         <th style="padding:3px;">Quant.</th>
-        //         <th style="padding:3px;">Total do item</th>
-        //     </tr>';
-
-        //         $totalGeral = 0;
-        //         $numeroItens = 0;
-
-        //         if (!empty($valores_pedidos)) {
-        //             foreach ($valores_pedidos as $item) {
-        //                 // Só exibe se for treinamento
-        //                 if (($item["tipo"] ?? "") === "treinamento") {
-
-        //                     $totalItem = $item["quantidade"] * $item["valor"];
-        //                     $totalGeral += $totalItem;
-        //                     $numeroItens++;
-
-        //                     echo '
-        //                     <tr>
-        //                         <td style="padding:3px;">' . $item["codigo"] . '</td>
-        //                         <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
-        //                         <td style="padding:3px;">un</td>
-        //                         <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
-        //                         <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
-        //                         <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
-        //                     </tr>';
-        //                 }
-        //             }
-        //         }
 
 
 
-        //         echo '</table>
-
-        //         <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
-        //             <tr>
-        //                 <td style="padding:3px;">' . $dataAtual . '</td>
-        //                 <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
-        //             </tr>
-        //             <tr>
-        //                 <td style="padding:3px;">Formas de Pagamento:</td>
-        //                 <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
-        //             </tr>
-        //             <tr>
-        //                 <td></td>
-        //                 <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
-        //             </tr>
-        //             <tr>
-        //                 <td></td>
-        //                 <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
-        //             </tr>
-        //         </table>
-
-        //         <!-- Rodapé -->
-        //         <p style="margin:4px 0;">
-        //             <strong style="font-size:11px;">Prazo de Entrega:</strong> ' .
-        //             (!empty($prazo_entrega)
-        //                 ? '<span style="font-size:11px;">' . htmlspecialchars($prazo_entrega) . '</span>'
-        //                 : '<span style="font-size:11px;">A combinar</span>') .
-        //             '</p>
-
-        //         <p style="margin:4px 0;">
-        //             <strong style="font-size:11px;">Observações:</strong> ' .
-        //             (!empty($observacoes)
-        //                 ? '<span style="font-size:11px;">' . htmlspecialchars($observacoes) . '</span>'
-        //                 : '<span style="font-size:11px;">Nenhuma</span>') .
-        //             '</p>
-
-        //         <div class="top-bar"></div>
-        //         <div class="top-bar" style="margin-top:20px;"></div>';
-
-
-        //         if (!empty($resultado_busca_dados_bancarios)) {
-        //             // Converte string JSON em array
-        //             $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"], true);
-
-        //             if (!is_array($tipos)) {
-        //                 $tipos = []; // garante que $tipos seja sempre array
-        //             }
-
-        //             if (empty($tipos)) {
-        //                 echo '<p style="font-size:12px; color:red;"><strong>Atenção:</strong> Nenhuma forma de pagamento selecionada.</p>';
-        //             } else {
-
-        //                 // Verifica quais dados exibir
-        //                 $temQrCode = in_array('qrcode', $tipos);
-        //                 $temPix = in_array('pix', $tipos);
-        //                 $temAgenciaConta = in_array('agencia-conta', $tipos);
-
-        //                 if ($temQrCode || $temPix || $temAgenciaConta) {
-        //                     echo '<div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">';
-
-        //                     // Coluna esquerda (QR Code)
-        //                     if ($temQrCode) {
-        //                         $chave = '(64) 99606-5577'; // ou busca no banco
-        //                         ob_start();
-        //                         QRcode::png($chave, null, QR_ECLEVEL_L, 6, 2);
-        //                         $imageString = base64_encode(ob_get_contents());
-        //                         ob_end_clean();
-
-        //                         echo '
-        //                 <div style="text-align:center;">
-        //                     <img src="data:image/png;base64,' . $imageString . '" alt="QR Code" style="width:150px; display:block; margin:0 auto;">
-        //                     <p style="margin-top:8px; font-size:12px;"><strong>Chave:</strong><br>' . htmlspecialchars($chave) . '</p>
-        //                 </div>
-        //             ';
-        //                     }
-
-
-        //                     // Coluna direita → PIX e Agência/Conta lado a lado
-        //                     echo '<div style="display:flex; gap:40px; font-size:13px;">';
-
-        //                     if ($temPix && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_pix"])) {
-        //                         echo '
-        //                     <div>
-        //                         <p style="margin:0 0 5px 0;"><strong>Chave PIX:</strong></p>
-        //                         <p style="margin:0;">' . htmlspecialchars($resultado_busca_dados_bancarios[0]["dado_bancario_pix"]) . '</p>
-        //                     </div>';
-        //                     }
-
-        //                     if ($temAgenciaConta && !empty($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"])) {
-        //                         $dados = explode('|', $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"]);
-        //                         echo '<div>
-        //                         <p style="margin:0 0 5px 0;"><strong>Dados para Transferência:</strong></p>';
-        //                         foreach ($dados as $dado) {
-        //                             echo '<p style="margin:2px 0;">' . htmlspecialchars($dado) . '</p>';
-        //                         }
-        //                         echo '</div>';
-        //                     }
-
-        //                     echo '</div>'; // fecha coluna direita (pix + agencia-conta lado a lado)
-        //                     echo '</div>'; // fecha container
-        //                 }
-        //             }
-        //         }
-        //         echo '
-        //     </div>
-
-        // <!-- 🔹 Botões -->
-        // <div class="actions">
-        //     <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-        //     <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-        //     <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-        // </div>';
-
-
-        //         echo '</div>';
-
-        
-//         $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+// $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
 // $valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
 // $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
 
@@ -18810,7 +18664,26 @@ function enviarEmailTesteRomberg() {
 // // echo "agencia:".$valAgencia;
 
 // // Tipos permitidos vindos do banco (ex: ["qrcode","agencia-conta","pix"])
-// $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+// // $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+
+
+// $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+
+// $raw = trim($raw);
+
+// // Remove aspas externas indevidas
+// if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
+//     $raw = substr($raw, 1, -1);
+// }
+
+// // Agora sim decodifica
+// $tipos = json_decode($raw, true);
+
+// // Se ainda não for array, corrige
+// if (!is_array($tipos)) {
+//     $tipos = [$raw]; // fallback
+// }
+
 
 // // Dados bancários reais
 // $dadosBancarios = [
@@ -18819,6 +18692,137 @@ function enviarEmailTesteRomberg() {
 //     "agencia_conta" => trim($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "")
 // ];
 
+// function deve_exibir_banco($categoria, $valorSelecionado) {
+//     if (empty($valorSelecionado)) return false;
+
+//     $categoriasPermitidas = explode('_', strtolower(trim($valorSelecionado)));
+//     $categoria = strtolower(trim($categoria));
+
+//     return in_array($categoria, $categoriasPermitidas, true);
+// }
+
+// function exibe_info_bancaria($tipos, $dados) {
+
+//     if (!is_array($tipos)) $tipos = [];
+
+//     $temQrCode        = in_array("qrcode", $tipos);
+//     $temPix           = in_array("pix", $tipos);
+//     $temAgenciaConta  = in_array("agencia-conta", $tipos);
+
+//     if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
+
+//     // Normaliza dados possíveis
+//     $pixValor = $dados['pix'] 
+//         ?? $dados['dado_bancario_pix'] 
+//         ?? '';
+
+//     $agenciaConta = $dados['agencia_conta'] 
+//         ?? $dados['dado_bancario_agencia_conta'] 
+//         ?? '';
+
+//     // ======================================================
+//     // 🔥 AJUSTE PARA SEMPRE MOSTRAR ESTA CHAVE:
+//     // TELEFONE:66999150098
+//     // ======================================================
+
+//     if ($temQrCode) {
+//         $qrChave = "TELEFONE:66999150098";
+//     } else {
+//         // Se não é QR Code, mantém a lógica normal
+//         $qrChave = $dados['qr']
+//             ?? $dados['qrcode']
+//             ?? $dados['dado_bancario_qr']
+//             ?? '';
+//     }
+
+//     echo '<div style="display:flex; justify-content:flex-start; align-items:flex-start; gap:15px; margin-bottom:20px; font-family:Arial, sans-serif; font-size:11px; color:#000;">';
+
+//     // --- QR CODE ---
+//     if ($temQrCode) {
+
+//         // Sempre gera o QR pela chave TELEFONE:66999150098
+//         ob_start();
+//         QRcode::png($qrChave, null, QR_ECLEVEL_L, 4, 2);
+//         $imageData = ob_get_clean();
+//         $imageString = base64_encode($imageData);
+
+//         echo '
+//         <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+//             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
+//             <div>
+//                 <p style="margin:0; font-weight:bold;">Chave:</p>
+//                 <p style="margin:0;">' . htmlspecialchars($qrChave) . '</p>
+//             </div>
+//         </div>';
+//     }
+
+//     // --- PIX
+//     if ($temPix && !empty($pixValor)) {
+//         echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+//                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
+//                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
+//               </div>';
+//     }
+
+//     // --- Agência e Conta
+//     if ($temAgenciaConta && !empty($agenciaConta)) {
+//         $linhas = is_string($agenciaConta)
+//             ? explode('|', $agenciaConta)
+//             : (is_array($agenciaConta) ? $agenciaConta : []);
+
+//         echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+//                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
+//                 <div>';
+//         foreach ($linhas as $linha) {
+//             echo '<p style="margin:0;">' . htmlspecialchars(trim($linha)) . '</p>';
+//         }
+//         echo '</div></div>';
+//     }
+
+//     echo '</div>';
+// }
+
+
+
+
+
+
+// $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+// $valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
+// $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
+
+// // echo "qrcde:".$valQrcode."<br>";
+// // echo "pix:".$valPix."<br>";
+// // echo "agencia:".$valAgencia;
+
+// // Tipos permitidos vindos do banco (ex: ["qrcode","agencia-conta","pix"])
+// // $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+
+
+// $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+
+// $raw = trim($raw);
+
+// // Remove aspas externas indevidas
+// if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
+//     $raw = substr($raw, 1, -1);
+// }
+
+// // Agora sim decodifica
+// $tipos = json_decode($raw, true);
+
+// // Se ainda não for array, corrige
+// if (!is_array($tipos)) {
+//     $tipos = [$raw]; // fallback
+// }
+
+
+// // Dados bancários reais
+// $dadosBancarios = [
+//     "qr"            => trim($resultado_busca_dados_bancarios[0]["qrcode"] ?? ""),
+//     "pix"           => trim($resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? ""),
+//     "agencia_conta" => trim($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "")
+// ];
 
             }
 
@@ -18877,7 +18881,7 @@ function exibe_info_bancaria($tipos, $dados) {
         $imageString = base64_encode($imageData);
 
         echo '
-        <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+        <div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:180px;">
             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
             <div>
                 <p style="margin:0; font-weight:bold;">Chave:</p>
@@ -18888,7 +18892,7 @@ function exibe_info_bancaria($tipos, $dados) {
 
     // --- PIX
     if ($temPix && !empty($pixValor)) {
-        echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
               </div>';
@@ -18900,7 +18904,7 @@ function exibe_info_bancaria($tipos, $dados) {
             ? explode('|', $agenciaConta)
             : (is_array($agenciaConta) ? $agenciaConta : []);
 
-        echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                 <div>';
         foreach ($linhas as $linha) {
@@ -19042,36 +19046,81 @@ $dadosBancarios = [
                 body { background:#fff; }
                 .actions { display: none !important; }
             }
+
+            
+}
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
         </style>
 
         <div class="guia-container faturamento">
-        <div class="bloco-cabecalho">
+<div class="bloco-cabecalho">
         <table>
-                <!-- Linha do título -->
-                <tr>
-                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
-                </tr>
-                <!-- Linha dados hospital + logo -->
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
 
-                    </td>';
-                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-                    echo '
-                    <td class="logo">
-                        <img src="'.$logo.'" alt="Logo">
-                    </td>
-                </tr>
-            </table>
-            </div>
+    <!-- Linha do título -->
+    <tr>
+        <th colspan="2" class="titulo-guia">
+            Faturamento / Orçamento
+        </th>
+    </tr>
+
+    <!-- Linha dados hospital + logo -->
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                    . $resultado_clinica_selecionada['nome_fantasia'] . 
+                  '</span><br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? 'CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
+    </tr>
+</table>
+</div>
+
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
                 <tr>
@@ -19132,10 +19181,10 @@ $dadosBancarios = [
            
            <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
             $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
-
+            
             echo '<div class="top-bar"></div>
                 <!-- Produtos / Serviços -->
-    
+            <div style="border-top:1px solid #000; margin:6px 0;"></div>
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
                 <tr>
@@ -19231,7 +19280,6 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-
 // EXAMES
 $categoria = "exames";
 $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
@@ -19265,7 +19313,7 @@ echo '
 
             echo '<div class="top-bar"></div>
             <!-- Produtos / Serviços -->
-
+            <div style="border-top:1px solid #000; margin:6px 0;"></div>
                 <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
             <tr>
                 <th style="padding:3px;">Código</th>
@@ -19387,28 +19435,104 @@ echo '
 ';
 
 
-            
+//             echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">
+//         03 - EPIs / EPCs
+//     </h4>';
+
+//             $combinar = "<p style='font-size:11px; line-height:1.4; margin:2px 0;'>A combinar</p>";
+
+//             echo '<div style="border-top:1px solid #000; margin:6px 0;"></div>
+
+//         <!-- Produtos / Serviços -->
+//         <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+//             <tr>
+//                 <th style="padding:3px;">Código</th>
+//                 <th style="padding:3px;">Descrição dos produtos/serviços</th>
+//                 <th style="padding:3px;">Und</th>
+//                 <th style="padding:3px;">Pço.Unt.</th>
+//                 <th style="padding:3px;">Quant.</th>
+//                 <th style="padding:3px;">Total do item</th>
+//             </tr>';
+
+//             $totalGeral = 0;
+//             $numeroItens = 0;
+
+//             if (!empty($valores_pedidos)) {
+//                 foreach ($valores_pedidos as $item) {
+//                     if (!empty($item["tipo"]) && $item["tipo"] === "epi") {
+//                         $quantidade = $item["quantidade"] ?? 1;
+//                         $valorUnitario = $item["valor"] ?? 0;
+//                         $totalItem = $quantidade * $valorUnitario;
+
+//                         $totalGeral += $totalItem;
+//                         $numeroItens++;
+
+//                         echo '<tr style="border:1px solid #000;">
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["codigo"] ?? '') . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:left;">' . htmlspecialchars($item["nome"] ?? '') . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:center;">un</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($valorUnitario, 2, ",", ".") . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">' . $quantidade . '</td>
+//                                 <td style="border:1px solid #000; padding:2px; font-size:11px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+//                             </tr>';
+//                     }
+//                 }
+//             }
+
+//             echo '
+//             </table>
+
+//             <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+//                     <tr>
+//                         <td style="padding:3px;">' . $dataAtual . '</td>
+//                         <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td style="padding:3px;">Formas de Pagamento:</td>
+//                         <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td></td>
+//                         <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td></td>
+//                         <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                     </tr>
+//                 </table>';
 
                 
 
-$tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
-$dadosBancarios = [
-    'qr' => $resultado_busca_dados_bancarios[0]['qrcode'] ?? '',
-    'pix' => $resultado_busca_dados_bancarios[0]['dado_bancario_pix'] ?? '',
-    'agencia_conta' => $resultado_busca_dados_bancarios[0]['dado_bancario_agencia_conta'] ?? ''
-];
+// $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+// $dadosBancarios = [
+//     'qr' => $resultado_busca_dados_bancarios[0]['qrcode'] ?? '',
+//     'pix' => $resultado_busca_dados_bancarios[0]['dado_bancario_pix'] ?? '',
+//     'agencia_conta' => $resultado_busca_dados_bancarios[0]['dado_bancario_agencia_conta'] ?? ''
+// ];
 
 
-// $categoria = "epi";
-// // ✅ Adiciona bancos logo abaixo de "Nenhuma"
-// if (
-//     deve_exibir_banco($categoria, $valQrcode) ||
-//     deve_exibir_banco($categoria, $valPix) ||
-//     deve_exibir_banco($categoria, $valAgencia)
-// ) {
-//     // como essa função já deve imprimir o HTML, não entra no echo
-//     exibe_info_bancaria($tipos, $dadosBancarios);
-// }
+// // $categoria = "epi";
+// // // ✅ Adiciona bancos logo abaixo de "Nenhuma"
+// // if (
+// //     deve_exibir_banco($categoria, $valQrcode) ||
+// //     deve_exibir_banco($categoria, $valPix) ||
+// //     deve_exibir_banco($categoria, $valAgencia)
+// // ) {
+// //     // como essa função já deve imprimir o HTML, não entra no echo
+// //     exibe_info_bancaria($tipos, $dadosBancarios);
+// // }
+
+// // // EPI / EPC
+// // $categoria = "epi";
+// // $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// // $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// // $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// // exibe_info_bancaria([
+// //     "qrcode"         => $mostrarQr,
+// //     "pix"            => $mostrarPix,
+// //     "agencia-conta"  => $mostrarAgConta
+// // ], $dadosBancarios);
 
 // // EPI / EPC
 // $categoria = "epi";
@@ -19416,27 +19540,22 @@ $dadosBancarios = [
 // $mostrarPix      = deve_exibir_banco($categoria, $valPix);
 // $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+// // echo "<pre>";
+// // var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
+// // echo "</pre>";
 
-// EPI / EPC
-$categoria = "epi";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+// // exibe_info_bancaria([
+// //     "qrcode"         => $mostrarQr,
+// //     "pix"            => $mostrarPix,
+// //     "agencia-conta"  => $mostrarAgConta
+// // ], $dadosBancarios);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
+// $tiposSelecionados = [];
+// if ($mostrarQr) $tiposSelecionados[] = "qrcode";
+// if ($mostrarPix) $tiposSelecionados[] = "pix";
+// if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria([
-    "qrcode"         => $mostrarQr,
-    "pix"            => $mostrarPix,
-    "agencia-conta"  => $mostrarAgConta
-], $dadosBancarios);
+// exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
 
 echo '
@@ -19564,7 +19683,7 @@ function enviarEmailFaturamento() {
 ';
 
 
-                            echo '</div>';
+            echo '</div>';
 
 
 }else if ($guia_encaminhamento && $aso && $prontuario_medico && $acuidade_visual && $psicosocial && $toxicologico && $audiometria
@@ -19932,8 +20051,10 @@ function enviarEmailFaturamento() {
 
                 // var_dump($resultado_dados_kit);
             } else {
-
-
+                if (isset($_SESSION['codigo_kit']) && $_SESSION['codigo_kit'] !== '') {
+                    $valor_id_kit = $_SESSION['codigo_kit'];
+                }
+                
 
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
                     salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
@@ -20942,31 +21063,69 @@ echo '
             text-align: center;
             font-size: 14px;
         }
-</style>
+
+            /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+</style>';
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
         <div class="page-break"></div>
 
         <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="bloco-cabecalho">
+    <table>
+        <tr>
+            <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+        </tr>
 
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -21083,57 +21242,120 @@ echo '
         </div>';
 
             echo '
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarGuiaEncaminhamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
+
 </div>
 
         ';
 
 
         echo '
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
         <script>
-function enviarClinica() {
-    let email = document.getElementById("emailClinica").value.trim();
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarGuiaEncaminhamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidade").value;
 
-    if(email === "") {
-        alert("Informe um e-mail antes de enviar!");
-        return;
-    }
+    let tipo = "guia_encaminhamento";
+    
 
-    alert("Enviar para clínica:", email);
-    // sua lógica futura aqui...
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
 }
 
 function enviarEmpresa() {
-    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
 
-    if(whatsapp === "") {
-        alert("Informe um WhatsApp antes de enviar!");
+    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
         return;
     }
+    whatsapp = whatsapp.replace(/\D/g, "");
 
-    alert("Enviar para empresa:", whatsapp);
-    // sua lógica futura aqui...
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "guia_encaminhamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
 }
 </script>
 
@@ -21458,169 +21680,192 @@ function enviarEmpresa() {
 // ';
 
 echo '
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background:#f2f2f2;
-                margin:0;
-                padding:0;
-            }
-            .guia-container {
-                width: 210mm;
-                min-height: 297mm;
-                margin:5mm auto;
-                padding:10px;
-                background:#fff;
-                border:1px solid #000;
-            }
-            table { width:100%; border-collapse:collapse; font-size:12px; }
-            th, td { border:1px solid #000; padding:4px; vertical-align:top; }
-
-            .titulo-guia {
-                background:#eaeaea;
-                border:1px solid #000;
-                font-weight:bold;
-                text-align:center;
-                font-size:14px;
-                padding:5px;
-                height:22px;
-            }
-            .section-title {
-                background:#eaeaea;
-                border:1px solid #666;
-                font-weight:bold;
-                font-size:12px;
-                padding:3px 5px;
-                text-align:left;
-            }
-            .dados-hospital { padding-top: 1px !important;
-    padding-bottom: 1px !important;
-    line-height: 1.05 !important;
-    font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
-
-            .logo { text-align:center; }
-            .logo img {
-    max-height: 50px !important;
-    display: block;
-    margin: 0 auto !important;
-    padding: 0 !important;
-}
-
-            /* QR Code */
-            .qrcode img {
-                display:block;
-                width:120px;
-                height:auto;
-                margin-top:5px;
-            }
-
-            /* Botões - Centralizados abaixo do formulário */
-            .actions {
-                margin-top: 15px;
-                padding-top: 10px;
-                text-align: center;
-                border-top: 1px solid #ccc; /* linha de separação opcional */
-            }
-            .btn {
-                padding:10px 18px;
-                font-size:14px;
-                font-weight:bold;
-                border:none;
-                border-radius:5px;
-                cursor:pointer;
-                color:#fff;
-                box-shadow:0 2px 5px rgba(0,0,0,.2);
-                margin:0 5px;
-            }
-            .btn-email { background:#007bff; }
-            .btn-whatsapp { background:#25d366; }
-            .btn-print { background:#6c757d; }
-            .btn:hover { opacity:.9; }
-
-            @media print {
-                * {
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                }
-                body { background:#fff; }
-                .actions { display: none !important; }
-                .page-break {
-        page-break-before: always;
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background:#f2f2f2;
+        margin:0;
+        padding:0;
     }
-            }
 
-            /* 🔹 Estilo para cabeçalhos de tabelas de riscos */
-        .table-riscos th {
-            text-align: left;
-            font-weight: bold;
-            font-size: 12px;
-            font-family: Arial, sans-serif;
-            padding: 4px;
-            vertical-align: top;
+    .guia-container {
+        width: 210mm;
+        min-height: 297mm;
+        margin:5mm auto;
+        padding:10px;
+        background:#fff;
+        border:1px solid #000;
+    }
+
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th, td { border:1px solid #000; padding:4px; vertical-align:top; }
+
+    .titulo-guia {
+        background:#eaeaea;
+        border:1px solid #000;
+        font-weight:bold;
+        text-align:center;
+        font-size:14px;
+        padding:5px;
+        height:22px;
+    }
+
+    .section-title {
+        background:#eaeaea;
+        border:1px solid #666;
+        font-weight:bold;
+        font-size:12px;
+        padding:3px 5px;
+        text-align:left;
+    }
+
+    .dados-hospital {
+        padding-top: 1px !important;
+        padding-bottom: 1px !important;
+        line-height: 1.05 !important;
+        font-size: 14px !important;
+    }
+
+    .hospital-nome {
+        font-weight:bold;
+        text-transform:uppercase;
+        text-decoration:underline;
+        display:block;
+        margin-bottom:3px;
+        font-size:12px !important;
+    }
+
+    .logo { text-align:center; }
+    .logo img {
+        max-height: 50px !important;
+        display: block;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    .qrcode img {
+        display:block;
+        width:120px;
+        height:auto;
+        margin-top:5px;
+    }
+
+    .actions {
+        margin-top: 15px;
+        padding-top: 10px;
+        text-align: center;
+        border-top: 1px solid #ccc;
+    }
+
+    .btn {
+        padding:10px 18px;
+        font-size:14px;
+        font-weight:bold;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        color:#fff;
+        box-shadow:0 2px 5px rgba(0,0,0,.2);
+        margin:0 5px;
+    }
+
+    .btn-email { background:#007bff; }
+    .btn-whatsapp { background:#25d366; }
+    .btn-print { background:#6c757d; }
+    .btn:hover { opacity:.9; }
+
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
-        .table-riscos td {
-            font-size: 12px;
-            font-family: Arial, sans-serif;
-            padding: 4px;
-            vertical-align: top;
-        }
+        body { background:#fff; }
+        .actions { display:none !important; }
+        .page-break { page-break-before: always; }
+    }
 
-        .table-exames th {
-            text-align: left;
-            font-weight: bold;
-            font-size: 12px;
-            padding: 4px;
-        }
+    .table-riscos th {
+        text-align: left;
+        font-weight: bold;
+        font-size: 12px;
+        padding: 4px;
+    }
 
-        .assinatura {
-            width: 150px;
-            height: 60px;
-            border-bottom: 1px solid #000;
-            display: block;
-            margin: 0px auto -15px auto;
-        }
+    .table-riscos td {
+        font-size: 12px;
+        padding: 4px;
+    }
 
-        .legenda {
-            text-align: center;
-            font-size: 14px;
-        }
+    .table-exames th {
+        text-align: left;
+        font-weight: bold;
+        font-size: 12px;
+        padding: 4px;
+    }
 
-        .assinatura {
-                width: 150px;
-    height: 60px;
-    border-bottom: 1px solid #000;
-    display: block;
-    margin: 0px auto -10px !important;
-        }
+    .assinatura {
+        width: 150px;
+        height: 60px;
+        border-bottom: 1px solid #000;
+        display:block;
+        margin:0px auto -10px auto !important;
+    }
 
+    .legenda {
+        text-align: center;
+        font-size: 14px;
+    }
+</style>';
 
-        </style>
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
-        <div class="page-break"></div>
+echo '
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+<div class="page-break"></div>
 
+<div class="guia-container aso">
+
+    <div class="bloco-cabecalho">
+        <table>
+            <tr>
+                <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
+            </tr>
+
+            <tr>
+                <td class="dados-hospital">
+                    ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? 
+                        '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 
+                        'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada['endereco']) ? 
+                        'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada['numero']) ? 
+                        ', ' . $resultado_clinica_selecionada['numero'] : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada['bairro']) ? 
+                        ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
+
+                    ' . (!empty($recebe_cidade_uf) ? 
+                        '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada['cep']) ? 
+                        ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada['telefone']) ? 
+                        '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+                </td>
+
+                <td class="logo">
+                <img src="' . $logo . '" alt="Logo" style="max-height: 70px !important;display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;">
+            </td>
+            </tr>
+        </table>
+    </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -21756,7 +22001,7 @@ echo '
                     <!-- Espaço para assinatura -->
                     <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
                         
-                        ' . $html_assinatura . ' <br>
+                        ' . $html_assinatura_medico . ' <br>
                         _______________________________<br>
                         <h4 style="margin-bottom: 0px;
     margin-top: 2px;
@@ -21777,29 +22022,120 @@ echo '
 
             echo '
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeASO" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailASO()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappASO()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsASO" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
             </div>
-            </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailASO() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "aso";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappASO() {
+            debugger;
+    let whatsapp = document.getElementById("whatsASO").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "aso";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -22370,7 +22706,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -22458,30 +22794,74 @@ echo '
             text-align: center;
             font-size: 14px;
         }
+
+        /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
 </style>
         <div class="page-break"></div>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container prontuario-medico">
+        <div class="bloco-cabecalho">
+
+        <table>
+
+            <tr>
+                <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
+            </tr>
+
+            <tr>
+                <td class="dados-hospital">
+
+                    ' . (!empty($resultado_clinica_selecionada["nome_fantasia"]) 
+                        ? '<span class="hospital-nome">'
+                            . $resultado_clinica_selecionada["nome_fantasia"] .
+                          '</span><br>' 
+                        : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada["cnpj"]) 
+                        ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                        : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada["endereco"]) 
+                        ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                        : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada["numero"]) 
+                        ? ', ' . $resultado_clinica_selecionada["numero"]
+                        : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada["bairro"]) 
+                        ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"] . '<br>'
+                        : '') . '
+
+                    ' . (!empty($recebe_cidade_uf) 
+                        ? 'CIDADE: ' . $recebe_cidade_uf
+                        : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada["cep"]) 
+                        ? ', CEP: ' . $resultado_clinica_selecionada["cep"] . '<br>'
+                        : '') . '
+
+                    ' . (!empty($resultado_clinica_selecionada["telefone"]) 
+                        ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                        : '') . '
+
+                </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+                <td class="logo">
+                    <img src="' . $logo . '" alt="Logo">
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
 
             <table>
                 <tr>
@@ -22664,28 +23044,63 @@ echo '
             </table>
             </div>
 
-            <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+            <div class="guia-container prontuario-medico">
+            <div class="bloco-cabecalho">
+    <table>
 
+        <tr>
+            <th colspan="2" class="titulo-guia" style="page-break-before: always;">
+                PRONTUÁRIO MÉDICO - 02
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"]) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"]) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"]) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["numero"]) 
+                    ? ', ' . $resultado_clinica_selecionada["numero"] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["bairro"]) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cep"]) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"]) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"] 
+                    : '') . '
+
+            </td>';
+            
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+            <td class="logo">
+                <img src="'.$logo.'" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -22765,7 +23180,7 @@ echo '
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
                 <tr>
-                    <th colspan="2" class="titulo-guia" style="text-align:left;">Preenchimento Obrigatório em Caso de Exame Demissional</th>
+                    <th colspan="5" class="titulo-guia" style="text-align:left;">Preenchimento Obrigatório em Caso de Exame Demissional</th>
                 </tr>
 
                 <tr><th colspan="6" style="text-align:left; padding:4px;" class="titulo-guia">Demissional</th></tr>
@@ -22788,10 +23203,11 @@ echo '
                     <th colspan="4" class="titulo-guia" style="text-align:left;">Para Mulheres</th>
                 </tr>
                 <tr>
-                    <th style="text-align:left; padding:4px;width: 160px;">Data da Última Menstruação</th>
-                    <td style="padding:4px;width:200px"></td>
-                    <th style="text-align:left; padding:4px;width: 160px;">Data do Último Preventivo</th>
-                    <td style="padding:4px;width:200px"></td>
+                    <th style="text-align:left; padding:4px;">Data da Última Menstruação</th>
+<td style="padding:4px;"></td>
+<th style="text-align:left; padding:4px;">Data do Último Preventivo</th>
+<td style="padding:4px;"></td>
+
                 </tr>
             </table>
 
@@ -22849,30 +23265,135 @@ echo '
 
             </div>
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeProntuarioMedico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviaremailProntuarioMedico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappaProntuarioMedico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsProntuarioMedico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
     </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviaremailProntuarioMedico() {
+    debugger;
+
+    let destino = document.getElementById("tipoContabilidadeProntuarioMedico").value;
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    let tipo = "prontuario_medico";
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo: tipo,
+            id_kit: valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappaProntuarioMedico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsProntuarioMedico").value.trim();
+    
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "prontuario_medico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -23359,32 +23880,77 @@ echo '
         page-break-before: always;
     }
 }
+
+    /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
 </style>
 <div class="page-break"></div>
-<div class="guia-container">
+<div class="guia-container teste-acuidade">
+<div class="bloco-cabecalho">
 
-    <!-- Cabeçalho Clínica -->
     <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
 
+        <!-- Linha do título -->
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                TESTE DE ACUIDADE VISUAL
+            </th>
+        </tr>
+
+        <!-- Linha dados hospital + logo -->
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"]) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">'
+                        . $resultado_clinica_selecionada["nome_fantasia"] .
+                      '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"]) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"]) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["numero"]) 
+                    ? ', ' . $resultado_clinica_selecionada["numero"] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["bairro"]) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cep"]) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"]) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
+
+            </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -23575,28 +24141,119 @@ echo '
         </div>
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteAcuidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteAcuidadade()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteAcuidade()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteAcuidade" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteAcuidadade() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteAcuidade").value;
+
+    let tipo = "teste_acuidade";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteAcuidade() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteAcuidade").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_acuidade";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -24188,31 +24845,65 @@ echo '
     page-break-inside: avoid;
   }
 }
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+        </style>';
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+        echo'
 
-        </style>
+        <div class="guia-container psicossocial">
+        <div class="bloco-cabecalho">
+    <table>
+        <tr>
+            <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
+        </tr>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <tr>
+            <td class="dados-hospital">
 
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -24512,30 +25203,121 @@ echo '
 
             </div>
             
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadePsicossocial" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailPsicossocial()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappPsicossocial()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsPsicossocial" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
 
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailPsicossocial() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadePsicossocial").value;
+
+    let tipo = "psicossocial";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappPsicossocial() {
+            debugger;
+    let whatsapp = document.getElementById("whatsPsicossocial").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "psicossocial";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -24912,13 +25694,14 @@ td[style*="height:80px"] {
             font-size: 14px;
         }
 
-        .assinatura {
-                width: 150px;
-    height: 60px;
-    border-bottom: 1px solid #000;
-    display: block;
-    margin: 0px auto 5px auto;
-        }
+        
+
+        img.assinatura {
+    border-bottom: none !important;
+    display: block !important;
+    margin: 0 auto -3px auto !important;
+    height: 61px !important;
+}
 
         @media print {
   .bloco-cabecalho {
@@ -24935,32 +25718,64 @@ td[style*="height:80px"] {
     }
 }
 
-        </style>
+        </style>';
 
-        <div class="guia-container">
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
+
+        <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
+    <table>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+            </th>
+        </tr>
 
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -25054,30 +25869,121 @@ td[style*="height:80px"] {
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeExameToxicologico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailExameToxicologico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappExameToxicologico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsExameToxicologico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailExameToxicologico() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeExameToxicologico").value;
+
+    let tipo = "exame_toxicologico";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappExameToxicologico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsExameToxicologico").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "exame_toxicologico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -25631,6 +26537,14 @@ th, td {
   margin: 0 auto -6px auto;
 }
 
+/* quando a assinatura é uma imagem, não desenhar a linha na própria imagem */
+img.assinatura {
+  border-bottom: none !important;
+  display: block !important;
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 61px !important;
+}
+
 table + table {
   margin-top: 1px;
 }
@@ -25648,23 +26562,207 @@ img {
     break-inside: avoid !important;
 }
 
-/* Impressão */
+/* ======================= */
+/* AJUSTE SÓ NA AUDIOMETRIA */
+/* ======================= */
 @media print {
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  .page-break {
-        page-break-before: always;
+
+  /* TODAS AS TABELAS DA AUDIOMETRIA */
+  .audiometria table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
   }
-  .actions {
-    display: none !important;
+
+  .audiometria th,
+  .audiometria td {
+    padding: 1px 2px !important;
+    line-height: 1.1 !important;
   }
-  table, tr, td, th {
+
+  /* TÍTULOS */
+  .audiometria .titulo-guia,
+  .audiometria .section-title {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+  }
+
+  /* DADOS */
+  .audiometria .dados-hospital,
+  .audiometria .hospital-nome,
+  .audiometria .empresa-info {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* IDENTIFICAÇÃO DO FUNCIONÁRIO */
+  .audiometria td[style*="font-size:12px"],
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* MEATOSCOPIA */
+  .audiometria .tabela-meatoscopia td,
+  .audiometria .tabela-meatoscopia label {
+    font-size: 8px !important;
+    padding: 2px !important;
+  }
+
+  /* LOGOAUDIOMETRIA */
+  .audiometria .logo-audio td {
+    font-size: 7.8px !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .logo-audio {
+    height: 105px !important;
+  }
+
+  /* AUDIOGRAMAS */
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+  }
+
+  /* AUDIÔMETRO */
+  .audiometria .audiometro th,
+  .audiometria .audiometro td {
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+
+  /* ======================== */
+  /* PARECER FONOAUDIOLÓGICO */
+  /* ======================== */
+  .audiometria .parecer-fono,
+  .audiometria .parecer-fono * {
+    font-size: 7.7px !important;
+    line-height: 1.1 !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .parecer-fono table {
+    width: 100% !important;
+  }
+
+  .audiometria .parecer-fono.titulo {
+    font-size: 8.2px !important;
+  }
+
+  .audiometria .obs-linha {
+    height: 25px !important;
+  }
+
+  /* ======================== */
+  /* ASSINATURAS */
+  /* ======================== */
+  .audiometria .assinaturas-container {
+    margin-top: 3px !important;
+  }
+
+  .audiometria .linha-assinatura {
+    margin: 5px auto 2px !important;
+  }
+
+  .audiometria .assinaturas,
+  .audiometria .assinaturas * {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .audiometria .titulo_assinatura {
+    font-size: 8px !important;
+    margin: 2px 0 !important;
+  }
+
+  .audiometria .nome_funcionario {
+    font-size: 7.8px !important;
+  }
+
+  
+
+  /* EVITA QUEBRA DE TABELA */
+  .audiometria table,
+  .audiometria tr,
+  .audiometria td,
+  .audiometria th {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  .actions {
+    display: none !important;
+  }
+
+  .audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  .audiometria table.parecer-fono-tabela tr,
+  .audiometria table.parecer-fono-tabela td,
+  .audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+  }
+
+  /* reforço: garantir 100% da largura do formulário para a tabela do parecer */
+  .guia-container.audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+      display: table !important;
+  }
+
+  /* células sem largura fixa e respeitando a largura total */
+  .guia-container.audiometria table.parecer-fono-tabela td,
+  .guia-container.audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      box-sizing: border-box !important;
+  }
+
+  /* força a tabela a pegar 100% */
+  .parecer-fono table,
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  /* força cada célula a NÃO ter largura fixa */
+  .parecer-fono table td,
+  .parecer-fono table th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+  }
+
+  .parecer-fono .assinatura {
+      margin-top: 6px !important;
+  }
+
+  /* linha propriamente dita */
+  .parecer-fono .assinatura .linha-assinatura {
+      margin-top: 8px !important;   /* aqui controla a distância da linha */
+      border-bottom: 1px solid #000 !important;
+      height: 40px !important;      /* altura da área da linha */
+  }
 }
+
 
  /* Bloco do Parecer Fonoaudiológico */
 .parecer-fono {
@@ -25678,7 +26776,6 @@ img {
     font-size: 8.5px !important;
     padding: 0px !important;
     line-height: 1.12 !important;
-    width: 65% !important;
 }
 
 /* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
@@ -25706,56 +26803,209 @@ img {
 }
 
 
+@media print {
 
-</style>
+    /* Força a tabela EXATA da audiometria a ocupar 100% */
+    table.parecer-fono-tabela {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+    }
+
+    /* Todas as células expandem normalmente */
+    table.parecer-fono-tabela td,
+    table.parecer-fono-tabela th {
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 2px !important;
+    }
+}
+
+/* ===========================
+   AJUSTE FINAL DO PARECER
+   =========================== */
+
+@media print {
+
+  /* força a tabela a ocupar toda a largura */
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+  }
+
+  /* remove larguras internas que limitam expansão */
+  table.parecer-fono-tabela td,
+  table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+      line-height: 1.15 !important;
+  }
+
+  /* remove atributos width vindo do HTML */
+  table.parecer-fono-tabela [width],
+  table.parecer-fono-tabela td[width],
+  table.parecer-fono-tabela th[width] {
+      width: auto !important;
+  }
+
+  /* corrige assinatura descendo a linha */
+  .parecer-fono .assinatura {
+      margin-top: 8px !important;
+      padding-top: 4px !important;
+      height: auto !important;
+  }
+
+  .parecer-fono .assinatura .linha-assinatura {
+      height: 40px !important;
+      border-bottom: 1px solid #000 !important;
+      margin-top: 6px !important;
+  }
+}
+/* ============================================
+   FORÇA TODAS AS TABELAS DO PARECER A EXPANDIREM
+   ============================================ */
+.parecer-fono table,
+table.parecer-fono-tabela {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Células sem largura fixa */
+.parecer-fono table td,
+.parecer-fono table th {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    padding: 2px !important;
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
 
 
-<div class="guia-container">
+<div class="guia-container audiometria">
 
 
 <!-- ===================== -->
 <!-- CABEÇALHO AUDIOMETRIA -->
 <!-- ===================== -->
 
-<table>
-    <tr>
-        <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
-    </tr>
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>
-        <td class="logo">
-            <img src="logo.jpg" alt="Logo">
-        </td>
-    </tr>
-</table>
+<div class="bloco-cabecalho">
+    <table>
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                AUDIOMETRIA
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
                 </tr>
                 <tr>
-                    <td class="dados-hospital" colspan="2">
-                        ' . (!empty($resultado_empresa_selecionada['nome'])
-                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+    <td class="dados-hospital" colspan="2">
+
+        ' . (!empty($resultado_empresa_selecionada['nome'])
+            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+            : '') . '
+
+        <div class="empresa-info">
+            ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) . ' '
                 : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
-                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
-                    </td>
-                </tr>
+
+            ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) . ' '
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) . ', '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? 'TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
+        </div>
+
+    </td>
+</tr>
+
             </table>
 
             <table>
@@ -25786,7 +27036,7 @@ img {
             </table>
 
             <!-- Tabela de Meatoscopia -->
-            <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <table class="tabela-meatoscopia" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
             <tr style="font-weight:bold; background-color:#f2f2f2;">
                 <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
             </tr>
@@ -25814,8 +27064,12 @@ img {
                 <!-- Orelha Direita -->
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-                    <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <!-- Ajuste nas imagens dos audiogramas -->';
+                    $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
+                
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -25835,7 +27089,10 @@ img {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    ';
+                    $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -25860,9 +27117,9 @@ img {
     </tr>
     <tr>
         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
-                <tr>
+        <td class="logo-col1" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio .logo-col1" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE RECONHECIMENTO DE FALA
                     </td>
@@ -25873,7 +27130,7 @@ img {
                         <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
                         <strong>OE:</strong>
                         <span style="float:right; font-weight:bold;">dB</span>
@@ -25883,8 +27140,8 @@ img {
         </td>
 
         <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
-        <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
+        <td class="logo-col2" style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio tabela-centro blocos-audio" style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
                 <tr>
                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
                         ÍNDICE DE RECONHECIMENTO DE FALA
@@ -25906,7 +27163,7 @@ img {
                 <!-- OE -->
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
-                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;" class="ajuste"><strong>dB/NS</strong></td>
                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
@@ -25918,8 +27175,8 @@ img {
         </td>
 
         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
+        <td class="logo-col3" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio" style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE DETECTABILIDADE DE FALA
@@ -25943,7 +27200,7 @@ img {
 </table>
 
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
+<table class="audiometro" style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -25955,18 +27212,18 @@ img {
 </table>
 
 
-<table class="no-break parecer-fono" style="width:100%; border-collapse:collapse; margin-top:5px;">
+<table class="no-break parecer-fono-tabela" style="width:100%; border-collapse:collapse; margin-top:5px;">
 
 
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+        <td colspan="6" class="parecer-fono titulo" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
             PARECER FONOAUDIOLÓGICO
         </td>
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
             (&nbsp;&nbsp;&nbsp;  ) | OD |  
             (&nbsp;&nbsp;&nbsp;  ) | OE |
@@ -25974,7 +27231,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
             (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -25983,7 +27240,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
             (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -25995,75 +27252,182 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
-            <strong>Obs:</strong>
-        </td>
-    </tr>
+    <td colspan="6" class="obs-linha" style="border:1px solid #000; vertical-align:top;">
+        <strong>Obs:</strong> 
+    </td>
+</tr>
 
-    <tr>
+    <tr class="verificando">
         <td colspan="6" style="border:1px solid #000; padding:4px;">
             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
+      </td>
     </tr>
 
-    <tr>
-        <!-- Assinatura médico -->
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
 
-        ' . (
-            !empty($html_assinatura_fono)
-                ? $html_assinatura_fono
-                : $html_assinatura_medico
-        ) . '<br>
+    
 
-        ____________________________<br>
-
-        <span>Assinatura</span><br>
-
-        <span>' .
-            (!empty($resultado_medico_fonoaudiologo['nome'])
-                ? 'Fonoaudiólogo Examinador'
-                : (!empty($resultado_medico_relacionado_clinica['nome'])
-                    ? 'Médico Examinador'
-                    : '')
-            ) .
-        '</span><br>
-
-        <span>' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? $resultado_medico_fonoaudiologo['nome']
-                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-            ) .
-            ' — ' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                    : (
-                        !empty($resultado_medico_relacionado_clinica['crm'])
-                            ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
-                            : ''
-                    )
-            ) .
-        '</span>
-
+   <tr class="">
+    <td colspan="6" style="border:0; padding:0; line-height:0;">
+        
     </td>
-
-        <!-- Assinatura funcionário -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            _______________________________<br>
-            Assinatura do Funcionário <br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </td>
-    </tr>
+</tr>
 </table>
+
+<table class="assinaturas-separadas assinaturas-container">
+            <tr>
+                <td class="assinaturas informacoes_medico" style="text-align:center; vertical-align:bottom;">
+                    ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+                    <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                    <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+                    <div style="margin-bottom: 2px;">
+                        ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                            ? 'Fonoaudiólogo Examinador'
+                            : (!empty($resultado_medico_relacionado_clinica['nome'])
+                                ? 'Médico Examinador'
+                                : '')) . '
+                    </div>
+                    ' . htmlspecialchars(
+                        !empty($resultado_medico_fonoaudiologo['nome'])
+                            ? $resultado_medico_fonoaudiologo['nome']
+                            : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                    ) .
+                    (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                        ? ' — CRM: ' . (!empty($resultado_medico_fonoaudiologo['crm'])
+                            ? $resultado_medico_fonoaudiologo['crm']
+                            : $resultado_medico_relacionado_clinica['crm'])
+                        : '') . '
+                </td>
+                <td class="assinaturas informacoes_funcionario" style="text-align:center; vertical-align:bottom;">
+                    <div class="funcionario" style="display:inline-block; text-align:center; width:100%; margin:0 auto; padding:0;">
+                        <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                        <div class="titulo_assinatura">Assinatura do Funcionário</div>
+                        <div class="nome_funcionario">
+                            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') .
+                            (!empty($resultado_pessoa_selecionada['cpf'])
+                                ? 'CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'])
+                                : '') . '
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
 
-<div class="actions" style="display:flex; gap:20px; justify-content:center;">
-    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+<div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
+
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeAudiometria" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
+
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailAudiometria()">Enviar por email</button>
+        
+    </div>
+
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappAudiometria()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsAudiometria" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
+
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
 </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailAudiometria() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "audiometria";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappAudiometria() {
+            debugger;
+    let whatsapp = document.getElementById("whatsAudiometria").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "audiometria";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -26632,32 +27996,73 @@ echo '
     }
 }
 
-        </style>
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+
+        </style>';
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="page-break"></div>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container resumo-laudo">
+        <div class="bloco-cabecalho">
+    <table>
 
+        <tr>
+            <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo" style="max-height: 70px !important;display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;">
+            </td>
+        </tr>
+
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -26827,30 +28232,121 @@ echo '
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeResumoLaudo" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailResumoLaudo()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappResumoLaudo()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsResumoLaudo" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailResumoLaudo() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeResumoLaudo").value;
+
+    let tipo = "resumo_laudo";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappResumoLaudo() {
+            debugger;
+    let whatsapp = document.getElementById("whatsResumoLaudo").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "resumo_laudo";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -27397,31 +28893,70 @@ echo '
         padding: 0;
     }
 }
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+echo '
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container teste-romberg">
+        <div class="bloco-cabecalho">
+    <table>
 
+        <tr>
+            <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo" style="max-height: 70px !important;display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;">
+            </td>
+        </tr>
+
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -27612,31 +29147,122 @@ echo '
 </table>
 
         </div>
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteRomberg" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteRomberg()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteRomberg()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteRomberg" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteRomberg() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteRomberg").value;
+
+    let tipo = "teste_romberg";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteRomberg() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteRomberg").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_romberg";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
             if (isset($_POST['valor_id_kit'])) {
@@ -28503,7 +30129,7 @@ function exibe_info_bancaria($tipos, $dados) {
         $imageString = base64_encode($imageData);
 
         echo '
-        <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+        <div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:180px;">
             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
             <div>
                 <p style="margin:0; font-weight:bold;">Chave:</p>
@@ -28514,7 +30140,7 @@ function exibe_info_bancaria($tipos, $dados) {
 
     // --- PIX
     if ($temPix && !empty($pixValor)) {
-        echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
               </div>';
@@ -28526,7 +30152,7 @@ function exibe_info_bancaria($tipos, $dados) {
             ? explode('|', $agenciaConta)
             : (is_array($agenciaConta) ? $agenciaConta : []);
 
-        echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                 <div>';
         foreach ($linhas as $linha) {
@@ -28668,33 +30294,80 @@ $dadosBancarios = [
                 body { background:#fff; }
                 .actions { display: none !important; }
             }
-        </style>
 
-        <div class="guia-container">
+            
+}
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+        </style>';
 
-        <table>
-                <!-- Linha do título -->
-                <tr>
-                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
-                </tr>
-                <!-- Linha dados hospital + logo -->
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+echo '
 
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container faturamento">
+
+        <div class="bloco-cabecalho">
+    <table>
+
+        <!-- Título -->
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                Faturamento / Orçamento
+            </th>
+        </tr>
+
+        <!-- Dados + Logo -->
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">'
+                        . $resultado_clinica_selecionada['nome_fantasia'] .
+                      '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? 'CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+
+        </tr>
+
+    </table>
+</div>
+
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
@@ -28756,10 +30429,10 @@ $dadosBancarios = [
            
            <h4 style="font-size:11px; line-height:1.3; margin:6px 0;">01 - Exames / Procedimentos</h4>';
             $combinar = "<h4 style='font-size: 11px; line-height: 1.3; margin:2px 0;'>A combinar</h4>";
-
+            
             echo '<div class="top-bar"></div>
                 <!-- Produtos / Serviços -->
-                <div style="border-top:1px solid #000; margin:6px 0;"></div>
+            <div style="border-top:1px solid #000; margin:6px 0;"></div>
 
             <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
                 <tr>
@@ -28878,12 +30551,130 @@ if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
 
 exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
-// echo '
-// <div class="top-bar"></div>
-// <div class="top-bar" style="margin-top: 10px;"></div>
-// ';
+echo '
+<div class="top-bar"></div>
+<div class="top-bar" style="margin-top: 10px;"></div>
+';
 
-            
+//             echo '<h4 style="font-size:11px; line-height:1.3; margin:6px 0;">02 - Treinamentos</h4>';
+//             $combinar = "<h4 style='font-size:11px; line-height:1.3; margin:2px 0;'>A combinar</h4>";
+
+//             echo '<div class="top-bar"></div>
+//             <!-- Produtos / Serviços -->
+//             <div style="border-top:1px solid #000; margin:6px 0;"></div>
+//                 <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000; margin-top:4px;">
+//             <tr>
+//                 <th style="padding:3px;">Código</th>
+//                 <th style="padding:3px;">Descrição dos produtos/serviços</th>
+//                 <th style="padding:3px;">Und</th>
+//                 <th style="padding:3px;">Pço.Unt.</th>
+//                 <th style="padding:3px;">Quant.</th>
+//                 <th style="padding:3px;">Total do item</th>
+//             </tr>';
+
+//             $totalGeral = 0;
+//             $numeroItens = 0;
+
+//             if (!empty($valores_pedidos)) {
+//                 foreach ($valores_pedidos as $item) {
+//                     // Só exibe se for treinamento
+//                     if (($item["tipo"] ?? "") === "treinamento") {
+
+//                         $totalItem = $item["quantidade"] * $item["valor"];
+//                         $totalGeral += $totalItem;
+//                         $numeroItens++;
+
+//                         echo '
+//                             <tr>
+//                                 <td style="padding:3px;">' . $item["codigo"] . '</td>
+//                                 <td style="padding:3px;">' . htmlspecialchars($item["nome"]) . '</td>
+//                                 <td style="padding:3px;">un</td>
+//                                 <td style="padding:3px; text-align:right;">R$ ' . number_format($item["valor"], 2, ",", ".") . '</td>
+//                                 <td style="padding:3px; text-align:right;">' . htmlspecialchars($item["quantidade"]) . '</td>
+//                                 <td style="padding:3px; text-align:right;">R$ ' . number_format($totalItem, 2, ",", ".") . '</td>
+//                             </tr>';
+//                     }
+//                 }
+//             }
+
+
+
+//             echo '</table>
+
+//                 <table style="width:100%; margin-top:0px; font-size:11px; border-collapse:collapse;">
+//                     <tr>
+//                         <td style="padding:3px;">' . $dataAtual . '</td>
+//                         <td style="padding:3px;">Nro. de Itens: <strong>' . $numeroItens . '</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td style="padding:3px;">Formas de Pagamento:</td>
+//                         <td style="padding:3px;">Total dos Produtos: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td></td>
+//                         <td style="padding:3px;">Desconto Concedido: <strong>0,00</strong></td>
+//                     </tr>
+//                     <tr>
+//                         <td></td>
+//                         <td style="padding:3px;">Total do Orçamento: <strong>' . number_format($totalGeral, 2, ",", ".") . '</strong></td>
+//                     </tr>
+//                 </table>';
+
+                
+
+// $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
+// $dadosBancarios = [
+//     'qr' => $resultado_busca_dados_bancarios[0]['qrcode'] ?? '',
+//     'pix' => $resultado_busca_dados_bancarios[0]['dado_bancario_pix'] ?? '',
+//     'agencia_conta' => $resultado_busca_dados_bancarios[0]['dado_bancario_agencia_conta'] ?? ''
+// ];
+
+// $categoria = "treinamentos";
+
+// // ✅ Adiciona bancos logo abaixo de "Nenhuma"
+// if (
+//     deve_exibir_banco($categoria, $valQrcode) ||
+//     deve_exibir_banco($categoria, $valPix) ||
+//     deve_exibir_banco($categoria, $valAgencia)
+// ) {
+//     // como essa função já deve imprimir o HTML, não entra no echo
+//     exibe_info_bancaria($tipos, $dadosBancarios);
+// }
+
+// // TREINAMENTOS
+// $categoria = "treinamentos";
+// $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia); // ✅ agora passa corretamente
+
+// exibe_info_bancaria([
+//     "qrcode"         => $mostrarQr,
+//     "pix"            => $mostrarPix,
+//     "agencia-conta"  => $mostrarAgConta // ✅ incluído
+// ], $dadosBancarios);
+
+// TREINAMENTOS
+// $categoria = "treinamentos";
+// $mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
+// $mostrarPix      = deve_exibir_banco($categoria, $valPix);
+// $mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
+
+// // echo "<pre>";
+// // var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
+// // echo "</pre>";
+
+// // exibe_info_bancaria([
+// //     "qrcode"         => $mostrarQr,
+// //     "pix"            => $mostrarPix,
+// //     "agencia-conta"  => $mostrarAgConta
+// // ], $dadosBancarios);
+
+// $tiposSelecionados = [];
+// if ($mostrarQr) $tiposSelecionados[] = "qrcode";
+// if ($mostrarPix) $tiposSelecionados[] = "pix";
+// if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+
+// exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
 
 echo '
@@ -29025,28 +30816,119 @@ echo '
             </div>
 
         <!-- 🔹 Botões -->
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeFaturamento" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailFaturamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappFaturamento()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsFaturamento" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailFaturamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeFaturamento").value;
+
+    let tipo = "faturamento";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappFaturamento() {
+            debugger;
+    let whatsapp = document.getElementById("whatsFaturamento").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "faturamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
             echo '</div>';
@@ -29415,8 +31297,9 @@ echo '
 
                 // var_dump($resultado_dados_kit);
             } else {
-
-
+                if (isset($_SESSION['codigo_kit']) && $_SESSION['codigo_kit'] !== '') {
+                    $valor_id_kit = $_SESSION["codigo_kit"];
+                }
 
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
                     salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
@@ -30425,28 +32308,68 @@ echo '
             text-align: center;
             font-size: 14px;
         }
-</style>
+
+        /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+</style>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
         <div class="page-break"></div>
 
         <div class="guia-container">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
+    <tr>
+        <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+
+        </td>
+
+        <td class="logo">
+            <img src="' . $logo . '" alt="Logo">
+        </td>
+    </tr>
+</table>
+
                 </tr>
             </table>
 
@@ -30566,56 +32489,120 @@ echo '
         </div>';
 
             echo '
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarGuiaEncaminhamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
+
 </div>
 
         ';
 
+
         echo '
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
         <script>
-function enviarClinica() {
-    let email = document.getElementById("emailClinica").value.trim();
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarGuiaEncaminhamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidade").value;
 
-    if(email === "") {
-        alert("Informe um e-mail antes de enviar!");
-        return;
-    }
+    let tipo = "guia_encaminhamento";
+    
 
-    alert("Enviar para clínica:", email);
-    // sua lógica futura aqui...
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
 }
 
 function enviarEmpresa() {
-    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
 
-    if(whatsapp === "") {
-        alert("Informe um WhatsApp antes de enviar!");
+    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
         return;
     }
+    whatsapp = whatsapp.replace(/\D/g, "");
 
-    alert("Enviar para empresa:", whatsapp);
-    // sua lógica futura aqui...
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "guia_encaminhamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
 }
 </script>
 
@@ -31078,31 +33065,61 @@ echo '
         }
 
 
-        </style>
+        </style>';
 
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
         <div class="page-break"></div>
 
-        <div class="guia-container">
+        <div class="guia-container aso">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <tr>
+        <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>
+
+        <td class="logo">
+            <img src="' . $logo . '" alt="Logo">
+        </td>
+    </tr>
+</table>
+
 
             <table>
                 <tr>
@@ -31260,29 +33277,120 @@ echo '
 
             echo '
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeASO" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailASO()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappASO()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsASO" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
             </div>
-            </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailASO() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "aso";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappASO() {
+            debugger;
+    let whatsapp = document.getElementById("whatsASO").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "aso";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -31940,30 +34048,85 @@ echo '
             text-align: center;
             font-size: 14px;
         }
-</style>
+
+        /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+
+    .logo { text-align:center; }
+            .logo img {
+    max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+            padding: 5px 65px !important;
+}
+</style>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
         <div class="page-break"></div>
 
-        <div class="guia-container">
+        <div class="guia-container prontuario-medico">
             <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <colgroup>
+        <col>
+        <col style="width:150px;">
+    </colgroup>
+
+    <tr>
+        <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>
+
+        <td class="logo">
+    <img src="' . $logo . '" 
+         alt="Logo" 
+         style="max-height: 50px !important;
+    display: block;
+    margin: 0 auto !important;
+            padding: 5px 20px !important;">
+</td>
+
+    </tr>
+</table>
 
             <table>
                 <tr>
@@ -32146,27 +34309,50 @@ echo '
             </table>
             </div>
 
-            <div class="guia-container">
+            <div class="guia-container prontuario-medico">
             <table>
-                <tr>
-                    <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+    <tr>
+        <th colspan="2" class="titulo-guia" style="page-break-before: always;">
+            PRONTUÁRIO MÉDICO - 02
+        </th>
+    </tr>
+
+    <tr>
+        <td class="dados-hospital">
+            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                : '') . '
+            ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                : '') . '
+            ' . (!empty($resultado_clinica_selecionada['numero']) 
+                ? ', ' . $resultado_clinica_selecionada['numero'] 
+                : '') . '
+            ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                : '') . '
+            ' . (!empty($recebe_cidade_uf) 
+                ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                : '') . '
+            ' . (!empty($resultado_clinica_selecionada['cep']) 
+                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                : '') . '
+            ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                : '') . '
+        </td>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo" style="max-height:55px !important; display:block !important; margin:0 auto !important;">
+        </td>
+    </tr>
+</table>
 
             <table>
                 <tr>
@@ -32331,30 +34517,135 @@ echo '
 
             </div>
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeProntuarioMedico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviaremailProntuarioMedico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappaProntuarioMedico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsProntuarioMedico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
     </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviaremailProntuarioMedico() {
+    debugger;
+
+    let destino = document.getElementById("tipoContabilidadeProntuarioMedico").value;
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    let tipo = "prontuario_medico";
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo: tipo,
+            id_kit: valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappaProntuarioMedico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsProntuarioMedico").value.trim();
+    
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "prontuario_medico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -32840,31 +35131,69 @@ echo '
         page-break-before: always;
     }
 }
+
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
 </style>
 <div class="page-break"></div>
-<div class="guia-container">
+<div class="guia-container teste-acuidade">
 
     <!-- Cabeçalho Clínica -->
+    <div class="bloco-cabecalho">
     <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                TESTE DE ACUIDADE VISUAL
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro']
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+            </td>';
+            
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+            <td class="logo">
+                <img src="'.$logo.'" alt="Logo" style="max-height:50px !important; display:block; margin:auto;">
+            </td>
+        </tr>
+    </table>
+</div>
 
             <table>
                 <tr>
@@ -33056,28 +35385,119 @@ echo '
         </div>
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteAcuidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteAcuidadade()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteAcuidade()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteAcuidade" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteAcuidadade() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteAcuidade").value;
+
+    let tipo = "teste_acuidade";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteAcuidade() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteAcuidade").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_acuidade";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -33670,30 +36090,63 @@ echo '
     page-break-inside: avoid;
   }
 }
-
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
         </style>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container psicossocial">
+            <div class="bloco-cabecalho">
+    <table>
+        <tr>
+            <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+    </table>
+</div>
 
             <table>
                 <tr>
@@ -33994,30 +36447,121 @@ echo '
 
             </div>
             
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadePsicossocial" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailPsicossocial()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappPsicossocial()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsPsicossocial" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
 
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailPsicossocial() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadePsicossocial").value;
+
+    let tipo = "psicossocial";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappPsicossocial() {
+            debugger;
+    let whatsapp = document.getElementById("whatsPsicossocial").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "psicossocial";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -34418,32 +36962,64 @@ td[style*="height:80px"] {
     }
 }
 
-        </style>
+        </style>';
 
-        <div class="guia-container">
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
+
+        <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
+    <table>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+            </th>
+        </tr>
 
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -34537,30 +37113,121 @@ td[style*="height:80px"] {
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeExameToxicologico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailExameToxicologico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappExameToxicologico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsExameToxicologico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailExameToxicologico() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeExameToxicologico").value;
+
+    let tipo = "exame_toxicologico";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappExameToxicologico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsExameToxicologico").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "exame_toxicologico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -35114,6 +37781,14 @@ th, td {
   margin: 0 auto -6px auto;
 }
 
+/* quando a assinatura é uma imagem, não desenhar a linha na própria imagem */
+img.assinatura {
+  border-bottom: none !important;
+  display: block !important;
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 61px !important;
+}
+
 table + table {
   margin-top: 1px;
 }
@@ -35131,23 +37806,207 @@ img {
     break-inside: avoid !important;
 }
 
-/* Impressão */
+/* ======================= */
+/* AJUSTE SÓ NA AUDIOMETRIA */
+/* ======================= */
 @media print {
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  .page-break {
-        page-break-before: always;
+
+  /* TODAS AS TABELAS DA AUDIOMETRIA */
+  .audiometria table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
   }
-  .actions {
-    display: none !important;
+
+  .audiometria th,
+  .audiometria td {
+    padding: 1px 2px !important;
+    line-height: 1.1 !important;
   }
-  table, tr, td, th {
+
+  /* TÍTULOS */
+  .audiometria .titulo-guia,
+  .audiometria .section-title {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+  }
+
+  /* DADOS */
+  .audiometria .dados-hospital,
+  .audiometria .hospital-nome,
+  .audiometria .empresa-info {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* IDENTIFICAÇÃO DO FUNCIONÁRIO */
+  .audiometria td[style*="font-size:12px"],
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* MEATOSCOPIA */
+  .audiometria .tabela-meatoscopia td,
+  .audiometria .tabela-meatoscopia label {
+    font-size: 8px !important;
+    padding: 2px !important;
+  }
+
+  /* LOGOAUDIOMETRIA */
+  .audiometria .logo-audio td {
+    font-size: 7.8px !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .logo-audio {
+    height: 105px !important;
+  }
+
+  /* AUDIOGRAMAS */
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+  }
+
+  /* AUDIÔMETRO */
+  .audiometria .audiometro th,
+  .audiometria .audiometro td {
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+
+  /* ======================== */
+  /* PARECER FONOAUDIOLÓGICO */
+  /* ======================== */
+  .audiometria .parecer-fono,
+  .audiometria .parecer-fono * {
+    font-size: 7.7px !important;
+    line-height: 1.1 !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .parecer-fono table {
+    width: 100% !important;
+  }
+
+  .audiometria .parecer-fono.titulo {
+    font-size: 8.2px !important;
+  }
+
+  .audiometria .obs-linha {
+    height: 25px !important;
+  }
+
+  /* ======================== */
+  /* ASSINATURAS */
+  /* ======================== */
+  .audiometria .assinaturas-container {
+    margin-top: 3px !important;
+  }
+
+  .audiometria .linha-assinatura {
+    margin: 5px auto 2px !important;
+  }
+
+  .audiometria .assinaturas,
+  .audiometria .assinaturas * {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .audiometria .titulo_assinatura {
+    font-size: 8px !important;
+    margin: 2px 0 !important;
+  }
+
+  .audiometria .nome_funcionario {
+    font-size: 7.8px !important;
+  }
+
+  
+
+  /* EVITA QUEBRA DE TABELA */
+  .audiometria table,
+  .audiometria tr,
+  .audiometria td,
+  .audiometria th {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  .actions {
+    display: none !important;
+  }
+
+  .audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  .audiometria table.parecer-fono-tabela tr,
+  .audiometria table.parecer-fono-tabela td,
+  .audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+  }
+
+  /* reforço: garantir 100% da largura do formulário para a tabela do parecer */
+  .guia-container.audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+      display: table !important;
+  }
+
+  /* células sem largura fixa e respeitando a largura total */
+  .guia-container.audiometria table.parecer-fono-tabela td,
+  .guia-container.audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      box-sizing: border-box !important;
+  }
+
+  /* força a tabela a pegar 100% */
+  .parecer-fono table,
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  /* força cada célula a NÃO ter largura fixa */
+  .parecer-fono table td,
+  .parecer-fono table th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+  }
+
+  .parecer-fono .assinatura {
+      margin-top: 6px !important;
+  }
+
+  /* linha propriamente dita */
+  .parecer-fono .assinatura .linha-assinatura {
+      margin-top: 8px !important;   /* aqui controla a distância da linha */
+      border-bottom: 1px solid #000 !important;
+      height: 40px !important;      /* altura da área da linha */
+  }
 }
+
 
  /* Bloco do Parecer Fonoaudiológico */
 .parecer-fono {
@@ -35161,7 +38020,6 @@ img {
     font-size: 8.5px !important;
     padding: 0px !important;
     line-height: 1.12 !important;
-    width: 65% !important;
 }
 
 /* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
@@ -35189,56 +38047,209 @@ img {
 }
 
 
+@media print {
 
-</style>
+    /* Força a tabela EXATA da audiometria a ocupar 100% */
+    table.parecer-fono-tabela {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+    }
+
+    /* Todas as células expandem normalmente */
+    table.parecer-fono-tabela td,
+    table.parecer-fono-tabela th {
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 2px !important;
+    }
+}
+
+/* ===========================
+   AJUSTE FINAL DO PARECER
+   =========================== */
+
+@media print {
+
+  /* força a tabela a ocupar toda a largura */
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+  }
+
+  /* remove larguras internas que limitam expansão */
+  table.parecer-fono-tabela td,
+  table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+      line-height: 1.15 !important;
+  }
+
+  /* remove atributos width vindo do HTML */
+  table.parecer-fono-tabela [width],
+  table.parecer-fono-tabela td[width],
+  table.parecer-fono-tabela th[width] {
+      width: auto !important;
+  }
+
+  /* corrige assinatura descendo a linha */
+  .parecer-fono .assinatura {
+      margin-top: 8px !important;
+      padding-top: 4px !important;
+      height: auto !important;
+  }
+
+  .parecer-fono .assinatura .linha-assinatura {
+      height: 40px !important;
+      border-bottom: 1px solid #000 !important;
+      margin-top: 6px !important;
+  }
+}
+/* ============================================
+   FORÇA TODAS AS TABELAS DO PARECER A EXPANDIREM
+   ============================================ */
+.parecer-fono table,
+table.parecer-fono-tabela {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Células sem largura fixa */
+.parecer-fono table td,
+.parecer-fono table th {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    padding: 2px !important;
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
 
 
-<div class="guia-container">
+<div class="guia-container audiometria">
 
 
 <!-- ===================== -->
 <!-- CABEÇALHO AUDIOMETRIA -->
 <!-- ===================== -->
 
-<table>
-    <tr>
-        <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
-    </tr>
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>
-        <td class="logo">
-            <img src="logo.jpg" alt="Logo">
-        </td>
-    </tr>
-</table>
+<div class="bloco-cabecalho">
+    <table>
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                AUDIOMETRIA
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
                 </tr>
                 <tr>
-                    <td class="dados-hospital" colspan="2">
-                        ' . (!empty($resultado_empresa_selecionada['nome'])
-                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+    <td class="dados-hospital" colspan="2">
+
+        ' . (!empty($resultado_empresa_selecionada['nome'])
+            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+            : '') . '
+
+        <div class="empresa-info">
+            ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) . ' '
                 : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
-                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
-                    </td>
-                </tr>
+
+            ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) . ' '
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) . ', '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? 'TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
+        </div>
+
+    </td>
+</tr>
+
             </table>
 
             <table>
@@ -35269,7 +38280,7 @@ img {
             </table>
 
             <!-- Tabela de Meatoscopia -->
-            <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <table class="tabela-meatoscopia" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
             <tr style="font-weight:bold; background-color:#f2f2f2;">
                 <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
             </tr>
@@ -35297,8 +38308,12 @@ img {
                 <!-- Orelha Direita -->
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-                    <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <!-- Ajuste nas imagens dos audiogramas -->';
+                    $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
+                
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -35318,7 +38333,10 @@ img {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    ';
+                    $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -35343,9 +38361,9 @@ img {
     </tr>
     <tr>
         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
-                <tr>
+        <td class="logo-col1" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio .logo-col1" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE RECONHECIMENTO DE FALA
                     </td>
@@ -35356,7 +38374,7 @@ img {
                         <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
                         <strong>OE:</strong>
                         <span style="float:right; font-weight:bold;">dB</span>
@@ -35366,8 +38384,8 @@ img {
         </td>
 
         <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
-        <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
+        <td class="logo-col2" style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio tabela-centro blocos-audio" style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
                 <tr>
                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
                         ÍNDICE DE RECONHECIMENTO DE FALA
@@ -35389,7 +38407,7 @@ img {
                 <!-- OE -->
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
-                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;" class="ajuste"><strong>dB/NS</strong></td>
                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
@@ -35401,8 +38419,8 @@ img {
         </td>
 
         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
+        <td class="logo-col3" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio" style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE DETECTABILIDADE DE FALA
@@ -35426,7 +38444,7 @@ img {
 </table>
 
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
+<table class="audiometro" style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -35438,18 +38456,18 @@ img {
 </table>
 
 
-<table class="no-break parecer-fono" style="width:100%; border-collapse:collapse; margin-top:5px;">
+<table class="no-break parecer-fono-tabela" style="width:100%; border-collapse:collapse; margin-top:5px;">
 
 
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+        <td colspan="6" class="parecer-fono titulo" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
             PARECER FONOAUDIOLÓGICO
         </td>
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
             (&nbsp;&nbsp;&nbsp;  ) | OD |  
             (&nbsp;&nbsp;&nbsp;  ) | OE |
@@ -35457,7 +38475,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
             (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -35466,7 +38484,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
             (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -35478,76 +38496,182 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
-            <strong>Obs:</strong>
-        </td>
-    </tr>
+    <td colspan="6" class="obs-linha" style="border:1px solid #000; vertical-align:top;">
+        <strong>Obs:</strong> 
+    </td>
+</tr>
 
-    <tr>
+    <tr class="verificando">
         <td colspan="6" style="border:1px solid #000; padding:4px;">
             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
+      </td>
     </tr>
 
-    <tr>
-        <!-- Assinatura médico -->
-        <!-- Assinatura médico -->
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
 
-        ' . (
-            !empty($html_assinatura_fono)
-                ? $html_assinatura_fono
-                : $html_assinatura_medico
-        ) . '<br>
+    
 
-        ____________________________<br>
-
-        <span>Assinatura</span><br>
-
-        <span>' .
-            (!empty($resultado_medico_fonoaudiologo['nome'])
-                ? 'Fonoaudiólogo Examinador'
-                : (!empty($resultado_medico_relacionado_clinica['nome'])
-                    ? 'Médico Examinador'
-                    : '')
-            ) .
-        '</span><br>
-
-        <span>' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? $resultado_medico_fonoaudiologo['nome']
-                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-            ) .
-            ' — ' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                    : (
-                        !empty($resultado_medico_relacionado_clinica['crm'])
-                            ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
-                            : ''
-                    )
-            ) .
-        '</span>
-
+   <tr class="">
+    <td colspan="6" style="border:0; padding:0; line-height:0;">
+        
     </td>
-
-        <!-- Assinatura funcionário -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            _______________________________<br>
-            Assinatura do Funcionário <br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </td>
-    </tr>
+</tr>
 </table>
+
+<table class="assinaturas-separadas assinaturas-container">
+            <tr>
+                <td class="assinaturas informacoes_medico" style="text-align:center; vertical-align:bottom;">
+                    ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+                    <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                    <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+                    <div style="margin-bottom: 2px;">
+                        ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                            ? 'Fonoaudiólogo Examinador'
+                            : (!empty($resultado_medico_relacionado_clinica['nome'])
+                                ? 'Médico Examinador'
+                                : '')) . '
+                    </div>
+                    ' . htmlspecialchars(
+                        !empty($resultado_medico_fonoaudiologo['nome'])
+                            ? $resultado_medico_fonoaudiologo['nome']
+                            : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                    ) .
+                    (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                        ? ' — CRM: ' . (!empty($resultado_medico_fonoaudiologo['crm'])
+                            ? $resultado_medico_fonoaudiologo['crm']
+                            : $resultado_medico_relacionado_clinica['crm'])
+                        : '') . '
+                </td>
+                <td class="assinaturas informacoes_funcionario" style="text-align:center; vertical-align:bottom;">
+                    <div class="funcionario" style="display:inline-block; text-align:center; width:100%; margin:0 auto; padding:0;">
+                        <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                        <div class="titulo_assinatura">Assinatura do Funcionário</div>
+                        <div class="nome_funcionario">
+                            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') .
+                            (!empty($resultado_pessoa_selecionada['cpf'])
+                                ? 'CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'])
+                                : '') . '
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
 
-<div class="actions" style="display:flex; gap:20px; justify-content:center;">
-    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+<div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
+
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeAudiometria" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
+
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailAudiometria()">Enviar por email</button>
+        
+    </div>
+
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappAudiometria()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsAudiometria" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
+
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
 </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailAudiometria() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "audiometria";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappAudiometria() {
+            debugger;
+    let whatsapp = document.getElementById("whatsAudiometria").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "audiometria";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -36117,31 +39241,67 @@ echo '
     }
 }
 
-        </style>
+        </style>';
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="page-break"></div>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container resumo-laudo">
+        <div class="bloco-cabecalho">
+    <table>
+
+        <tr>
+            <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo" style="max-height: 70px !important;display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;">
+            </td>
+        </tr>
+
+    </table>
+</div>
 
             <table>
                 <tr>
@@ -36312,30 +39472,121 @@ echo '
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeResumoLaudo" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailResumoLaudo()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappResumoLaudo()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsResumoLaudo" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailResumoLaudo() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeResumoLaudo").value;
+
+    let tipo = "resumo_laudo";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappResumoLaudo() {
+            debugger;
+    let whatsapp = document.getElementById("whatsResumoLaudo").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "resumo_laudo";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -36881,30 +40132,70 @@ echo '
         padding: 0;
     }
 }
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+echo '
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container teste-romberg">
+        <div class="bloco-cabecalho">
+    <table>
+
+        <tr>
+            <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo" style="max-height: 70px !important;display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;">
+            </td>
+        </tr>
+
+    </table>
+</div>
 
             <table>
                 <tr>
@@ -37096,31 +40387,122 @@ echo '
 </table>
 
         </div>
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteRomberg" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteRomberg()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteRomberg()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteRomberg" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteRomberg() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteRomberg").value;
+
+    let tipo = "teste_romberg";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteRomberg() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteRomberg").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_romberg";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -37988,7 +41370,7 @@ function exibe_info_bancaria($tipos, $dados) {
         $imageString = base64_encode($imageData);
 
         echo '
-        <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+        <div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:180px;">
             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
             <div>
                 <p style="margin:0; font-weight:bold;">Chave:</p>
@@ -37999,7 +41381,7 @@ function exibe_info_bancaria($tipos, $dados) {
 
     // --- PIX
     if ($temPix && !empty($pixValor)) {
-        echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
               </div>';
@@ -38011,7 +41393,7 @@ function exibe_info_bancaria($tipos, $dados) {
             ? explode('|', $agenciaConta)
             : (is_array($agenciaConta) ? $agenciaConta : []);
 
-        echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                 <div>';
         foreach ($linhas as $linha) {
@@ -38568,33 +41950,77 @@ $dadosBancarios = [
                 body { background:#fff; }
                 .actions { display: none !important; }
             }
-        </style>
 
-        <div class="guia-container">
+            /* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+        </style>';
 
-        <table>
-                <!-- Linha do título -->
-                <tr>
-                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
-                </tr>
-                <!-- Linha dados hospital + logo -->
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+echo '
 
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container faturamento">
+
+        <div class="bloco-cabecalho">
+    <table>
+
+        <!-- Título -->
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                Faturamento / Orçamento
+            </th>
+        </tr>
+
+        <!-- Dados + Logo -->
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">'
+                        . $resultado_clinica_selecionada['nome_fantasia'] .
+                      '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? 'CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+
+        </tr>
+
+    </table>
+</div>
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
@@ -39037,28 +42463,119 @@ echo '
             </div>
 
         <!-- 🔹 Botões -->
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeFaturamento" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailFaturamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappFaturamento()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsFaturamento" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailFaturamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeFaturamento").value;
+
+    let tipo = "faturamento";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappFaturamento() {
+            debugger;
+    let whatsapp = document.getElementById("whatsFaturamento").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "faturamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
             echo '</div>';
@@ -39427,7 +42944,10 @@ $informacoes_clinica;
 
                 // var_dump($resultado_dados_kit);
             } else {
-
+                if (isset($_SESSION['codigo_kit']) && $_SESSION['codigo_kit'] !== '') {
+                    $valor_id_kit = $_SESSION["codigo_kit"];
+                }
+                
 
 
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
@@ -41172,12 +44692,16 @@ echo '
     margin: 0px auto -10px !important;
         }
 
-
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
         </style>
 
         <div class="page-break"></div>
 
-        <div class="guia-container">
+        <div class="guia-container aso">
         <div class="bloco-cabecalho">
             <table>
                 <tr>
@@ -41193,9 +44717,11 @@ echo '
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
+                    </td>';
+                    $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                    echo '
                     <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
+                        <img src="'.$logo.'" alt="Logo">
                     </td>
                 </tr>
             </table>
@@ -42125,42 +45651,72 @@ echo '
             text-align: center;
             font-size: 14px;
         }
-</style>
+
+        /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
+
         <div class="page-break"></div>
 
         <div class="guia-container prontuario-medico">
         <div class="bloco-cabecalho">
-            <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+    <table style="width:100%; border-collapse:collapse;">
 
-    <tr>
-        <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>';
+        <tr>
+            <td class="dados-hospital">
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>'
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro']
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
 
             <table>
                 <tr>
@@ -42345,62 +45901,59 @@ echo '
 
             <div class="guia-container prontuario-medico">
             <div class="bloco-cabecalho">
-            <table>
-    <colgroup>
-        <col> <!-- Coluna de texto -->
-        <col style="width:150px;"> <!-- Coluna fixa da logo -->
-    </colgroup>
+    <table style="width:100%; border-collapse:collapse;">
 
-    <tr>
-        <th colspan="2" class="titulo-guia" style="page-break-before: always;">
-            PRONTUÁRIO MÉDICO - 02
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia" style="page-break-before: always;">
+                PRONTUÁRIO MÉDICO - 02
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
-                : '') . '
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? '<br>CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep']
+                    : '') . '
 
-        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -43175,43 +46728,71 @@ echo '
         page-break-before: always;
     }
 }
-</style>
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
+
 <div class="page-break"></div>
 <div class="guia-container teste-acuidade">
 <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-    <!-- Cabeçalho Clínica -->
-<table>
-    <colgroup>
-        <col>
-        <col style="width:150px;"> <!-- LOGO travada -->
-    </colgroup>
+        <tr>
+            <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
+        </tr>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
-    </tr>
+        <tr>
+            <td class="dados-hospital">
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>'
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro']
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -44104,68 +47685,70 @@ echo '
     page-break-inside: avoid;
   }
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
         <div class="guia-container psicossocial">
         <div class="bloco-cabecalho">
-            <table>
-    <colgroup>
-        <col> <!-- Coluna do texto -->
-        <col style="width:150px;"> <!-- Coluna fixa da logo -->
-    </colgroup>
+    <table style="width:100%; border-collapse:collapse;">
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            PSICOSSOCIAL
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' 
-                : '') . '
+        <tr>
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? '<br>CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep']
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-    </tr>
-</table>
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:70px; display:block; margin:0 auto;">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
 
             <table>
                 <tr>
@@ -45018,68 +48601,75 @@ td[style*="dados-hospital"] {
     margin: 0 !important;
 }
 
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
 
        
-<table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+<div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>' 
-                : '') . '
+        <tr>
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>'
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf)
+                    ? 'CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
-        
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>'
+                    : '') . '
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:70px; display:block; margin:0 auto;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
         </div>
             <table>
@@ -45850,18 +49440,14 @@ img.assinatura {
   border-bottom: none !important;
   display: block !important;
   margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
-      height: 85px !important;
+      height: 61px !important;
 }
 
 table + table {
   margin-top: 1px;
 }
 
-/* Imagens reduzidas */
-img {
-  max-width: 85%;
-  height: auto;
-}
+
 
 /* Evitar quebra */
 .no-break,
@@ -46202,22 +49788,22 @@ table.parecer-fono-tabela {
     width: 100% !important;
     display: table-cell !important;
 }
-</style>
+</style>';
 
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
+echo '
 
 <div class="guia-container audiometria">
-<div class="bloco-cabecalho">
+
 
 <!-- ===================== -->
 <!-- CABEÇALHO AUDIOMETRIA -->
 <!-- ===================== -->
 
-<table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+<div class="bloco-cabecalho">
+
+<table style="width:100%; border-collapse:collapse;">
 
     <tr>
         <th colspan="2" class="titulo-guia">
@@ -46226,51 +49812,53 @@ table.parecer-fono-tabela {
     </tr>
 
     <tr>
-        <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
+        <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+            ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                ? '<span class="hospital-nome" style="font-weight:bold; margin-bottom:-10px !important;">'
+                    . $resultado_clinica_selecionada["nome_fantasia"] .
+                  '</span><br>'
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+            ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+            ' . (!empty($resultado_clinica_selecionada["endereco"])
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
+            ' . (!empty($resultado_clinica_selecionada["numero"])
+                ? ', ' . $resultado_clinica_selecionada["numero"]
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+            ' . (!empty($resultado_clinica_selecionada["bairro"])
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"] . '<br>'
                 : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . $recebe_cidade_uf
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+            ' . (!empty($resultado_clinica_selecionada["cep"])
+                ? ', CEP: ' . $resultado_clinica_selecionada["cep"] . '<br>'
                 : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+            ' . (!empty($resultado_clinica_selecionada["telefone"])
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
                 : '') . '
-        </td>';
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
-
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
         </td>
+
+        <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+            <img src="' . $logo . '" alt="Logo" style="max-height:80px; display:block; margin:0 auto;">
+        </td>
+
     </tr>
+
 </table>
+
 </div>
 
 
@@ -47325,71 +50913,78 @@ echo '
     position: relative;
     top: -1px;                    /* ajuste fino: sobe um pouco o checkbox */
 }
-        </style>
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
+
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
         <div class="page-break"></div>
 
         <div class="guia-container resumo-laudo">
-        <div class="bloco-cabecalho">
-            <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+            <div class="bloco-cabecalho">
+    <table>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            RESUMO DO LAUDO
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                RESUMO DO LAUDO
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+            </td>
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
+
 
             <table>
                 <tr>
@@ -48219,70 +51814,74 @@ echo '
         padding: 0;
     }
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
         <div class="guia-container teste-romberg">
-        <div class="bloco-cabecalho">
-            <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
+            <div class="bloco-cabecalho">
+    <table>
 
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            TESTE DE ROMBERG
-        </th>
-    </tr>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                TESTE DE ROMBERG
+            </th>
+        </tr>
 
-    <tr>
-        <td class="dados-hospital">
+        <tr>
+            <td class="dados-hospital">
 
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
 
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-        </td>';
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
 
-$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+            </td>
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
 
             <table>
                 <tr>
@@ -49461,7 +53060,7 @@ function exibe_info_bancaria($tipos, $dados) {
         $imageString = base64_encode($imageData);
 
         echo '
-        <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+        <div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:180px;">
             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
             <div>
                 <p style="margin:0; font-weight:bold;">Chave:</p>
@@ -49472,7 +53071,7 @@ function exibe_info_bancaria($tipos, $dados) {
 
     // --- PIX
     if ($temPix && !empty($pixValor)) {
-        echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
               </div>';
@@ -49484,7 +53083,7 @@ function exibe_info_bancaria($tipos, $dados) {
             ? explode('|', $agenciaConta)
             : (is_array($agenciaConta) ? $agenciaConta : []);
 
-        echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                 <div>';
         foreach ($linhas as $linha) {
@@ -49954,73 +53553,78 @@ $dadosBancarios = [
 
             
 }
-
-        </style>
-
-        <div class="guia-container faturamento">
-        <div class="bloco-cabecalho">
-        <table>
-    <colgroup>
-        <col>
-        <col style="width:150px;">
-    </colgroup>
-
-    <!-- Linha do título -->
-    <tr>
-        <th colspan="2" class="titulo-guia">
-            Faturamento / Orçamento
-        </th>
-    </tr>
-
-    <!-- Linha dados hospital + logo -->
-    <tr>
-        <td class="dados-hospital">
-
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
-                ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
-                    . $resultado_clinica_selecionada['nome_fantasia'] . 
-                  '</span><br>' 
-                : '') . '
-
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) 
-                ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
-                : '') . '
-
-            ' . (!empty($resultado_clinica_selecionada['endereco']) 
-                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
-                : '') . '
-
-            ' . (!empty($resultado_clinica_selecionada['numero']) 
-                ? ', ' . $resultado_clinica_selecionada['numero'] 
-                : '') . '
-
-            ' . (!empty($resultado_clinica_selecionada['bairro']) 
-                ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
-                : '') . '
-
-            ' . (!empty($recebe_cidade_uf) 
-                ? 'CIDADE: ' . $recebe_cidade_uf 
-                : '') . '
-
-            ' . (!empty($resultado_clinica_selecionada['cep']) 
-                ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
-                : '') . '
-
-            ' . (!empty($resultado_clinica_selecionada['telefone']) 
-                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
-                : '') . '
-
-        </td>';
-
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
-echo '
-        <td class="logo">
-            <img src="'.$logo.'" alt="Logo">
-        </td>
-    </tr>
-</table>
+echo'
+
+
+        <div class="guia-container faturamento">
+
+        <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <!-- Linha do título -->
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                Faturamento / Orçamento
+            </th>
+        </tr>
+
+        <!-- Linha dados hospital + logo -->
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
 </div>
+
+
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
@@ -50455,28 +54059,119 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
             </div>
 
         <!-- 🔹 Botões -->
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeFaturamento" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailFaturamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappFaturamento()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsFaturamento" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailFaturamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeFaturamento").value;
+
+    let tipo = "faturamento";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappFaturamento() {
+            debugger;
+    let whatsapp = document.getElementById("whatsFaturamento").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "faturamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
             echo '</div>';
@@ -50847,8 +54542,9 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
 
                 // var_dump($resultado_dados_kit);
             } else {
-
-
+                if (isset($_SESSION['codigo_kit']) && $_SESSION['codigo_kit'] !== '') {
+                    $valor_id_kit = $_SESSION["codigo_kit"];
+                }
 
                 if (isset($_SESSION['clinica_selecionado']) && $_SESSION['clinica_selecionado'] !== '') {
                     salvarLog("id da clinica selecionada:" . $_SESSION["clinica_selecionado"]);
@@ -51767,8 +55463,8 @@ echo '
             .dados-hospital { padding-top: 1px !important;
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
-    font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
+    font-size: 14px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -51846,22 +55542,28 @@ echo '
             padding: 4px;
         }
 
-        .assinatura {
-                width: 150px;
-    height: 60px;
-    border-bottom: 1px solid #000;
-    display: block;
-    margin: 0px auto -15px auto;
-        }
+        img.assinatura {
+    border-bottom: none !important;
+    display: block !important;
+    margin: 0 auto -3px auto !important;
+    height: 61px !important;
+}
 
         .legenda {
             text-align: center;
             font-size: 14px;
         }
+
+            /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
 </style>
         <div class="page-break"></div>
 
         <div class="guia-container">
+        <div class="bloco-cabecalho">
             <table>
                 <tr>
                     <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO</th>
@@ -51876,13 +55578,17 @@ echo '
                         ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
                         ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
                         ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
+                    </td>';
+        
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+        <td class="logo">
+            <img src="'.$logo.'" alt="Logo">
+        </td>
                 </tr>
             </table>
-
+            </div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -51999,56 +55705,120 @@ echo '
         </div>';
 
             echo '
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarGuiaEncaminhamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
+
 </div>
 
         ';
 
+
         echo '
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
         <script>
-function enviarClinica() {
-    let email = document.getElementById("emailClinica").value.trim();
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarGuiaEncaminhamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidade").value;
 
-    if(email === "") {
-        alert("Informe um e-mail antes de enviar!");
-        return;
-    }
+    let tipo = "guia_encaminhamento";
+    
 
-    alert("Enviar para clínica:", email);
-    // sua lógica futura aqui...
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
 }
 
 function enviarEmpresa() {
-    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
 
-    if(whatsapp === "") {
-        alert("Informe um WhatsApp antes de enviar!");
+    let whatsapp = document.getElementById("whatsEmpresa").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
         return;
     }
+    whatsapp = whatsapp.replace(/\D/g, "");
 
-    alert("Enviar para empresa:", whatsapp);
-    // sua lógica futura aqui...
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".guia-container").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "guia_encaminhamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
 }
 </script>
 
@@ -52415,7 +56185,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -52512,32 +56282,74 @@ echo '
     margin: 0px auto -10px !important;
         }
 
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
 
         <div class="page-break"></div>
 
         <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">ASO - Atestado de Saúde Ocupacional</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                ASO - Atestado de Saúde Ocupacional
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["numero"])
+                    ? ', ' . $resultado_clinica_selecionada["numero"]
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["bairro"])
+                    ? ' - BAIRRO: ' . $resultado_clinica_selecionada["bairro"]
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["cep"])
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"])
+                    ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:90px;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -52695,29 +56507,120 @@ echo '
 
             echo '
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeASO" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailASO()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappASO()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsASO" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
             </div>
-            </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailASO() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "aso";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappASO() {
+            debugger;
+    let whatsapp = document.getElementById("whatsASO").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".aso").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "aso";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -53286,7 +57189,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -53374,30 +57277,75 @@ echo '
             text-align: center;
             font-size: 14px;
         }
-</style>
+
+
+        /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
         <div class="page-break"></div>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PRONTUÁRIO MÉDICO - 01</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container prontuario-medico">
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                PRONTUÁRIO MÉDICO - 01
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["numero"])
+                    ? ', ' . $resultado_clinica_selecionada["numero"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["bairro"])
+                    ? ' - BAIRRO: ' . $resultado_clinica_selecionada["bairro"]
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cep"])
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"])
+                    ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:90px;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+
 
             <table>
                 <tr>
@@ -53580,27 +57528,61 @@ echo '
             </table>
             </div>
 
-            <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" style="page-break-before: always;" class="titulo-guia">PRONTUÁRIO MÉDICO - 02</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+            <div class="guia-container prontuario-medico">
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <tr>
+            <th colspan="2" class="titulo-guia" style="page-break-before: always;">
+                PRONTUÁRIO MÉDICO - 02
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                    ? '<span class="hospital-nome">' . $resultado_clinica_selecionada["nome_fantasia"] . '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["endereco"])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["numero"])
+                    ? ', ' . $resultado_clinica_selecionada["numero"]
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["bairro"])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"]
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf
+                    : '') .
+
+                (!empty($resultado_clinica_selecionada["cep"])
+                    ? ', CEP: ' . $resultado_clinica_selecionada["cep"]
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada["telefone"])
+                    ? '<br>TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:90px;">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -53765,30 +57747,135 @@ echo '
 
             </div>
 
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeProntuarioMedico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviaremailProntuarioMedico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappaProntuarioMedico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsProntuarioMedico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
     </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviaremailProntuarioMedico() {
+    debugger;
+
+    let destino = document.getElementById("tipoContabilidadeProntuarioMedico").value;
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    let tipo = "prontuario_medico";
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo: tipo,
+            id_kit: valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappaProntuarioMedico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsProntuarioMedico").value.trim();
+    
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    let formularios = document.querySelectorAll(".prontuario-medico");
+    let guiaHTML = "";
+
+    formularios.forEach((f, index) => {
+        guiaHTML += f.outerHTML;
+
+        // quebra apenas ENTRE formulários
+        if (index < formularios.length - 1) {
+            guiaHTML += "<div style=\'page-break-after: always;\'></div>";
+        }
+    });
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "prontuario_medico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -54179,7 +58266,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size: 12px !important; }
 
             .logo { text-align:center; }
             .logo img {
@@ -54273,31 +58360,74 @@ echo '
         page-break-before: always;
     }
 }
-</style>
+
+    /* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
 <div class="page-break"></div>
-<div class="guia-container">
+<div class="guia-container teste-acuidade">
 
     <!-- Cabeçalho Clínica -->
-    <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+<div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+        <tr>
+            <th colspan="2" class="titulo-guia">TESTE DE ACUIDADE VISUAL</th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="font-weight:bold;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo"
+                     style="max-height:70px !important; display:block; margin:0 auto;">
+            </td>
+        </tr>
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -54489,28 +58619,119 @@ echo '
         </div>
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteAcuidade" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteAcuidadade()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteAcuidade()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteAcuidade" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteAcuidadade() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteAcuidade").value;
+
+    let tipo = "teste_acuidade";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteAcuidade() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteAcuidade").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-acuidade").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_acuidade";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 //             echo '
 //         <style>
@@ -55009,7 +59230,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size: 12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -55100,30 +59321,78 @@ echo '
     page-break-inside: avoid;
   }
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">PSICOSSOCIAL</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        echo '
+
+        <div class="guia-container psicossocial">
+            <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                PSICOSSOCIAL
+            </th>
+        </tr>
+
+        <tr>
+
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="font-weight:bold;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? '<br>CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo" 
+                     style="max-height:70px !important; display:block; margin:0 auto;">
+            </td>
+
+        </tr>
+
+    </table>
+</div>
+
+
 
             <table>
                 <tr>
@@ -55424,30 +59693,121 @@ echo '
 
             </div>
             
-            <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+            <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadePsicossocial" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailPsicossocial()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappPsicossocial()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsPsicossocial" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
 
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailPsicossocial() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadePsicossocial").value;
+
+    let tipo = "psicossocial";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappPsicossocial() {
+            debugger;
+    let whatsapp = document.getElementById("whatsPsicossocial").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".psicossocial").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "psicossocial";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -55741,7 +60101,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px;font-size:12px !important; }
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
 
             .logo { text-align:center; }
             .logo img {
@@ -55846,33 +60206,109 @@ td[style*="height:80px"] {
         page-break-inside: auto !important;
     }
 }
+/* 🔹 Remove qualquer espaço extra nas informações da clínica */
+.dados-hospital {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
+}
 
-        </style>
+/* 🔹 Remove altura extra da célula onde fica a clínica */
+td.dados-hospital,
+td[style*="dados-hospital"] {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size:14px !important;
+}
 
-        <div class="guia-container">
+/* 🔹 Ajusta definitivamente qualquer célula da linha */
+.bloco-cabecalho td {
+    padding: 5px 3px !important;
+    line-height: 1.05 !important;
+}
+
+/* 🔹 Diminui ainda mais a altura da logo sem distorcer */
+.logo img {
+    max-height: 50px !important; /* antes 35px */
+    display: block;
+    margin: 0 auto !important;
+    padding: 0 !important;
+}
+
+/* 🔹 Impede que a célula da logo crie altura por padding */
+.logo {
+    vertical-align: middle !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
+
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+        echo '
+
+        <div class="guia-container exame-toxicologico">
         <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
 
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                GUIA DE ENCAMINHAMENTO PARA REALIZAÇÃO DE EXAME TOXICOLÓGICO
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia'])
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span><br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj'])
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco'])
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero'])
+                    ? ', ' . $resultado_clinica_selecionada['numero']
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro'])
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf)
+                    ? 'CIDADE: ' . $recebe_cidade_uf
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep'])
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>'
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone'])
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone']
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+                <img src="' . $logo . '" alt="Logo" style="max-height:70px; display:block; margin:0 auto;">
+            </td>
+        </tr>
+
+    </table>
+</div>
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
@@ -55942,54 +60378,147 @@ td[style*="height:80px"] {
                 </tr>
             </table>
 
-            <table>
-                <tr>
-                    <td colspan="2" class="section-title">Assinatura</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:12px; padding:6px;">
-                        ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-                    </td>
-                </tr>
-                
+            <table style="width:100%; border-collapse:collapse; font-size:11px; border:1px solid #000;">
+    <tr>
+        <td class="section-title" style="font-weight:bold; background:#eaeaea; text-align:left; padding:4px;">
+            Assinatura
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:12px; padding:6px;">
+            ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
+        </td>
+    </tr>
+    <tr>
+        <td style="height:100px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
+            _______________________________<br>
+            Assinatura do Funcionário <br>
+            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
+        </td>
+    </tr>
+</table>
 
-                <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-                                    <br>
-                                    
-                                    <br>
-                                    _______________________________<br>
-                                    Assinatura do Funcionário <br> ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-                </td>
-            </table>
+
 
 
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeExameToxicologico" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailExameToxicologico()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappExameToxicologico()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsExameToxicologico" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailExameToxicologico() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeExameToxicologico").value;
+
+    let tipo = "exame_toxicologico";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappExameToxicologico() {
+            debugger;
+    let whatsapp = document.getElementById("whatsExameToxicologico").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".exame-toxicologico").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "exame_toxicologico";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 //             echo '
@@ -56544,15 +61073,19 @@ th, td {
   margin: 0 auto -6px auto;
 }
 
+/* quando a assinatura é uma imagem, não desenhar a linha na própria imagem */
+img.assinatura {
+  border-bottom: none !important;
+  display: block !important;
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 61px !important;
+}
+
 table + table {
   margin-top: 1px;
 }
 
-/* Imagens reduzidas */
-img {
-  max-width: 85%;
-  height: auto;
-}
+
 
 /* Evitar quebra */
 .no-break,
@@ -56561,23 +61094,207 @@ img {
     break-inside: avoid !important;
 }
 
-/* Impressão */
+/* ======================= */
+/* AJUSTE SÓ NA AUDIOMETRIA */
+/* ======================= */
 @media print {
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  .page-break {
-        page-break-before: always;
+
+  /* TODAS AS TABELAS DA AUDIOMETRIA */
+  .audiometria table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
   }
-  .actions {
-    display: none !important;
+
+  .audiometria th,
+  .audiometria td {
+    padding: 1px 2px !important;
+    line-height: 1.1 !important;
   }
-  table, tr, td, th {
+
+  /* TÍTULOS */
+  .audiometria .titulo-guia,
+  .audiometria .section-title {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+  }
+
+  /* DADOS */
+  .audiometria .dados-hospital,
+  .audiometria .hospital-nome,
+  .audiometria .empresa-info {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* IDENTIFICAÇÃO DO FUNCIONÁRIO */
+  .audiometria td[style*="font-size:12px"],
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* MEATOSCOPIA */
+  .audiometria .tabela-meatoscopia td,
+  .audiometria .tabela-meatoscopia label {
+    font-size: 8px !important;
+    padding: 2px !important;
+  }
+
+  /* LOGOAUDIOMETRIA */
+  .audiometria .logo-audio td {
+    font-size: 7.8px !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .logo-audio {
+    height: 105px !important;
+  }
+
+  /* AUDIOGRAMAS */
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+  }
+
+  /* AUDIÔMETRO */
+  .audiometria .audiometro th,
+  .audiometria .audiometro td {
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+
+  /* ======================== */
+  /* PARECER FONOAUDIOLÓGICO */
+  /* ======================== */
+  .audiometria .parecer-fono,
+  .audiometria .parecer-fono * {
+    font-size: 7.7px !important;
+    line-height: 1.1 !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .parecer-fono table {
+    width: 100% !important;
+  }
+
+  .audiometria .parecer-fono.titulo {
+    font-size: 8.2px !important;
+  }
+
+  .audiometria .obs-linha {
+    height: 25px !important;
+  }
+
+  /* ======================== */
+  /* ASSINATURAS */
+  /* ======================== */
+  .audiometria .assinaturas-container {
+    margin-top: 3px !important;
+  }
+
+  .audiometria .linha-assinatura {
+    margin: 5px auto 2px !important;
+  }
+
+  .audiometria .assinaturas,
+  .audiometria .assinaturas * {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .audiometria .titulo_assinatura {
+    font-size: 8px !important;
+    margin: 2px 0 !important;
+  }
+
+  .audiometria .nome_funcionario {
+    font-size: 7.8px !important;
+  }
+
+  
+
+  /* EVITA QUEBRA DE TABELA */
+  .audiometria table,
+  .audiometria tr,
+  .audiometria td,
+  .audiometria th {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  .actions {
+    display: none !important;
+  }
+
+  .audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  .audiometria table.parecer-fono-tabela tr,
+  .audiometria table.parecer-fono-tabela td,
+  .audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+  }
+
+  /* reforço: garantir 100% da largura do formulário para a tabela do parecer */
+  .guia-container.audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+      display: table !important;
+  }
+
+  /* células sem largura fixa e respeitando a largura total */
+  .guia-container.audiometria table.parecer-fono-tabela td,
+  .guia-container.audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      box-sizing: border-box !important;
+  }
+
+  /* força a tabela a pegar 100% */
+  .parecer-fono table,
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  /* força cada célula a NÃO ter largura fixa */
+  .parecer-fono table td,
+  .parecer-fono table th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+  }
+
+  .parecer-fono .assinatura {
+      margin-top: 6px !important;
+  }
+
+  /* linha propriamente dita */
+  .parecer-fono .assinatura .linha-assinatura {
+      margin-top: 8px !important;   /* aqui controla a distância da linha */
+      border-bottom: 1px solid #000 !important;
+      height: 40px !important;      /* altura da área da linha */
+  }
 }
+
 
  /* Bloco do Parecer Fonoaudiológico */
 .parecer-fono {
@@ -56591,7 +61308,6 @@ img {
     font-size: 8.5px !important;
     padding: 0px !important;
     line-height: 1.12 !important;
-    width: 65% !important;
 }
 
 /* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
@@ -56619,56 +61335,211 @@ img {
 }
 
 
+@media print {
 
-</style>
+    /* Força a tabela EXATA da audiometria a ocupar 100% */
+    table.parecer-fono-tabela {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+    }
 
+    /* Todas as células expandem normalmente */
+    table.parecer-fono-tabela td,
+    table.parecer-fono-tabela th {
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 2px !important;
+    }
+}
 
+/* ===========================
+   AJUSTE FINAL DO PARECER
+   =========================== */
 
-<div class="guia-container">
+@media print {
+
+  /* força a tabela a ocupar toda a largura */
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+  }
+
+  /* remove larguras internas que limitam expansão */
+  table.parecer-fono-tabela td,
+  table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+      line-height: 1.15 !important;
+  }
+
+  /* remove atributos width vindo do HTML */
+  table.parecer-fono-tabela [width],
+  table.parecer-fono-tabela td[width],
+  table.parecer-fono-tabela th[width] {
+      width: auto !important;
+  }
+
+  /* corrige assinatura descendo a linha */
+  .parecer-fono .assinatura {
+      margin-top: 8px !important;
+      padding-top: 4px !important;
+      height: auto !important;
+  }
+
+  .parecer-fono .assinatura .linha-assinatura {
+      height: 40px !important;
+      border-bottom: 1px solid #000 !important;
+      margin-top: 6px !important;
+  }
+}
+/* ============================================
+   FORÇA TODAS AS TABELAS DO PARECER A EXPANDIREM
+   ============================================ */
+.parecer-fono table,
+table.parecer-fono-tabela {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Células sem largura fixa */
+.parecer-fono table td,
+.parecer-fono table th {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    padding: 2px !important;
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
+
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo '
+
+<div class="guia-container audiometria">
 
 
 <!-- ===================== -->
 <!-- CABEÇALHO AUDIOMETRIA -->
 <!-- ===================== -->
 
-<table>
+<div class="bloco-cabecalho">
+
+<table style="width:100%; border-collapse:collapse;">
+
     <tr>
-        <th colspan="2" class="titulo-guia">AUDIOMETRIA</th>
+        <th colspan="2" class="titulo-guia">
+            AUDIOMETRIA
+        </th>
     </tr>
+
     <tr>
-        <td class="dados-hospital">
-            ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-            ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-            ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-            ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-            ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+
+        <td class="dados-hospital" style="vertical-align:top; padding-right:10px;">
+
+            ' . (!empty($resultado_clinica_selecionada["nome_fantasia"])
+                ? '<span class="hospital-nome" style="font-weight:bold; margin-bottom:-10px !important;">'
+                    . $resultado_clinica_selecionada["nome_fantasia"] .
+                  '</span><br>'
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada["cnpj"])
+                ? 'CNPJ: ' . $resultado_clinica_selecionada["cnpj"] . '<br>'
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada["endereco"])
+                ? 'ENDEREÇO: ' . $resultado_clinica_selecionada["endereco"]
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada["numero"])
+                ? ', ' . $resultado_clinica_selecionada["numero"]
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada["bairro"])
+                ? ' BAIRRO: ' . $resultado_clinica_selecionada["bairro"] . '<br>'
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . $recebe_cidade_uf
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada["cep"])
+                ? ', CEP: ' . $resultado_clinica_selecionada["cep"] . '<br>'
+                : '') . '
+
+            ' . (!empty($resultado_clinica_selecionada["telefone"])
+                ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada["telefone"]
+                : '') . '
+
         </td>
-        <td class="logo">
-            <img src="logo.jpg" alt="Logo">
+
+        <td class="logo" style="width:150px; text-align:center; vertical-align:middle;">
+            <img src="' . $logo . '" alt="Logo" style="max-height:80px; display:block; margin:0 auto;">
         </td>
+
     </tr>
+
 </table>
+
+</div>
+
 
             <table>
                 <tr>
                     <td colspan="2" class="section-title">IDENTIFICAÇÃO DA EMPRESA:</td>
                 </tr>
                 <tr>
-                    <td class="dados-hospital" colspan="2">
-                        ' . (!empty($resultado_empresa_selecionada['nome'])
-                ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+    <td class="dados-hospital" colspan="2">
+
+        ' . (!empty($resultado_empresa_selecionada['nome'])
+            ? '<span class="hospital-nome">' . htmlspecialchars($resultado_empresa_selecionada['nome']) . '</span>'
+            : '') . '
+
+        <div class="empresa-info">
+            ' . (!empty($resultado_empresa_selecionada['cnpj'])
+                ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) . ' '
                 : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['cnpj']) ? 'CNPJ: ' . htmlspecialchars($resultado_empresa_selecionada['cnpj']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['endereco']) ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['bairro']) ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) : '') . ',
-                        ' . (!empty($resultado_empresa_selecionada['cep']) ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) : '') . '
-                        ' . (!empty($resultado_empresa_selecionada['telefone']) ? ' TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.' : '') . '
-                    </td>
-                </tr>
+
+            ' . (!empty($resultado_empresa_selecionada['endereco'])
+                ? 'ENDEREÇO: ' . htmlspecialchars($resultado_empresa_selecionada['endereco']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['bairro'])
+                ? 'BAIRRO: ' . htmlspecialchars($resultado_empresa_selecionada['bairro']) . ' '
+                : '') . '
+
+            ' . (!empty($recebe_cidade_uf)
+                ? 'CIDADE: ' . htmlspecialchars($recebe_cidade_uf) . ', '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['cep'])
+                ? 'CEP: ' . htmlspecialchars($resultado_empresa_selecionada['cep']) . ' '
+                : '') . '
+
+            ' . (!empty($resultado_empresa_selecionada['telefone'])
+                ? 'TELEFONE PARA CONTATO: ' . htmlspecialchars($resultado_empresa_selecionada['telefone']) . '.'
+                : '') . '
+        </div>
+
+    </td>
+</tr>
+
             </table>
 
             <table>
@@ -56699,7 +61570,7 @@ img {
             </table>
 
             <!-- Tabela de Meatoscopia -->
-            <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
+            <table class="tabela-meatoscopia" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:12px; text-align:center; margin-bottom:10px;">
             <tr style="font-weight:bold; background-color:#f2f2f2;">
                 <td colspan="2" style="border:1px solid #000; padding:4px;">MEATOSCOPIA</td>
             </tr>
@@ -56727,8 +61598,12 @@ img {
                 <!-- Orelha Direita -->
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:red;">Orelha Direita (OD)</div>
-                    <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    <!-- Ajuste nas imagens dos audiogramas -->';
+                    $audiagrama_ouvido_esquerdo = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    
+                    <img src="'.$audiagrama_ouvido_esquerdo.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
+                
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -56748,7 +61623,10 @@ img {
                 <td style="width:49.5%; text-align:center; padding:4px; vertical-align:top;">
                     <div style="font-weight:bold; margin-bottom:4px; color:blue;">Orelha Esquerda (OE)</div>
                     <!-- Ajuste nas imagens dos audiogramas -->
-                    <img src="audiograma_final.png" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:-3px;">
+                    ';
+                    $audiagrama_ouvido_direito = "https://www.idailneto.com.br/promais/cadastros/documentos/audiograma_final.png";
+                    echo '
+                    <img src="'.$audiagrama_ouvido_direito.'" alt="Audiograma OD" style="width:80%; height:auto; max-width:350px; margin-top:0px;">
             
                     <table style="width:95%; margin:0 auto; border-collapse:collapse; font-size:12px;">
                         <tr>
@@ -56773,9 +61651,9 @@ img {
     </tr>
     <tr>
         <!-- Tabela 1: LIMIAR DE RECONHECIMENTO DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
-                <tr>
+        <td class="logo-col1" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio .logo-col1" style="width:100%; border-collapse:collapse; height:136px;">
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE RECONHECIMENTO DE FALA
                     </td>
@@ -56786,7 +61664,7 @@ img {
                         <span style="float:right; font-weight:bold;">dB</span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="linha-final">
                     <td colspan="2" style="border:1px solid #000; padding:6px;">
                         <strong>OE:</strong>
                         <span style="float:right; font-weight:bold;">dB</span>
@@ -56796,8 +61674,8 @@ img {
         </td>
 
         <!-- Tabela 2: ÍNDICE DE RECONHECIMENTO DE FALA -->
-        <td style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
+        <td class="logo-col2" style="width:34%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio tabela-centro blocos-audio" style="width:100%; border-collapse:collapse; border:1px solid #000; height:136px;">
                 <tr>
                     <td colspan="4" style="border:1px solid #000; padding:6px; font-weight:bold; text-align:center;">
                         ÍNDICE DE RECONHECIMENTO DE FALA
@@ -56819,7 +61697,7 @@ img {
                 <!-- OE -->
                 <tr>
                     <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>OE</strong></td>
-                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;"><strong>dB/NS</strong></td>
+                    <td rowspan="2" style="border:1px solid #000; padding:6px; text-align:center; vertical-align:middle;" class="ajuste"><strong>dB/NS</strong></td>
                     <td style="border:1px solid #000; padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</td>
                     <td style="border:1px solid #000; padding:6px;">Monossílabos</td>
                 </tr>
@@ -56831,8 +61709,8 @@ img {
         </td>
 
         <!-- Tabela 3: LIMIAR DE DETECTABILIDADE DE FALA -->
-        <td style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
-            <table style="width:100%; border-collapse:collapse; height:136px;">
+        <td class="logo-col3" style="width:33%; vertical-align:top; border:1px solid #000; padding:0;">
+            <table class="logo-audio lateral blocos-audio" style="width:100%; border-collapse:collapse; height:136px;">
                 <tr>
                     <td colspan="2" style="border:1px solid #000; padding:0px; font-weight:bold; text-align:center;">
                         LIMIAR DE DETECTABILIDADE DE FALA
@@ -56856,7 +61734,7 @@ img {
 </table>
 
 
-<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
+<table class="audiometro" style="width:100%; border-collapse:collapse; font-size:12px; margin-top:0px;">
     <tr>
         <th style="width:0%; border:1px solid #000; background:#f9f9f9; text-align:left; padding:5px;">Audiômetro:</th>
         <td style="width:45%; border:1px solid #000; padding:8px;">Marca: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -56868,18 +61746,18 @@ img {
 </table>
 
 
-<table class="no-break parecer-fono" style="width:100%; border-collapse:collapse; margin-top:5px;">
+<table class="no-break parecer-fono-tabela" style="width:100%; border-collapse:collapse; margin-top:5px;">
 
 
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
+        <td colspan="6" class="parecer-fono titulo" style="border:1px solid #000; padding:4px; font-weight:bold; text-align:center;">
             PARECER FONOAUDIOLÓGICO
         </td>
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• LIMIARES AUDITIVOS DENTRO DOS PADRÕES DE NORMALIDADE (500 a 4000Hz)</strong>  
             (&nbsp;&nbsp;&nbsp;  ) | OD |  
             (&nbsp;&nbsp;&nbsp;  ) | OE |
@@ -56887,7 +61765,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO TIPO DA PERDA AUDITIVA:</strong> (Silman e Silverman, 1997)<br>
             (&nbsp;&nbsp;&nbsp;  ) Condutiva | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Mista | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -56896,7 +61774,7 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px;">
+        <td colspan="6" class="parecer-fono" style="border:1px solid #000; padding:4px;">
             <strong>• DO GRAU DA PERDA AUDITIVA</strong> (Lloyd e Kaplan, 1978)<br>
             (&nbsp;&nbsp;&nbsp;  ) Normal | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
             (&nbsp;&nbsp;&nbsp;  ) Leve | OD | (&nbsp;&nbsp;&nbsp;  ) OE  
@@ -56908,75 +61786,182 @@ img {
     </tr>
 
     <tr>
-        <td colspan="6" style="border:1px solid #000; padding:4px; height:40px; vertical-align:top;">
-            <strong>Obs:</strong>
-        </td>
-    </tr>
+    <td colspan="6" class="obs-linha" style="border:1px solid #000; vertical-align:top;">
+        <strong>Obs:</strong> 
+    </td>
+</tr>
 
-    <tr>
+    <tr class="verificando">
         <td colspan="6" style="border:1px solid #000; padding:4px;">
             ' . htmlspecialchars($recebe_cidade_uf) . ' , DATA: ' . htmlspecialchars($dataAtual ?? "") . '
-        </td>
+      </td>
     </tr>
 
-    <tr>
-        <!-- Assinatura médico -->
-            <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
 
-        ' . (
-            !empty($html_assinatura_fono)
-                ? $html_assinatura_fono
-                : $html_assinatura_medico
-        ) . '<br>
+    
 
-        ____________________________<br>
-
-        <span>Assinatura</span><br>
-
-        <span>' .
-            (!empty($resultado_medico_fonoaudiologo['nome'])
-                ? 'Fonoaudiólogo Examinador'
-                : (!empty($resultado_medico_relacionado_clinica['nome'])
-                    ? 'Médico Examinador'
-                    : '')
-            ) .
-        '</span><br>
-
-        <span>' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? $resultado_medico_fonoaudiologo['nome']
-                    : ($resultado_medico_relacionado_clinica['nome'] ?? '')
-            ) .
-            ' — ' .
-            htmlspecialchars(
-                !empty($resultado_medico_fonoaudiologo['nome'])
-                    ? 'CRM: ' . ($resultado_medico_fonoaudiologo['crm'] ?? '')
-                    : (
-                        !empty($resultado_medico_relacionado_clinica['crm'])
-                            ? 'CRM: ' . $resultado_medico_relacionado_clinica['crm']
-                            : ''
-                    )
-            ) .
-        '</span>
-
+   <tr class="">
+    <td colspan="6" style="border:0; padding:0; line-height:0;">
+        
     </td>
-
-        <!-- Assinatura funcionário -->
-        <td style="height:80px; text-align:center; vertical-align:bottom; font-size:11px; border-top:1px solid #000;">
-            _______________________________<br>
-            Assinatura do Funcionário <br>
-            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? "") . ' — CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'] ?? "") . '
-        </td>
-    </tr>
+</tr>
 </table>
+
+<table class="assinaturas-separadas assinaturas-container">
+            <tr>
+                <td class="assinaturas informacoes_medico" style="text-align:center; vertical-align:bottom;">
+                    ' . (!empty($html_assinatura_fono) ? $html_assinatura_fono : (!empty($html_assinatura_medico) ? $html_assinatura_medico : '')) . '
+                    <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                    <div style="font-weight: bold; margin: 3px 0;">Assinatura</div>
+                    <div style="margin-bottom: 2px;">
+                        ' . (!empty($resultado_medico_fonoaudiologo['nome'])
+                            ? 'Fonoaudiólogo Examinador'
+                            : (!empty($resultado_medico_relacionado_clinica['nome'])
+                                ? 'Médico Examinador'
+                                : '')) . '
+                    </div>
+                    ' . htmlspecialchars(
+                        !empty($resultado_medico_fonoaudiologo['nome'])
+                            ? $resultado_medico_fonoaudiologo['nome']
+                            : ($resultado_medico_relacionado_clinica['nome'] ?? '')
+                    ) .
+                    (!empty($resultado_medico_fonoaudiologo['crm']) || !empty($resultado_medico_relacionado_clinica['crm'])
+                        ? ' — CRM: ' . (!empty($resultado_medico_fonoaudiologo['crm'])
+                            ? $resultado_medico_fonoaudiologo['crm']
+                            : $resultado_medico_relacionado_clinica['crm'])
+                        : '') . '
+                </td>
+                <td class="assinaturas informacoes_funcionario" style="text-align:center; vertical-align:bottom;">
+                    <div class="funcionario" style="display:inline-block; text-align:center; width:100%; margin:0 auto; padding:0;">
+                        <div class="linha-assinatura" style="border-top: 1px solid #000;
+    margin: 15px auto 3px;"></div>
+                        <div class="titulo_assinatura">Assinatura do Funcionário</div>
+                        <div class="nome_funcionario">
+                            ' . htmlspecialchars($resultado_pessoa_selecionada['nome'] ?? '') .
+                            (!empty($resultado_pessoa_selecionada['cpf'])
+                                ? 'CPF: ' . htmlspecialchars($resultado_pessoa_selecionada['cpf'])
+                                : '') . '
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
 
-<div class="actions" style="display:flex; gap:20px; justify-content:center;">
-    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+<div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
+
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeAudiometria" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
+
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailAudiometria()">Enviar por email</button>
+        
+    </div>
+
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappAudiometria()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsAudiometria" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
+
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
 </div>
+';
+
+echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailAudiometria() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeASO").value;
+
+    let tipo = "audiometria";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappAudiometria() {
+            debugger;
+    let whatsapp = document.getElementById("whatsAudiometria").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".audiometria").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "audiometria";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
 ';
 
 
@@ -57545,32 +62530,100 @@ echo '
         page-break-before: always;
     }
 }
+/* ===== Alinhamento dos títulos e checkboxes – Resumo do Laudo ===== */
+.resumo-laudo td {
+    vertical-align: middle;       /* título e checkbox no meio da célula */
+}
 
-        </style>
+/* texto + checkbox na mesma linha e alinhados */
+.resumo-laudo label {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+    line-height: 1;               /* reduz altura da linha */
+}
+
+/* corrige posição do checkbox em relação ao texto */
+.resumo-laudo input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+    transform: scale(0.9);        /* levemente menor para caber melhor */
+    position: relative;
+    top: -1px;                    /* ajuste fino: sobe um pouco o checkbox */
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
+
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
+
+echo'
 
         <div class="page-break"></div>
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">RESUMO DO LAUDO</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+        <div class="guia-container resumo-laudo">
+            <div class="bloco-cabecalho">
+    <table>
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                RESUMO DO LAUDO
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+
 
             <table>
                 <tr>
@@ -57653,7 +62706,7 @@ echo '
             </tr>
 
             <tr>
-                <td style="border: 1px solid #000; padding: 6px;"><strong>Periculosidade?</strong></td>
+                <td style="border: 1px solid #000; padding: 6px;" colspan="5"><strong>Periculosidade?</strong></td>
                 <td style="border: 1px solid #000; padding: 6px;">
                     <label><input type="checkbox" '.$checkedPeriSim.'> Sim</label>
                     <label><input type="checkbox" '.$checkedPeriNao.'> Não</label>
@@ -57741,30 +62794,121 @@ echo '
 
         </div>
         
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeResumoLaudo" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailResumoLaudo()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappResumoLaudo()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsResumoLaudo" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         </div>
             ';
+
+            echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailResumoLaudo() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeResumoLaudo").value;
+
+    let tipo = "resumo_laudo";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappResumoLaudo() {
+            debugger;
+    let whatsapp = document.getElementById("whatsResumoLaudo").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".resumo-laudo").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "resumo_laudo";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 //             echo '
 //         <style>
@@ -58187,7 +63331,7 @@ echo '
     padding-bottom: 1px !important;
     line-height: 1.05 !important;
     font-size: 14px !important; }
-            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; font-size:12px !important;}
+            .hospital-nome { font-weight:bold; text-transform:uppercase; text-decoration:underline; display:block; margin-bottom:3px; }
 
             .logo { text-align:center; }
             .logo img {
@@ -58308,30 +63452,74 @@ echo '
         padding: 0;
     }
 }
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
 
-        </style>
+        $logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
-        <div class="guia-container">
-            <table>
-                <tr>
-                    <th colspan="2" class="titulo-guia">TESTE DE ROMBERG</th>
-                </tr>
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+echo'
+
+        <div class="guia-container teste-romberg">
+            <div class="bloco-cabecalho">
+    <table>
+
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                TESTE DE ROMBERG
+            </th>
+        </tr>
+
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 
             <table>
                 <tr>
@@ -58523,31 +63711,122 @@ echo '
 </table>
 
         </div>
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeTesteRomberg" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailTesteRomberg()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappTesteRomberg()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsTesteRomberg" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>
         
         
         ';
+
+        echo '
+
+
+        <script>
+
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailTesteRomberg() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeTesteRomberg").value;
+
+    let tipo = "teste_romberg";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappTesteRomberg() {
+            debugger;
+    let whatsapp = document.getElementById("whatsTesteRomberg").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".teste-romberg").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "teste_romberg";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
 
 
 
@@ -59285,7 +64564,7 @@ function exibe_info_bancaria($tipos, $dados) {
         $imageString = base64_encode($imageData);
 
         echo '
-        <div style="display:flex; align-items:center; gap:8px; min-width:180px;">
+        <div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:180px;">
             <img src="data:image/png;base64,' . $imageString . '" style="width:80px;">
             <div>
                 <p style="margin:0; font-weight:bold;">Chave:</p>
@@ -59296,7 +64575,7 @@ function exibe_info_bancaria($tipos, $dados) {
 
     // --- PIX
     if ($temPix && !empty($pixValor)) {
-        echo '<div style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:center; gap:8px; min-width:200px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold;">Chave PIX:</p>
                 <p style="margin:0;">' . htmlspecialchars($pixValor) . '</p>
               </div>';
@@ -59308,7 +64587,7 @@ function exibe_info_bancaria($tipos, $dados) {
             ? explode('|', $agenciaConta)
             : (is_array($agenciaConta) ? $agenciaConta : []);
 
-        echo '<div style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
+        echo '<div class="dados-bancarios" style="display:flex; align-items:flex-start; gap:8px; min-width:250px; margin-top:35px;">
                 <p style="margin:0; font-weight:bold; white-space:nowrap;">Dados para Transferência:</p>
                 <div>';
         foreach ($linhas as $linha) {
@@ -59782,33 +65061,81 @@ $dadosBancarios = [
                 body { background:#fff; }
                 .actions { display: none !important; }
             }
-        </style>
 
-        <div class="guia-container">
+            
+}
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+        </style>';
+$logo = "https://www.idailneto.com.br/promais/cadastros/documentos/logo.jpg";
 
-        <table>
-                <!-- Linha do título -->
-                <tr>
-                    <th colspan="2" class="titulo-guia">Faturamento / Orçamento</th>
-                </tr>
-                <!-- Linha dados hospital + logo -->
-                <tr>
-                    <td class="dados-hospital">
-                        ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) ? '<span class="hospital-nome">' . $resultado_clinica_selecionada['nome_fantasia'] . '</span>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cnpj']) ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['endereco']) ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['numero']) ? ', ' . $resultado_clinica_selecionada['numero'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['bairro']) ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] : '') . '
-                        ' . (!empty($recebe_cidade_uf) ? '<br>CIDADE: ' . $recebe_cidade_uf : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['cep']) ? ', CEP: ' . $resultado_clinica_selecionada['cep'] : '') . '
-                        ' . (!empty($resultado_clinica_selecionada['telefone']) ? '. TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] : '') . '
+echo'
 
-                    </td>
-                    <td class="logo">
-                        <img src="logo.jpg" alt="Logo">
-                    </td>
-                </tr>
-            </table>
+
+        <div class="guia-container faturamento">
+
+        <div class="bloco-cabecalho">
+    <table style="width:100%; border-collapse:collapse;">
+
+        <!-- Linha do título -->
+        <tr>
+            <th colspan="2" class="titulo-guia">
+                Faturamento / Orçamento
+            </th>
+        </tr>
+
+        <!-- Linha dados hospital + logo -->
+        <tr>
+            <td class="dados-hospital">
+
+                ' . (!empty($resultado_clinica_selecionada['nome_fantasia']) 
+                    ? '<span class="hospital-nome" style="margin-bottom:-10px !important;">' 
+                        . $resultado_clinica_selecionada['nome_fantasia'] . 
+                      '</span><br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cnpj']) 
+                    ? 'CNPJ: ' . $resultado_clinica_selecionada['cnpj'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['endereco']) 
+                    ? 'ENDEREÇO: ' . $resultado_clinica_selecionada['endereco'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['numero']) 
+                    ? ', ' . $resultado_clinica_selecionada['numero'] 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['bairro']) 
+                    ? ' BAIRRO: ' . $resultado_clinica_selecionada['bairro'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($recebe_cidade_uf) 
+                    ? 'CIDADE: ' . $recebe_cidade_uf 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['cep']) 
+                    ? ', CEP: ' . $resultado_clinica_selecionada['cep'] . '<br>' 
+                    : '') . '
+
+                ' . (!empty($resultado_clinica_selecionada['telefone']) 
+                    ? 'TELEFONE PARA CONTATO: ' . $resultado_clinica_selecionada['telefone'] 
+                    : '') . '
+
+            </td>
+
+            <td class="logo" style="width:150px; text-align:center;">
+                <img src="' . $logo . '" alt="Logo">
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+
 
             <!-- 🔹 Seção IDENTIFICAÇÃO DA EMPRESA -->
             <table>
@@ -60243,33 +65570,120 @@ exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
             </div>
 
         <!-- 🔹 Botões -->
-        <div class="actions" style="display:flex; gap:20px; justify-content:center;">
+        <div class="actions" style="display:flex; gap:20px; justify-content:center; align-items:flex-start;">
 
-                <!-- BLOCO EMAIL -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-email" onclick="enviarClinica()">Enviar por email</button>
-                    <input type="text" id="emailClinica" placeholder="Informe o e-mail"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- SELECT DE CONTABILIDADE -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <label style="font-size:14px; font-weight:bold; margin-bottom:5px;">Selecionar destinos e-mail:</label>
+        <select id="tipoContabilidadeFaturamento" style="margin-top:19px;padding:8px; width:180px;">
+            <option value="clinica">Contabilidade Clínica</option>
+            <option value="empresa">Contabilidade Empresa</option>
+            <option value="todas">Todas</option>
+        </select>
+    </div>
 
-                <!-- BLOCO WHATSAPP -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-whatsapp" onclick="enviarEmpresa()">Enviar por WhatsApp</button>
-                    <input type="text" id="whatsEmpresa" placeholder="Informe o WhatsApp"
-                        style="margin-top:5px; padding:8px; width:180px;">
-                </div>
+    <!-- BLOCO EMAIL -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-email" onclick="enviarEmailFaturamento()">Enviar por email</button>
+        
+    </div>
 
-                <!-- IMPRIMIR -->
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
-                </div>
+    <!-- BLOCO WHATSAPP -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-whatsapp" onclick="enviarWhatsappFaturamento()">Enviar por WhatsApp</button>
+        <input type="text" id="whatsFaturamento" placeholder="Informe o WhatsApp"
+            style="margin-top:5px; padding:8px; width:180px;">
+    </div>
 
-            </div>';
+    <!-- IMPRIMIR -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+        <button class="btn btn-print" onclick="window.print()">Imprimir KIT Completo</button>
+    </div>
+
+</div>';
+
+echo '
 
 
-            echo '</div>';
+        <script>
 
+        var valor_id_kit = "' . $valor_id_kit . '";
+function enviarEmailFaturamento() {
+     debugger;
+    
+    let destino = document.getElementById("tipoContabilidadeFaturamento").value;
 
+    let tipo = "faturamento";
+    
+
+    // Coleta o HTML da guia
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    $.ajax({
+        url: "gerar_pdf_email.php",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({
+            html: guiaHTML,
+            destino: destino,
+            emails: "",
+            tipo:tipo,
+            id_kit:valor_id_kit
+        }),
+        success: function(res) {
+            alert(res.mensagem);
+        },
+        error: function(e) {
+            console.log(e.responseText);
+            alert("Erro ao enviar e-mail.");
+        }
+    });
+}
+
+        function enviarWhatsappFaturamento() {
+            debugger;
+    let whatsapp = document.getElementById("whatsFaturamento").value.trim();
+    if (!whatsapp) {
+        alert("Informe um WhatsApp");
+        return;
+    }
+    whatsapp = whatsapp.replace(/\D/g, "");
+
+    // HTML do formulário
+    let guiaHTML = document.querySelector(".faturamento").outerHTML;
+
+    // 🔥 DEFINE o tipo deste formulário
+    let tipoFormulario = "faturamento";
+
+    $.ajax({
+    url: "gerar_pdf.php",
+    type: "POST",
+    dataType: "text", // PHP retorna um link em texto simples
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify({
+        html: guiaHTML,
+        tipo: tipoFormulario
+    }),
+
+    success: function(linkPDF) {
+        console.log("PDF gerado:", linkPDF);
+
+        let msg = encodeURIComponent("Segue sua guia:\n" + linkPDF);
+        window.open("https://wa.me/" + whatsapp + "?text=" + msg, "_blank");
+    },
+
+    error: function(xhr, status, error) {
+        console.error("Erro ao gerar PDF:", error);
+        console.log(xhr.responseText);
+        alert("Erro ao gerar o PDF.");
+    }
+});
+
+}
+</script>
+';
+echo '</div>';
             }else if ($guia_encaminhamento && $aso && $prontuario_medico && $acuidade_visual && $psicosocial && $toxicologico && $audiometria
             && $resumo_laudo && $teste_romberg && $faturamento && $epi_epc) {
 
@@ -66333,11 +71747,7 @@ table + table {
   margin-top: 1px;
 }
 
-/* Imagens reduzidas */
-img {
-  max-width: 85%;
-  height: auto;
-}
+
 
 /* Evitar quebra */
 .no-break,
@@ -77825,11 +83235,7 @@ table + table {
   margin-top: 3px;
 }
 
-/* 🔹 Compacta imagens e gráficos */
-img {
-  max-width: 95%;
-  height: auto;
-}
+
 
 /* 🔹 Ajustes específicos para o bloco final (parecer) */
 table.no-break td {

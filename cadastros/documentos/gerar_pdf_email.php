@@ -332,6 +332,17 @@ table, tr, td, th, div, p, span {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
 }
+
+table {
+    table-layout: fixed !important;
+}
+
+td, th {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
 </style>
 ';
 

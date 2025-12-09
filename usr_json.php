@@ -42,7 +42,8 @@ try {
                e.cnpj as empresa_cnpj, 
                e.telefone as empresa_telefone, 
                e.email as empresa_email,
-               c.expira_em, 
+               c.expira_em,
+               c.id as id_chave_liberacao,
                p.nome as plano_nome, 
                p.duracao as plano_duracao
         FROM usuarios u
@@ -100,13 +101,18 @@ try {
         'user_name' => $usuario['nome'],
         'user_plan' => $usuario['plano_nome'],
         'user_expire' => $usuario['expira_em'],
-        'user_access_level' => $usuario['nivel_acesso']
+        'user_access_level' => $usuario['nivel_acesso'],
     ];
 
     session_start();
     // Iniciar sessão e armazenar dados
     foreach ($authData as $key => $value) {
         $_SESSION[$key] = $value;
+    }
+
+    if(!empty($usuario["plano_nome"]))
+    {
+        $_SESSION['id_chave_liberacao'] = $usuario['id_chave_liberacao'];
     }
 
     // Armazenar dados da empresa
