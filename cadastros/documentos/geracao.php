@@ -954,14 +954,47 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+
+                        // var_dump($grupos);
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -8765,14 +8798,54 @@ function enviarEmailFaturamento() {
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -9189,14 +9262,54 @@ function enviarEmailFaturamento() {
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -19965,14 +20078,54 @@ function enviarEmailFaturamento() {
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -20390,14 +20543,54 @@ function enviarEmailFaturamento() {
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -31214,14 +31407,54 @@ function enviarEmailFaturamento() {
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -31639,14 +31872,54 @@ function enviarEmailFaturamento() {
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -42866,14 +43139,54 @@ function enviarEmailFaturamento() {
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -43300,14 +43613,54 @@ function enviarEmailFaturamento() {
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -54470,14 +54823,54 @@ function enviarEmailFaturamento() {
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -54895,14 +55288,54 @@ function enviarEmailFaturamento() {
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -65984,14 +66417,54 @@ echo '</div>';
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -66408,14 +66881,54 @@ echo '</div>';
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -76298,14 +76811,54 @@ echo '
                 }
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -76655,14 +77208,54 @@ echo '
                         }
 
                         // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                        $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
                         $riscosTabela = '';
-                        $grupos = [
-                            "acidente"   => "Acidentes / Mecânicos",
-                            "ergonomico" => "Ergonômicos",
-                            "fisico"     => "Físicos",
-                            "quimico"    => "Químicos",
-                            "biologico"  => "Biológicos"
-                        ];
 
                         // Prepara array vazio para armazenar riscos por grupo
                         $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -77375,14 +77968,54 @@ echo '
 
 
                 // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                $comando_busca_grupos_riscos->execute();
+                $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                
+                // $grupos = [
+                //     "acidente"   => "Acidentes / Mecânicos",
+                //     "ergonomico" => "Ergonômicos",
+                //     "fisico"     => "Físicos",
+                //     "quimico"    => "Químicos",
+                //     "biologico"  => "Biológicos"
+                // ];
+
                 $riscosTabela = '';
-                $grupos = [
-                    "acidente"   => "Acidentes / Mecânicos",
-                    "ergonomico" => "Ergonômicos",
-                    "fisico"     => "Físicos",
-                    "quimico"    => "Químicos",
-                    "biologico"  => "Biológicos"
-                ];
 
                 // Prepara array vazio para armazenar riscos por grupo
                 $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -77731,14 +78364,54 @@ echo '
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente_mecanico"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -78670,14 +79343,54 @@ echo '
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                        $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                        $comando_busca_grupos_riscos->execute();
+                        $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -79829,14 +80542,54 @@ echo '
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -80818,14 +81571,54 @@ echo '
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -81959,14 +82752,54 @@ echo '
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -82948,14 +83781,54 @@ echo '
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -84079,14 +84952,54 @@ table.no-break strong {
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -85143,14 +86056,54 @@ table.no-break strong {
                     }
 
                     // ===================== AJUSTE APENAS NOS RISCOS =====================
+                    
+                    // $grupos = [
+                    //     "acidente"   => "Acidentes / Mecânicos",
+                    //     "ergonomico" => "Ergonômicos",
+                    //     "fisico"     => "Físicos",
+                    //     "quimico"    => "Químicos",
+                    //     "biologico"  => "Biológicos"
+                    // ];
+
+                    $instrucao_busca_grupos_riscos = "select grupo_risco from grupo_riscos";
+                    $comando_busca_grupos_riscos = $pdo->prepare($instrucao_busca_grupos_riscos);
+                    $comando_busca_grupos_riscos->execute();
+                    $resultado_busca_grupos_riscos = $comando_busca_grupos_riscos->fetchAll(PDO::FETCH_ASSOC);
+
+                        // var_dump($resultado_busca_grupos_riscos);
+
+                        
+                        // $grupos = [
+                        //     "acidente"   => "Acidentes / Mecânicos",
+                        //     "ergonomico" => "Ergonômicos",
+                        //     "fisico"     => "Físicos",
+                        //     "quimico"    => "Químicos",
+                        //     "biologico"  => "Biológicos"
+                        // ];
+
+                        function formatarNomeGrupo($nome) {
+                            switch ($nome) {
+                                case "acidente_mecanico": return "Acidentes / Mecânicos";
+                                case "ergonomico":        return "Ergonômicos";
+                                case "fisico":            return "Físicos";
+                                case "quimico":           return "Químicos";
+                                case "biologico":         return "Biológicos";
+                                case "outro":             return "Outros";
+                                default:                  return ucfirst($nome);
+                            }
+                        }
+
+                        $grupos = [];
+
+                        foreach ($resultado_busca_grupos_riscos as $linha) {
+                            $valor = strtolower($linha['grupo_risco']);
+
+                            if ($valor === 'selecione') continue;
+
+                            $grupos[$valor] = formatarNomeGrupo($valor);
+                        }
+
                     $riscosTabela = '';
-                    $grupos = [
-                        "acidente"   => "Acidentes / Mecânicos",
-                        "ergonomico" => "Ergonômicos",
-                        "fisico"     => "Físicos",
-                        "quimico"    => "Químicos",
-                        "biologico"  => "Biológicos"
-                    ];
 
                     // Prepara array vazio para armazenar riscos por grupo
                     $riscosPorGrupo = array_fill_keys(array_keys($grupos), []);
@@ -85806,3 +86759,4 @@ table.no-break strong {
     // ) {
     // }
 }
+?>
