@@ -5819,7 +5819,8 @@ echo'
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -16668,7 +16669,8 @@ echo '
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -28154,7 +28156,8 @@ echo '
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -39394,7 +39397,8 @@ echo '
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -51077,7 +51081,8 @@ echo'
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -62716,7 +62721,8 @@ echo'
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -72857,7 +72863,8 @@ echo '
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
                 <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
-                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
@@ -84598,7 +84605,9 @@ table.no-break strong {
 
             <tr>
                 <td colspan="6" style="border: 1px solid #000; padding: 6px;">
-                <strong>Observação:</strong> Na hipotese de o colabodador fazer jus, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculados sobre o salario bruto.
+                <strong>Observação:</strong> Na hipotese de fazer jus ao colaborador, simultaneamente ao adicional de insalubridade e ao adicional de periculosidade, devera ser mantido exclusivamente o adicional de periculosidade 30% devendo ser calculado sobre o salario bruto.<br>
+                <strong>Observação:</strong> Nao realizar contratação antes do recebimento do ASO Admissional/ Mudança de função.<br>
+                <strong>Observação:</strong> a Contratação só deve ser efetivada mediante recebimento do ASO (Atestado de Saúde Ocupacional), contendo a data de realização e as aptidões correspondentes, encaminhar a ficha de registro após a realização.
                 </td>
             </tr>
 
