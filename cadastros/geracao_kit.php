@@ -19411,6 +19411,13 @@ function renderizarCheckboxes() {
       }
       checkboxContainerExames.appendChild(checkbox);
     });
+
+    // Após recriar e marcar os checkboxes de exames, reaplica o destaque visual
+    try {
+      destacarExamesSelecionados();
+    } catch (e) {
+      console.error('Erro ao reaplicar destaque dos exames em renderizarCheckboxes:', e);
+    }
   }
 
   // 🔸 Escolhe os arrays corretos para atualizar listas visuais
