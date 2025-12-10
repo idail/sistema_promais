@@ -42591,7 +42591,7 @@ function enviarEmailFaturamento() {
         }else if ($guia_encaminhamento && $aso && $prontuario_medico && $acuidade_visual && $psicosocial && $toxicologico && $audiometria
             && $resumo_laudo && $teste_romberg && $faturamento && $exames_procedimentos) {
 
-$informacoes_clinica;
+            $informacoes_clinica;
 
             if (isset($_POST['valor_id_kit'])) {
                 $valor_id_kit = $_POST['valor_id_kit'];
@@ -50695,7 +50695,7 @@ function enviarEmailAudiometria() {
                     $id_kit = $valor_id_kit;
                 }
 
-		$instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
+		        $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $comando_busca_resumo_laudo = $pdo->prepare($instrucao_busca_resumo_laudo);
                 $comando_busca_resumo_laudo->bindValue(":recebe_id_kit",$id_kit);
                 $comando_busca_resumo_laudo->execute();
@@ -50703,7 +50703,9 @@ function enviarEmailAudiometria() {
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
+
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -50714,7 +50716,8 @@ function enviarEmailAudiometria() {
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                // $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
