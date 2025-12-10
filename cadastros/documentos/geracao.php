@@ -840,6 +840,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             salvarLog(ob_get_clean());
                         }
 
+                        $html_assinatura_medico = "";
                         if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
                             ob_start();
                             echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
@@ -20273,6 +20274,7 @@ function enviarEmailFaturamento() {
                             salvarLog(ob_get_clean());
                         }
 
+                        $html_assinatura_medico = "";
                         if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
                             ob_start();
                             echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
@@ -31518,6 +31520,8 @@ function enviarEmailFaturamento() {
                             var_dump($resultado_medico_coordenador_selecionado);
                             salvarLog(ob_get_clean());
                         }
+
+                        $html_assinatura_medico = "";
 
                         if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
                             ob_start();
@@ -43176,6 +43180,8 @@ $informacoes_clinica;
                             salvarLog(ob_get_clean());
                         }
 
+                        $html_assinatura_medico = "";
+
                         if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
                             ob_start();
                             echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
@@ -54766,6 +54772,8 @@ function enviarEmailFaturamento() {
                             salvarLog(ob_get_clean());
                         }
 
+                        $html_assinatura_medico = "";
+
                         if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
                             ob_start();
                             echo "ID médico emitente:" . $_SESSION["medico_clinica_selecionado"] . "<br>";
@@ -66273,6 +66281,8 @@ echo '</div>';
                             var_dump($resultado_medico_coordenador_selecionado);
                             salvarLog(ob_get_clean());
                         }
+
+                        $html_assinatura_medico = "";
 
                         if (isset($_SESSION["medico_clinica_selecionado"]) && $_SESSION["medico_clinica_selecionado"] !== "") {
                             ob_start();
