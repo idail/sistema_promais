@@ -3519,6 +3519,10 @@ async function popular_medico_relacionados_clinica_edicao() {
         <div class="ecp-modal-content" style="background: white; padding: 20px; border-radius: 10px; width: 100%; max-width: 420px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
           <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1.2rem;">Novo Risco</h3>
 
+          <div id="risk-quick-message" class="alert alert-success hidden" style="display:none; margin-bottom: 10px; padding: 8px 12px; border-radius: 6px; background-color: #d4edda; color: #155724; font-size: 0.9rem;">
+            <span id="risk-quick-message-text">Risco gravado com sucesso</span>
+          </div>
+
           <div style="margin-bottom: 10px;">
             <label for="risk-quick-grupo" style="display: block; margin-bottom: 4px; font-size: 0.9rem;">Grupo de Risco</label>
             <select id="risk-quick-grupo" name="risk-quick-grupo" class="form-control" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #dee2e6;">
@@ -8025,7 +8029,9 @@ debugger;
         });
       }
 
-      if (quickRiskBtnSalvar && quickRiskModal && selectedRisksContainer) {
+      if (quickRiskBtnSalvar && quickRiskModal && selectedRisksContainer && !quickRiskBtnSalvar._bound) {
+        quickRiskBtnSalvar._bound = true; // evita múltiplos binds do mesmo handler
+
         quickRiskBtnSalvar.addEventListener('click', function() {
           debugger;
 
@@ -8080,10 +8086,78 @@ debugger;
             grupoDados: risksData[grupo]
           });
 
+          // Envia também o risco para o banco de dados
+          const recebe_codigo_risco = codigo;
+          const recebe_descricao_risco = descricao;
+          const recebe_grupo_risco = grupo;
+
+          try {
+            $.ajax({
+              url: "cadastros/processa_risco.php",
+              type: "POST",
+              dataType: "json",
+              data: {
+                processo_risco: "inserir_risco",
+                valor_codigo_risco: recebe_codigo_risco,
+                valor_descricao_risco: recebe_descricao_risco,
+                valor_grupo_risco: recebe_grupo_risco
+              },
+              success: function(retorno_risco) {
+                debugger;
+                console.log('Retorno inserção risco rápido:', retorno_risco);
+
+                if (retorno_risco > 0) {
+                  console.log("Risco cadastrado com sucesso (modal rápida)");
+
+                  // Exibe mensagem de sucesso dentro da própria modal rápida de risco
+                  try {
+                    const $msgBox = $("#risk-quick-message");
+                    const $msgText = $("#risk-quick-message-text");
+
+                    if ($msgBox.length) {
+                      if ($msgText.length) {
+                        $msgText.text("Risco gravado com sucesso");
+                      }
+
+                      // Remove classes de estado e exibe
+                      $msgBox
+                        .removeClass("hidden opacity-0")
+                        .addClass("opacity-100")
+                        .show();
+
+                      setTimeout(() => {
+                        $msgBox.addClass("opacity-0");
+                      }, 4000);
+
+                      setTimeout(() => {
+                        $msgBox
+                          .hide()
+                          .addClass("hidden")
+                          .removeClass("opacity-0 opacity-100");
+                      }, 4500);
+                    }
+                  } catch (e) { console.warn('Falha ao exibir mensagem de gravação de risco rápido na modal:', e); }
+
+                  // Recarrega os grupos de risco a partir do backend
+                  try {
+                    if (typeof buscar_riscos === 'function') {
+                      buscar_riscos();
+                    }
+                  } catch (e) { console.warn('Falha ao recarregar grupos de risco após inserção rápida:', e); }
+                }
+              },
+              error: function(xhr, status, error) {
+                console.log("Falha ao inserir risco (modal rápida): " + error);
+              }
+            });
+          } catch (e) {
+            console.error('Erro ao enviar risco rápido para o backend:', e);
+          }
+
           // Não atualiza a listagem visual de riscos selecionados aqui;
           // apenas alimenta a estrutura de grupos de risco
 
-          quickRiskModal.style.display = 'none';
+          // quickRiskModal.style.display = 'none';
         });
       }
 
