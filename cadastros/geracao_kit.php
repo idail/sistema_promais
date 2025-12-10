@@ -17191,6 +17191,171 @@ console.log(total); // Exemplo: "180.10"
                   </div>
                 </div>
               </div>
+
+              <!-- Bloco: Exames e Procedimentos -->
+<div id="orcamento-exames-container"
+     style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+  <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+    Exames e Procedimentos
+  </h3>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+
+    <!-- Exames - Agência e Conta -->
+    <div>
+      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+        Selecionar Agência e Conta
+      </label>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1;">
+          <select id="agencia-conta-exames-select" class="form-control"
+                  style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <option value="">Selecione uma Agência/Conta</option>
+          </select>
+        </div>
+        <!-- Reutiliza o modal principal de agência/conta -->
+        <button type="button"
+                class="btn btn-primary"
+                style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                onclick="document.getElementById('btn-adicionar-agencia-conta')?.click();">
+          <i class="fas fa-plus"></i> Cadastrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Exames - PIX -->
+    <div>
+      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+        PIX
+      </label>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1;">
+          <select id="pix-exames-select" class="form-control"
+                  style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <option value="">Selecione uma chave PIX</option>
+          </select>
+        </div>
+        <!-- Reutiliza o modal principal de PIX -->
+        <button type="button"
+                class="btn btn-primary"
+                style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                onclick="document.getElementById('btn-adicionar-pix')?.click();">
+          <i class="fas fa-plus"></i> Cadastrar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bloco: Treinamentos -->
+<div id="orcamento-treinamentos-container"
+     style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+  <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+    Treinamentos
+  </h3>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+
+    <!-- Treinamentos - Agência e Conta -->
+    <div>
+      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+        Selecionar Agência e Conta
+      </label>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1;">
+          <select id="agencia-conta-treinamentos-select" class="form-control"
+                  style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <option value="">Selecione uma Agência/Conta</option>
+          </select>
+        </div>
+        <button type="button"
+                class="btn btn-primary"
+                style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                onclick="document.getElementById('btn-adicionar-agencia-conta')?.click();">
+          <i class="fas fa-plus"></i> Cadastrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Treinamentos - PIX -->
+    <div>
+      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+        PIX
+      </label>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1;">
+          <select id="pix-treinamentos-select" class="form-control"
+                  style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <option value="">Selecione uma chave PIX</option>
+          </select>
+        </div>
+        <button type="button"
+                class="btn btn-primary"
+                style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                onclick="document.getElementById('btn-adicionar-pix')?.click();">
+          <i class="fas fa-plus"></i> Cadastrar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bloco: EPI/EPC -->
+<div id="orcamento-epi-container"
+     style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+  <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+    EPI/EPC
+  </h3>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+
+    <!-- EPI/EPC - Agência e Conta -->
+    <div>
+      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+        Selecionar Agência e Conta
+      </label>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1;">
+          <select id="agencia-conta-epi-select" class="form-control"
+                  style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <option value="">Selecione uma Agência/Conta</option>
+          </select>
+        </div>
+        <button type="button"
+                class="btn btn-primary"
+                style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                onclick="document.getElementById('btn-adicionar-agencia-conta')?.click();">
+          <i class="fas fa-plus"></i> Cadastrar
+        </button>
+      </div>
+    </div>
+
+    <!-- EPI/EPC - PIX -->
+    <div>
+      <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+        PIX
+      </label>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1;">
+          <select id="pix-epi-select" class="form-control"
+                  style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <option value="">Selecione uma chave PIX</option>
+          </select>
+        </div>
+        <button type="button"
+                class="btn btn-primary"
+                style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                onclick="document.getElementById('btn-adicionar-pix')?.click();">
+          <i class="fas fa-plus"></i> Cadastrar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
               
               <!-- Seletor de Chave PIX -->
               <div id="pix-selector-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
@@ -20894,6 +21059,15 @@ function updateSelectedList() {
     // 🔹 Armazena todos os selecionados (modelos + tipos)
     window.todosSelecionados = [...window._modelosSelecionados, ...window._tiposOrcamentoSelecionados];
 
+        // 🔹 Atualiza apenas a exibição dos blocos por tipo de orçamento
+    try {
+      if (Array.isArray(window._tiposOrcamentoSelecionados)) {
+        atualizarExibicaoTiposOrcamento(window._tiposOrcamentoSelecionados);
+      }
+    } catch (e) {
+      console.warn('Falha ao atualizar exibicao dos tipos de orcamento:', e);
+    }
+
     // 🔹 Limpa exibição anterior
     selectedList.innerHTML = '';
 
@@ -21026,6 +21200,28 @@ function updateSelectedList() {
     console.error('❌ Erro em updateSelectedList:', err);
   } finally {
     window._smDocUpdating = false;
+  }
+}
+
+// Controle de exibição dos blocos de conta bancária por tipo de orçamento
+function atualizarExibicaoTiposOrcamento(tiposSelecionados) {
+  debugger;
+  try {
+    const tipos = Array.isArray(tiposSelecionados) ? tiposSelecionados : [];
+
+    const hasExames = tipos.includes('Exames e Procedimentos');
+    const hasTreinamentos = tipos.includes('Treinamentos');
+    const hasEpi = tipos.includes('EPI/EPC');
+
+    const secExames = document.getElementById('orcamento-exames-container');
+    const secTreinamentos = document.getElementById('orcamento-treinamentos-container');
+    const secEpi = document.getElementById('orcamento-epi-container');
+
+    if (secExames) secExames.style.display = hasExames ? 'block' : 'none';
+    if (secTreinamentos) secTreinamentos.style.display = hasTreinamentos ? 'block' : 'none';
+    if (secEpi) secEpi.style.display = hasEpi ? 'block' : 'none';
+  } catch (e) {
+    console.warn('Erro ao controlar exibicao dos blocos de tipos de orcamento:', e);
   }
 }
 
