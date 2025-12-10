@@ -3301,6 +3301,11 @@ async function popular_medico_relacionados_clinica_edicao() {
           <!-- Coluna 1: Grupos de Riscos -->
           <div class="riscos-column" style="grid-column: 1;">
             <div class="ecp-field">
+              <div style="text-align: right; margin-bottom: 8px;">
+                <button id="risk-btnAddRisco" class="btn" style="background-color: #22c55e; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-family: inherit; font-size: 0.85rem; font-weight: 500; transition: background-color 0.2s;">
+                  <i class="fas fa-plus"></i> Novo Risco
+                </button>
+              </div>
               <label class="ecp-label">Grupos de Riscos</label>
               <div id="group-select-container" style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; padding: 8px;">
                 
@@ -3505,6 +3510,34 @@ async function popular_medico_relacionados_clinica_edicao() {
           <div class="ecp-modal-buttons" style="display: flex; justify-content: flex-end; gap: 10px;">
             <button class="ecp-button ecp-button-secondary" id="cancel-custom-risk" style="padding: 8px 16px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 14px;">Cancelar</button>
             <button class="ecp-button" id="confirm-custom-risk" style="padding: 8px 20px; background: #4a90e2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Adicionar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para cadastro rápido de novo risco (botão "Novo Risco") -->
+      <div id="risk-quick-modal" class="ecp-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="ecp-modal-content" style="background: white; padding: 20px; border-radius: 10px; width: 100%; max-width: 420px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+          <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1.2rem;">Novo Risco</h3>
+
+          <div style="margin-bottom: 10px;">
+            <label for="risk-quick-grupo" style="display: block; margin-bottom: 4px; font-size: 0.9rem;">Grupo de Risco</label>
+            <select id="risk-quick-grupo" name="risk-quick-grupo" class="form-control" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #dee2e6;">
+              <option value="selecione">Selecione</option>
+              <option value="ergonomico">Riscos Ergonômicos</option>
+              <option value="acidente_mecanico">Riscos Acidentes - Mecânicos</option>
+              <option value="fisico">Riscos Físicos</option>
+              <option value="quimico">Riscos Químicos</option>
+              <option value="biologico">Riscos Biológicos</option>
+              <option value="outro">Outros</option>
+            </select>
+          </div>
+
+          <input type="text" id="risk-quick-codigo" placeholder="Código" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #dee2e6;">
+          <input type="text" id="risk-quick-descricao" placeholder="Descrição do risco" style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #dee2e6;">
+
+          <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button id="risk-quick-btnCancelar" class="btn" style="background-color: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Cancelar</button>
+            <button id="risk-quick-btnSalvar" class="btn" style="background-color: #22c55e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Salvar</button>
           </div>
         </div>
       </div>
@@ -7965,7 +7998,52 @@ debugger;
       const customRiskName = document.getElementById('custom-risk-name');
       const confirmCustomRiskBtn = document.getElementById('confirm-custom-risk');
       const cancelCustomRiskBtn = document.getElementById('cancel-custom-risk');
-      
+
+      // Elementos da modal de cadastro rápido de risco (botão "Novo Risco")
+      const quickRiskModal = document.getElementById('risk-quick-modal');
+      const quickRiskGrupo = document.getElementById('risk-quick-grupo');
+      const quickRiskCodigo = document.getElementById('risk-quick-codigo');
+      const quickRiskDescricao = document.getElementById('risk-quick-descricao');
+      const quickRiskBtnSalvar = document.getElementById('risk-quick-btnSalvar');
+      const quickRiskBtnCancelar = document.getElementById('risk-quick-btnCancelar');
+      const quickRiskBtnNovo = document.getElementById('risk-btnAddRisco');
+
+      // Abertura/fechamento da modal de cadastro rápido de risco
+      if (quickRiskBtnNovo && quickRiskModal) {
+        quickRiskBtnNovo.addEventListener('click', function() {
+          if (quickRiskGrupo) quickRiskGrupo.value = 'selecione';
+          if (quickRiskCodigo) quickRiskCodigo.value = '';
+          if (quickRiskDescricao) quickRiskDescricao.value = '';
+          // Usa display:flex para centralizar, igual à modal de Aptidão
+          quickRiskModal.style.display = 'flex';
+        });
+      }
+
+      if (quickRiskBtnCancelar && quickRiskModal) {
+        quickRiskBtnCancelar.addEventListener('click', function() {
+          quickRiskModal.style.display = 'none';
+        });
+      }
+
+      if (quickRiskBtnSalvar && quickRiskModal && selectedRisksContainer) {
+        quickRiskBtnSalvar.addEventListener('click', function() {
+          const grupo = quickRiskGrupo ? quickRiskGrupo.value : '';
+          const codigo = quickRiskCodigo ? quickRiskCodigo.value : '';
+          const descricao = quickRiskDescricao ? quickRiskDescricao.value : '';
+
+          // Apenas efeito visual por enquanto
+          const riskItem = document.createElement('div');
+          riskItem.classList.add('risk-item');
+          riskItem.innerHTML = `
+            <span class="risk-code">${codigo}</span>
+            <span class="risk-name">${descricao}</span>
+          `;
+          selectedRisksContainer.appendChild(riskItem);
+
+          quickRiskModal.style.display = 'none';
+        });
+      }
+
       console.log('Elementos do DOM:', { groupSelect, searchBox, searchResults, selectedRisksContainer, customRiskModal });
       
       // Rede de segurança: captura global para garantir clique no primeiro render (sem relistar)
