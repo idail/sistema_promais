@@ -14511,6 +14511,28 @@ modal.innerHTML = `
     function grava_insalubridade_laudo()
     {
       debugger;
+
+      let recebe_valor = recebe_valor_select_laudo_selecionado.toLowerCase();
+
+      let recebe_select_laudo = recebe_select_laudo_selecionado.toLowerCase();
+
+      //let recebe_valor;
+      let recebe_valor_normal_final;
+
+      console.log(recebe_valor);
+
+      console.log(recebe_select_laudo);
+
+      if(recebe_valor === "não" && recebe_select_laudo === "insalubridade" || recebe_select_laudo === "periculosidade 30%")
+      {
+        recebe_valor_normal_final = "0%";
+      }else
+      {
+        recebe_valor_normal_final = recebe_valor;
+      }
+
+      console.log(recebe_valor);
+
       if(window.recebe_acao && window.recebe_acao === "editar")
       {
         return new Promise((resolve, reject) => {
@@ -14521,7 +14543,7 @@ modal.innerHTML = `
             data: {
               processo_geracao_kit: "atualizar_kit",
               valor_laudo_selecionado:recebe_select_laudo_selecionado.toLowerCase(),
-              valor_selecionado:recebe_valor_select_laudo_selecionado.toLowerCase(),
+              valor_selecionado:recebe_valor_normal_final,
               valor_id_kit:window.recebe_id_kit
             },
             success: function(resposta) {
@@ -14568,7 +14590,7 @@ modal.innerHTML = `
             data: {
               processo_geracao_kit: "incluir_valores_kit",
               valor_laudo_selecionado:recebe_select_laudo_selecionado.toLowerCase(),
-              valor_selecionado:recebe_valor_select_laudo_selecionado.toLowerCase()
+              valor_selecionado:recebe_valor_normal_final
             },
             success: function(resposta) {
               debugger;
