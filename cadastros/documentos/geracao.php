@@ -1095,7 +1095,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -1106,8 +1107,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
-
+                // $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
 
@@ -16330,7 +16331,8 @@ function enviarEmailAudiometria() {
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -16341,8 +16343,8 @@ function enviarEmailAudiometria() {
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
-
+                //$checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
 
@@ -27802,7 +27804,8 @@ $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -27813,8 +27816,8 @@ $instrucao_busca_resumo_laudo = "select * from kits where id = :recebe_id_kit";
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
-
+                // $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
 
@@ -39050,7 +39053,9 @@ function enviarEmailAudiometria() {
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
+
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -39061,8 +39066,8 @@ function enviarEmailAudiometria() {
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
-
+                // $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
 
@@ -62349,7 +62354,9 @@ function enviarEmailAudiometria() {
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
+
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -62360,7 +62367,8 @@ function enviarEmailAudiometria() {
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                // $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
@@ -72561,7 +72569,8 @@ table + table {
 
                 $insalubridade = $resultado_busca_resumo_laudo["insalubridade"] ?? "";
                 $checkedSim = ($insalubridade === "sim") ? "checked" : "";
-                $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                // $checkedNao = ($insalubridade === "nao") ? "checked" : "";
+                $checkedNao = ($insalubridade === "0%") ? "checked" : "";
 
                 $porcentagem = $resultado_busca_resumo_laudo["porcentagem"] ?? "";
 
@@ -72572,7 +72581,8 @@ table + table {
                 $periculosidade = $resultado_busca_resumo_laudo["periculosidade"] ?? "";
 
                 $checkedPeriSim = ($periculosidade === "sim") ? "checked" : "";
-                $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                // $checkedPeriNao = ($periculosidade === "nao") ? "checked" : "";
+                $checkedPeriNao = ($periculosidade === "0%") ? "checked" : "";
 
 
                 $aposentado = $resultado_busca_resumo_laudo["aposentado_especial"] ?? "";
