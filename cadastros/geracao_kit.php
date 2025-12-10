@@ -19204,6 +19204,72 @@ if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0
       let recebe_valores_exames_selecionados = [];
 let bloqueioRenderizacaoSelecao = false;
 
+// Função para destacar os exames selecionados
+function destacarExamesSelecionados() {
+  debugger;
+    try {
+        // Define a fonte de dados dos exames selecionados, com fallback
+        let examesSelecionados = [];
+
+        if (Array.isArray(window.aptExamesSelecionados) && window.aptExamesSelecionados.length > 0) {
+            examesSelecionados = window.aptExamesSelecionados;
+        } else if (Array.isArray(exames_selecionados) && exames_selecionados.length > 0) {
+            examesSelecionados = exames_selecionados;
+        } else if (Array.isArray(aptExamesSelecionados) && aptExamesSelecionados.length > 0) {
+            examesSelecionados = aptExamesSelecionados;
+        }
+
+        // Remove a formatação de todos os labels dentro da lista de exames
+        document.querySelectorAll('#apt-listaExames label').forEach(label => {
+            label.style.color = '';
+            label.style.fontWeight = '';
+        });
+
+        // Se não houver exames selecionados, nada a fazer depois de limpar
+        if (!Array.isArray(examesSelecionados) || examesSelecionados.length === 0) {
+            return;
+        }
+
+        // Aplica a formatação apenas nos exames atualmente selecionados
+        examesSelecionados.forEach(exame => {
+            const codigo = String(exame.codigo);
+            // checkbox gerado como <input id="exame-0068" value="0068" ...>
+            const checkbox = document.querySelector(`#apt-listaExames input[type="checkbox"][value="${codigo}"]`);
+            if (!checkbox) return;
+
+            // label associado: <label for="exame-0068">...</label>
+            const label = document.querySelector(`label[for="${checkbox.id}"]`);
+            if (!label) return;
+
+            label.style.color = '#b30000';
+            label.style.fontWeight = '600';
+        });
+    } catch (e) {
+        console.error('Erro ao destacar exames selecionados:', e);
+    }
+}
+
+// Função para inicializar os eventos de destaque
+function inicializarDestaqueExames() {
+    // Destacar itens ao carregar a página
+    setTimeout(destacarExamesSelecionados, 500);
+    
+    // Destacar ao mudar de aba
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"], [data-toggle="tab"]');
+    if (tabs.length > 0) {
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function() {
+                setTimeout(destacarExamesSelecionados, 100);
+            });
+        });
+    }
+}
+
+// Adiciona o evento de carregamento da página
+document.addEventListener('DOMContentLoaded', function() {
+    inicializarDestaqueExames();
+});
+
 async function atualizarSelecionados(checkbox, tipo) {
   debugger;
 
@@ -19220,7 +19286,7 @@ async function atualizarSelecionados(checkbox, tipo) {
   const itemOriginal = dadosOriginais.find(item => String(item.codigo) === String(codigo));
   const item = { codigo: String(codigo), recebe_apenas_nome, valor };
 
-  // 🔹 Sempre preferir arrays locais; inicializa dos globais se existirem
+  // Sempre preferir arrays locais; inicializa dos globais se existirem
   const arraySelecionado =
     tipo === 'aptidao'
       ? (Array.isArray(aptAptidoesSelecionadas)
@@ -19266,7 +19332,11 @@ async function atualizarSelecionados(checkbox, tipo) {
 
   try {
     if (tipo === 'aptidao') precisaSalvarAptidoes = true;
-    else precisaSalvarExames = true;
+    else {
+        precisaSalvarExames = true;
+        // Destacar itens após atualizar
+        setTimeout(destacarExamesSelecionados, 100);
+    }
 
     await atualizarListaSelecionados(arraySelecionado, container, tipo, true);
   } finally {
