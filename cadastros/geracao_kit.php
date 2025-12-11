@@ -7073,6 +7073,19 @@ if (!window._delegacaoTipoConta) {
               const pixKeySelect = document.getElementById('pix-key-select');
               const recebe_tipo_orcamento = document.getElementById('tipo_orcamento_atual')?.value.trim() || '';
 
+              let recebe_pix_kit = `${tipoChave.toUpperCase()}: ${chavePix}`;
+              let dataKitPix = {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_tipo_orcamento: recebe_tipo_orcamento
+              };
+              if (recebe_tipo_orcamento === 'exames_procedimentos') {
+                dataKitPix.valor_pix_exames = recebe_pix_kit;
+              } else if (recebe_tipo_orcamento === 'treinamentos') {
+                dataKitPix.valor_pix_treinamentos = recebe_pix_kit;
+              } else if (recebe_tipo_orcamento === 'epi_epc') {
+                dataKitPix.valor_pix_epi_epc = recebe_pix_kit;
+              }
+
               // Validação
               if (!tipoChave || !chavePix) {
                 Swal.fire({
@@ -7157,11 +7170,7 @@ if (!window._delegacaoTipoConta) {
           type: "POST",
           dataType: "json",
           async: false,
-          data: {
-             processo_geracao_kit: "incluir_valores_kit",
-             valor_pix: recebe_pix_kit,
-             valor_tipo_orcamento:recebe_tipo_orcamento,
-          },
+          data: dataKitPix,
           success: function(retorno_exame_geracao_kit) {
             debugger;
             try {
@@ -7685,6 +7694,20 @@ debugger;
                 const sel = document.getElementById('agencia-conta-select');
                 const recebe_tipo_orcamento = document.getElementById('tipo_orcamento_atual')?.value.trim() || '';
 
+                let recebe_agencia_conta = `Ag ${agencia} • C/C ${conta}`;
+
+                let dataKit = {
+                  processo_geracao_kit: "incluir_valores_kit",
+                  valor_tipo_orcamento: recebe_tipo_orcamento
+                };
+                if (recebe_tipo_orcamento === 'exames_procedimentos') {
+                  dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
+                } else if (recebe_tipo_orcamento === 'treinamentos') {
+                  dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
+                } else if (recebe_tipo_orcamento === 'epi_epc') {
+                  dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
+                }
+
                 if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
                 if (sel) {
                   const value = `${agencia}|${conta}`;
@@ -7750,11 +7773,7 @@ debugger;
                         type: "POST",
                         dataType: "json",
                         async: false,
-                        data: {
-                          processo_geracao_kit: "incluir_valores_kit",
-                          valor_agencia_conta: recebe_agencia_conta,
-                          valor_tipo_orcamento:recebe_tipo_orcamento
-                    },
+                        data: dataKit,
                     success: function(retorno_exame_geracao_kit) {
                       debugger;
                       try {

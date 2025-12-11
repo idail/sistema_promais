@@ -653,8 +653,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         valor_total = :recebe_total,
         status = :recebe_status_kit
     WHERE id = :recebe_kit_id";
-
+        // var_dump($instrucao_atualizar_kit);
         $comando_atualizar_kit = $pdo->prepare($instrucao_atualizar_kit);
+        // $comando_atualizar_kit->debugDumpParams();
 
 
         // 🔹 Ajusta o SQL para campos opcionais
@@ -718,17 +719,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $bind_informacoes_dados_bancarios_qrcode = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_qrcode", "informacoes_dados_bancarios_qrcode", ":recebe_informacoes_dados_bancarios_qrcode", "informacoes_dados_bancarios_qrcode");
 
-        $bind_dado_bancario_agencia_conta_exames_procedimentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "informacoes_dados_bancarios_agenciaconta_exames_procedimentos", ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado", "dado_bancario_agencia_conta_exames_procedimentos");
+        $bind_dado_bancario_agencia_conta_exames_procedimentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta_exames", "informacoes_dados_bancarios_agenciaconta_exames_procedimentos", ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado", "dado_bancario_agencia_conta_exames_procedimentos");
 
-        $bind_dado_bancario_pix_exames_procedimentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "informacoes_dados_bancarios_pix_exames_procedimentos", ":recebe_dado_bancario_pix_exames_procedimentos_selecionado", "dado_bancario_pix_exames_procedimentos");
+        $bind_dado_bancario_pix_exames_procedimentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix_exames", "informacoes_dados_bancarios_pix_exames_procedimentos", ":recebe_dado_bancario_pix_exames_procedimentos_selecionado", "dado_bancario_pix_exames_procedimentos");
 
-        $bind_dado_bancario_agencia_conta_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "informacoes_dados_bancarios_agenciaconta_treinamentos", ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado", "dado_bancario_agencia_conta_treinamentos");
+        $bind_dado_bancario_agencia_conta_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta_treinamentos", "informacoes_dados_bancarios_agenciaconta_treinamentos", ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado", "dado_bancario_agencia_conta_treinamentos");
 
-        $bind_dado_bancario_pix_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "informacoes_dados_bancarios_pix_treinamentos", ":recebe_dado_bancario_pix_treinamentos_selecionado", "dado_bancario_pix_treinamentos");
+        $bind_dado_bancario_pix_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix_treinamentos", "informacoes_dados_bancarios_pix_treinamentos", ":recebe_dado_bancario_pix_treinamentos_selecionado", "dado_bancario_pix_treinamentos");
 
-        $bind_dado_bancario_agencia_conta_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "informacoes_dados_bancarios_agenciaconta_epi_epc", ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado", "dado_bancario_agencia_conta_epi_epc");
+        $bind_dado_bancario_agencia_conta_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta_epi_epc", "informacoes_dados_bancarios_agenciaconta_epi_epc", ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado", "dado_bancario_agencia_conta_epi_epc");
 
-        $bind_dado_bancario_pix_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "informacoes_dados_bancarios_pix_epi_epc", ":recebe_dado_bancario_pix_epi_epc_dado_selecionado", "dado_bancario_pix_epi_epc");
+        $bind_dado_bancario_pix_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix_epi_epc", "informacoes_dados_bancarios_pix_epi_epc", ":recebe_dado_bancario_pix_epi_epc_dado_selecionado", "dado_bancario_pix_epi_epc");
 
         $bind_informacoes_dados_bancarios_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_agencia_conta", "informacoes_dados_bancarios_agenciaconta", ":recebe_informacoes_dados_bancarios_agencia_conta", "informacoes_dados_bancarios_agenciaconta");
 
@@ -1003,7 +1004,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado",
-                $_POST["valor_agencia_conta"],
+                $_POST["valor_agencia_conta_exames"],
                 PDO::PARAM_STR
             );
         }
@@ -1035,7 +1036,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // $_SESSION["exame_selecionado"] = $valor_exame;
 
             // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
-            $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_exames_procedimentos_selecionado", $_POST["valor_pix"], PDO::PARAM_STR);
+            $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_exames_procedimentos_selecionado", $_POST["valor_pix_exames"], PDO::PARAM_STR);
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem e se for exames_procedimentos
@@ -1071,7 +1072,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado",
-                $_POST["valor_agencia_conta"],
+                $_POST["valor_agencia_conta_treinamentos"],
                 PDO::PARAM_STR
             );
         }
@@ -1096,7 +1097,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_pix_treinamentos_selecionado",
-                $_POST["valor_pix"],
+                $_POST["valor_pix_treinamentos"],
                 PDO::PARAM_STR
             );
         }
@@ -1121,7 +1122,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado",
-                $_POST["valor_agencia_conta"],
+                $_POST["valor_agencia_conta_epi_epc"],
                 PDO::PARAM_STR
             );
         }
@@ -1146,7 +1147,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_pix_epi_epc_dado_selecionado",
-                $_POST["valor_pix"],
+                $_POST["valor_pix_epi_epc"],
                 PDO::PARAM_STR
             );
         }
