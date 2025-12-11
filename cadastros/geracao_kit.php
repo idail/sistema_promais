@@ -4457,8 +4457,14 @@ function repopular_laudos() {
         window.tipo_orcamento = window.kit_tipo_exame.tipo_orcamento;
         window.assinatura_digital = window.kit_tipo_exame.assinatura_digital;
         window.tipo_dado_bancario = window.kit_tipo_exame.tipo_dado_bancario;
-        window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
-        window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        // window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
+        // window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos;
+        windiw.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos;
+        window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos;
+        window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos;
+        window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc;
+        window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc;
         window.modelos_documentos = window.kit_tipo_exame.modelos_selecionados;
         window.fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(window.kit_tipo_exame.medico_fonoaudiologo);
         window.informacoes_dados_bancarios_qrcode = window.kit_tipo_exame.informacoes_dados_bancarios_qrcode;
