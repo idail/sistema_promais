@@ -6584,7 +6584,7 @@ setTimeout(() => {
         .replace(/\s+/g, '')          // Remove espaços extras
         .trim();
 
-    // const emEdicao = window.recebe_acao === 'editar';
+    const emEdicao = window.recebe_acao === 'editar';
 
     // // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
     // if (emEdicao && window.kit_tipo_exame) {
@@ -6947,8 +6947,9 @@ function tratarSelecaoTipoBancario(input) {
   // =======================================================
   if (tipo === 'pix') {
     if (estaMarcado) {
-      atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
-      window.dadosBancariosEstado.pixSelecionado = true;
+    window.dadosBancariosEstado.pixSelecionado = true;
+      // atualizarEstadoBancario('pix', window.dadosBancariosEstado.chavePix, window.dadosBancariosEstado.textoPix);
+      atualizarEstadoBancario('pix', estaMarcado, window.dadosBancariosEstado.textoPix);
     } else {
       // 🔴 Desmarcado — limpa dados PIX
       window.dadosBancariosEstado.pixSelecionado = false;
@@ -6965,8 +6966,9 @@ function tratarSelecaoTipoBancario(input) {
   } 
   else if (tipo === 'agencia-conta') {
     if (estaMarcado) {
-      atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
       window.dadosBancariosEstado.agenciaContaSelecionado = true;
+      //atualizarEstadoBancario('agencia-conta', window.dadosBancariosEstado.agenciaConta, window.dadosBancariosEstado.textoAgenciaConta);
+      atualizarEstadoBancario('agencia-conta', estaMarcado, window.dadosBancariosEstado.textoAgenciaConta);
     } else {
       // 🔴 Desmarcado — limpa dados Agência/Conta
       window.dadosBancariosEstado.agenciaContaSelecionado = false;
