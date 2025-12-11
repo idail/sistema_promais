@@ -4841,17 +4841,19 @@ try {
         
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
 
-        carregarAsChavesPIXEmpresasProcedimentos();
-        carregarAgenciasContasExamesProcedimentos();
-        carregarAsChavesPIXTreinamentos();
-        carregarAgenciasContasTreinamentos();
-        carregarAsChavesPIXEPIEPC();
-        carregarAgenciasContasEPIEPC();
+        await carregarAsChavesPIXEmpresasProcedimentos();
+        await carregarAgenciasContasExamesProcedimentos();
+        await carregarAsChavesPIXTreinamentos();
+        await carregarAgenciasContasTreinamentos();
+        await carregarAsChavesPIXEPIEPC();
+        await carregarAgenciasContasEPIEPC();
         repopular_produtos();
         restaurar_tipo_orcamento();
         restaurarModelosSelecionados();
         repopular_assinatura();
         repopular_dados_bancarios();
+        repopularDadosBancarios();
+
 
         // Inicializa o seletor de escopo de informações bancárias com valor global ao abrir a aba
         try {
@@ -5866,351 +5868,624 @@ function repopular_produtos() {
 
         function carregarAsChavesPIXEmpresasProcedimentos()
         {
-          // const pixKeySelect = document.getElementById('pix-key-select');
-          const pixKeySelect = document.getElementById('pix-exames-select');
-    if (!pixKeySelect) return;
+          return new Promise(function(resolve, reject) {
+            // const pixKeySelect = document.getElementById('pix-key-select');
+            const pixKeySelect = document.getElementById('pix-exames-select');
+            if (!pixKeySelect) {
+              // Nada para carregar, mas não é erro
+              resolve(null);
+              return;
+            }
 
-    // Limpa as opções exceto a primeira
-    while (pixKeySelect.options.length > 1) {
-        pixKeySelect.remove(1);
-    }
+            // Limpa as opções exceto a primeira
+            while (pixKeySelect.options.length > 1) {
+              pixKeySelect.remove(1);
+            }
 
-    // Faz a requisição para buscar as chaves PIX
-    $.ajax({
-        url: 'cadastros/processa_conta_bancaria.php',
-        method: 'GET',
-        dataType: 'json',
-        data: { 
-            processo_conta_bancaria: 'buscar_pix_exames_procedimentos' 
-        },
-        success: function(res) {
-          debugger;
-            try {
-                if (Array.isArray(res) && res.length) {
+            // Faz a requisição para buscar as chaves PIX
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { 
+                processo_conta_bancaria: 'buscar_pix_exames_procedimentos' 
+              },
+              success: function(res) {
+                debugger;
+                try {
+                  if (Array.isArray(res) && res.length) {
                     const vistos = new Set();
                     res.forEach(item => {
-                        const tipo = String(item.tipo_pix || '').trim();
-                        const valor = String(item.valor_pix || '').trim();
-                        if (!tipo || !valor) return;
-                        
-                        const chave = `${tipo}|${valor}`;
-                        if (vistos.has(chave)) return;
-                        vistos.add(chave);
-                        
-                        const opt = document.createElement('option');
-                        opt.value = valor;
-                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
-                        pixKeySelect.appendChild(opt);
+                      const tipo = String(item.tipo_pix || '').trim();
+                      const valor = String(item.valor_pix || '').trim();
+                      if (!tipo || !valor) return;
+                      
+                      const chave = `${tipo}|${valor}`;
+                      if (vistos.has(chave)) return;
+                      vistos.add(chave);
+                      
+                      const opt = document.createElement('option');
+                      opt.value = valor;
+                      opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                      pixKeySelect.appendChild(opt);
                     });
+                  }
+                  // resolve com o array retornado (ou vazio)
+                  resolve(res);
+                } catch(e) {
+                  console.error('Erro ao processar chaves PIX:', e);
+                  reject(e);
                 }
-            } catch(e) {
-                console.error('Erro ao processar chaves PIX:', e);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Erro ao carregar chaves PIX:', error);
-        }
-    });
+              },
+              error: function(xhr, status, error) {
+                console.error('Erro ao carregar chaves PIX:', error);
+                reject(error || status);
+              }
+            });
+          });
         }
 
         function carregarAgenciasContasExamesProcedimentos()
-        {
-          // Carrega Agência/Conta do backend (apenas agência e conta)
-            $.ajax({
-              url: 'cadastros/processa_conta_bancaria.php',
-              method: 'GET',
-              dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_contas_bancarias_exames_procedimentos' },
-              success: function(res){
-                debugger;
-                try {
-                  // const sel = document.getElementById('agencia-conta-select');
-                  const sel = document.getElementById('agencia-conta-exames-select');
-                  if (!sel) return;
-                  // Limpa mantendo o placeholder
-                  while (sel.options.length > 1) sel.remove(1);
-                  let adicionou = false;
-                  if (Array.isArray(res)) {
-                    const vistos = new Set();
-                    res.forEach(it => {
-                      const agencia = String(it.agencia || '').trim();
-                      const conta = String(it.conta || '').trim();
-                      if (!agencia || !conta) return;
-                      const value = `${agencia}|${conta}`;
-                      if (vistos.has(value)) return;
-                      vistos.add(value);
-                      const opt = document.createElement('option');
-                      opt.value = value;
-                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
-                      sel.appendChild(opt);
-                      adicionou = true;
-                    });
-                  }
-                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
-                  if (!adicionou) {
-                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
-                  }
+{
+  return new Promise(function(resolve, reject) {
+    // Carrega Agência/Conta do backend (apenas agência e conta)
+    $.ajax({
+      url: 'cadastros/processa_conta_bancaria.php',
+      method: 'GET',
+      dataType: 'json',
+      data: { processo_conta_bancaria: 'buscar_contas_bancarias_exames_procedimentos' },
+      success: function(res){
+        debugger;
+        try {
+          // const sel = document.getElementById('agencia-conta-select');
+          const sel = document.getElementById('agencia-conta-exames-select');
+          if (!sel) {
+            resolve(res);
+            return;
+          }
 
-                  // =============================
-                  // Seleciona a opção correta
-                  // =============================
-                  // try {
-                  //   const emEdicao = window.recebe_acao === 'editar';
-                  //   let textoSelecionar = null;
-
-                  //   if (emEdicao && window.kit_tipo_exame) {
-                  //     // Usa valor vindo do kit em edição
-                  //     textoSelecionar = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
-                  //     window.dado_bancario_agencia_conta_exames_procedimentos = textoSelecionar;
-                  //   } else {
-                  //     // Usa valor mantido em variável global
-                  //     textoSelecionar = window.dado_bancario_agencia_conta_exames_procedimentos || null;
-                  //   }
-
-                  //   if (textoSelecionar) {
-                  //     const opcoes = Array.from(sel.options);
-
-                  //     // 1) tenta casar pelo texto visível (ex.: "Ag 1234 • C/C 56789-0")
-                  //     let optSel = opcoes.find(o => o.textContent === textoSelecionar);
-
-                  //     // 2) se não achar, tenta casar pelo value (ex.: "1234|56789-0")
-                  //     if (!optSel) {
-                  //       optSel = opcoes.find(o => o.value === textoSelecionar);
-                  //     }
-
-                  //     if (optSel) {
-                  //       sel.value = optSel.value;
-                  //     }
-                  //   }
-                  // } catch (eSel) {
-                  //   console.warn('Falha ao selecionar agência/conta em carregarAgenciasContasExamesProcedimentos:', eSel);
-                  // }
-                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
-              },
-              error: function(xhr, status, error){
-                console.warn('Erro ao buscar contas bancárias:', status, error);
-                // Em caso de erro, o fallback de exemplos (abaixo) será usado
-              }
+          // Limpa mantendo o placeholder
+          while (sel.options.length > 1) sel.remove(1);
+          let adicionou = false;
+          if (Array.isArray(res)) {
+            const vistos = new Set();
+            res.forEach(it => {
+              const agencia = String(it.agencia || '').trim();
+              const conta = String(it.conta || '').trim();
+              if (!agencia || !conta) return;
+              const value = `${agencia}|${conta}`;
+              if (vistos.has(value)) return;
+              vistos.add(value);
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+              sel.appendChild(opt);
+              adicionou = true;
             });
-        }
+          }
+          // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+          if (!adicionou) {
+            // não faz nada aqui; o bloco acPopularExemplos() cuidará
+          }
 
-        function carregarAsChavesPIXTreinamentos()
-        {
-          // const pixKeySelect = document.getElementById('pix-key-select');
-          const pixKeySelect = document.getElementById('pix-treinamentos-select');
-    if (!pixKeySelect) return;
+          // Se chegou até aqui sem erro, resolve
+          resolve(res);
+        } catch(e){
+          console.warn('Falha ao popular Agência/Conta via AJAX:', e);
+          reject(e);
+        }
+      },
+      error: function(xhr, status, error){
+        console.warn('Erro ao buscar contas bancárias:', status, error);
+        reject(error || status);
+      }
+    });
+  });
+}
+
+        // function carregarAgenciasContasExamesProcedimentos()
+        // {
+        //   // Carrega Agência/Conta do backend (apenas agência e conta)
+        //     $.ajax({
+        //       url: 'cadastros/processa_conta_bancaria.php',
+        //       method: 'GET',
+        //       dataType: 'json',
+        //       data: { processo_conta_bancaria: 'buscar_contas_bancarias_exames_procedimentos' },
+        //       success: function(res){
+        //         debugger;
+        //         try {
+        //           // const sel = document.getElementById('agencia-conta-select');
+        //           const sel = document.getElementById('agencia-conta-exames-select');
+        //           if (!sel) return;
+        //           // Limpa mantendo o placeholder
+        //           while (sel.options.length > 1) sel.remove(1);
+        //           let adicionou = false;
+        //           if (Array.isArray(res)) {
+        //             const vistos = new Set();
+        //             res.forEach(it => {
+        //               const agencia = String(it.agencia || '').trim();
+        //               const conta = String(it.conta || '').trim();
+        //               if (!agencia || !conta) return;
+        //               const value = `${agencia}|${conta}`;
+        //               if (vistos.has(value)) return;
+        //               vistos.add(value);
+        //               const opt = document.createElement('option');
+        //               opt.value = value;
+        //               opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+        //               sel.appendChild(opt);
+        //               adicionou = true;
+        //             });
+        //           }
+        //           // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+        //           if (!adicionou) {
+        //             // não faz nada aqui; o bloco acPopularExemplos() cuidará
+        //           }
+
+        //           // =============================
+        //           // Seleciona a opção correta
+        //           // =============================
+        //           // try {
+        //           //   const emEdicao = window.recebe_acao === 'editar';
+        //           //   let textoSelecionar = null;
+
+        //           //   if (emEdicao && window.kit_tipo_exame) {
+        //           //     // Usa valor vindo do kit em edição
+        //           //     textoSelecionar = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+        //           //     window.dado_bancario_agencia_conta_exames_procedimentos = textoSelecionar;
+        //           //   } else {
+        //           //     // Usa valor mantido em variável global
+        //           //     textoSelecionar = window.dado_bancario_agencia_conta_exames_procedimentos || null;
+        //           //   }
+
+        //           //   if (textoSelecionar) {
+        //           //     const opcoes = Array.from(sel.options);
+
+        //           //     // 1) tenta casar pelo texto visível (ex.: "Ag 1234 • C/C 56789-0")
+        //           //     let optSel = opcoes.find(o => o.textContent === textoSelecionar);
+
+        //           //     // 2) se não achar, tenta casar pelo value (ex.: "1234|56789-0")
+        //           //     if (!optSel) {
+        //           //       optSel = opcoes.find(o => o.value === textoSelecionar);
+        //           //     }
+
+        //           //     if (optSel) {
+        //           //       sel.value = optSel.value;
+        //           //     }
+        //           //   }
+        //           // } catch (eSel) {
+        //           //   console.warn('Falha ao selecionar agência/conta em carregarAgenciasContasExamesProcedimentos:', eSel);
+        //           // }
+        //         } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+        //       },
+        //       error: function(xhr, status, error){
+        //         console.warn('Erro ao buscar contas bancárias:', status, error);
+        //         // Em caso de erro, o fallback de exemplos (abaixo) será usado
+        //       }
+        //     });
+        // }
+
+    //     function carregarAsChavesPIXTreinamentos()
+    //     {
+    //       // const pixKeySelect = document.getElementById('pix-key-select');
+    //       const pixKeySelect = document.getElementById('pix-treinamentos-select');
+    // if (!pixKeySelect) return;
+
+    // // Limpa as opções exceto a primeira
+    // while (pixKeySelect.options.length > 1) {
+    //     pixKeySelect.remove(1);
+    // }
+
+    // // Faz a requisição para buscar as chaves PIX
+    // $.ajax({
+    //     url: 'cadastros/processa_conta_bancaria.php',
+    //     method: 'GET',
+    //     dataType: 'json',
+    //     data: { 
+    //         processo_conta_bancaria: 'buscar_pix_treinamentos' 
+    //     },
+    //     success: function(res) {
+    //       debugger;
+    //         try {
+    //             if (Array.isArray(res) && res.length) {
+    //                 const vistos = new Set();
+    //                 res.forEach(item => {
+    //                     const tipo = String(item.tipo_pix || '').trim();
+    //                     const valor = String(item.valor_pix || '').trim();
+    //                     if (!tipo || !valor) return;
+                        
+    //                     const chave = `${tipo}|${valor}`;
+    //                     if (vistos.has(chave)) return;
+    //                     vistos.add(chave);
+                        
+    //                     const opt = document.createElement('option');
+    //                     opt.value = valor;
+    //                     opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+    //                     pixKeySelect.appendChild(opt);
+    //                 });
+    //             }
+    //         } catch(e) {
+    //             console.error('Erro ao processar chaves PIX:', e);
+    //         }
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error('Erro ao carregar chaves PIX:', error);
+    //     }
+    // });
+    //     }
+
+    function carregarAsChavesPIXTreinamentos()
+{
+  return new Promise(function(resolve, reject) {
+    // const pixKeySelect = document.getElementById('pix-key-select');
+    const pixKeySelect = document.getElementById('pix-treinamentos-select');
+    if (!pixKeySelect) {
+      // Nada para carregar, mas não é erro
+      resolve(null);
+      return;
+    }
 
     // Limpa as opções exceto a primeira
     while (pixKeySelect.options.length > 1) {
-        pixKeySelect.remove(1);
+      pixKeySelect.remove(1);
     }
 
     // Faz a requisição para buscar as chaves PIX
     $.ajax({
-        url: 'cadastros/processa_conta_bancaria.php',
-        method: 'GET',
-        dataType: 'json',
-        data: { 
-            processo_conta_bancaria: 'buscar_pix_treinamentos' 
-        },
-        success: function(res) {
-          debugger;
-            try {
-                if (Array.isArray(res) && res.length) {
-                    const vistos = new Set();
-                    res.forEach(item => {
-                        const tipo = String(item.tipo_pix || '').trim();
-                        const valor = String(item.valor_pix || '').trim();
-                        if (!tipo || !valor) return;
-                        
-                        const chave = `${tipo}|${valor}`;
-                        if (vistos.has(chave)) return;
-                        vistos.add(chave);
-                        
-                        const opt = document.createElement('option');
-                        opt.value = valor;
-                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
-                        pixKeySelect.appendChild(opt);
-                    });
-                }
-            } catch(e) {
-                console.error('Erro ao processar chaves PIX:', e);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Erro ao carregar chaves PIX:', error);
+      url: 'cadastros/processa_conta_bancaria.php',
+      method: 'GET',
+      dataType: 'json',
+      data: { 
+        processo_conta_bancaria: 'buscar_pix_treinamentos' 
+      },
+      success: function(res) {
+        debugger;
+        try {
+          if (Array.isArray(res) && res.length) {
+            const vistos = new Set();
+            res.forEach(item => {
+              const tipo  = String(item.tipo_pix  || '').trim();
+              const valor = String(item.valor_pix || '').trim();
+              if (!tipo || !valor) return;
+              
+              const chave = `${tipo}|${valor}`;
+              if (vistos.has(chave)) return;
+              vistos.add(chave);
+              
+              const opt = document.createElement('option');
+              opt.value = valor;
+              opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+              pixKeySelect.appendChild(opt);
+            });
+          }
+          // terminou OK
+          resolve(res);
+        } catch(e) {
+          console.error('Erro ao processar chaves PIX:', e);
+          reject(e);
         }
+      },
+      error: function(xhr, status, error) {
+        console.error('Erro ao carregar chaves PIX:', error);
+        reject(error || status);
+      }
     });
-        }
+  });
+}
+
+        // function carregarAgenciasContasTreinamentos()
+        // {
+        //   // Carrega Agência/Conta do backend (apenas agência e conta)
+        //     $.ajax({
+        //       url: 'cadastros/processa_conta_bancaria.php',
+        //       method: 'GET',
+        //       dataType: 'json',
+        //       data: { processo_conta_bancaria: 'buscar_agencia_conta_treinamentos' },
+        //       success: function(res){
+        //         debugger;
+        //         try {
+        //           // const sel = document.getElementById('agencia-conta-select');
+        //           const sel = document.getElementById('agencia-conta-treinamentos-select');
+        //           if (!sel) return;
+        //           // Limpa mantendo o placeholder
+        //           while (sel.options.length > 1) sel.remove(1);
+        //           let adicionou = false;
+        //           if (Array.isArray(res)) {
+        //             const vistos = new Set();
+        //             res.forEach(it => {
+        //               const agencia = String(it.agencia || '').trim();
+        //               const conta = String(it.conta || '').trim();
+        //               if (!agencia || !conta) return;
+        //               const value = `${agencia}|${conta}`;
+        //               if (vistos.has(value)) return;
+        //               vistos.add(value);
+        //               const opt = document.createElement('option');
+        //               opt.value = value;
+        //               opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+        //               sel.appendChild(opt);
+        //               adicionou = true;
+        //             });
+        //           }
+        //           // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+        //           if (!adicionou) {
+        //             // não faz nada aqui; o bloco acPopularExemplos() cuidará
+        //           }
+        //         } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+        //       },
+        //       error: function(xhr, status, error){
+        //         console.warn('Erro ao buscar contas bancárias:', status, error);
+        //         // Em caso de erro, o fallback de exemplos (abaixo) será usado
+        //       }
+        //     });
+        // }
 
         function carregarAgenciasContasTreinamentos()
-        {
-          // Carrega Agência/Conta do backend (apenas agência e conta)
-            $.ajax({
-              url: 'cadastros/processa_conta_bancaria.php',
-              method: 'GET',
-              dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_agencia_conta_treinamentos' },
-              success: function(res){
-                debugger;
-                try {
-                  // const sel = document.getElementById('agencia-conta-select');
-                  const sel = document.getElementById('agencia-conta-treinamentos-select');
-                  if (!sel) return;
-                  // Limpa mantendo o placeholder
-                  while (sel.options.length > 1) sel.remove(1);
-                  let adicionou = false;
-                  if (Array.isArray(res)) {
-                    const vistos = new Set();
-                    res.forEach(it => {
-                      const agencia = String(it.agencia || '').trim();
-                      const conta = String(it.conta || '').trim();
-                      if (!agencia || !conta) return;
-                      const value = `${agencia}|${conta}`;
-                      if (vistos.has(value)) return;
-                      vistos.add(value);
-                      const opt = document.createElement('option');
-                      opt.value = value;
-                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
-                      sel.appendChild(opt);
-                      adicionou = true;
-                    });
-                  }
-                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
-                  if (!adicionou) {
-                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
-                  }
-                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
-              },
-              error: function(xhr, status, error){
-                console.warn('Erro ao buscar contas bancárias:', status, error);
-                // Em caso de erro, o fallback de exemplos (abaixo) será usado
-              }
+{
+  return new Promise(function(resolve, reject) {
+    // Carrega Agência/Conta do backend (apenas agência e conta)
+    $.ajax({
+      url: 'cadastros/processa_conta_bancaria.php',
+      method: 'GET',
+      dataType: 'json',
+      data: { processo_conta_bancaria: 'buscar_agencia_conta_treinamentos' },
+      success: function(res){
+        debugger;
+        try {
+          // const sel = document.getElementById('agencia-conta-select');
+          const sel = document.getElementById('agencia-conta-treinamentos-select');
+          if (!sel) {
+            resolve(res);
+            return;
+          }
+          // Limpa mantendo o placeholder
+          while (sel.options.length > 1) sel.remove(1);
+          let adicionou = false;
+          if (Array.isArray(res)) {
+            const vistos = new Set();
+            res.forEach(it => {
+              const agencia = String(it.agencia || '').trim();
+              const conta = String(it.conta || '').trim();
+              if (!agencia || !conta) return;
+              const value = `${agencia}|${conta}`;
+              if (vistos.has(value)) return;
+              vistos.add(value);
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+              sel.appendChild(opt);
+              adicionou = true;
             });
-        }
+          }
+          // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+          if (!adicionou) {
+            // não faz nada aqui; o bloco acPopularExemplos() cuidará
+          }
 
-        function carregarAsChavesPIXEPIEPC()
-        {
-          // const pixKeySelect = document.getElementById('pix-key-select');
-          const pixKeySelect = document.getElementById('pix-epi-select');
-    if (!pixKeySelect) return;
+          resolve(res);
+        } catch(e){
+          console.warn('Falha ao popular Agência/Conta via AJAX:', e);
+          reject(e);
+        }
+      },
+      error: function(xhr, status, error){
+        console.warn('Erro ao buscar contas bancárias:', status, error);
+        reject(error || status);
+      }
+    });
+  });
+}
+
+    //     function carregarAsChavesPIXEPIEPC()
+    //     {
+    //       // const pixKeySelect = document.getElementById('pix-key-select');
+    //       const pixKeySelect = document.getElementById('pix-epi-select');
+    // if (!pixKeySelect) return;
+
+    // // Limpa as opções exceto a primeira
+    // while (pixKeySelect.options.length > 1) {
+    //     pixKeySelect.remove(1);
+    // }
+
+    // // Faz a requisição para buscar as chaves PIX
+    // $.ajax({
+    //     url: 'cadastros/processa_conta_bancaria.php',
+    //     method: 'GET',
+    //     dataType: 'json',
+    //     data: { 
+    //         processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' 
+    //     },
+    //     success: function(res) {
+    //       debugger;
+    //         try {
+    //             if (Array.isArray(res) && res.length) {
+    //                 const vistos = new Set();
+    //                 res.forEach(item => {
+    //                     const tipo = String(item.tipo_pix || '').trim();
+    //                     const valor = String(item.valor_pix || '').trim();
+    //                     if (!tipo || !valor) return;
+                        
+    //                     const chave = `${tipo}|${valor}`;
+    //                     if (vistos.has(chave)) return;
+    //                     vistos.add(chave);
+                        
+    //                     const opt = document.createElement('option');
+    //                     opt.value = valor;
+    //                     opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+    //                     pixKeySelect.appendChild(opt);
+    //                 });
+    //             }
+    //         } catch(e) {
+    //             console.error('Erro ao processar chaves PIX:', e);
+    //         }
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error('Erro ao carregar chaves PIX:', error);
+    //     }
+    // });
+    //     }
+
+    function carregarAsChavesPIXEPIEPC()
+{
+  return new Promise(function(resolve, reject) {
+    // const pixKeySelect = document.getElementById('pix-key-select');
+    const pixKeySelect = document.getElementById('pix-epi-select');
+    if (!pixKeySelect) {
+      // Nada para carregar, mas não é erro
+      resolve(null);
+      return;
+    }
 
     // Limpa as opções exceto a primeira
     while (pixKeySelect.options.length > 1) {
-        pixKeySelect.remove(1);
+      pixKeySelect.remove(1);
     }
 
     // Faz a requisição para buscar as chaves PIX
     $.ajax({
-        url: 'cadastros/processa_conta_bancaria.php',
-        method: 'GET',
-        dataType: 'json',
-        data: { 
-            processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' 
-        },
-        success: function(res) {
-          debugger;
-            try {
-                if (Array.isArray(res) && res.length) {
-                    const vistos = new Set();
-                    res.forEach(item => {
-                        const tipo = String(item.tipo_pix || '').trim();
-                        const valor = String(item.valor_pix || '').trim();
-                        if (!tipo || !valor) return;
-                        
-                        const chave = `${tipo}|${valor}`;
-                        if (vistos.has(chave)) return;
-                        vistos.add(chave);
-                        
-                        const opt = document.createElement('option');
-                        opt.value = valor;
-                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
-                        pixKeySelect.appendChild(opt);
-                    });
-                }
-            } catch(e) {
-                console.error('Erro ao processar chaves PIX:', e);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Erro ao carregar chaves PIX:', error);
-        }
-    });
-        }
-
-
-        function carregarAgenciasContasEPIEPC()
-        {
-          // Carrega Agência/Conta do backend (apenas agência e conta)
-            $.ajax({
-              url: 'cadastros/processa_conta_bancaria.php',
-              method: 'GET',
-              dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' },
-              success: function(res){
-                debugger;
-                try {
-                  // const sel = document.getElementById('agencia-conta-select');
-                  const sel = document.getElementById('agencia-conta-epi-select');
-                  if (!sel) return;
-                  // Limpa mantendo o placeholder
-                  while (sel.options.length > 1) sel.remove(1);
-                  let adicionou = false;
-                  if (Array.isArray(res)) {
-                    const vistos = new Set();
-                    res.forEach(it => {
-                      const agencia = String(it.agencia || '').trim();
-                      const conta = String(it.conta || '').trim();
-                      if (!agencia || !conta) return;
-                      const value = `${agencia}|${conta}`;
-                      if (vistos.has(value)) return;
-                      vistos.add(value);
-                      const opt = document.createElement('option');
-                      opt.value = value;
-                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
-                      sel.appendChild(opt);
-                      adicionou = true;
-                    });
-                  }
-                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
-                  if (!adicionou) {
-                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
-                  }
-
-                  const emEdicao = window.recebe_acao === 'editar';
-  let temDados = false;
-  if (emEdicao && window.kit_tipo_exame) {
-    // Verifica se o kit em edição tem algum dado bancário preenchido
-    temDados =
-      !!window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos ||
-      !!window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos ||
-      !!window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos ||
-      !!window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos ||
-      !!window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc ||
-      !!window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc;
-  } else {
-    // Verifica se já existem valores nas variáveis globais
-    temDados =
-      !!window.dado_bancario_agencia_conta_exames_procedimentos ||
-      !!window.dado_bancario_pix_exames_procedimentos ||
-      !!window.dado_bancario_agencia_conta_treinamentos ||
-      !!window.dado_bancario_pix_treinamentos ||
-      !!window.dado_bancario_agencia_conta_epi_epc ||
-      !!window.dado_bancario_pix_epi_epc;
-  }
-  if (temDados) {
-    repopularDadosBancarios();
-  }
-                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
-              },
-              error: function(xhr, status, error){
-                console.warn('Erro ao buscar contas bancárias:', status, error);
-                // Em caso de erro, o fallback de exemplos (abaixo) será usado
-              }
+      url: 'cadastros/processa_conta_bancaria.php',
+      method: 'GET',
+      dataType: 'json',
+      data: { 
+        processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' 
+      },
+      success: function(res) {
+        debugger;
+        try {
+          if (Array.isArray(res) && res.length) {
+            const vistos = new Set();
+            res.forEach(item => {
+              const tipo  = String(item.tipo_pix  || '').trim();
+              const valor = String(item.valor_pix || '').trim();
+              if (!tipo || !valor) return;
+              
+              const chave = `${tipo}|${valor}`;
+              if (vistos.has(chave)) return;
+              vistos.add(chave);
+              
+              const opt = document.createElement('option');
+              opt.value = valor;
+              opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+              pixKeySelect.appendChild(opt);
             });
+          }
+          // terminou OK
+          resolve(res);
+        } catch(e) {
+          console.error('Erro ao processar chaves PIX:', e);
+          reject(e);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('Erro ao carregar chaves PIX:', error);
+        reject(error || status);
+      }
+    });
+  });
+}
+
+
+        // function carregarAgenciasContasEPIEPC()
+        // {
+        //   // Carrega Agência/Conta do backend (apenas agência e conta)
+        //     $.ajax({
+        //       url: 'cadastros/processa_conta_bancaria.php',
+        //       method: 'GET',
+        //       dataType: 'json',
+        //       data: { processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' },
+        //       success: function(res){
+        //         debugger;
+        //         try {
+        //           // const sel = document.getElementById('agencia-conta-select');
+        //           const sel = document.getElementById('agencia-conta-epi-select');
+        //           if (!sel) return;
+        //           // Limpa mantendo o placeholder
+        //           while (sel.options.length > 1) sel.remove(1);
+        //           let adicionou = false;
+        //           if (Array.isArray(res)) {
+        //             const vistos = new Set();
+        //             res.forEach(it => {
+        //               const agencia = String(it.agencia || '').trim();
+        //               const conta = String(it.conta || '').trim();
+        //               if (!agencia || !conta) return;
+        //               const value = `${agencia}|${conta}`;
+        //               if (vistos.has(value)) return;
+        //               vistos.add(value);
+        //               const opt = document.createElement('option');
+        //               opt.value = value;
+        //               opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+        //               sel.appendChild(opt);
+        //               adicionou = true;
+        //             });
+        //           }
+        //           // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+        //           if (!adicionou) {
+        //             // não faz nada aqui; o bloco acPopularExemplos() cuidará
+        //           }
+        //         } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+        //       },
+        //       error: function(xhr, status, error){
+        //         console.warn('Erro ao buscar contas bancárias:', status, error);
+        //         // Em caso de erro, o fallback de exemplos (abaixo) será usado
+        //       }
+        //     });
 
              
+        // }
+
+        function carregarAgenciasContasEPIEPC()
+{
+  return new Promise(function(resolve, reject) {
+    // Carrega Agência/Conta do backend (apenas agência e conta)
+    $.ajax({
+      url: 'cadastros/processa_conta_bancaria.php',
+      method: 'GET',
+      dataType: 'json',
+      data: { processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' },
+      success: function(res){
+        debugger;
+        try {
+          // const sel = document.getElementById('agencia-conta-select');
+          const sel = document.getElementById('agencia-conta-epi-select');
+          if (!sel) {
+            resolve(res);
+            return;
+          }
+          // Limpa mantendo o placeholder
+          while (sel.options.length > 1) sel.remove(1);
+          let adicionou = false;
+          if (Array.isArray(res)) {
+            const vistos = new Set();
+            res.forEach(it => {
+              const agencia = String(it.agencia || '').trim();
+              const conta = String(it.conta || '').trim();
+              if (!agencia || !conta) return;
+              const value = `${agencia}|${conta}`;
+              if (vistos.has(value)) return;
+              vistos.add(value);
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+              sel.appendChild(opt);
+              adicionou = true;
+            });
+          }
+          // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+          if (!adicionou) {
+            // não faz nada aqui; o bloco acPopularExemplos() cuidará
+          }
+
+          resolve(res);
+        } catch(e){
+          console.warn('Falha ao popular Agência/Conta via AJAX (EPI/EPC):', e);
+          reject(e);
         }
+      },
+      error: function(xhr, status, error){
+        console.warn('Erro ao buscar contas bancárias (EPI/EPC):', status, error);
+        reject(error || status);
+      }
+    });
+  });
+}
 
         function repopularDadosBancarios()
         {
