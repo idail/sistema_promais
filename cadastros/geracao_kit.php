@@ -5367,50 +5367,50 @@ function restaurar_tipo_orcamento() {
   // =====================================================
   try {
 
-    const emEdicao = window.recebe_acao === 'editar';
+    // const emEdicao = window.recebe_acao === 'editar';
 
-    // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
-    if (emEdicao && window.kit_tipo_exame) {
-        window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
-        window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
-        window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
-        window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
-        window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
-        window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
-    }
+    // // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
+    // if (emEdicao && window.kit_tipo_exame) {
+    //     window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+    //     window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
+    //     window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
+    //     window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
+    //     window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
+    //     window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
+    // }
 
-    // -------------------------------
-    // Função auxiliar para selects por tipo
-    // -------------------------------
-    const repopularSelectTexto = (idSelect, texto) => {
-      debugger;
-        if (!texto) return;
-        const sel = document.getElementById(idSelect);
-        if (!sel) return;
+    // // -------------------------------
+    // // Função auxiliar para selects por tipo
+    // // -------------------------------
+    // const repopularSelectTexto = (idSelect, texto) => {
+    //   debugger;
+    //     if (!texto) return;
+    //     const sel = document.getElementById(idSelect);
+    //     if (!sel) return;
 
-        let opt = Array.from(sel.options).find(o => o.textContent === texto);
-        if (!opt) {
-            opt = document.createElement('option');
-            opt.value = texto;
-            opt.textContent = texto;
-            sel.appendChild(opt);
-        }
-        sel.value = opt.value;
-    };
+    //     let opt = Array.from(sel.options).find(o => o.textContent === texto);
+    //     if (!opt) {
+    //         opt = document.createElement('option');
+    //         opt.value = texto;
+    //         opt.textContent = texto;
+    //         sel.appendChild(opt);
+    //     }
+    //     sel.value = opt.value;
+    // };
 
-    // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
+    // // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
 
-    // EXAMES / PROCEDIMENTOS
-    repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
-    repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+    // // EXAMES / PROCEDIMENTOS
+    // repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+    // repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
 
-    // TREINAMENTOS
-    repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
-    repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+    // // TREINAMENTOS
+    // repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+    // repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
 
-    // EPI / EPC
-    repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
-    repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
+    // // EPI / EPC
+    // repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+    // repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
     // const emEdicao = window.recebe_acao === 'editar';
 
     // // Função auxiliar: escolhe texto a partir do kit (edição) ou da variável global
@@ -5954,37 +5954,37 @@ function repopular_produtos() {
                   // =============================
                   // Seleciona a opção correta
                   // =============================
-                  try {
-                    const emEdicao = window.recebe_acao === 'editar';
-                    let textoSelecionar = null;
+                  // try {
+                  //   const emEdicao = window.recebe_acao === 'editar';
+                  //   let textoSelecionar = null;
 
-                    if (emEdicao && window.kit_tipo_exame) {
-                      // Usa valor vindo do kit em edição
-                      textoSelecionar = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
-                      window.dado_bancario_agencia_conta_exames_procedimentos = textoSelecionar;
-                    } else {
-                      // Usa valor mantido em variável global
-                      textoSelecionar = window.dado_bancario_agencia_conta_exames_procedimentos || null;
-                    }
+                  //   if (emEdicao && window.kit_tipo_exame) {
+                  //     // Usa valor vindo do kit em edição
+                  //     textoSelecionar = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+                  //     window.dado_bancario_agencia_conta_exames_procedimentos = textoSelecionar;
+                  //   } else {
+                  //     // Usa valor mantido em variável global
+                  //     textoSelecionar = window.dado_bancario_agencia_conta_exames_procedimentos || null;
+                  //   }
 
-                    if (textoSelecionar) {
-                      const opcoes = Array.from(sel.options);
+                  //   if (textoSelecionar) {
+                  //     const opcoes = Array.from(sel.options);
 
-                      // 1) tenta casar pelo texto visível (ex.: "Ag 1234 • C/C 56789-0")
-                      let optSel = opcoes.find(o => o.textContent === textoSelecionar);
+                  //     // 1) tenta casar pelo texto visível (ex.: "Ag 1234 • C/C 56789-0")
+                  //     let optSel = opcoes.find(o => o.textContent === textoSelecionar);
 
-                      // 2) se não achar, tenta casar pelo value (ex.: "1234|56789-0")
-                      if (!optSel) {
-                        optSel = opcoes.find(o => o.value === textoSelecionar);
-                      }
+                  //     // 2) se não achar, tenta casar pelo value (ex.: "1234|56789-0")
+                  //     if (!optSel) {
+                  //       optSel = opcoes.find(o => o.value === textoSelecionar);
+                  //     }
 
-                      if (optSel) {
-                        sel.value = optSel.value;
-                      }
-                    }
-                  } catch (eSel) {
-                    console.warn('Falha ao selecionar agência/conta em carregarAgenciasContasExamesProcedimentos:', eSel);
-                  }
+                  //     if (optSel) {
+                  //       sel.value = optSel.value;
+                  //     }
+                  //   }
+                  // } catch (eSel) {
+                  //   console.warn('Falha ao selecionar agência/conta em carregarAgenciasContasExamesProcedimentos:', eSel);
+                  // }
                 } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
               },
               error: function(xhr, status, error){
@@ -6176,6 +6176,31 @@ function repopular_produtos() {
                   if (!adicionou) {
                     // não faz nada aqui; o bloco acPopularExemplos() cuidará
                   }
+
+                  const emEdicao = window.recebe_acao === 'editar';
+  let temDados = false;
+  if (emEdicao && window.kit_tipo_exame) {
+    // Verifica se o kit em edição tem algum dado bancário preenchido
+    temDados =
+      !!window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos ||
+      !!window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos ||
+      !!window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos ||
+      !!window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos ||
+      !!window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc ||
+      !!window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc;
+  } else {
+    // Verifica se já existem valores nas variáveis globais
+    temDados =
+      !!window.dado_bancario_agencia_conta_exames_procedimentos ||
+      !!window.dado_bancario_pix_exames_procedimentos ||
+      !!window.dado_bancario_agencia_conta_treinamentos ||
+      !!window.dado_bancario_pix_treinamentos ||
+      !!window.dado_bancario_agencia_conta_epi_epc ||
+      !!window.dado_bancario_pix_epi_epc;
+  }
+  if (temDados) {
+    repopularDadosBancarios();
+  }
                 } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
               },
               error: function(xhr, status, error){
@@ -6183,6 +6208,64 @@ function repopular_produtos() {
                 // Em caso de erro, o fallback de exemplos (abaixo) será usado
               }
             });
+
+             
+        }
+
+        function repopularDadosBancarios()
+        {
+          debugger;
+          try {
+
+    const emEdicao = window.recebe_acao === 'editar';
+
+    // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
+    if (emEdicao && window.kit_tipo_exame) {
+        window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+        window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
+        window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
+        window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
+        window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
+        window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
+    }
+
+    // -------------------------------
+    // Função auxiliar para selects por tipo
+    // -------------------------------
+    const repopularSelectTexto = (idSelect, texto) => {
+      debugger;
+        if (!texto) return;
+        const sel = document.getElementById(idSelect);
+        if (!sel) return;
+
+        let opt = Array.from(sel.options).find(o => o.textContent === texto);
+        if (!opt) {
+            opt = document.createElement('option');
+            opt.value = texto;
+            opt.textContent = texto;
+            sel.appendChild(opt);
+        }
+        sel.value = opt.value;
+    };
+
+    // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
+
+    // EXAMES / PROCEDIMENTOS
+    repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+    repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+
+    // TREINAMENTOS
+    repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+    repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+
+    // EPI / EPC
+    repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+    repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
+    // const emEdicao = window.recebe_acao === 'editar';
+
+  } catch (e) {
+    console.warn('Falha ao repopular selects de dados bancários em restaurar_tipo_orcamento:', e);
+  }
         }
         
 
@@ -7283,12 +7366,12 @@ if (!window._delegacaoTipoConta) {
           // Função para abrir o modal de cadastro de chave PIX
           function abrirModalChavePix() {
             // Marcar o radio de PIX se ainda não estiver marcado
-            const radioPix = document.querySelector('input[value="pix"]');
-            if (radioPix && !radioPix.checked) {
-              radioPix.checked = true;
-              atualizarVisibilidadePix();
-            }
-            
+            // const radioPix = document.querySelector('input[value="pix"]');
+            // if (radioPix && !radioPix.checked) {
+            //   radioPix.checked = true;
+              
+            // }
+            atualizarVisibilidadePix();
             // Mostrar o modal
             modalContaBancaria.style.display = 'block';
             
@@ -7785,8 +7868,8 @@ debugger;
             acAtualizarVisibilidade();
 
             function acAbrirModal() {
-              const radioAg = document.querySelector('input[value="agencia-conta"]');
-              if (radioAg && !radioAg.checked) { radioAg.checked = true; acAtualizarVisibilidade(); }
+              // const radioAg = document.querySelector('input[value="agencia-conta"]');
+              // if (radioAg && !radioAg.checked) { radioAg.checked = true; acAtualizarVisibilidade(); }
               if (acModal) {
                 acModal.style.display = 'block';
                 const agCampo = document.getElementById('agencia-rapida');
