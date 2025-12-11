@@ -7276,10 +7276,40 @@ if (!window._delegacaoTipoConta) {
               };
               if (recebe_tipo_orcamento === 'exames_procedimentos') {
                 dataKitPix.valor_pix_exames = recebe_pix_kit;
+
+                let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-exames-select");
+
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
+                recebe_select_list_pix_exames_procedimentos.appendChild(option);
+                option.selected = true;
               } else if (recebe_tipo_orcamento === 'treinamentos') {
                 dataKitPix.valor_pix_treinamentos = recebe_pix_kit;
+
+                let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-treinamentos-select");
+
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
+                recebe_select_list_pix_exames_procedimentos.appendChild(option);
+                option.selected = true;
               } else if (recebe_tipo_orcamento === 'epi_epc') {
                 dataKitPix.valor_pix_epi_epc = recebe_pix_kit;
+
+                let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-epi-select");
+
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
+                recebe_select_list_pix_exames_procedimentos.appendChild(option);
+                option.selected = true;
               }
 
               // Validação
