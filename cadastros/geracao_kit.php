@@ -4460,7 +4460,7 @@ function repopular_laudos() {
         // window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
         // window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
         window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos;
-        windiw.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos;
+        window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos;
         window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos;
         window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos;
         window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc;
