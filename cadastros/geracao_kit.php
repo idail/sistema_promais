@@ -6490,21 +6490,21 @@ function tratarSelecaoTipoBancario(input) {
   // =======================================================
   // 🔹 Controle visual dos containers (PIX e Agência)
   // =======================================================
-  const pixSelectorContainer = document.getElementById('pix-selector-container');
-  const agenciaSelectorContainer = document.getElementById('agencia-selector-container');
-  const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
+  // const pixSelectorContainer = document.getElementById('pix-selector-container');
+  // const agenciaSelectorContainer = document.getElementById('agencia-selector-container');
+  // const tipoContaInputs = document.querySelectorAll('input[name="tipo-conta"]');
 
-  if (pixSelectorContainer) {
-    const algumPixMarcado = Array.from(tipoContaInputs)
-      .some(i => i.value === 'pix' && i.checked);
-    pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
-  }
+  // if (pixSelectorContainer) {
+  //   const algumPixMarcado = Array.from(tipoContaInputs)
+  //     .some(i => i.value === 'pix' && i.checked);
+  //   pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+  // }
 
-  if (agenciaSelectorContainer) {
-    const algumaAgenciaMarcada = Array.from(tipoContaInputs)
-      .some(i => i.value === 'agencia-conta' && i.checked);
-    agenciaSelectorContainer.style.display = algumaAgenciaMarcada ? 'block' : 'none';
-  }
+  // if (agenciaSelectorContainer) {
+  //   const algumaAgenciaMarcada = Array.from(tipoContaInputs)
+  //     .some(i => i.value === 'agencia-conta' && i.checked);
+  //   agenciaSelectorContainer.style.display = algumaAgenciaMarcada ? 'block' : 'none';
+  // }
 
   // =======================================================
   // 🔹 Monta a lista de tipos atualmente marcados
