@@ -4837,6 +4837,10 @@ try {
 
         carregarAsChavesPIXEmpresasProcedimentos();
         carregarAgenciasContasExamesProcedimentos();
+        carregarAsChavesPIXTreinamentos();
+        carregarAgenciasContasTreinamentos();
+        carregarAsChavesPIXEPIEPC();
+        carregarAgenciasContasEPIEPC();
         repopular_produtos();
         restaurar_tipo_orcamento();
         restaurarModelosSelecionados();
@@ -5816,6 +5820,196 @@ function repopular_produtos() {
             });
         }
 
+        function carregarAsChavesPIXTreinamentos()
+        {
+          // const pixKeySelect = document.getElementById('pix-key-select');
+          const pixKeySelect = document.getElementById('pix-treinamentos-select');
+    if (!pixKeySelect) return;
+
+    // Limpa as opções exceto a primeira
+    while (pixKeySelect.options.length > 1) {
+        pixKeySelect.remove(1);
+    }
+
+    // Faz a requisição para buscar as chaves PIX
+    $.ajax({
+        url: 'cadastros/processa_conta_bancaria.php',
+        method: 'GET',
+        dataType: 'json',
+        data: { 
+            processo_conta_bancaria: 'buscar_pix_treinamentos' 
+        },
+        success: function(res) {
+          debugger;
+            try {
+                if (Array.isArray(res) && res.length) {
+                    const vistos = new Set();
+                    res.forEach(item => {
+                        const tipo = String(item.tipo_pix || '').trim();
+                        const valor = String(item.valor_pix || '').trim();
+                        if (!tipo || !valor) return;
+                        
+                        const chave = `${tipo}|${valor}`;
+                        if (vistos.has(chave)) return;
+                        vistos.add(chave);
+                        
+                        const opt = document.createElement('option');
+                        opt.value = valor;
+                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                        pixKeySelect.appendChild(opt);
+                    });
+                }
+            } catch(e) {
+                console.error('Erro ao processar chaves PIX:', e);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao carregar chaves PIX:', error);
+        }
+    });
+        }
+
+        function carregarAgenciasContasTreinamentos()
+        {
+          // Carrega Agência/Conta do backend (apenas agência e conta)
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { processo_conta_bancaria: 'buscar_agencia_conta_treinamentos' },
+              success: function(res){
+                debugger;
+                try {
+                  // const sel = document.getElementById('agencia-conta-select');
+                  const sel = document.getElementById('agencia-conta-treinamentos-select');
+                  if (!sel) return;
+                  // Limpa mantendo o placeholder
+                  while (sel.options.length > 1) sel.remove(1);
+                  let adicionou = false;
+                  if (Array.isArray(res)) {
+                    const vistos = new Set();
+                    res.forEach(it => {
+                      const agencia = String(it.agencia || '').trim();
+                      const conta = String(it.conta || '').trim();
+                      if (!agencia || !conta) return;
+                      const value = `${agencia}|${conta}`;
+                      if (vistos.has(value)) return;
+                      vistos.add(value);
+                      const opt = document.createElement('option');
+                      opt.value = value;
+                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                      sel.appendChild(opt);
+                      adicionou = true;
+                    });
+                  }
+                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+                  if (!adicionou) {
+                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
+                  }
+                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+              },
+              error: function(xhr, status, error){
+                console.warn('Erro ao buscar contas bancárias:', status, error);
+                // Em caso de erro, o fallback de exemplos (abaixo) será usado
+              }
+            });
+        }
+
+        function carregarAsChavesPIXEPIEPC()
+        {
+          // const pixKeySelect = document.getElementById('pix-key-select');
+          const pixKeySelect = document.getElementById('pix-epi-select');
+    if (!pixKeySelect) return;
+
+    // Limpa as opções exceto a primeira
+    while (pixKeySelect.options.length > 1) {
+        pixKeySelect.remove(1);
+    }
+
+    // Faz a requisição para buscar as chaves PIX
+    $.ajax({
+        url: 'cadastros/processa_conta_bancaria.php',
+        method: 'GET',
+        dataType: 'json',
+        data: { 
+            processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' 
+        },
+        success: function(res) {
+          debugger;
+            try {
+                if (Array.isArray(res) && res.length) {
+                    const vistos = new Set();
+                    res.forEach(item => {
+                        const tipo = String(item.tipo_pix || '').trim();
+                        const valor = String(item.valor_pix || '').trim();
+                        if (!tipo || !valor) return;
+                        
+                        const chave = `${tipo}|${valor}`;
+                        if (vistos.has(chave)) return;
+                        vistos.add(chave);
+                        
+                        const opt = document.createElement('option');
+                        opt.value = valor;
+                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                        pixKeySelect.appendChild(opt);
+                    });
+                }
+            } catch(e) {
+                console.error('Erro ao processar chaves PIX:', e);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao carregar chaves PIX:', error);
+        }
+    });
+        }
+
+
+        function carregarAgenciasContasEPIEPC()
+        {
+          // Carrega Agência/Conta do backend (apenas agência e conta)
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' },
+              success: function(res){
+                debugger;
+                try {
+                  // const sel = document.getElementById('agencia-conta-select');
+                  const sel = document.getElementById('agencia-conta-epi-select');
+                  if (!sel) return;
+                  // Limpa mantendo o placeholder
+                  while (sel.options.length > 1) sel.remove(1);
+                  let adicionou = false;
+                  if (Array.isArray(res)) {
+                    const vistos = new Set();
+                    res.forEach(it => {
+                      const agencia = String(it.agencia || '').trim();
+                      const conta = String(it.conta || '').trim();
+                      if (!agencia || !conta) return;
+                      const value = `${agencia}|${conta}`;
+                      if (vistos.has(value)) return;
+                      vistos.add(value);
+                      const opt = document.createElement('option');
+                      opt.value = value;
+                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                      sel.appendChild(opt);
+                      adicionou = true;
+                    });
+                  }
+                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+                  if (!adicionou) {
+                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
+                  }
+                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+              },
+              error: function(xhr, status, error){
+                console.warn('Erro ao buscar contas bancárias:', status, error);
+                // Em caso de erro, o fallback de exemplos (abaixo) será usado
+              }
+            });
+        }
         
 
         // ============================================================

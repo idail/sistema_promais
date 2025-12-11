@@ -95,6 +95,33 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_contas_bancaria->execute();
         $resultado_busca_contas_bancaria = $comando_busca_contas_bancaria->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_contas_bancaria);
+    }else if($recebe_processo_conta_bancaria === "buscar_pix_treinamentos")
+    {
+        $instrucao_busca_contas_bancaria = "select * from conta_bancaria where tipo_orcamento = :recebe_tipo_orcamento and empresa_id = :recebe_empresa_id";
+        $comando_busca_contas_bancaria = $pdo->prepare($instrucao_busca_contas_bancaria);
+        $comando_busca_contas_bancaria->bindValue(":recebe_tipo_orcamento","treinamentos");
+        $comando_busca_contas_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_contas_bancaria->execute();
+        $resultado_busca_contas_bancaria = $comando_busca_contas_bancaria->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_contas_bancaria);
+    }else if($recebe_processo_conta_bancaria === "buscar_agencia_conta_treinamentos")
+    {
+        $instrucao_busca_contas_bancaria = "select * from conta_bancaria where tipo_orcamento = :recebe_tipo_orcamento and empresa_id = :recebe_empresa_id";
+        $comando_busca_contas_bancaria = $pdo->prepare($instrucao_busca_contas_bancaria);
+        $comando_busca_contas_bancaria->bindValue(":recebe_tipo_orcamento","treinamentos");
+        $comando_busca_contas_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_contas_bancaria->execute();
+        $resultado_busca_contas_bancaria = $comando_busca_contas_bancaria->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_contas_bancaria);
+    }else if($recebe_processo_conta_bancaria === "buscar_dados_bancarios_epi_epc")
+    {
+        $instrucao_busca_contas_bancaria = "select * from conta_bancaria where tipo_orcamento = :recebe_tipo_orcamento and empresa_id = :recebe_empresa_id";
+        $comando_busca_contas_bancaria = $pdo->prepare($instrucao_busca_contas_bancaria);
+        $comando_busca_contas_bancaria->bindValue(":recebe_tipo_orcamento","epi_epc");
+        $comando_busca_contas_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_contas_bancaria->execute();
+        $resultado_busca_contas_bancaria = $comando_busca_contas_bancaria->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_contas_bancaria);
     }else if($recebe_processo_conta_bancaria === "buscar_informacoes_conta_bancaria_alteracao")
     {
         $recebe_codigo_conta_bancaria_alteracao = $_GET["valor_codigo_conta_bancaria_alteracao"];
