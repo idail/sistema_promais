@@ -7898,22 +7898,65 @@ debugger;
                 };
                 if (recebe_tipo_orcamento === 'exames_procedimentos') {
                   dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
-                } else if (recebe_tipo_orcamento === 'treinamentos') {
-                  dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
-                } else if (recebe_tipo_orcamento === 'epi_epc') {
-                  dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
-                }
+
+                  let recebe_select_list_agencia_conta_exames_procedimentos = document.getElementById("agencia-conta-exames-select");
 
                 if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
-                if (sel) {
+                if (recebe_select_list_agencia_conta_exames_procedimentos) {
                   const value = `${agencia}|${conta}`;
                   const existe = Array.from(sel.options).some(o => o.value === value);
                   if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
                   const opt = document.createElement('option');
                   opt.value = value;
                   opt.textContent = `Ag ${agencia} • C/C ${conta}`;
-                  sel.appendChild(opt);
+                  recebe_select_list_agencia_conta_exames_procedimentos.appendChild(opt);
                   opt.selected = true;
+                  }
+
+                } else if (recebe_tipo_orcamento === 'treinamentos') {
+                  dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
+
+                  let recebe_select_list_agencia_conta_treinamentos = document.getElementById("agencia-conta-treinamentos-select");
+
+                if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (recebe_select_list_agencia_conta_treinamentos) {
+                  const value = `${agencia}|${conta}`;
+                  const existe = Array.from(sel.options).some(o => o.value === value);
+                  if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  const opt = document.createElement('option');
+                  opt.value = value;
+                  opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  recebe_select_list_agencia_conta_treinamentos.appendChild(opt);
+                  opt.selected = true;
+                  }
+                } else if (recebe_tipo_orcamento === 'epi_epc') {
+                  dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
+
+                  let recebe_select_list_agencia_conta_epi_epc = document.getElementById("agencia-conta-epi-select");
+
+                if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (recebe_select_list_agencia_conta_epi_epc) {
+                  const value = `${agencia}|${conta}`;
+                  const existe = Array.from(sel.options).some(o => o.value === value);
+                  if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  const opt = document.createElement('option');
+                  opt.value = value;
+                  opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  recebe_select_list_agencia_conta_epi_epc.appendChild(opt);
+                  opt.selected = true;
+                  }
+                }
+
+                // if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (sel) {
+                  // const value = `${agencia}|${conta}`;
+                  // const existe = Array.from(sel.options).some(o => o.value === value);
+                  // if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  // const opt = document.createElement('option');
+                  // opt.value = value;
+                  // opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  // sel.appendChild(opt);
+                  // opt.selected = true;
 
                   let recebe_agencia_conta = `Ag ${agencia} • C/C ${conta}`;
 
