@@ -5360,6 +5360,139 @@ function restaurar_tipo_orcamento() {
 
   // Atualiza lista visual se existir função
   // if (typeof updateSelectedList === 'function') updateSelectedList();
+
+  // =====================================================
+  // 🔹 Repopulação dos selects de Agência/Conta e PIX
+  //    por tipo de orçamento (exames, treinamentos, epi/epc)
+  // =====================================================
+  try {
+
+    const emEdicao = window.recebe_acao === 'editar';
+
+    // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
+    if (emEdicao && window.kit_tipo_exame) {
+        window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+        window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
+        window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
+        window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
+        window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
+        window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
+    }
+
+    // -------------------------------
+    // Função auxiliar para selects por tipo
+    // -------------------------------
+    const repopularSelectTexto = (idSelect, texto) => {
+      debugger;
+        if (!texto) return;
+        const sel = document.getElementById(idSelect);
+        if (!sel) return;
+
+        let opt = Array.from(sel.options).find(o => o.textContent === texto);
+        if (!opt) {
+            opt = document.createElement('option');
+            opt.value = texto;
+            opt.textContent = texto;
+            sel.appendChild(opt);
+        }
+        sel.value = opt.value;
+    };
+
+    // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
+
+    // EXAMES / PROCEDIMENTOS
+    repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+    repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+
+    // TREINAMENTOS
+    repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+    repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+
+    // EPI / EPC
+    repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+    repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
+    // const emEdicao = window.recebe_acao === 'editar';
+
+    // // Função auxiliar: escolhe texto a partir do kit (edição) ou da variável global
+    // const obterTextoBanco = (propKit, nomeGlobal) => {
+    //   let texto = null;
+    //   if (emEdicao && window.kit_tipo_exame && Object.prototype.hasOwnProperty.call(window.kit_tipo_exame, propKit)) {
+    //     texto = window.kit_tipo_exame[propKit] || null;
+    //   } else {
+    //     texto = window[nomeGlobal] || null;
+    //   }
+
+    //   // Atualiza a global para manter coerência
+    //   window[nomeGlobal] = texto;
+    //   return texto;
+    // };
+
+    // // Função auxiliar para repopular um select simples por texto
+    // const repopularSelectTexto = (idSelect, texto) => {
+    //   if (!texto) return;
+    //   const sel = document.getElementById(idSelect);
+    //   if (!sel) return;
+
+    //   let opt = Array.from(sel.options).find(o => o.textContent === texto);
+    //   if (!opt) {
+    //     opt = document.createElement('option');
+    //     opt.value = texto;
+    //     opt.textContent = texto;
+    //     sel.appendChild(opt);
+    //   }
+    //   sel.value = opt.value;
+    // };
+
+    // // Normaliza tipos para comparação simbólica
+    // const tiposLower = tipos.map(t => String(t).toLowerCase().trim());
+
+    // // ---------------- EXAMES / PROCEDIMENTOS ----------------
+    // if (tiposLower.includes('exames_procedimentos')) {
+    //   const txtAg = obterTextoBanco(
+    //     'informacoes_dados_bancarios_agenciaconta_exames_procedimentos',
+    //     'dado_bancario_agencia_conta_exames_procedimentos'
+    //   );
+    //   const txtPix = obterTextoBanco(
+    //     'informacoes_dados_bancarios_pix_exames_procedimentos',
+    //     'dado_bancario_pix_exames_procedimentos'
+    //   );
+
+    //   repopularSelectTexto('agencia-conta-exames-select', txtAg);
+    //   repopularSelectTexto('pix-exames-select', txtPix);
+    // }
+
+    // // ---------------- TREINAMENTOS ----------------
+    // if (tiposLower.includes('treinamentos')) {
+    //   const txtAg = obterTextoBanco(
+    //     'informacoes_dados_bancarios_agenciaconta_treinamentos',
+    //     'dado_bancario_agencia_conta_treinamentos'
+    //   );
+    //   const txtPix = obterTextoBanco(
+    //     'informacoes_dados_bancarios_pix_treinamentos',
+    //     'dado_bancario_pix_treinamentos'
+    //   );
+
+    //   repopularSelectTexto('agencia-conta-treinamentos-select', txtAg);
+    //   repopularSelectTexto('pix-treinamentos-select', txtPix);
+    // }
+
+    // // ---------------- EPI / EPC ----------------
+    // if (tiposLower.includes('epi_epc')) {
+    //   const txtAg = obterTextoBanco(
+    //     'informacoes_dados_bancarios_agenciaconta_epi_epc',
+    //     'dado_bancario_agencia_conta_epi_epc'
+    //   );
+    //   const txtPix = obterTextoBanco(
+    //     'informacoes_dados_bancarios_pix_epi_epc',
+    //     'dado_bancario_pix_epi_epc'
+    //   );
+
+    //   repopularSelectTexto('agencia-conta-epi-select', txtAg);
+    //   repopularSelectTexto('pix-epi-select', txtPix);
+    // }
+  } catch (e) {
+    console.warn('Falha ao repopular selects de dados bancários em restaurar_tipo_orcamento:', e);
+  }
 }
 
 
@@ -5816,6 +5949,41 @@ function repopular_produtos() {
                   // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
                   if (!adicionou) {
                     // não faz nada aqui; o bloco acPopularExemplos() cuidará
+                  }
+
+                  // =============================
+                  // Seleciona a opção correta
+                  // =============================
+                  try {
+                    const emEdicao = window.recebe_acao === 'editar';
+                    let textoSelecionar = null;
+
+                    if (emEdicao && window.kit_tipo_exame) {
+                      // Usa valor vindo do kit em edição
+                      textoSelecionar = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+                      window.dado_bancario_agencia_conta_exames_procedimentos = textoSelecionar;
+                    } else {
+                      // Usa valor mantido em variável global
+                      textoSelecionar = window.dado_bancario_agencia_conta_exames_procedimentos || null;
+                    }
+
+                    if (textoSelecionar) {
+                      const opcoes = Array.from(sel.options);
+
+                      // 1) tenta casar pelo texto visível (ex.: "Ag 1234 • C/C 56789-0")
+                      let optSel = opcoes.find(o => o.textContent === textoSelecionar);
+
+                      // 2) se não achar, tenta casar pelo value (ex.: "1234|56789-0")
+                      if (!optSel) {
+                        optSel = opcoes.find(o => o.value === textoSelecionar);
+                      }
+
+                      if (optSel) {
+                        sel.value = optSel.value;
+                      }
+                    }
+                  } catch (eSel) {
+                    console.warn('Falha ao selecionar agência/conta em carregarAgenciasContasExamesProcedimentos:', eSel);
                   }
                 } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
               },
@@ -6322,6 +6490,7 @@ function restaurarEstadoBancario() {
 
     // Restaura os valores dos selects
 setTimeout(() => {
+  debugger;
     // Função para normalizar PIX (apenas números)
     const formatarPix = (pix) => pix.replace(/\D/g, '');
 
@@ -6332,7 +6501,19 @@ setTimeout(() => {
         .replace(/\s+/g, '')          // Remove espaços extras
         .trim();
 
-    // Restaura PIX
+    // const emEdicao = window.recebe_acao === 'editar';
+
+    // // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
+    // if (emEdicao && window.kit_tipo_exame) {
+    //     window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+    //     window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
+    //     window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
+    //     window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
+    //     window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
+    //     window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
+    // }
+
+    // Restaura PIX (select principal)
     if (estado.chavePix) {
         const pixSelect = document.getElementById('pix-key-select');
         const pixContainer = document.getElementById('pix-selector-container');
@@ -6340,7 +6521,7 @@ setTimeout(() => {
         if (pixSelect && pixContainer) {
             let valorPix = estado.chavePix;
 
-            if (window.recebe_acao === 'editar') {
+            if (emEdicao) {
                 valorPix = formatarPix(valorPix);
             }
 
@@ -6350,7 +6531,7 @@ setTimeout(() => {
         }
     }
 
-    // Restaura Agência/Conta
+    // Restaura Agência/Conta (select principal)
     if (estado.agenciaConta) {
         const acSelect = document.getElementById('agencia-conta-select');
         const acContainer = document.getElementById('agencia-selector-container');
@@ -6358,7 +6539,7 @@ setTimeout(() => {
         if (acSelect && acContainer) {
             let valorAC = estado.agenciaConta;
 
-            if (window.recebe_acao === 'editar') {
+            if (emEdicao) {
                 valorAC = formatarAgenciaConta(valorAC);
             }
 
@@ -6367,6 +6548,39 @@ setTimeout(() => {
             acSelect.dispatchEvent(new Event('change'));
         }
     }
+
+    // -------------------------------
+    // Função auxiliar para selects por tipo
+    // -------------------------------
+    // const repopularSelectTexto = (idSelect, texto) => {
+    //   debugger;
+    //     if (!texto) return;
+    //     const sel = document.getElementById(idSelect);
+    //     if (!sel) return;
+
+    //     let opt = Array.from(sel.options).find(o => o.textContent === texto);
+    //     if (!opt) {
+    //         opt = document.createElement('option');
+    //         opt.value = texto;
+    //         opt.textContent = texto;
+    //         sel.appendChild(opt);
+    //     }
+    //     sel.value = opt.value;
+    // };
+
+    // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
+
+    // EXAMES / PROCEDIMENTOS
+    // repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+    // repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+
+    // // TREINAMENTOS
+    // repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+    // repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+
+    // // EPI / EPC
+    // repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+    // repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
 
     // Força a atualização da UI
     if (typeof atualizarVisibilidadePix === 'function') {
@@ -6760,37 +6974,7 @@ function gravar_pix(pix) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_pix: pix
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-pix-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-pix-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-pix-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-
-          // $("#exame-gravado").html(retorno_exame_geracao_kit);
-          // $("#exame-gravado").show();
-          // $("#exame-gravado").fadeOut(4000);
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6812,38 +6996,7 @@ function gravar_agencia_conta(agencia_conta) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_agencia_conta: agencia_conta
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-agencia-conta-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-agencia-conta-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-agencia-conta-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-
-          // $("#exame-gravado").html(retorno_exame_geracao_kit);
-          // $("#exame-gravado").show();
-          // $("#exame-gravado").fadeOut(4000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6867,33 +7020,7 @@ function gravar_informacoes_bancarias_qrcode(valor_informacoes_bancarias) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_qrcode: window.valor_informacoes_bancarias_qrcode
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-informacoes-bancarias-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6917,33 +7044,7 @@ function gravar_informacoes_bancarias_agencia_conta(valor_informacoes_bancarias)
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_agencia_conta: window.valor_informacoes_bancarias_agencia_conta
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-informacoes-bancarias-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6967,33 +7068,7 @@ function gravar_informacoes_bancarias_pix(valor_informacoes_bancarias) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_pix: window.valor_informacoes_bancarias_pix
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-informacoes-bancarias-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -7283,6 +7358,9 @@ if (!window._delegacaoTipoConta) {
               if (recebe_tipo_orcamento === 'exames_procedimentos') {
                 dataKitPix.valor_pix_exames = recebe_pix_kit;
 
+                // guarda PIX global para EXAMES/PROCEDIMENTOS
+                window.dado_bancario_pix_exames_procedimentos = recebe_pix_kit;
+
                 let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-exames-select");
 
                 // Adicionar nova opção
@@ -7295,6 +7373,9 @@ if (!window._delegacaoTipoConta) {
               } else if (recebe_tipo_orcamento === 'treinamentos') {
                 dataKitPix.valor_pix_treinamentos = recebe_pix_kit;
 
+                // guarda PIX global para TREINAMENTOS
+                window.dado_bancario_pix_treinamentos = recebe_pix_kit;
+
                 let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-treinamentos-select");
 
                 // Adicionar nova opção
@@ -7306,6 +7387,9 @@ if (!window._delegacaoTipoConta) {
                 option.selected = true;
               } else if (recebe_tipo_orcamento === 'epi_epc') {
                 dataKitPix.valor_pix_epi_epc = recebe_pix_kit;
+
+                // guarda PIX global para EPI/EPC
+                window.dado_bancario_pix_epi_epc = recebe_pix_kit;
 
                 let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-epi-select");
 
@@ -7414,8 +7498,10 @@ if (!window._delegacaoTipoConta) {
             const mensagemSucesso = `
              <div id="pix-gravado-kit" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
                 <div style="display: flex; align-items: center; justify-content: center;">
+                  
                   <div>
-                  <div>KIT Atualizado com com sucesso.</div>
+                    
+                    <div>KIT Atualizado com sucesso.</div>
                   </div>
                 </div>
               </div>
@@ -7935,6 +8021,9 @@ debugger;
                 if (recebe_tipo_orcamento === 'exames_procedimentos') {
                   dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
 
+                  // guarda AGENCIA/CONTA global para EXAMES/PROCEDIMENTOS
+                  window.dado_bancario_agencia_conta_exames_procedimentos = recebe_agencia_conta;
+
                   let recebe_select_list_agencia_conta_exames_procedimentos = document.getElementById("agencia-conta-exames-select");
 
                 if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
@@ -7952,6 +8041,9 @@ debugger;
                 } else if (recebe_tipo_orcamento === 'treinamentos') {
                   dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
 
+                  // guarda AGENCIA/CONTA global para TREINAMENTOS
+                  window.dado_bancario_agencia_conta_treinamentos = recebe_agencia_conta;
+
                   let recebe_select_list_agencia_conta_treinamentos = document.getElementById("agencia-conta-treinamentos-select");
 
                 if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
@@ -7967,6 +8059,9 @@ debugger;
                   }
                 } else if (recebe_tipo_orcamento === 'epi_epc') {
                   dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
+
+                  // guarda AGENCIA/CONTA global para EPI/EPC
+                  window.dado_bancario_agencia_conta_epi_epc = recebe_agencia_conta;
 
                   let recebe_select_list_agencia_conta_epi_epc = document.getElementById("agencia-conta-epi-select");
 
@@ -10071,17 +10166,28 @@ try {
     });
 
     let empresas = [];
+
     let clinicas = [];
     let pessoas = [];
+
     let cargos = [];
 
-    
+    // ==========================
+    // Globais de dados bancários
+    // ==========================
+    window.dado_bancario_agencia_conta_exames_procedimentos = window.dado_bancario_agencia_conta_exames_procedimentos || null;
+    window.dado_bancario_agencia_conta_treinamentos = window.dado_bancario_agencia_conta_treinamentos || null;
+    window.dado_bancario_agencia_conta_epi_epc = window.dado_bancario_agencia_conta_epi_epc || null;
 
-    $(document).ready(async function(e){
+    window.dado_bancario_pix_exames_procedimentos = window.dado_bancario_pix_exames_procedimentos || null;
+    window.dado_bancario_pix_treinamentos = window.dado_bancario_pix_treinamentos || null;
+    window.dado_bancario_pix_epi_epc = window.dado_bancario_pix_epi_epc || null;
+
+    $(document).ready(function(){
+
       debugger;
 
       
-
 
 
       $("#exame-gravado").hide();

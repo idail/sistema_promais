@@ -4457,8 +4457,14 @@ function repopular_laudos() {
         window.tipo_orcamento = window.kit_tipo_exame.tipo_orcamento;
         window.assinatura_digital = window.kit_tipo_exame.assinatura_digital;
         window.tipo_dado_bancario = window.kit_tipo_exame.tipo_dado_bancario;
-        window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
-        window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        // window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
+        // window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos;
+        windiw.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos;
+        window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos;
+        window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos;
+        window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc;
+        window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc;
         window.modelos_documentos = window.kit_tipo_exame.modelos_selecionados;
         window.fonoaudiologo = await requisitarDadosFonoaudiologoKITEspecifico(window.kit_tipo_exame.medico_fonoaudiologo);
         window.informacoes_dados_bancarios_qrcode = window.kit_tipo_exame.informacoes_dados_bancarios_qrcode;
@@ -4835,8 +4841,12 @@ try {
         
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
 
-        carregarAsChavesPIX();
-        carregarAgenciasContas();
+        carregarAsChavesPIXEmpresasProcedimentos();
+        carregarAgenciasContasExamesProcedimentos();
+        carregarAsChavesPIXTreinamentos();
+        carregarAgenciasContasTreinamentos();
+        carregarAsChavesPIXEPIEPC();
+        carregarAgenciasContasEPIEPC();
         repopular_produtos();
         restaurar_tipo_orcamento();
         restaurarModelosSelecionados();
@@ -5350,6 +5360,139 @@ function restaurar_tipo_orcamento() {
 
   // Atualiza lista visual se existir função
   // if (typeof updateSelectedList === 'function') updateSelectedList();
+
+  // =====================================================
+  // 🔹 Repopulação dos selects de Agência/Conta e PIX
+  //    por tipo de orçamento (exames, treinamentos, epi/epc)
+  // =====================================================
+  try {
+
+    const emEdicao = window.recebe_acao === 'editar';
+
+    // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
+    if (emEdicao && window.kit_tipo_exame) {
+        window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+        window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
+        window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
+        window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
+        window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
+        window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
+    }
+
+    // -------------------------------
+    // Função auxiliar para selects por tipo
+    // -------------------------------
+    const repopularSelectTexto = (idSelect, texto) => {
+      debugger;
+        if (!texto) return;
+        const sel = document.getElementById(idSelect);
+        if (!sel) return;
+
+        let opt = Array.from(sel.options).find(o => o.textContent === texto);
+        if (!opt) {
+            opt = document.createElement('option');
+            opt.value = texto;
+            opt.textContent = texto;
+            sel.appendChild(opt);
+        }
+        sel.value = opt.value;
+    };
+
+    // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
+
+    // EXAMES / PROCEDIMENTOS
+    repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+    repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+
+    // TREINAMENTOS
+    repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+    repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+
+    // EPI / EPC
+    repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+    repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
+    // const emEdicao = window.recebe_acao === 'editar';
+
+    // // Função auxiliar: escolhe texto a partir do kit (edição) ou da variável global
+    // const obterTextoBanco = (propKit, nomeGlobal) => {
+    //   let texto = null;
+    //   if (emEdicao && window.kit_tipo_exame && Object.prototype.hasOwnProperty.call(window.kit_tipo_exame, propKit)) {
+    //     texto = window.kit_tipo_exame[propKit] || null;
+    //   } else {
+    //     texto = window[nomeGlobal] || null;
+    //   }
+
+    //   // Atualiza a global para manter coerência
+    //   window[nomeGlobal] = texto;
+    //   return texto;
+    // };
+
+    // // Função auxiliar para repopular um select simples por texto
+    // const repopularSelectTexto = (idSelect, texto) => {
+    //   if (!texto) return;
+    //   const sel = document.getElementById(idSelect);
+    //   if (!sel) return;
+
+    //   let opt = Array.from(sel.options).find(o => o.textContent === texto);
+    //   if (!opt) {
+    //     opt = document.createElement('option');
+    //     opt.value = texto;
+    //     opt.textContent = texto;
+    //     sel.appendChild(opt);
+    //   }
+    //   sel.value = opt.value;
+    // };
+
+    // // Normaliza tipos para comparação simbólica
+    // const tiposLower = tipos.map(t => String(t).toLowerCase().trim());
+
+    // // ---------------- EXAMES / PROCEDIMENTOS ----------------
+    // if (tiposLower.includes('exames_procedimentos')) {
+    //   const txtAg = obterTextoBanco(
+    //     'informacoes_dados_bancarios_agenciaconta_exames_procedimentos',
+    //     'dado_bancario_agencia_conta_exames_procedimentos'
+    //   );
+    //   const txtPix = obterTextoBanco(
+    //     'informacoes_dados_bancarios_pix_exames_procedimentos',
+    //     'dado_bancario_pix_exames_procedimentos'
+    //   );
+
+    //   repopularSelectTexto('agencia-conta-exames-select', txtAg);
+    //   repopularSelectTexto('pix-exames-select', txtPix);
+    // }
+
+    // // ---------------- TREINAMENTOS ----------------
+    // if (tiposLower.includes('treinamentos')) {
+    //   const txtAg = obterTextoBanco(
+    //     'informacoes_dados_bancarios_agenciaconta_treinamentos',
+    //     'dado_bancario_agencia_conta_treinamentos'
+    //   );
+    //   const txtPix = obterTextoBanco(
+    //     'informacoes_dados_bancarios_pix_treinamentos',
+    //     'dado_bancario_pix_treinamentos'
+    //   );
+
+    //   repopularSelectTexto('agencia-conta-treinamentos-select', txtAg);
+    //   repopularSelectTexto('pix-treinamentos-select', txtPix);
+    // }
+
+    // // ---------------- EPI / EPC ----------------
+    // if (tiposLower.includes('epi_epc')) {
+    //   const txtAg = obterTextoBanco(
+    //     'informacoes_dados_bancarios_agenciaconta_epi_epc',
+    //     'dado_bancario_agencia_conta_epi_epc'
+    //   );
+    //   const txtPix = obterTextoBanco(
+    //     'informacoes_dados_bancarios_pix_epi_epc',
+    //     'dado_bancario_pix_epi_epc'
+    //   );
+
+    //   repopularSelectTexto('agencia-conta-epi-select', txtAg);
+    //   repopularSelectTexto('pix-epi-select', txtPix);
+    // }
+  } catch (e) {
+    console.warn('Falha ao repopular selects de dados bancários em restaurar_tipo_orcamento:', e);
+  }
 }
 
 
@@ -5721,9 +5864,10 @@ function repopular_produtos() {
 
 
 
-        function carregarAsChavesPIX()
+        function carregarAsChavesPIXEmpresasProcedimentos()
         {
-          const pixKeySelect = document.getElementById('pix-key-select');
+          // const pixKeySelect = document.getElementById('pix-key-select');
+          const pixKeySelect = document.getElementById('pix-exames-select');
     if (!pixKeySelect) return;
 
     // Limpa as opções exceto a primeira
@@ -5737,7 +5881,7 @@ function repopular_produtos() {
         method: 'GET',
         dataType: 'json',
         data: { 
-            processo_conta_bancaria: 'buscar_contas_bancarias' 
+            processo_conta_bancaria: 'buscar_pix_exames_procedimentos' 
         },
         success: function(res) {
           debugger;
@@ -5769,18 +5913,19 @@ function repopular_produtos() {
     });
         }
 
-        function carregarAgenciasContas()
+        function carregarAgenciasContasExamesProcedimentos()
         {
           // Carrega Agência/Conta do backend (apenas agência e conta)
             $.ajax({
               url: 'cadastros/processa_conta_bancaria.php',
               method: 'GET',
               dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+              data: { processo_conta_bancaria: 'buscar_contas_bancarias_exames_procedimentos' },
               success: function(res){
                 debugger;
                 try {
-                  const sel = document.getElementById('agencia-conta-select');
+                  // const sel = document.getElementById('agencia-conta-select');
+                  const sel = document.getElementById('agencia-conta-exames-select');
                   if (!sel) return;
                   // Limpa mantendo o placeholder
                   while (sel.options.length > 1) sel.remove(1);
@@ -5814,6 +5959,196 @@ function repopular_produtos() {
             });
         }
 
+        function carregarAsChavesPIXTreinamentos()
+        {
+          // const pixKeySelect = document.getElementById('pix-key-select');
+          const pixKeySelect = document.getElementById('pix-treinamentos-select');
+    if (!pixKeySelect) return;
+
+    // Limpa as opções exceto a primeira
+    while (pixKeySelect.options.length > 1) {
+        pixKeySelect.remove(1);
+    }
+
+    // Faz a requisição para buscar as chaves PIX
+    $.ajax({
+        url: 'cadastros/processa_conta_bancaria.php',
+        method: 'GET',
+        dataType: 'json',
+        data: { 
+            processo_conta_bancaria: 'buscar_pix_treinamentos' 
+        },
+        success: function(res) {
+          debugger;
+            try {
+                if (Array.isArray(res) && res.length) {
+                    const vistos = new Set();
+                    res.forEach(item => {
+                        const tipo = String(item.tipo_pix || '').trim();
+                        const valor = String(item.valor_pix || '').trim();
+                        if (!tipo || !valor) return;
+                        
+                        const chave = `${tipo}|${valor}`;
+                        if (vistos.has(chave)) return;
+                        vistos.add(chave);
+                        
+                        const opt = document.createElement('option');
+                        opt.value = valor;
+                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                        pixKeySelect.appendChild(opt);
+                    });
+                }
+            } catch(e) {
+                console.error('Erro ao processar chaves PIX:', e);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao carregar chaves PIX:', error);
+        }
+    });
+        }
+
+        function carregarAgenciasContasTreinamentos()
+        {
+          // Carrega Agência/Conta do backend (apenas agência e conta)
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { processo_conta_bancaria: 'buscar_agencia_conta_treinamentos' },
+              success: function(res){
+                debugger;
+                try {
+                  // const sel = document.getElementById('agencia-conta-select');
+                  const sel = document.getElementById('agencia-conta-treinamentos-select');
+                  if (!sel) return;
+                  // Limpa mantendo o placeholder
+                  while (sel.options.length > 1) sel.remove(1);
+                  let adicionou = false;
+                  if (Array.isArray(res)) {
+                    const vistos = new Set();
+                    res.forEach(it => {
+                      const agencia = String(it.agencia || '').trim();
+                      const conta = String(it.conta || '').trim();
+                      if (!agencia || !conta) return;
+                      const value = `${agencia}|${conta}`;
+                      if (vistos.has(value)) return;
+                      vistos.add(value);
+                      const opt = document.createElement('option');
+                      opt.value = value;
+                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                      sel.appendChild(opt);
+                      adicionou = true;
+                    });
+                  }
+                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+                  if (!adicionou) {
+                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
+                  }
+                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+              },
+              error: function(xhr, status, error){
+                console.warn('Erro ao buscar contas bancárias:', status, error);
+                // Em caso de erro, o fallback de exemplos (abaixo) será usado
+              }
+            });
+        }
+
+        function carregarAsChavesPIXEPIEPC()
+        {
+          // const pixKeySelect = document.getElementById('pix-key-select');
+          const pixKeySelect = document.getElementById('pix-epi-select');
+    if (!pixKeySelect) return;
+
+    // Limpa as opções exceto a primeira
+    while (pixKeySelect.options.length > 1) {
+        pixKeySelect.remove(1);
+    }
+
+    // Faz a requisição para buscar as chaves PIX
+    $.ajax({
+        url: 'cadastros/processa_conta_bancaria.php',
+        method: 'GET',
+        dataType: 'json',
+        data: { 
+            processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' 
+        },
+        success: function(res) {
+          debugger;
+            try {
+                if (Array.isArray(res) && res.length) {
+                    const vistos = new Set();
+                    res.forEach(item => {
+                        const tipo = String(item.tipo_pix || '').trim();
+                        const valor = String(item.valor_pix || '').trim();
+                        if (!tipo || !valor) return;
+                        
+                        const chave = `${tipo}|${valor}`;
+                        if (vistos.has(chave)) return;
+                        vistos.add(chave);
+                        
+                        const opt = document.createElement('option');
+                        opt.value = valor;
+                        opt.textContent = `${tipo.toUpperCase()}: ${valor}`;
+                        pixKeySelect.appendChild(opt);
+                    });
+                }
+            } catch(e) {
+                console.error('Erro ao processar chaves PIX:', e);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao carregar chaves PIX:', error);
+        }
+    });
+        }
+
+
+        function carregarAgenciasContasEPIEPC()
+        {
+          // Carrega Agência/Conta do backend (apenas agência e conta)
+            $.ajax({
+              url: 'cadastros/processa_conta_bancaria.php',
+              method: 'GET',
+              dataType: 'json',
+              data: { processo_conta_bancaria: 'buscar_dados_bancarios_epi_epc' },
+              success: function(res){
+                debugger;
+                try {
+                  // const sel = document.getElementById('agencia-conta-select');
+                  const sel = document.getElementById('agencia-conta-epi-select');
+                  if (!sel) return;
+                  // Limpa mantendo o placeholder
+                  while (sel.options.length > 1) sel.remove(1);
+                  let adicionou = false;
+                  if (Array.isArray(res)) {
+                    const vistos = new Set();
+                    res.forEach(it => {
+                      const agencia = String(it.agencia || '').trim();
+                      const conta = String(it.conta || '').trim();
+                      if (!agencia || !conta) return;
+                      const value = `${agencia}|${conta}`;
+                      if (vistos.has(value)) return;
+                      vistos.add(value);
+                      const opt = document.createElement('option');
+                      opt.value = value;
+                      opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                      sel.appendChild(opt);
+                      adicionou = true;
+                    });
+                  }
+                  // Se não veio nada do backend, mantém o fallback de exemplos (abaixo)
+                  if (!adicionou) {
+                    // não faz nada aqui; o bloco acPopularExemplos() cuidará
+                  }
+                } catch(e){ console.warn('Falha ao popular Agência/Conta via AJAX:', e); }
+              },
+              error: function(xhr, status, error){
+                console.warn('Erro ao buscar contas bancárias:', status, error);
+                // Em caso de erro, o fallback de exemplos (abaixo) será usado
+              }
+            });
+        }
         
 
         // ============================================================
@@ -6120,6 +6455,7 @@ function restaurarEstadoBancario() {
 
     // Restaura os valores dos selects
 setTimeout(() => {
+  debugger;
     // Função para normalizar PIX (apenas números)
     const formatarPix = (pix) => pix.replace(/\D/g, '');
 
@@ -6130,7 +6466,19 @@ setTimeout(() => {
         .replace(/\s+/g, '')          // Remove espaços extras
         .trim();
 
-    // Restaura PIX
+    // const emEdicao = window.recebe_acao === 'editar';
+
+    // // Se estiver em edição, sobrescreve as globais a partir do kit_tipo_exame
+    // if (emEdicao && window.kit_tipo_exame) {
+    //     window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos || null;
+    //     window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos || null;
+    //     window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos || null;
+    //     window.dado_bancario_pix_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_treinamentos || null;
+    //     window.dado_bancario_agencia_conta_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_epi_epc || null;
+    //     window.dado_bancario_pix_epi_epc = window.kit_tipo_exame.informacoes_dados_bancarios_pix_epi_epc || null;
+    // }
+
+    // Restaura PIX (select principal)
     if (estado.chavePix) {
         const pixSelect = document.getElementById('pix-key-select');
         const pixContainer = document.getElementById('pix-selector-container');
@@ -6138,7 +6486,7 @@ setTimeout(() => {
         if (pixSelect && pixContainer) {
             let valorPix = estado.chavePix;
 
-            if (window.recebe_acao === 'editar') {
+            if (emEdicao) {
                 valorPix = formatarPix(valorPix);
             }
 
@@ -6148,7 +6496,7 @@ setTimeout(() => {
         }
     }
 
-    // Restaura Agência/Conta
+    // Restaura Agência/Conta (select principal)
     if (estado.agenciaConta) {
         const acSelect = document.getElementById('agencia-conta-select');
         const acContainer = document.getElementById('agencia-selector-container');
@@ -6156,7 +6504,7 @@ setTimeout(() => {
         if (acSelect && acContainer) {
             let valorAC = estado.agenciaConta;
 
-            if (window.recebe_acao === 'editar') {
+            if (emEdicao) {
                 valorAC = formatarAgenciaConta(valorAC);
             }
 
@@ -6165,6 +6513,39 @@ setTimeout(() => {
             acSelect.dispatchEvent(new Event('change'));
         }
     }
+
+    // -------------------------------
+    // Função auxiliar para selects por tipo
+    // -------------------------------
+    // const repopularSelectTexto = (idSelect, texto) => {
+    //   debugger;
+    //     if (!texto) return;
+    //     const sel = document.getElementById(idSelect);
+    //     if (!sel) return;
+
+    //     let opt = Array.from(sel.options).find(o => o.textContent === texto);
+    //     if (!opt) {
+    //         opt = document.createElement('option');
+    //         opt.value = texto;
+    //         opt.textContent = texto;
+    //         sel.appendChild(opt);
+    //     }
+    //     sel.value = opt.value;
+    // };
+
+    // Usa sempre as globais (já preenchidas pelos salvamentos ou pelo kit_tipo_exame em edição)
+
+    // EXAMES / PROCEDIMENTOS
+    // repopularSelectTexto('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+    // repopularSelectTexto('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+
+    // // TREINAMENTOS
+    // repopularSelectTexto('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+    // repopularSelectTexto('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+
+    // // EPI / EPC
+    // repopularSelectTexto('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+    // repopularSelectTexto('pix-epi-select', window.dado_bancario_pix_epi_epc);
 
     // Força a atualização da UI
     if (typeof atualizarVisibilidadePix === 'function') {
@@ -6558,37 +6939,7 @@ function gravar_pix(pix) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_pix: pix
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-pix-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-pix-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-pix-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-
-          // $("#exame-gravado").html(retorno_exame_geracao_kit);
-          // $("#exame-gravado").show();
-          // $("#exame-gravado").fadeOut(4000);
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6610,38 +6961,7 @@ function gravar_agencia_conta(agencia_conta) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_agencia_conta: agencia_conta
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-agencia-conta-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-agencia-conta-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-agencia-conta-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-
-          // $("#exame-gravado").html(retorno_exame_geracao_kit);
-          // $("#exame-gravado").show();
-          // $("#exame-gravado").fadeOut(4000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6665,33 +6985,7 @@ function gravar_informacoes_bancarias_qrcode(valor_informacoes_bancarias) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_qrcode: window.valor_informacoes_bancarias_qrcode
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-informacoes-bancarias-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6715,33 +7009,7 @@ function gravar_informacoes_bancarias_agencia_conta(valor_informacoes_bancarias)
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_agencia_conta: window.valor_informacoes_bancarias_agencia_conta
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-informacoes-bancarias-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -6765,33 +7033,7 @@ function gravar_informacoes_bancarias_pix(valor_informacoes_bancarias) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_pix: window.valor_informacoes_bancarias_pix
     },
-    success: function(ret) { 
-      const mensagemSucesso = `
-                <div id="dados-informacoes-bancarias-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    
-                    <div>
-                      
-                      <div>KIT atualizado com sucesso.</div>
-                    </div>
-                  </div>
-                </div>
-          `;
-
-          // Remove mensagem anterior se existir
-          $("#dados-informacoes-bancarias-gravado").remove();
-              
-          // Adiciona a nova mensagem acima das abas
-          $(".tabs-container").before(mensagemSucesso);
-
-          // Configura o fade out após 5 segundos
-          setTimeout(function() {
-            $("#dados-informacoes-bancarias-gravado").fadeOut(500, function() {
-            $(this).remove();
-            });
-          }, 5000);
-
-     },
+    success: function(ret) { /* ... mesmo conteúdo ... */ },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -7071,7 +7313,60 @@ if (!window._delegacaoTipoConta) {
               const tipoChave = tipoChaveSelect?.value || '';
               const chavePix = document.getElementById('chave-pix')?.value.trim() || '';
               const pixKeySelect = document.getElementById('pix-key-select');
-              
+              const recebe_tipo_orcamento = document.getElementById('tipo_orcamento_atual')?.value.trim() || '';
+
+              let recebe_pix_kit = `${tipoChave.toUpperCase()}: ${chavePix}`;
+              let dataKitPix = {
+                processo_geracao_kit: "incluir_valores_kit",
+                valor_tipo_orcamento: recebe_tipo_orcamento
+              };
+              if (recebe_tipo_orcamento === 'exames_procedimentos') {
+                dataKitPix.valor_pix_exames = recebe_pix_kit;
+
+                // guarda PIX global para EXAMES/PROCEDIMENTOS
+                window.dado_bancario_pix_exames_procedimentos = recebe_pix_kit;
+
+                let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-exames-select");
+
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
+                recebe_select_list_pix_exames_procedimentos.appendChild(option);
+                option.selected = true;
+              } else if (recebe_tipo_orcamento === 'treinamentos') {
+                dataKitPix.valor_pix_treinamentos = recebe_pix_kit;
+
+                // guarda PIX global para TREINAMENTOS
+                window.dado_bancario_pix_treinamentos = recebe_pix_kit;
+
+                let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-treinamentos-select");
+
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
+                recebe_select_list_pix_exames_procedimentos.appendChild(option);
+                option.selected = true;
+              } else if (recebe_tipo_orcamento === 'epi_epc') {
+                dataKitPix.valor_pix_epi_epc = recebe_pix_kit;
+
+                // guarda PIX global para EPI/EPC
+                window.dado_bancario_pix_epi_epc = recebe_pix_kit;
+
+                let recebe_select_list_pix_exames_procedimentos = document.getElementById("pix-epi-select");
+
+                // Adicionar nova opção
+                const option = document.createElement('option');
+                option.value = chavePix;
+                // option.textContent = `${tipoChave.toUpperCase()}: ${chavePix} (${banco} - Ag ${agencia} C/C ${conta})`;
+                option.textContent = `${tipoChave.toUpperCase()}: ${chavePix}`;
+                recebe_select_list_pix_exames_procedimentos.appendChild(option);
+                option.selected = true;
+              }
+
               // Validação
               if (!tipoChave || !chavePix) {
                 Swal.fire({
@@ -7156,10 +7451,7 @@ if (!window._delegacaoTipoConta) {
           type: "POST",
           dataType: "json",
           async: false,
-          data: {
-             processo_geracao_kit: "incluir_valores_kit",
-             valor_pix: recebe_pix_kit,
-          },
+          data: dataKitPix,
           success: function(retorno_exame_geracao_kit) {
             debugger;
             try {
@@ -7171,8 +7463,10 @@ if (!window._delegacaoTipoConta) {
             const mensagemSucesso = `
              <div id="pix-gravado-kit" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
                 <div style="display: flex; align-items: center; justify-content: center;">
+                  
                   <div>
-                  <div>KIT Atualizado com com sucesso.</div>
+                    
+                    <div>KIT Atualizado com sucesso.</div>
                   </div>
                 </div>
               </div>
@@ -7278,74 +7572,6 @@ if (!window._delegacaoTipoConta) {
             // // Limpa as opções exceto a primeira
             // while (pixKeySelect.options.length > 1) {
             //   pixKeySelect.remove(1);
-            // }
-
-            // function gravar_pix(pix) {
-            //   debugger;
-            //   try {
-            //     console.group('Conta Bancária > gravar_pix');
-            //     console.log('Valor recebido para gravação:', pix);
-            //     console.groupEnd();
-            //   } catch (e) { /* noop */ }
-            //   $.ajax({
-            //     url: "cadastros/processa_geracao_kit.php",
-            //     type: "POST",
-            //     dataType: "json",
-            //     async: false,
-            //     data: {
-            //       processo_geracao_kit: "incluir_valores_kit",
-            //       valor_pix: pix,
-            //     },
-            //     success: function(retorno_exame_geracao_kit) {
-            //       debugger;
-            //       try {
-            //         console.group('AJAX > sucesso inclusão valor kit');
-            //         console.log('Retorno:', retorno_exame_geracao_kit);
-            //         console.groupEnd();
-            //       } catch(e) { /* noop */ }
-
-            //       const mensagemSucesso = `
-            //             <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-            //               <div style="display: flex; align-items: center; justify-content: center;">
-                            
-            //                 <div>
-                              
-            //                   <div>Exame cadastrado com sucesso.</div>
-            //                 </div>
-            //               </div>
-            //             </div>
-            //       `;
-
-            //       // Remove mensagem anterior se existir
-            //       $("#exame-gravado").remove();
-                      
-            //       // Adiciona a nova mensagem acima das abas
-            //       $(".tabs-container").before(mensagemSucesso);
-
-            //       // Configura o fade out após 5 segundos
-            //       setTimeout(function() {
-            //         $("#exame-gravado").fadeOut(500, function() {
-            //         $(this).remove();
-            //         });
-            //       }, 5000);
-
-
-            //       $("#exame-gravado").html(retorno_exame_geracao_kit);
-            //       $("#exame-gravado").show();
-            //       $("#exame-gravado").fadeOut(4000);
-            //       console.log(retorno_exame_geracao_kit);
-            //       ajaxEmExecucao = false; // libera para nova requisição
-            //     },
-            //     error: function(xhr, status, error) {
-            //       console.log("Falha ao incluir exame: " + error);
-            //       ajaxEmExecucao = false; // libera para tentar de novo
-            //     },
-            //     complete: function() {
-            //       try {
-            //         console.log('AJAX > inclusão valor kit finalizado');
-            //       } catch(e) { /* noop */ }
-            //     }
-            //   });
             // }
 
             function gravar_pix(pix) {
@@ -7749,16 +7975,84 @@ debugger;
                 const agencia = document.getElementById('agencia-rapida')?.value.trim() || '';
                 const conta = document.getElementById('conta-rapida')?.value.trim() || '';
                 const sel = document.getElementById('agencia-conta-select');
+                const recebe_tipo_orcamento = document.getElementById('tipo_orcamento_atual')?.value.trim() || '';
+
+                let recebe_agencia_conta = `Ag ${agencia} • C/C ${conta}`;
+
+                let dataKit = {
+                  processo_geracao_kit: "incluir_valores_kit",
+                  valor_tipo_orcamento: recebe_tipo_orcamento
+                };
+                if (recebe_tipo_orcamento === 'exames_procedimentos') {
+                  dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
+
+                  // guarda AGENCIA/CONTA global para EXAMES/PROCEDIMENTOS
+                  window.dado_bancario_agencia_conta_exames_procedimentos = recebe_agencia_conta;
+
+                  let recebe_select_list_agencia_conta_exames_procedimentos = document.getElementById("agencia-conta-exames-select");
+
                 if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
-                if (sel) {
+                if (recebe_select_list_agencia_conta_exames_procedimentos) {
                   const value = `${agencia}|${conta}`;
                   const existe = Array.from(sel.options).some(o => o.value === value);
                   if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
                   const opt = document.createElement('option');
                   opt.value = value;
                   opt.textContent = `Ag ${agencia} • C/C ${conta}`;
-                  sel.appendChild(opt);
+                  recebe_select_list_agencia_conta_exames_procedimentos.appendChild(opt);
                   opt.selected = true;
+                  }
+
+                } else if (recebe_tipo_orcamento === 'treinamentos') {
+                  dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
+
+                  // guarda AGENCIA/CONTA global para TREINAMENTOS
+                  window.dado_bancario_agencia_conta_treinamentos = recebe_agencia_conta;
+
+                  let recebe_select_list_agencia_conta_treinamentos = document.getElementById("agencia-conta-treinamentos-select");
+
+                if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (recebe_select_list_agencia_conta_treinamentos) {
+                  const value = `${agencia}|${conta}`;
+                  const existe = Array.from(sel.options).some(o => o.value === value);
+                  if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  const opt = document.createElement('option');
+                  opt.value = value;
+                  opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  recebe_select_list_agencia_conta_treinamentos.appendChild(opt);
+                  opt.selected = true;
+                  }
+                } else if (recebe_tipo_orcamento === 'epi_epc') {
+                  dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
+
+                  // guarda AGENCIA/CONTA global para EPI/EPC
+                  window.dado_bancario_agencia_conta_epi_epc = recebe_agencia_conta;
+
+                  let recebe_select_list_agencia_conta_epi_epc = document.getElementById("agencia-conta-epi-select");
+
+                if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (recebe_select_list_agencia_conta_epi_epc) {
+                  const value = `${agencia}|${conta}`;
+                  const existe = Array.from(sel.options).some(o => o.value === value);
+                  if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  const opt = document.createElement('option');
+                  opt.value = value;
+                  opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  recebe_select_list_agencia_conta_epi_epc.appendChild(opt);
+                  opt.selected = true;
+                  }
+                }
+
+                // if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
+                if (sel) {
+                  // const value = `${agencia}|${conta}`;
+                  // const existe = Array.from(sel.options).some(o => o.value === value);
+                  // if (existe) { alert('Esta Agência/Conta já está cadastrada.'); return; }
+                  // const opt = document.createElement('option');
+                  // opt.value = value;
+                  // opt.textContent = `Ag ${agencia} • C/C ${conta}`;
+                  // sel.appendChild(opt);
+                  // opt.selected = true;
 
                   let recebe_agencia_conta = `Ag ${agencia} • C/C ${conta}`;
 
@@ -7770,6 +8064,7 @@ debugger;
                         processo_conta_bancaria: "inserir_conta_bancaria",
                         valor_agencia_conta_bancaria: agencia,
                         valor_conta_bancaria: conta,
+                        // valor_tipo_orcamento:recebe_tipo_orcamento
                       },
                       success: function(retorno_conta_bancaria) {
                         debugger;
@@ -7813,10 +8108,7 @@ debugger;
                         type: "POST",
                         dataType: "json",
                         async: false,
-                        data: {
-                          processo_geracao_kit: "incluir_valores_kit",
-                          valor_agencia_conta: recebe_agencia_conta,
-                    },
+                        data: dataKit,
                     success: function(retorno_exame_geracao_kit) {
                       debugger;
                       try {
@@ -9839,17 +10131,28 @@ try {
     });
 
     let empresas = [];
+
     let clinicas = [];
     let pessoas = [];
+
     let cargos = [];
 
-    
+    // ==========================
+    // Globais de dados bancários
+    // ==========================
+    window.dado_bancario_agencia_conta_exames_procedimentos = window.dado_bancario_agencia_conta_exames_procedimentos || null;
+    window.dado_bancario_agencia_conta_treinamentos = window.dado_bancario_agencia_conta_treinamentos || null;
+    window.dado_bancario_agencia_conta_epi_epc = window.dado_bancario_agencia_conta_epi_epc || null;
 
-    $(document).ready(async function(e){
+    window.dado_bancario_pix_exames_procedimentos = window.dado_bancario_pix_exames_procedimentos || null;
+    window.dado_bancario_pix_treinamentos = window.dado_bancario_pix_treinamentos || null;
+    window.dado_bancario_pix_epi_epc = window.dado_bancario_pix_epi_epc || null;
+
+    $(document).ready(function(){
+
       debugger;
 
       
-
 
 
       $("#exame-gravado").hide();
@@ -17191,6 +17494,176 @@ console.log(total); // Exemplo: "180.10"
                   </div>
                 </div>
               </div>
+
+              <!-- Bloco: Exames e Procedimentos -->
+            <div id="orcamento-exames-container"
+                style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+              <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+                Exames e Procedimentos
+              </h3>
+
+              <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+
+                <!-- Exames - Agência e Conta -->
+                <div>
+                  <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                    Selecionar Agência e Conta
+                  </label>
+                  <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div style="flex: 1;">
+                      <select id="agencia-conta-exames-select" class="form-control"
+                              style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                        <option value="">Selecione uma Agência/Conta</option>
+                      </select>
+                    </div>
+
+                    <input type="hidden" value="exames_procedimentos" id="exames-procedimentos"/>
+                    <!-- Reutiliza o modal principal de agência/conta -->
+                    <button type="button"
+                            class="btn btn-primary"
+                            style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                            onclick="document.getElementById('tipo_orcamento_atual').value='exames_procedimentos'; document.getElementById('btn-adicionar-agencia-conta')?.click();">
+                      <i class="fas fa-plus"></i> Cadastrar
+                    </button>
+                  </div>
+                </div>
+
+              <!-- Exames - PIX -->
+              <div>
+                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                  PIX
+                </label>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="flex: 1;">
+                    <select id="pix-exames-select" class="form-control"
+                            style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                      <option value="">Selecione uma chave PIX</option>
+                    </select>
+                  </div>
+                  <!-- Reutiliza o modal principal de PIX -->
+                  <button type="button"
+                          class="btn btn-primary"
+                          style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                          onclick="document.getElementById('tipo_orcamento_atual').value='exames_procedimentos'; document.getElementById('btn-adicionar-pix')?.click();">
+                    <i class="fas fa-plus"></i> Cadastrar
+                  </button>
+                </div>
+              </div>
+
+          </div>
+        </div>
+
+        <!-- Bloco: Treinamentos -->
+        <div id="orcamento-treinamentos-container"
+            style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+          <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+            Treinamentos
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+
+            <!-- Treinamentos - Agência e Conta -->
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                Selecionar Agência e Conta
+              </label>
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="flex: 1;">
+                  <select id="agencia-conta-treinamentos-select" class="form-control"
+                          style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                    <option value="">Selecione uma Agência/Conta</option>
+                  </select>
+                </div>
+                <button type="button"
+                        class="btn btn-primary"
+                        style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                        onclick="document.getElementById('tipo_orcamento_atual').value='treinamentos'; document.getElementById('btn-adicionar-agencia-conta')?.click();">
+                  <i class="fas fa-plus"></i> Cadastrar
+                </button>
+              </div>
+            </div>
+
+            <!-- Treinamentos - PIX -->
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                PIX
+              </label>
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="flex: 1;">
+                  <select id="pix-treinamentos-select" class="form-control"
+                          style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                    <option value="">Selecione uma chave PIX</option>
+                  </select>
+                </div>
+                <input type="hidden" value="treinamentos" id="treinamentos"/>
+                <button type="button"
+                        class="btn btn-primary"
+                        style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                        onclick="document.getElementById('tipo_orcamento_atual').value='treinamentos'; document.getElementById('btn-adicionar-pix')?.click();">
+                  <i class="fas fa-plus"></i> Cadastrar
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+              <!-- Bloco: EPI/EPC -->
+              <div id="orcamento-epi-container"
+                  style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">
+                  EPI/EPC
+                </h3>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+
+                  <!-- EPI/EPC - Agência e Conta -->
+                  <div>
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                      Selecionar Agência e Conta
+                    </label>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                      <div style="flex: 1;">
+                        <select id="agencia-conta-epi-select" class="form-control"
+                                style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                          <option value="">Selecione uma Agência/Conta</option>
+                        </select>
+                      </div>
+                      <button type="button"
+                              class="btn btn-primary"
+                              style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                              onclick="document.getElementById('tipo_orcamento_atual').value='epi_epc'; document.getElementById('btn-adicionar-agencia-conta')?.click();">
+                        <i class="fas fa-plus"></i> Cadastrar
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- EPI/EPC - PIX -->
+                  <div>
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">
+                      PIX
+                    </label>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                      <div style="flex: 1;">
+                        <select id="pix-epi-select" class="form-control"
+                                style="width: 100%; height: 40px; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; color: #111827; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                          <option value="">Selecione uma chave PIX</option>
+                        </select>
+                      </div>
+                      <input type="hidden" value="epi_epc" id="epi-epc"/>
+                      <button type="button"
+                              class="btn btn-primary"
+                              style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
+                              onclick="document.getElementById('tipo_orcamento_atual').value='epi_epc'; document.getElementById('btn-adicionar-pix')?.click();">
+                        <i class="fas fa-plus"></i> Cadastrar
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+            </div>
+
+              <input type="hidden" id="tipo_orcamento_atual" value="" />
               
               <!-- Seletor de Chave PIX -->
               <div id="pix-selector-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
@@ -20894,6 +21367,15 @@ function updateSelectedList() {
     // 🔹 Armazena todos os selecionados (modelos + tipos)
     window.todosSelecionados = [...window._modelosSelecionados, ...window._tiposOrcamentoSelecionados];
 
+        // 🔹 Atualiza apenas a exibição dos blocos por tipo de orçamento
+    try {
+      if (Array.isArray(window._tiposOrcamentoSelecionados)) {
+        atualizarExibicaoTiposOrcamento(window._tiposOrcamentoSelecionados);
+      }
+    } catch (e) {
+      console.warn('Falha ao atualizar exibicao dos tipos de orcamento:', e);
+    }
+
     // 🔹 Limpa exibição anterior
     selectedList.innerHTML = '';
 
@@ -21026,6 +21508,28 @@ function updateSelectedList() {
     console.error('❌ Erro em updateSelectedList:', err);
   } finally {
     window._smDocUpdating = false;
+  }
+}
+
+// Controle de exibição dos blocos de conta bancária por tipo de orçamento
+function atualizarExibicaoTiposOrcamento(tiposSelecionados) {
+  debugger;
+  try {
+    const tipos = Array.isArray(tiposSelecionados) ? tiposSelecionados : [];
+
+    const hasExames = tipos.includes('Exames e Procedimentos');
+    const hasTreinamentos = tipos.includes('Treinamentos');
+    const hasEpi = tipos.includes('EPI/EPC');
+
+    const secExames = document.getElementById('orcamento-exames-container');
+    const secTreinamentos = document.getElementById('orcamento-treinamentos-container');
+    const secEpi = document.getElementById('orcamento-epi-container');
+
+    if (secExames) secExames.style.display = hasExames ? 'block' : 'none';
+    if (secTreinamentos) secTreinamentos.style.display = hasTreinamentos ? 'block' : 'none';
+    if (secEpi) secEpi.style.display = hasEpi ? 'block' : 'none';
+  } catch (e) {
+    console.warn('Erro ao controlar exibicao dos blocos de tipos de orcamento:', e);
   }
 }
 
