@@ -4835,8 +4835,8 @@ try {
         
         console.log('=== Aba de faturamento aberta (etapa 5) ===');
 
-        carregarAsChavesPIX();
-        carregarAgenciasContas();
+        carregarAsChavesPIXEmpresasProcedimentos();
+        carregarAgenciasContasExamesProcedimentos();
         repopular_produtos();
         restaurar_tipo_orcamento();
         restaurarModelosSelecionados();
@@ -5721,9 +5721,10 @@ function repopular_produtos() {
 
 
 
-        function carregarAsChavesPIX()
+        function carregarAsChavesPIXEmpresasProcedimentos()
         {
-          const pixKeySelect = document.getElementById('pix-key-select');
+          // const pixKeySelect = document.getElementById('pix-key-select');
+          const pixKeySelect = document.getElementById('pix-exames-select');
     if (!pixKeySelect) return;
 
     // Limpa as opções exceto a primeira
@@ -5737,7 +5738,7 @@ function repopular_produtos() {
         method: 'GET',
         dataType: 'json',
         data: { 
-            processo_conta_bancaria: 'buscar_contas_bancarias' 
+            processo_conta_bancaria: 'buscar_pix_exames_procedimentos' 
         },
         success: function(res) {
           debugger;
@@ -5769,18 +5770,19 @@ function repopular_produtos() {
     });
         }
 
-        function carregarAgenciasContas()
+        function carregarAgenciasContasExamesProcedimentos()
         {
           // Carrega Agência/Conta do backend (apenas agência e conta)
             $.ajax({
               url: 'cadastros/processa_conta_bancaria.php',
               method: 'GET',
               dataType: 'json',
-              data: { processo_conta_bancaria: 'buscar_contas_bancarias' },
+              data: { processo_conta_bancaria: 'buscar_contas_bancarias_exames_procedimentos' },
               success: function(res){
                 debugger;
                 try {
-                  const sel = document.getElementById('agencia-conta-select');
+                  // const sel = document.getElementById('agencia-conta-select');
+                  const sel = document.getElementById('agencia-conta-exames-select');
                   if (!sel) return;
                   // Limpa mantendo o placeholder
                   while (sel.options.length > 1) sel.remove(1);

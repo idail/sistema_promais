@@ -1,0 +1,9 @@
+informacoes_dados_bancarios_agenciaconta = :recebe_informacoes_dados_bancarios_agencia_conta,
+        informacoes_dados_bancarios_pix = :recebe_informacoes_dados_bancarios_pix,
+
+
+
+        
+        
+        
+        

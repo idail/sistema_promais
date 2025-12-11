@@ -77,10 +77,20 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
 {
     $recebe_processo_conta_bancaria = $_GET["processo_conta_bancaria"];
 
-    if($recebe_processo_conta_bancaria === "buscar_contas_bancarias")
+    if($recebe_processo_conta_bancaria === "buscar_contas_bancarias_exames_procedimentos")
     {
-        $instrucao_busca_contas_bancaria = "select * from conta_bancaria where empresa_id = :recebe_empresa_id";
+        $instrucao_busca_contas_bancaria = "select * from conta_bancaria where tipo_orcamento = :recebe_tipo_orcamento and empresa_id = :recebe_empresa_id";
         $comando_busca_contas_bancaria = $pdo->prepare($instrucao_busca_contas_bancaria);
+        $comando_busca_contas_bancaria->bindValue(":recebe_tipo_orcamento","exames_procedimentos");
+        $comando_busca_contas_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_contas_bancaria->execute();
+        $resultado_busca_contas_bancaria = $comando_busca_contas_bancaria->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_contas_bancaria);
+    }else if($recebe_processo_conta_bancaria === "buscar_pix_exames_procedimentos")
+    {
+        $instrucao_busca_contas_bancaria = "select * from conta_bancaria where tipo_orcamento = :recebe_tipo_orcamento and empresa_id = :recebe_empresa_id";
+        $comando_busca_contas_bancaria = $pdo->prepare($instrucao_busca_contas_bancaria);
+        $comando_busca_contas_bancaria->bindValue(":recebe_tipo_orcamento","exames_procedimentos");
         $comando_busca_contas_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
         $comando_busca_contas_bancaria->execute();
         $resultado_busca_contas_bancaria = $comando_busca_contas_bancaria->fetchAll(PDO::FETCH_ASSOC);
