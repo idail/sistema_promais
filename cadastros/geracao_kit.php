@@ -8289,6 +8289,147 @@ debugger;
                 if (ccCampo) ccCampo.value = '';
               });
             }
+
+
+            function inicializarAgenciaContaSelectsKit() {
+  try {
+    var selAgExames = document.getElementById('agencia-conta-exames-select');
+    var selAgTreinamentos = document.getElementById('agencia-conta-treinamentos-select');
+    var selAgEpi = document.getElementById('agencia-conta-epi-select');
+
+    function enviarAgenciaContaKitPorSelect(tipo_orcamento, recebe_agencia_conta) {
+      debugger;
+      var processoKit = 'incluir_valores_kit';
+      if (window.recebe_acao === 'editar') {
+        processoKit = 'atualizar_kit';
+      }
+
+      var dataKit = {
+        processo_geracao_kit: processoKit,
+        valor_tipo_orcamento: tipo_orcamento
+      };
+
+      if (window.recebe_acao === 'editar' && window.recebe_id_kit) {
+        dataKit.valor_id_kit = window.recebe_id_kit;
+      }
+
+      if (tipo_orcamento === 'exames_procedimentos') {
+        dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
+      } else if (tipo_orcamento === 'treinamentos') {
+        dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
+      } else if (tipo_orcamento === 'epi_epc') {
+        dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
+      }
+
+      $.ajax({
+        url: 'cadastros/processa_geracao_kit.php',
+        type: 'POST',
+        dataType: 'json',
+        async: false,
+        data: dataKit,
+        success: function(retorno_exame_geracao_kit) {
+          try {
+            console.group('AJAX > sucesso inclusão/atualização valor kit via select agência/conta');
+            console.log('Retorno:', retorno_exame_geracao_kit);
+            console.groupEnd();
+          } catch (e) {}
+
+          var mensagemSucesso =
+            "<div id=\"agencia-conta-gravado-kit\" class=\"alert alert-success\" style=\"text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;\">" +
+              "<div style=\"display: flex; align-items: center; justify-content: center;\">" +
+                "<div>" +
+                  "<div>KIT Atualizado com com sucesso.</div>" +
+                "</div>" +
+              "</div>" +
+            "</div>";
+
+          $('#exame-gravado').remove();
+          $('.tabs-container').before(mensagemSucesso);
+
+          setTimeout(function() {
+            $('#agencia-conta-gravado-kit').fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+        },
+        error: function(xhr, status, error) {
+          console.log('Falha ao incluir/atualizar kit (agência/conta): ' + error);
+        },
+        complete: function() {
+          try {
+            console.log('AJAX > inclusão/atualização valor kit via select agência/conta finalizado');
+          } catch (e) {}
+        }
+      });
+    }
+
+    if (selAgExames) {
+      selAgExames.addEventListener('change', function() {
+        debugger;
+        var value = this.value || '';
+        if (!value) return;
+
+        var partes = value.split('|');
+        var agencia = (partes[0] || '').trim();
+        var conta = (partes[1] || '').trim();
+        if (!agencia || !conta) return;
+
+        var recebe_agencia_conta = 'Ag ' + agencia + ' • C/C ' + conta;
+
+        // guarda AGENCIA/CONTA global para EXAMES/PROCEDIMENTOS
+        window.dado_bancario_agencia_conta_exames_procedimentos = recebe_agencia_conta;
+
+        enviarAgenciaContaKitPorSelect('exames_procedimentos', recebe_agencia_conta);
+      });
+    }
+
+    if (selAgTreinamentos) {
+      selAgTreinamentos.addEventListener('change', function() {
+        var value = this.value || '';
+        if (!value) return;
+
+        var partes = value.split('|');
+        var agencia = (partes[0] || '').trim();
+        var conta = (partes[1] || '').trim();
+        if (!agencia || !conta) return;
+
+        var recebe_agencia_conta = 'Ag ' + agencia + ' • C/C ' + conta;
+
+        // guarda AGENCIA/CONTA global para TREINAMENTOS
+        window.dado_bancario_agencia_conta_treinamentos = recebe_agencia_conta;
+
+        enviarAgenciaContaKitPorSelect('treinamentos', recebe_agencia_conta);
+      });
+    }
+
+    if (selAgEpi) {
+      selAgEpi.addEventListener('change', function() {
+        var value = this.value || '';
+        if (!value) return;
+
+        var partes = value.split('|');
+        var agencia = (partes[0] || '').trim();
+        var conta = (partes[1] || '').trim();
+        if (!agencia || !conta) return;
+
+        var recebe_agencia_conta = 'Ag ' + agencia + ' • C/C ' + conta;
+
+        // guarda AGENCIA/CONTA global para EPI/EPC
+        window.dado_bancario_agencia_conta_epi_epc = recebe_agencia_conta;
+
+        enviarAgenciaContaKitPorSelect('epi_epc', recebe_agencia_conta);
+      });
+    }
+  } catch (e) {
+    console.error('Erro ao inicializar selects de agência/conta do kit:', e);
+  }
+}
+
+// chamar depois que o DOM tiver esses selects carregados
+inicializarAgenciaContaSelectsKit();
+
+
+
           } catch(e) { /* silencioso para não quebrar PIX */ }
 
           console.log('Módulo de Conta Bancária inicializado com sucesso');
