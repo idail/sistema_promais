@@ -7071,22 +7071,8 @@ if (!window._delegacaoTipoConta) {
               const tipoChave = tipoChaveSelect?.value || '';
               const chavePix = document.getElementById('chave-pix')?.value.trim() || '';
               const pixKeySelect = document.getElementById('pix-key-select');
-              let recebe_tipo_orcamento_exames_procedimentos = document.getElementById("exames-procedimentos").value.trim();
-                let recebe_tipo_orcamento_treinamentos = document.getElementById("treinamentos").value.trim();
-                let recebe_tipo_orcamento_epi_epc = document.getElementById("epi-epc").value.trim();
+              const recebe_tipo_orcamento = document.getElementById('tipo_orcamento_atual')?.value.trim() || '';
 
-                let recebe_tipo_orcamento;
-
-                if(recebe_tipo_orcamento_exames_procedimentos === "exames_procedimentos")
-                {
-                  recebe_tipo_orcamento = recebe_tipo_orcamento_exames_procedimentos;
-                }else if(recebe_tipo_orcamento_treinamentos === "treinamentos")
-                {
-                  recebe_tipo_orcamento = recebe_tipo_orcamento_exames_procedimentos;
-                }else{
-                  recebe_tipo_orcamento = recebe_tipo_orcamento_exames_procedimentos;
-                }
-              
               // Validação
               if (!tipoChave || !chavePix) {
                 Swal.fire({
@@ -7294,74 +7280,6 @@ if (!window._delegacaoTipoConta) {
             // // Limpa as opções exceto a primeira
             // while (pixKeySelect.options.length > 1) {
             //   pixKeySelect.remove(1);
-            // }
-
-            // function gravar_pix(pix) {
-            //   debugger;
-            //   try {
-            //     console.group('Conta Bancária > gravar_pix');
-            //     console.log('Valor recebido para gravação:', pix);
-            //     console.groupEnd();
-            //   } catch (e) { /* noop */ }
-            //   $.ajax({
-            //     url: "cadastros/processa_geracao_kit.php",
-            //     type: "POST",
-            //     dataType: "json",
-            //     async: false,
-            //     data: {
-            //       processo_geracao_kit: "incluir_valores_kit",
-            //       valor_pix: pix,
-            //     },
-            //     success: function(retorno_exame_geracao_kit) {
-            //       debugger;
-            //       try {
-            //         console.group('AJAX > sucesso inclusão valor kit');
-            //         console.log('Retorno:', retorno_exame_geracao_kit);
-            //         console.groupEnd();
-            //       } catch(e) { /* noop */ }
-
-            //       const mensagemSucesso = `
-            //             <div id="exame-gravado" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
-            //               <div style="display: flex; align-items: center; justify-content: center;">
-                            
-            //                 <div>
-                              
-            //                   <div>Exame cadastrado com sucesso.</div>
-            //                 </div>
-            //               </div>
-            //             </div>
-            //       `;
-
-            //       // Remove mensagem anterior se existir
-            //       $("#exame-gravado").remove();
-                      
-            //       // Adiciona a nova mensagem acima das abas
-            //       $(".tabs-container").before(mensagemSucesso);
-
-            //       // Configura o fade out após 5 segundos
-            //       setTimeout(function() {
-            //         $("#exame-gravado").fadeOut(500, function() {
-            //         $(this).remove();
-            //         });
-            //       }, 5000);
-
-
-            //       $("#exame-gravado").html(retorno_exame_geracao_kit);
-            //       $("#exame-gravado").show();
-            //       $("#exame-gravado").fadeOut(4000);
-            //       console.log(retorno_exame_geracao_kit);
-            //       ajaxEmExecucao = false; // libera para nova requisição
-            //     },
-            //     error: function(xhr, status, error) {
-            //       console.log("Falha ao incluir exame: " + error);
-            //       ajaxEmExecucao = false; // libera para tentar de novo
-            //     },
-            //     complete: function() {
-            //       try {
-            //         console.log('AJAX > inclusão valor kit finalizado');
-            //       } catch(e) { /* noop */ }
-            //     }
-            //   });
             // }
 
             function gravar_pix(pix) {
@@ -7765,22 +7683,7 @@ debugger;
                 const agencia = document.getElementById('agencia-rapida')?.value.trim() || '';
                 const conta = document.getElementById('conta-rapida')?.value.trim() || '';
                 const sel = document.getElementById('agencia-conta-select');
-                let recebe_tipo_orcamento_exames_procedimentos = document.getElementById("exames-procedimentos").value.trim();
-                let recebe_tipo_orcamento_treinamentos = document.getElementById("treinamentos").value.trim();
-                let recebe_tipo_orcamento_epi_epc = document.getElementById("epi-epc").value.trim();
-
-                let recebe_tipo_orcamento;
-
-                if(recebe_tipo_orcamento_exames_procedimentos === "exames_procedimentos")
-                {
-                  recebe_tipo_orcamento = recebe_tipo_orcamento_exames_procedimentos;
-                }else if(recebe_tipo_orcamento_treinamentos === "treinamentos")
-                {
-                  recebe_tipo_orcamento = recebe_tipo_orcamento_exames_procedimentos;
-                }else{
-                  recebe_tipo_orcamento = recebe_tipo_orcamento_exames_procedimentos;
-                }
-
+                const recebe_tipo_orcamento = document.getElementById('tipo_orcamento_atual')?.value.trim() || '';
 
                 if (!agencia || !conta) { alert('Por favor, informe Agência e Conta.'); return; }
                 if (sel) {
@@ -17254,7 +17157,7 @@ console.log(total); // Exemplo: "180.10"
                     <button type="button"
                             class="btn btn-primary"
                             style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
-                            onclick="document.getElementById('btn-adicionar-agencia-conta')?.click();">
+                            onclick="document.getElementById('tipo_orcamento_atual').value='exames_procedimentos'; document.getElementById('btn-adicionar-agencia-conta')?.click();">
                       <i class="fas fa-plus"></i> Cadastrar
                     </button>
                   </div>
@@ -17276,7 +17179,7 @@ console.log(total); // Exemplo: "180.10"
                   <button type="button"
                           class="btn btn-primary"
                           style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
-                          onclick="document.getElementById('btn-adicionar-pix')?.click();">
+                          onclick="document.getElementById('tipo_orcamento_atual').value='exames_procedimentos'; document.getElementById('btn-adicionar-pix')?.click();">
                     <i class="fas fa-plus"></i> Cadastrar
                   </button>
                 </div>
@@ -17309,7 +17212,7 @@ console.log(total); // Exemplo: "180.10"
                 <button type="button"
                         class="btn btn-primary"
                         style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
-                        onclick="document.getElementById('btn-adicionar-agencia-conta')?.click();">
+                        onclick="document.getElementById('tipo_orcamento_atual').value='treinamentos'; document.getElementById('btn-adicionar-agencia-conta')?.click();">
                   <i class="fas fa-plus"></i> Cadastrar
                 </button>
               </div>
@@ -17331,7 +17234,7 @@ console.log(total); // Exemplo: "180.10"
                 <button type="button"
                         class="btn btn-primary"
                         style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
-                        onclick="document.getElementById('btn-adicionar-pix')?.click();">
+                        onclick="document.getElementById('tipo_orcamento_atual').value='treinamentos'; document.getElementById('btn-adicionar-pix')?.click();">
                   <i class="fas fa-plus"></i> Cadastrar
                 </button>
               </div>
@@ -17364,7 +17267,7 @@ console.log(total); // Exemplo: "180.10"
                       <button type="button"
                               class="btn btn-primary"
                               style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
-                              onclick="document.getElementById('btn-adicionar-agencia-conta')?.click();">
+                              onclick="document.getElementById('tipo_orcamento_atual').value='epi_epc'; document.getElementById('btn-adicionar-agencia-conta')?.click();">
                         <i class="fas fa-plus"></i> Cadastrar
                       </button>
                     </div>
@@ -17386,7 +17289,7 @@ console.log(total); // Exemplo: "180.10"
                       <button type="button"
                               class="btn btn-primary"
                               style="margin-top: 0; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; background-color: #3b82f6; color: white; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;"
-                              onclick="document.getElementById('btn-adicionar-pix')?.click();">
+                              onclick="document.getElementById('tipo_orcamento_atual').value='epi_epc'; document.getElementById('btn-adicionar-pix')?.click();">
                         <i class="fas fa-plus"></i> Cadastrar
                       </button>
                     </div>
@@ -17395,6 +17298,7 @@ console.log(total); // Exemplo: "180.10"
                 </div>
             </div>
 
+              <input type="hidden" id="tipo_orcamento_atual" value="" />
               
               <!-- Seletor de Chave PIX -->
               <div id="pix-selector-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
