@@ -640,11 +640,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         aptidoes_selecionadas = :recebe_aptidao_selecionado,
         exames_selecionados = :recebe_exames_selecionado,
         tipo_dado_bancario = :recebe_tipo_dado_bancario_selecionado,
-        dado_bancario_agencia_conta = :recebe_dado_bancario_agencia_conta_selecionado,
-        dado_bancario_pix = :recebe_dado_bancario_pix_selecionado,
         informacoes_dados_bancarios_qrcode = :recebe_informacoes_dados_bancarios_qrcode,
-        informacoes_dados_bancarios_agenciaconta = :recebe_informacoes_dados_bancarios_agencia_conta,
-        informacoes_dados_bancarios_pix = :recebe_informacoes_dados_bancarios_pix,
+        informacoes_dados_bancarios_agenciaconta_exames_procedimentos = :recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado,
+        informacoes_dados_bancarios_pix_exames_procedimentos = :recebe_dado_bancario_pix_exames_procedimentos_selecionado,
+        informacoes_dados_bancarios_agenciaconta_treinamentos = :recebe_dado_bancario_agencia_conta_treinamentos_selecionado,
+        informacoes_dados_bancarios_pix_treinamentos = :recebe_dado_bancario_pix_treinamentos_selecionado,
+        informacoes_dados_bancarios_agenciaconta_epi_epc = :recebe_dado_bancario_agencia_conta_epi_epc_selecionado,
+        informacoes_dados_bancarios_pix_epi_epc = :recebe_dado_bancario_pix_epi_epc_dado_selecionado,
         assinatura_digital = :recebe_assinatura_digital_selecionada,
         tipo_orcamento = :recebe_tipo_orcamento_selecionado,
         modelos_selecionados = :recebe_documentos_selecionado,
@@ -714,15 +716,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $bind_tipo_dado_bancario = bindCondicionalSession($instrucao_atualizar_kit, "valor_tipo_dado_bancario", "tipo_dado_bancario", ":recebe_tipo_dado_bancario_selecionado", "tipo_dado_bancario");
 
-        $bind_dado_bancario_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "dado_bancario_agencia_conta", ":recebe_dado_bancario_agencia_conta_selecionado", "dado_bancario_agencia_conta");
-
-        $bind_dado_bancario_pix = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "dado_bancario_pix", ":recebe_dado_bancario_pix_selecionado", "dado_bancario_pix");
-
         $bind_informacoes_dados_bancarios_qrcode = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_qrcode", "informacoes_dados_bancarios_qrcode", ":recebe_informacoes_dados_bancarios_qrcode", "informacoes_dados_bancarios_qrcode");
 
-        $bind_informacoes_dados_bancarios_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_agencia_conta", "informacoes_dados_bancarios_agenciaconta", ":recebe_informacoes_dados_bancarios_agencia_conta", "informacoes_dados_bancarios_agenciaconta");
+        $bind_dado_bancario_agencia_conta_exames_procedimentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "informacoes_dados_bancarios_agenciaconta_exames_procedimentos", ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado", "dado_bancario_agencia_conta_exames_procedimentos");
 
-        $bind_informacoes_dados_bancarios_pix = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_pix", "informacoes_dados_bancarios_pix", ":recebe_informacoes_dados_bancarios_pix", "informacoes_dados_bancarios_pix");
+        $bind_dado_bancario_pix_exames_procedimentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "informacoes_dados_bancarios_pix_exames_procedimentos", ":recebe_dado_bancario_pix_exames_procedimentos_selecionado", "dado_bancario_pix_exames_procedimentos");
+
+        $bind_dado_bancario_agencia_conta_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "informacoes_dados_bancarios_agenciaconta_treinamentos", ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado", "dado_bancario_agencia_conta_treinamentos");
+
+        $bind_dado_bancario_pix_treinamentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "informacoes_dados_bancarios_pix_treinamentos", ":recebe_dado_bancario_pix_treinamentos_selecionado", "dado_bancario_pix_treinamentos");
+
+        $bind_dado_bancario_agencia_conta_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_agencia_conta", "informacoes_dados_bancarios_agenciaconta_epi_epc", ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado", "dado_bancario_agencia_conta_epi_epc");
+
+        $bind_dado_bancario_pix_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix", "informacoes_dados_bancarios_pix_epi_epc", ":recebe_dado_bancario_pix_epi_epc_dado_selecionado", "dado_bancario_pix_epi_epc");
+
+        // $bind_informacoes_dados_bancarios_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_agencia_conta", "informacoes_dados_bancarios_agenciaconta", ":recebe_informacoes_dados_bancarios_agencia_conta", "informacoes_dados_bancarios_agenciaconta");
+
+        // $bind_informacoes_dados_bancarios_pix = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_pix", "informacoes_dados_bancarios_pix", ":recebe_informacoes_dados_bancarios_pix", "informacoes_dados_bancarios_pix");
 
         $bind_documentos = bindCondicionalSession($instrucao_atualizar_kit, "valor_documento", "modelos_selecionados", ":recebe_documentos_selecionado", "documento");
 
@@ -964,26 +974,102 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
-        if ($bind_dado_bancario_agencia_conta) {
-            // $valor_exame = $_POST["valor_exame"];
+        // if ($bind_dado_bancario_agencia_conta_exames_procedimentos) {
+        //     // $valor_exame = $_POST["valor_exame"];
 
-            // // Atualiza a sessão com o valor que veio do POST
-            // $_SESSION["exame_selecionado"] = $valor_exame;
+        //     // // Atualiza a sessão com o valor que veio do POST
+        //     // $_SESSION["exame_selecionado"] = $valor_exame;
 
-            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
-            $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_selecionado", $_POST["valor_agencia_conta"], PDO::PARAM_STR);
+        //     // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+        //     $comando_atualizar_kit->bindValue(":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado", $_POST["valor_agencia_conta"], PDO::PARAM_STR);
+        // }
+
+        // 🔹 Executa bind somente se o tipo de orçamento for "exames_procedimentos"
+        if (
+            $bind_dado_bancario_agencia_conta_exames_procedimentos &&
+            isset($_POST["valor_tipo_orcamento"]) &&
+            $_POST["valor_tipo_orcamento"] === "exames_procedimentos"
+        ) {
+            $comando_atualizar_kit->bindValue(
+                ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado",
+                $_POST["valor_agencia_conta"],
+                PDO::PARAM_STR
+            );
         }
 
-        // 🔹 Faz bind dos campos opcionais se vierem
-        if ($bind_dado_bancario_pix) {
-            // $valor_exame = $_POST["valor_exame"];
 
-            // // Atualiza a sessão com o valor que veio do POST
-            // $_SESSION["exame_selecionado"] = $valor_exame;
+        // // 🔹 Faz bind dos campos opcionais se vierem
+        // if ($bind_dado_bancario_pix_exames_procedimentos) {
+        //     // $valor_exame = $_POST["valor_exame"];
 
-            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
-            $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_selecionado", $_POST["valor_pix"], PDO::PARAM_STR);
+        //     // // Atualiza a sessão com o valor que veio do POST
+        //     // $_SESSION["exame_selecionado"] = $valor_exame;
+
+        //     // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+        //     $comando_atualizar_kit->bindValue(":recebe_dado_bancario_pix_exames_procedimentos_selecionado", $_POST["valor_pix"], PDO::PARAM_STR);
+        // }
+
+        // 🔹 Faz bind dos campos opcionais se vierem e se for exames_procedimentos
+        if (
+            $bind_dado_bancario_pix_exames_procedimentos &&
+            isset($_POST["valor_tipo_orcamento"]) &&
+            $_POST["valor_tipo_orcamento"] === "exames_procedimentos"
+        ) {
+            $comando_atualizar_kit->bindValue(
+                ":recebe_dado_bancario_pix_exames_procedimentos_selecionado",
+                $_POST["valor_pix"],
+                PDO::PARAM_STR
+            );
         }
+
+        if (
+            $bind_dado_bancario_agencia_conta_treinamentos &&
+            isset($_POST["valor_tipo_orcamento"]) &&
+            $_POST["valor_tipo_orcamento"] === "treinamentos"
+        ) {
+            $comando_atualizar_kit->bindValue(
+                ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado",
+                $_POST["valor_agencia_conta"],
+                PDO::PARAM_STR
+            );
+        }
+
+        if (
+            $bind_dado_bancario_pix_treinamentos &&
+            isset($_POST["valor_tipo_orcamento"]) &&
+            $_POST["valor_tipo_orcamento"] === "treinamentos"
+        ) {
+            $comando_atualizar_kit->bindValue(
+                ":recebe_dado_bancario_pix_treinamentos_selecionado",
+                $_POST["valor_pix"],
+                PDO::PARAM_STR
+            );
+        }
+
+        if (
+            $bind_dado_bancario_agencia_conta_epi_epc &&
+            isset($_POST["valor_tipo_orcamento"]) &&
+            $_POST["valor_tipo_orcamento"] === "epi_epc"
+        ) {
+            $comando_atualizar_kit->bindValue(
+                ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado",
+                $_POST["valor_agencia_conta"],
+                PDO::PARAM_STR
+            );
+        }
+
+        if (
+            $bind_dado_bancario_pix_epi_epc &&
+            isset($_POST["valor_tipo_orcamento"]) &&
+            $_POST["valor_tipo_orcamento"] === "epi_epc"
+        ) {
+            $comando_atualizar_kit->bindValue(
+                ":recebe_dado_bancario_pix_epi_epc_selecionado",
+                $_POST["valor_pix"],
+                PDO::PARAM_STR
+            );
+        }
+
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_informacoes_dados_bancarios_qrcode) {
@@ -997,26 +1083,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // 🔹 Faz bind dos campos opcionais se vierem
-        if ($bind_informacoes_dados_bancarios_agencia_conta) {
-            // $valor_exame = $_POST["valor_exame"];
+        // if ($bind_informacoes_dados_bancarios_agencia_conta) {
+        //     // $valor_exame = $_POST["valor_exame"];
 
-            // // Atualiza a sessão com o valor que veio do POST
-            // $_SESSION["exame_selecionado"] = $valor_exame;
+        //     // // Atualiza a sessão com o valor que veio do POST
+        //     // $_SESSION["exame_selecionado"] = $valor_exame;
 
-            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
-            $comando_atualizar_kit->bindValue(":recebe_informacoes_dados_bancarios_agencia_conta", $_POST["valor_informacoes_bancarias_agencia_conta"], PDO::PARAM_STR);
-        }
+        //     // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+        //     $comando_atualizar_kit->bindValue(":recebe_informacoes_dados_bancarios_agencia_conta", $_POST["valor_informacoes_bancarias_agencia_conta"], PDO::PARAM_STR);
+        // }
 
-        // 🔹 Faz bind dos campos opcionais se vierem
-        if ($bind_informacoes_dados_bancarios_pix) {
-            // $valor_exame = $_POST["valor_exame"];
+        // // 🔹 Faz bind dos campos opcionais se vierem
+        // if ($bind_informacoes_dados_bancarios_pix) {
+        //     // $valor_exame = $_POST["valor_exame"];
 
-            // // Atualiza a sessão com o valor que veio do POST
-            // $_SESSION["exame_selecionado"] = $valor_exame;
+        //     // // Atualiza a sessão com o valor que veio do POST
+        //     // $_SESSION["exame_selecionado"] = $valor_exame;
 
-            // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
-            $comando_atualizar_kit->bindValue(":recebe_informacoes_dados_bancarios_pix", $_POST["valor_informacoes_bancarias_pix"], PDO::PARAM_STR);
-        }
+        //     // $comando_atualizar_kit->bindValue(":recebe_tipo_exame", $valor_exame, PDO::PARAM_STR);
+        //     $comando_atualizar_kit->bindValue(":recebe_informacoes_dados_bancarios_pix", $_POST["valor_informacoes_bancarias_pix"], PDO::PARAM_STR);
+        // }
 
         // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_documentos) {
