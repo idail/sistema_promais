@@ -7859,8 +7859,16 @@ if (!window._delegacaoTipoConta) {
                 processo_geracao_kit: "incluir_valores_kit",
                 valor_tipo_orcamento_dado_bancario: recebe_tipo_orcamento
               };
+
+              let dataKITCadastroRapido = {
+                processo_conta_bancaria: "inserir_conta_bancaria",
+                valor_tipo_orcamento:recebe_tipo_orcamento
+              };
+
               if (recebe_tipo_orcamento === 'exames_procedimentos') {
                 dataKitPix.valor_pix_exames = recebe_pix_kit;
+                dataKITCadastroRapido.valor_tipo_pix_conta_bancaria = tipoChave.toUpperCase();
+                dataKITCadastroRapido.valor_pix_conta_bancaria = chavePix;
 
                 // guarda PIX global para EXAMES/PROCEDIMENTOS
                 window.dado_bancario_pix_exames_procedimentos = recebe_pix_kit;
@@ -7876,6 +7884,8 @@ if (!window._delegacaoTipoConta) {
                 option.selected = true;
               } else if (recebe_tipo_orcamento === 'treinamentos') {
                 dataKitPix.valor_pix_treinamentos = recebe_pix_kit;
+                dataKITCadastroRapido.valor_tipo_pix_conta_bancaria = tipoChave.toUpperCase();
+                dataKITCadastroRapido.valor_pix_conta_bancaria = chavePix;
 
                 // guarda PIX global para TREINAMENTOS
                 window.dado_bancario_pix_treinamentos = recebe_pix_kit;
@@ -7891,6 +7901,8 @@ if (!window._delegacaoTipoConta) {
                 option.selected = true;
               } else if (recebe_tipo_orcamento === 'epi_epc') {
                 dataKitPix.valor_pix_epi_epc = recebe_pix_kit;
+                dataKITCadastroRapido.valor_tipo_pix_conta_bancaria = tipoChave.toUpperCase();
+                dataKITCadastroRapido.valor_pix_conta_bancaria = chavePix;
 
                 // guarda PIX global para EPI/EPC
                 window.dado_bancario_pix_epi_epc = recebe_pix_kit;
@@ -7947,11 +7959,7 @@ if (!window._delegacaoTipoConta) {
           url: "cadastros/processa_conta_bancaria.php",
           type: "POST",
           dataType: "json",
-          data: {
-            processo_conta_bancaria: "inserir_conta_bancaria",
-            valor_tipo_pix_conta_bancaria: tipoChave,
-            valor_pix_conta_bancaria: chavePix,
-          },
+          data:dataKITCadastroRapido,
           success: function(retorno_conta_bancaria) {
             debugger;
             console.log(retorno_conta_bancaria);
@@ -8052,13 +8060,13 @@ if (!window._delegacaoTipoConta) {
                 document.getElementById('chave-pix').value = '';
                 if (tipoChaveSelect) tipoChaveSelect.value = 'cpf';
                 
-                // Mensagem de sucesso
-                Swal.fire({
-                  title: 'Sucesso!',
-                  text: 'Chave PIX cadastrada com sucesso!',
-                  icon: 'success',
-                  confirmButtonColor: '#3b82f6'
-                });
+                // // Mensagem de sucesso
+                // Swal.fire({
+                //   title: 'Sucesso!',
+                //   text: 'Chave PIX cadastrada com sucesso!',
+                //   icon: 'success',
+                //   confirmButtonColor: '#3b82f6'
+                // });
               }
             });
           }
@@ -8553,6 +8561,8 @@ debugger;
 
                 } else if (recebe_tipo_orcamento === 'treinamentos') {
                   dataKit.valor_agencia_conta_treinamentos = recebe_agencia_conta;
+                  dataKitCadastroRapido.valor_agencia_conta_bancaria = agencia;
+                  dataKitCadastroRapido.valor_conta_bancaria = conta;
 
                   // guarda AGENCIA/CONTA global para TREINAMENTOS
                   window.dado_bancario_agencia_conta_treinamentos = recebe_agencia_conta;
@@ -8572,6 +8582,8 @@ debugger;
                   }
                 } else if (recebe_tipo_orcamento === 'epi_epc') {
                   dataKit.valor_agencia_conta_epi_epc = recebe_agencia_conta;
+                  dataKitCadastroRapido.valor_agencia_conta_bancaria = agencia;
+                  dataKitCadastroRapido.valor_conta_bancaria = conta;
 
                   // guarda AGENCIA/CONTA global para EPI/EPC
                   window.dado_bancario_agencia_conta_epi_epc = recebe_agencia_conta;
