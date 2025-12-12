@@ -4847,6 +4847,7 @@ try {
         await carregarAgenciasContasTreinamentos();
         await carregarAsChavesPIXEPIEPC();
         await carregarAgenciasContasEPIEPC();
+        inicializarPixSelectsKit();
         repopular_produtos();
         restaurar_tipo_orcamento();
         restaurarModelosSelecionados();
@@ -5009,6 +5010,142 @@ try {
 //               }
 //             });
 //           }
+
+function inicializarPixSelectsKit() {
+    debugger;
+  try {
+    const selPixExames       = document.getElementById('pix-exames-select');
+    const selPixTreinamentos = document.getElementById('pix-treinamentos-select');
+    const selPixEpi          = document.getElementById('pix-epi-select');
+
+    function enviarPixKitPorSelect(tipo_orcamento, recebe_pix_kit) {
+      debugger;
+      var processoKit = 'incluir_valores_kit';
+      if (window.recebe_acao === 'editar') {
+        processoKit = 'atualizar_kit';
+      }
+
+      var dataKitPix = {
+        processo_geracao_kit: processoKit,
+        valor_tipo_orcamento_dado_bancario: tipo_orcamento
+      };
+
+      if (window.recebe_acao === 'editar' && window.recebe_id_kit) {
+        dataKitPix.valor_id_kit = window.recebe_id_kit;
+      }
+
+      if (tipo_orcamento === 'exames_procedimentos') {
+        dataKitPix.valor_pix_exames = recebe_pix_kit;
+      } else if (tipo_orcamento === 'treinamentos') {
+        dataKitPix.valor_pix_treinamentos = recebe_pix_kit;
+      } else if (tipo_orcamento === 'epi_epc') {
+        dataKitPix.valor_pix_epi_epc = recebe_pix_kit;
+      } else {
+        console.warn('Tipo de orçamento inválido ao enviar PIX do select:', tipo_orcamento);
+        return;
+      }
+
+      $.ajax({
+        url: "cadastros/processa_geracao_kit.php",
+        type: "POST",
+        dataType: "json",
+        async: false,
+        data: dataKitPix,
+        success: function(retorno_exame_geracao_kit) {
+          try {
+            console.group('AJAX > sucesso inclusão/atualização PIX via select');
+            console.log('Retorno:', retorno_exame_geracao_kit);
+            console.groupEnd();
+          } catch(e) { /* noop */ }
+
+          var mensagemSucesso = `
+            <div id="pix-gravado-kit" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <div>
+                  <div>KIT Atualizado com sucesso.</div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          $("#pix-gravado-kit").remove();
+          $(".tabs-container").before(mensagemSucesso);
+
+          setTimeout(function() {
+            $("#pix-gravado-kit").fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+        },
+        error: function(xhr, status, error) {
+          console.log("Falha ao incluir/atualizar PIX no kit (via select): " + error);
+        },
+        complete: function() {
+          try {
+            console.log('AJAX > inclusão/atualização PIX via select finalizado');
+          } catch(e) { /* noop */ }
+        }
+      });
+    }
+
+    // PIX EXAMES / PROCEDIMENTOS
+    if (selPixExames) {
+      selPixExames.addEventListener('change', function() {
+        var valorPix = this.value || '';
+        if (!valorPix) return;
+
+        var label = this.options[this.selectedIndex]?.text || '';
+        if (!label) return;
+
+        // label já vem como "TIPO: valor" (ex.: "CPF: 123...")
+        var recebe_pix_kit = label;
+
+        // guarda PIX global para EXAMES/PROCEDIMENTOS
+        window.dado_bancario_pix_exames_procedimentos = recebe_pix_kit;
+
+        enviarPixKitPorSelect('exames_procedimentos', recebe_pix_kit);
+      });
+    }
+
+    // PIX TREINAMENTOS
+    if (selPixTreinamentos) {
+      selPixTreinamentos.addEventListener('change', function() {
+        var valorPix = this.value || '';
+        if (!valorPix) return;
+
+        var label = this.options[this.selectedIndex]?.text || '';
+        if (!label) return;
+
+        var recebe_pix_kit = label;
+
+        // guarda PIX global para TREINAMENTOS
+        window.dado_bancario_pix_treinamentos = recebe_pix_kit;
+
+        enviarPixKitPorSelect('treinamentos', recebe_pix_kit);
+      });
+    }
+
+    // PIX EPI / EPC
+    if (selPixEpi) {
+      selPixEpi.addEventListener('change', function() {
+        var valorPix = this.value || '';
+        if (!valorPix) return;
+
+        var label = this.options[this.selectedIndex]?.text || '';
+        if (!label) return;
+
+        var recebe_pix_kit = label;
+
+        // guarda PIX global para EPI/EPC
+        window.dado_bancario_pix_epi_epc = recebe_pix_kit;
+
+        enviarPixKitPorSelect('epi_epc', recebe_pix_kit);
+      });
+    }
+  } catch (e) {
+    console.error('Erro ao inicializar selects de PIX do kit:', e);
+  }
+}
 
 function gravar_tipo_dado_bancario(tipo_dado_bancario) {
       debugger;
@@ -19235,7 +19372,7 @@ tipoContaInputs.forEach(input => {
 }
 
 // chame após o DOM ter montado os selects de PIX
-inicializarPixSelectsKit();
+// inicializarPixSelectsKit();
   
   // Carregar chaves PIX existentes (exemplo)
   function carregarChavesPix() {
