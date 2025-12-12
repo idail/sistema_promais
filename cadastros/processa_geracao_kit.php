@@ -999,8 +999,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // 🔹 Executa bind somente se o tipo de orçamento for "exames_procedimentos"
         if (
             $bind_dado_bancario_agencia_conta_exames_procedimentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "exames_procedimentos"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "exames_procedimentos"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado",
@@ -1028,8 +1028,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_dado_bancario_pix_exames_procedimentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "exames_procedimentos") {
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "exames_procedimentos") {
             // $valor_exame = $_POST["valor_exame"];
 
             // // Atualiza a sessão com o valor que veio do POST
@@ -1067,8 +1067,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_agencia_conta_treinamentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "treinamentos"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "treinamentos"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado",
@@ -1092,8 +1092,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_pix_treinamentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "treinamentos"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "treinamentos"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_pix_treinamentos_selecionado",
@@ -1117,8 +1117,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_agencia_conta_epi_epc &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "epi_epc"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "epi_epc"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado",
@@ -1142,8 +1142,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_pix_epi_epc &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "epi_epc"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "epi_epc"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_pix_epi_epc_dado_selecionado",
@@ -2198,8 +2198,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_agencia_conta_exames_procedimentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "exames_procedimentos"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "exames_procedimentos"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_exames_procedimentos_selecionado",
@@ -2210,8 +2210,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // // 🔹 Faz bind dos campos opcionais se vierem
         if ($bind_dado_bancario_pix_exames_procedimentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "exames_procedimentos") {
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "exames_procedimentos") {
             // $valor_exame = $_POST["valor_exame"];
 
             // // Atualiza a sessão com o valor que veio do POST
@@ -2223,8 +2223,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_agencia_conta_treinamentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "treinamentos"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "treinamentos"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_treinamentos_selecionado",
@@ -2235,8 +2235,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_pix_treinamentos &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "treinamentos"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "treinamentos"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_pix_treinamentos_selecionado",
@@ -2247,8 +2247,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_agencia_conta_epi_epc &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "epi_epc"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "epi_epc"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_agencia_conta_epi_epc_selecionado",
@@ -2259,8 +2259,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (
             $bind_dado_bancario_pix_epi_epc &&
-            isset($_POST["valor_tipo_orcamento"]) &&
-            $_POST["valor_tipo_orcamento"] === "epi_epc"
+            isset($_POST["valor_tipo_orcamento_dado_bancario"]) &&
+            $_POST["valor_tipo_orcamento_dado_bancario"] === "epi_epc"
         ) {
             $comando_atualizar_kit->bindValue(
                 ":recebe_dado_bancario_pix_epi_epc_dado_selecionado",

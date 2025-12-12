@@ -7713,7 +7713,7 @@ if (!window._delegacaoTipoConta) {
               let recebe_pix_kit = `${tipoChave.toUpperCase()}: ${chavePix}`;
               let dataKitPix = {
                 processo_geracao_kit: "incluir_valores_kit",
-                valor_tipo_orcamento: recebe_tipo_orcamento
+                valor_tipo_orcamento_dado_bancario: recebe_tipo_orcamento
               };
               if (recebe_tipo_orcamento === 'exames_procedimentos') {
                 dataKitPix.valor_pix_exames = recebe_pix_kit;
@@ -8376,7 +8376,7 @@ debugger;
 
                 let dataKit = {
                   processo_geracao_kit: "incluir_valores_kit",
-                  valor_tipo_orcamento: recebe_tipo_orcamento
+                  valor_tipo_orcamento_dado_bancario: recebe_tipo_orcamento
                 };
                 if (recebe_tipo_orcamento === 'exames_procedimentos') {
                   dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
@@ -8581,7 +8581,7 @@ debugger;
 
       var dataKit = {
         processo_geracao_kit: processoKit,
-        valor_tipo_orcamento: tipo_orcamento
+        valor_tipo_orcamento_dado_bancario: tipo_orcamento
       };
 
       if (window.recebe_acao === 'editar' && window.recebe_id_kit) {
