@@ -32,13 +32,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_conta_bancaria = !empty($_POST["valor_conta_bancaria"]) ? $_POST["valor_conta_bancaria"] : null;
         $recebe_tipo_pix_conta_bancaria = !empty($_POST["valor_tipo_pix_conta_bancaria"]) ? $_POST["valor_tipo_pix_conta_bancaria"] : null;
         $recebe_valor_pix_conta_bancaria = !empty($_POST["valor_pix_conta_bancaria"]) ? $_POST["valor_pix_conta_bancaria"] : null;
+        $recebe_valor_tipo_orcamento = !empty($_POST["valor_tipo_orcamento"]) ? $_POST["valor_tipo_orcamento"] : null;
 
-        $instrucao_cadastra_contas_bancaria = "insert into conta_bancaria(agencia,conta,tipo_pix,valor_pix,empresa_id)values(:recebe_agencia,:recebe_conta,:recebe_tipo_pix,:recebe_valor_pix,:recebe_empresa_id)";
+        $instrucao_cadastra_contas_bancaria = "insert into conta_bancaria(agencia,conta,tipo_pix,valor_pix,tipo_orcamento,empresa_id)
+        values(:recebe_agencia,:recebe_conta,:recebe_tipo_pix,:recebe_valor_pix,:recebe_tipo_orcamento,:recebe_empresa_id)";
         $comando_cadastra_contas_bancaria = $pdo->prepare($instrucao_cadastra_contas_bancaria);
         $comando_cadastra_contas_bancaria->bindValue(":recebe_agencia",$recebe_agencia_conta_bancaria);
         $comando_cadastra_contas_bancaria->bindValue(":recebe_conta",$recebe_conta_bancaria);
         $comando_cadastra_contas_bancaria->bindValue(":recebe_tipo_pix",$recebe_tipo_pix_conta_bancaria);
         $comando_cadastra_contas_bancaria->bindValue(":recebe_valor_pix",$recebe_valor_pix_conta_bancaria);
+        $comando_cadastra_contas_bancaria->bindValue(":recebe_tipo_orcamento",$recebe_valor_tipo_orcamento);
         $comando_cadastra_contas_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
         $comando_cadastra_contas_bancaria->execute();
         $recebe_ultimo_codigo_gerado_contas_bancaria = $pdo->lastInsertId();

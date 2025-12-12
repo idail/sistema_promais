@@ -8523,8 +8523,16 @@ debugger;
                   processo_geracao_kit: "incluir_valores_kit",
                   valor_tipo_orcamento_dado_bancario: recebe_tipo_orcamento
                 };
+
+                let dataKitCadastroRapido = {
+                  processo_conta_bancaria: "inserir_conta_bancaria",
+                  valor_tipo_orcamento:recebe_tipo_orcamento
+                };
+
                 if (recebe_tipo_orcamento === 'exames_procedimentos') {
                   dataKit.valor_agencia_conta_exames = recebe_agencia_conta;
+                  dataKitCadastroRapido.valor_agencia_conta_bancaria = agencia;
+                  dataKitCadastroRapido.valor_conta_bancaria = conta;
 
                   // guarda AGENCIA/CONTA global para EXAMES/PROCEDIMENTOS
                   window.dado_bancario_agencia_conta_exames_procedimentos = recebe_agencia_conta;
@@ -8600,12 +8608,7 @@ debugger;
                       url: "cadastros/processa_conta_bancaria.php",
                       type: "POST",
                       dataType: "json",
-                      data: {
-                        processo_conta_bancaria: "inserir_conta_bancaria",
-                        valor_agencia_conta_bancaria: agencia,
-                        valor_conta_bancaria: conta,
-                        // valor_tipo_orcamento:recebe_tipo_orcamento
-                      },
+                      data:dataKitCadastroRapido,
                       success: function(retorno_conta_bancaria) {
                         debugger;
 
