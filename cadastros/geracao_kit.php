@@ -4457,8 +4457,9 @@ function repopular_laudos() {
         window.tipo_orcamento = window.kit_tipo_exame.tipo_orcamento;
         window.assinatura_digital = window.kit_tipo_exame.assinatura_digital;
         window.tipo_dado_bancario = window.kit_tipo_exame.tipo_dado_bancario;
-        // window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
-        // window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        window.dado_bancario_agencia_conta = window.kit_tipo_exame.dado_bancario_agencia_conta;
+        window.dado_bancario_pix = window.kit_tipo_exame.dado_bancario_pix;
+        window.informacoes_dados_bancarios_qrcode = window.kit_tipo_exame.informacoes_dados_bancarios_qrcode;
         window.dado_bancario_agencia_conta_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_exames_procedimentos;
         window.dado_bancario_pix_exames_procedimentos = window.kit_tipo_exame.informacoes_dados_bancarios_pix_exames_procedimentos;
         window.dado_bancario_agencia_conta_treinamentos = window.kit_tipo_exame.informacoes_dados_bancarios_agenciaconta_treinamentos;
@@ -4875,8 +4876,11 @@ try {
         try {
           const escopoContaAgenciaContaSelect = document.getElementById('escopo-conta-bancaria-agencia-conta');
           if (escopoContaAgenciaContaSelect) {
+            // const valorInicialEscopo = (window.recebe_acao === 'editar')
+            //   ? window.informacoes_dados_bancarios_agencia_conta
+            //   : window.valor_informacoes_bancarias_agencia_conta;
             const valorInicialEscopo = (window.recebe_acao === 'editar')
-              ? window.informacoes_dados_bancarios_agencia_conta
+              ? window.dado_bancario_agencia_conta
               : window.valor_informacoes_bancarias_agencia_conta;
             if (typeof valorInicialEscopo !== 'undefined' && valorInicialEscopo !== null && valorInicialEscopo !== '') {
               escopoContaAgenciaContaSelect.value = valorInicialEscopo;
@@ -4890,8 +4894,11 @@ try {
         try {
           const escopoPIXSelect = document.getElementById('escopo-conta-bancaria-pix');
           if (escopoPIXSelect) {
+            // const valorInicialEscopo = (window.recebe_acao === 'editar')
+            //   ? window.informacoes_dados_bancarios_pix
+            //   : window.valor_informacoes_bancarias_pix;
             const valorInicialEscopo = (window.recebe_acao === 'editar')
-              ? window.informacoes_dados_bancarios_pix
+              ? window.dado_bancario_pix
               : window.valor_informacoes_bancarias_pix;
             if (typeof valorInicialEscopo !== 'undefined' && valorInicialEscopo !== null && valorInicialEscopo !== '') {
               escopoPIXSelect.value = valorInicialEscopo;
