@@ -6881,15 +6881,29 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,
+                informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -7693,9 +7707,9 @@ $valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
 $valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
 $valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
 
-print_r($valPix);
-print_r($valAgencia);
-print_r($valQrcode);
+// print_r($valPix);
+// print_r($valAgencia);
+// print_r($valQrcode);
 
 $dadosPorCategoria = [
     "exames" => [
@@ -18196,25 +18210,39 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_dados_bancarios->execute();
                 $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
-                $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
-                $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $valor_id_kit);
-                $comando_busca_dados_bancarios->execute();
-                $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
+                // $instrucao_busca_dados_bancarios = "select tipo_dado_bancario,dado_bancario_pix,dado_bancario_agencia_conta from kits where id = :recebe_id_kit";
+                // $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
+                // $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $valor_id_kit);
+                // $comando_busca_dados_bancarios->execute();
+                // $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
 
                 $instrucao_busca_informativo_bancario_qrcode = "select informacoes_dados_bancarios_qrcode from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,
+                informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -19021,9 +19049,9 @@ $valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
 $valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
 $valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
 
-print_r($valPix);
-print_r($valAgencia);
-print_r($valQrcode);
+// print_r($valPix);
+// print_r($valAgencia);
+// print_r($valQrcode);
 
 $dadosPorCategoria = [
     "exames" => [
@@ -29838,15 +29866,29 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,
+                informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -30384,9 +30426,9 @@ $valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
 $valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
 $valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
 
-print_r($valPix);
-print_r($valAgencia);
-print_r($valQrcode);
+// print_r($valPix);
+// print_r($valAgencia);
+// print_r($valQrcode);
 
 $dadosPorCategoria = [
     "exames" => [
@@ -53001,15 +53043,29 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,
+                informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -64768,15 +64824,29 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,
+                informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$valor_id_kit);
                 $comando_busca_informativo_bancario_pix->execute();
