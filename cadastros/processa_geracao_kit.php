@@ -1906,9 +1906,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $bind_dado_bancario_pix_epi_epc = bindCondicionalSession($instrucao_atualizar_kit, "valor_pix_epi_epc", "informacoes_dados_bancarios_pix_epi_epc", ":recebe_dado_bancario_pix_epi_epc_dado_selecionado", "dado_bancario_pix_epi_epc");
 
-        $bind_informacoes_dados_bancarios_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_agencia_conta", "informacoes_dados_bancarios_agenciaconta", ":recebe_informacoes_dados_bancarios_agencia_conta", "informacoes_dados_bancarios_agenciaconta");
+        // $bind_informacoes_dados_bancarios_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_agencia_conta", "informacoes_dados_bancarios_agenciaconta", ":recebe_informacoes_dados_bancarios_agencia_conta", "informacoes_dados_bancarios_agenciaconta");
 
-        $bind_informacoes_dados_bancarios_pix = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_pix", "informacoes_dados_bancarios_pix", ":recebe_informacoes_dados_bancarios_pix", "informacoes_dados_bancarios_pix");
+        // $bind_informacoes_dados_bancarios_pix = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_pix", "informacoes_dados_bancarios_pix", ":recebe_informacoes_dados_bancarios_pix", "informacoes_dados_bancarios_pix");
 
         // $bind_informacoes_dados_bancarios_agencia_conta = bindCondicionalSession($instrucao_atualizar_kit, "valor_informacoes_bancarias_agencia_conta", "informacoes_dados_bancarios_agenciaconta", ":recebe_informacoes_dados_bancarios_agencia_conta", "informacoes_dados_bancarios_agenciaconta");
 
