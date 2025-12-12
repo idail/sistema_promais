@@ -7139,23 +7139,33 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_dados_bancarios->execute();
                 $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
 
+                // $instrucao_busca_dados_bancarios = "select tipo_dado_bancario from kits where id = :recebe_id_kit";
+                // $comando_busca_dados_bancarios = $pdo->prepare($instrucao_busca_dados_bancarios);
+                // $comando_busca_dados_bancarios->bindValue(":recebe_id_kit", $_SESSION["codigo_kit"]);
+                // $comando_busca_dados_bancarios->execute();
+                // $resultado_busca_dados_bancarios = $comando_busca_dados_bancarios->fetchAll(PDO::FETCH_ASSOC);
+
                 $instrucao_busca_informativo_bancario_qrcode = "select informacoes_dados_bancarios_qrcode from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_pix->execute();
                 $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+
+                $instrucao_busca_dados_bancarios_final = "select ";
 
 //                 function deve_exibir_banco($categoria, $valorConfig, $tipoCampo) {
 //     // Se usuário não selecionou nada para esse tipo, não exibe
@@ -7675,6 +7685,39 @@ function deve_exibir_banco($categoria, $valorSelecionado) {
     return in_array($categoria, $categoriasPermitidas, true);
 }
 
+// $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+// $valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
+// $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
+
+$valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
+$valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
+$valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
+
+print_r($valPix);
+print_r($valAgencia);
+print_r($valQrcode);
+
+$dadosPorCategoria = [
+    "exames" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_exames_procedimentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_exames_procedimentos"] ?? "",
+        "qrcode" => $valQrcode // continua igual
+    ],
+
+    "treinamentos" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_treinamentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_treinamentos"] ?? "",
+        "qrcode" => $valQrcode
+    ],
+
+    "epi" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_epi_epc"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_epi_epc"] ?? "",
+        "qrcode" => $valQrcode
+    ]
+];
+
+
 function exibe_info_bancaria($tipos, $dados) {
 
     if (!is_array($tipos)) $tipos = [];
@@ -7686,13 +7729,18 @@ function exibe_info_bancaria($tipos, $dados) {
     if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
 
     // Normaliza dados possíveis
-    $pixValor = $dados['pix'] 
-        ?? $dados['dado_bancario_pix'] 
-        ?? '';
+    // $pixValor = $dados['pix'] 
+    //     ?? $dados['dado_bancario_pix'] 
+    //     ?? '';
 
-    $agenciaConta = $dados['agencia_conta'] 
-        ?? $dados['dado_bancario_agencia_conta'] 
-        ?? '';
+    // $agenciaConta = $dados['agencia_conta'] 
+    //     ?? $dados['dado_bancario_agencia_conta'] 
+    //     ?? '';
+
+    $pixValor = $dados["pix"] ?? "";
+$agenciaConta = $dados["agencia"] ?? "";
+$qrChave = $dados["qrcode"] ?? "";
+
 
     // ======================================================
     // 🔥 AJUSTE PARA SEMPRE MOSTRAR ESTA CHAVE:
@@ -7758,13 +7806,6 @@ function exibe_info_bancaria($tipos, $dados) {
 
 
 
-
-
-
-$valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
-$valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
-$valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
-
 // echo "qrcde:".$valQrcode."<br>";
 // echo "pix:".$valPix."<br>";
 // echo "agencia:".$valAgencia;
@@ -7773,22 +7814,49 @@ $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_da
 // $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
 
 
+// $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+
+// $raw = trim($raw);
+
+// // Remove aspas externas indevidas
+// if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
+//     $raw = substr($raw, 1, -1);
+// }
+
+// // Agora sim decodifica
+// $tipos = json_decode($raw, true);
+
+// // Se ainda não for array, corrige
+// if (!is_array($tipos)) {
+//     $tipos = [$raw]; // fallback
+// }
+
 $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+$tiposSelecionadosDoBanco = json_decode($raw, true);
 
-$raw = trim($raw);
-
-// Remove aspas externas indevidas
-if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
-    $raw = substr($raw, 1, -1);
+if (!is_array($tiposSelecionadosDoBanco)) {
+    $tiposSelecionadosDoBanco = [];
 }
 
-// Agora sim decodifica
-$tipos = json_decode($raw, true);
 
-// Se ainda não for array, corrige
-if (!is_array($tipos)) {
-    $tipos = [$raw]; // fallback
+function tipos_para_exibir($categoria, $tiposSelecionadosDoBanco, $valQrcode, $valPix, $valAgencia) {
+
+    $temQr  = in_array("qrcode",       $tiposSelecionadosDoBanco);
+    $temPix = in_array("pix",           $tiposSelecionadosDoBanco);
+    $temAg  = in_array("agencia-conta", $tiposSelecionadosDoBanco);
+
+    $mostrarQr  = $temQr  && deve_exibir_banco($categoria, $valQrcode);
+    $mostrarPix = $temPix && deve_exibir_banco($categoria, $valPix);
+    $mostrarAg  = $temAg  && deve_exibir_banco($categoria, $valAgencia);
+
+    $lista = [];
+    if ($mostrarQr)  $lista[] = "qrcode";
+    if ($mostrarPix) $lista[] = "pix";
+    if ($mostrarAg)  $lista[] = "agencia-conta";
+
+    return $lista;
 }
+
 
 
 // Dados bancários reais
@@ -7798,7 +7866,10 @@ $dadosBancarios = [
     "agencia_conta" => trim($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "")
 ];
 
-
+var_dump($resultado_busca_dados_bancarios);
+var_dump($resultado_busca_informativo_bancario_qrcode);
+var_dump($resultado_busca_informativo_bancario_agenciaconta); "<br>";
+var_dump($resultado_busca_informativo_bancario_pix);
             echo '
         <style>
                         body {
@@ -8121,28 +8192,20 @@ echo'
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-// EXAMES
 $categoria = "exames";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("exames", $valQrcode);
+$mostrarPix = deve_exibir_banco("exames", $valPix);
+$mostrarAg  = deve_exibir_banco("exames", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["exames"]);
+
+
 
 echo '
 <div class="top-bar"></div>
@@ -8246,28 +8309,20 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta // ✅ incluído
 // ], $dadosBancarios);
 
-// TREINAMENTOS
 $categoria = "treinamentos";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("treinamentos", $valQrcode);
+$mostrarPix = deve_exibir_banco("treinamentos", $valPix);
+$mostrarAg  = deve_exibir_banco("treinamentos", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["treinamentos"]);
+
+
 
 
 echo '
@@ -8375,28 +8430,20 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-// EPI / EPC
 $categoria = "epi";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("epi", $valQrcode);
+$mostrarPix = deve_exibir_banco("epi", $valPix);
+$mostrarAg  = deve_exibir_banco("epi", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["epi"]);
+
+
 
 
 echo '
@@ -18421,15 +18468,28 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -18953,6 +19013,39 @@ function deve_exibir_banco($categoria, $valorSelecionado) {
     return in_array($categoria, $categoriasPermitidas, true);
 }
 
+// $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+// $valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
+// $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
+
+$valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
+$valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
+$valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
+
+print_r($valPix);
+print_r($valAgencia);
+print_r($valQrcode);
+
+$dadosPorCategoria = [
+    "exames" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_exames_procedimentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_exames_procedimentos"] ?? "",
+        "qrcode" => $valQrcode // continua igual
+    ],
+
+    "treinamentos" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_treinamentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_treinamentos"] ?? "",
+        "qrcode" => $valQrcode
+    ],
+
+    "epi" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_epi_epc"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_epi_epc"] ?? "",
+        "qrcode" => $valQrcode
+    ]
+];
+
+
 function exibe_info_bancaria($tipos, $dados) {
 
     if (!is_array($tipos)) $tipos = [];
@@ -18964,13 +19057,18 @@ function exibe_info_bancaria($tipos, $dados) {
     if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
 
     // Normaliza dados possíveis
-    $pixValor = $dados['pix'] 
-        ?? $dados['dado_bancario_pix'] 
-        ?? '';
+    // $pixValor = $dados['pix'] 
+    //     ?? $dados['dado_bancario_pix'] 
+    //     ?? '';
 
-    $agenciaConta = $dados['agencia_conta'] 
-        ?? $dados['dado_bancario_agencia_conta'] 
-        ?? '';
+    // $agenciaConta = $dados['agencia_conta'] 
+    //     ?? $dados['dado_bancario_agencia_conta'] 
+    //     ?? '';
+
+    $pixValor = $dados["pix"] ?? "";
+$agenciaConta = $dados["agencia"] ?? "";
+$qrChave = $dados["qrcode"] ?? "";
+
 
     // ======================================================
     // 🔥 AJUSTE PARA SEMPRE MOSTRAR ESTA CHAVE:
@@ -19034,15 +19132,6 @@ function exibe_info_bancaria($tipos, $dados) {
     echo '</div>';
 }
 
-
-
-
-
-
-$valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
-$valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
-$valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
-
 // echo "qrcde:".$valQrcode."<br>";
 // echo "pix:".$valPix."<br>";
 // echo "agencia:".$valAgencia;
@@ -19052,21 +19141,31 @@ $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_da
 
 
 $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+$tiposSelecionadosDoBanco = json_decode($raw, true);
 
-$raw = trim($raw);
-
-// Remove aspas externas indevidas
-if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
-    $raw = substr($raw, 1, -1);
+if (!is_array($tiposSelecionadosDoBanco)) {
+    $tiposSelecionadosDoBanco = [];
 }
 
-// Agora sim decodifica
-$tipos = json_decode($raw, true);
 
-// Se ainda não for array, corrige
-if (!is_array($tipos)) {
-    $tipos = [$raw]; // fallback
+function tipos_para_exibir($categoria, $tiposSelecionadosDoBanco, $valQrcode, $valPix, $valAgencia) {
+
+    $temQr  = in_array("qrcode",       $tiposSelecionadosDoBanco);
+    $temPix = in_array("pix",           $tiposSelecionadosDoBanco);
+    $temAg  = in_array("agencia-conta", $tiposSelecionadosDoBanco);
+
+    $mostrarQr  = $temQr  && deve_exibir_banco($categoria, $valQrcode);
+    $mostrarPix = $temPix && deve_exibir_banco($categoria, $valPix);
+    $mostrarAg  = $temAg  && deve_exibir_banco($categoria, $valAgencia);
+
+    $lista = [];
+    if ($mostrarQr)  $lista[] = "qrcode";
+    if ($mostrarPix) $lista[] = "pix";
+    if ($mostrarAg)  $lista[] = "agencia-conta";
+
+    return $lista;
 }
+
 
 
 // Dados bancários reais
@@ -19398,28 +19497,18 @@ echo '
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-// EXAMES
 $categoria = "exames";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("exames", $valQrcode);
+$mostrarPix = deve_exibir_banco("exames", $valPix);
+$mostrarAg  = deve_exibir_banco("exames", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["exames"]);
 
 echo '
 <div class="top-bar"></div>
@@ -19523,28 +19612,18 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta // ✅ incluído
 // ], $dadosBancarios);
 
-// TREINAMENTOS
 $categoria = "treinamentos";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("treinamentos", $valQrcode);
+$mostrarPix = deve_exibir_banco("treinamentos", $valPix);
+$mostrarAg  = deve_exibir_banco("treinamentos", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["treinamentos"]);
 
 
 echo '
@@ -30022,15 +30101,28 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -30284,6 +30376,39 @@ function deve_exibir_banco($categoria, $valorSelecionado) {
     return in_array($categoria, $categoriasPermitidas, true);
 }
 
+// $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+// $valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
+// $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
+
+$valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
+$valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
+$valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
+
+print_r($valPix);
+print_r($valAgencia);
+print_r($valQrcode);
+
+$dadosPorCategoria = [
+    "exames" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_exames_procedimentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_exames_procedimentos"] ?? "",
+        "qrcode" => $valQrcode // continua igual
+    ],
+
+    "treinamentos" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_treinamentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_treinamentos"] ?? "",
+        "qrcode" => $valQrcode
+    ],
+
+    "epi" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_epi_epc"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_epi_epc"] ?? "",
+        "qrcode" => $valQrcode
+    ]
+];
+
+
 function exibe_info_bancaria($tipos, $dados) {
 
     if (!is_array($tipos)) $tipos = [];
@@ -30295,13 +30420,18 @@ function exibe_info_bancaria($tipos, $dados) {
     if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
 
     // Normaliza dados possíveis
-    $pixValor = $dados['pix'] 
-        ?? $dados['dado_bancario_pix'] 
-        ?? '';
+    // $pixValor = $dados['pix'] 
+    //     ?? $dados['dado_bancario_pix'] 
+    //     ?? '';
 
-    $agenciaConta = $dados['agencia_conta'] 
-        ?? $dados['dado_bancario_agencia_conta'] 
-        ?? '';
+    // $agenciaConta = $dados['agencia_conta'] 
+    //     ?? $dados['dado_bancario_agencia_conta'] 
+    //     ?? '';
+
+    $pixValor = $dados["pix"] ?? "";
+$agenciaConta = $dados["agencia"] ?? "";
+$qrChave = $dados["qrcode"] ?? "";
+
 
     // ======================================================
     // 🔥 AJUSTE PARA SEMPRE MOSTRAR ESTA CHAVE:
@@ -30365,15 +30495,6 @@ function exibe_info_bancaria($tipos, $dados) {
     echo '</div>';
 }
 
-
-
-
-
-
-$valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
-$valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
-$valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
-
 // echo "qrcde:".$valQrcode."<br>";
 // echo "pix:".$valPix."<br>";
 // echo "agencia:".$valAgencia;
@@ -30383,21 +30504,31 @@ $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_da
 
 
 $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+$tiposSelecionadosDoBanco = json_decode($raw, true);
 
-$raw = trim($raw);
-
-// Remove aspas externas indevidas
-if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
-    $raw = substr($raw, 1, -1);
+if (!is_array($tiposSelecionadosDoBanco)) {
+    $tiposSelecionadosDoBanco = [];
 }
 
-// Agora sim decodifica
-$tipos = json_decode($raw, true);
 
-// Se ainda não for array, corrige
-if (!is_array($tipos)) {
-    $tipos = [$raw]; // fallback
+function tipos_para_exibir($categoria, $tiposSelecionadosDoBanco, $valQrcode, $valPix, $valAgencia) {
+
+    $temQr  = in_array("qrcode",       $tiposSelecionadosDoBanco);
+    $temPix = in_array("pix",           $tiposSelecionadosDoBanco);
+    $temAg  = in_array("agencia-conta", $tiposSelecionadosDoBanco);
+
+    $mostrarQr  = $temQr  && deve_exibir_banco($categoria, $valQrcode);
+    $mostrarPix = $temPix && deve_exibir_banco($categoria, $valPix);
+    $mostrarAg  = $temAg  && deve_exibir_banco($categoria, $valAgencia);
+
+    $lista = [];
+    if ($mostrarQr)  $lista[] = "qrcode";
+    if ($mostrarPix) $lista[] = "pix";
+    if ($mostrarAg)  $lista[] = "agencia-conta";
+
+    return $lista;
 }
+
 
 
 // Dados bancários reais
@@ -30729,28 +30860,18 @@ echo '
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-// EXAMES
 $categoria = "exames";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("exames", $valQrcode);
+$mostrarPix = deve_exibir_banco("exames", $valPix);
+$mostrarAg  = deve_exibir_banco("exames", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["exames"]);
 
 echo '
 <div class="top-bar"></div>
@@ -30983,28 +31104,18 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-// EPI / EPC
 $categoria = "epi";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("epi", $valQrcode);
+$mostrarPix = deve_exibir_banco("epi", $valPix);
+$mostrarAg  = deve_exibir_banco("epi", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["epi"]);
 
 
 echo '
@@ -41347,15 +41458,29 @@ function enviarEmailTesteRomberg() {
                 $comando_busca_informativo_bancario_qrcode = $pdo->prepare($instrucao_busca_informativo_bancario_qrcode);
                 $comando_busca_informativo_bancario_qrcode->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_qrcode->execute();
-                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetch(PDO::FETCH_ASSOC);
+                $resultado_busca_informativo_bancario_qrcode = $comando_busca_informativo_bancario_qrcode->fetchAll(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
+                // $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                // $comando_busca_informativo_bancario_agenciaconta->execute();
+                // $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
+
+                // $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                // $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
+                // $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
+                // $comando_busca_informativo_bancario_pix->execute();
+                // $resultado_busca_informativo_bancario_pix = $comando_busca_informativo_bancario_pix->fetch(PDO::FETCH_ASSOC);
+
+                $instrucao_busca_informativo_bancario_agenciaconta = "select informacoes_dados_bancarios_agenciaconta_exames_procedimentos,
+                informacoes_dados_bancarios_agenciaconta_treinamentos,informacoes_dados_bancarios_agenciaconta_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_agenciaconta = $pdo->prepare($instrucao_busca_informativo_bancario_agenciaconta);
                 $comando_busca_informativo_bancario_agenciaconta->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_agenciaconta->execute();
                 $resultado_busca_informativo_bancario_agenciaconta = $comando_busca_informativo_bancario_agenciaconta->fetch(PDO::FETCH_ASSOC);
 
-                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix from kits where id = :recebe_id_kit";
+                $instrucao_busca_informativo_bancario_pix = "select informacoes_dados_bancarios_pix_exames_procedimentos,informacoes_dados_bancarios_pix_treinamentos,
+                informacoes_dados_bancarios_pix_epi_epc from kits where id = :recebe_id_kit";
                 $comando_busca_informativo_bancario_pix = $pdo->prepare($instrucao_busca_informativo_bancario_pix);
                 $comando_busca_informativo_bancario_pix->bindValue(":recebe_id_kit",$_SESSION["codigo_kit"]);
                 $comando_busca_informativo_bancario_pix->execute();
@@ -41600,7 +41725,6 @@ function enviarEmailTesteRomberg() {
            
             }
 
-
 function deve_exibir_banco($categoria, $valorSelecionado) {
     if (empty($valorSelecionado)) return false;
 
@@ -41609,6 +41733,39 @@ function deve_exibir_banco($categoria, $valorSelecionado) {
 
     return in_array($categoria, $categoriasPermitidas, true);
 }
+
+// $valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
+// $valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
+// $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
+
+$valPix     = $resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? "";
+$valAgencia = $resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "";
+$valQrcode  = $resultado_busca_informativo_bancario_qrcode[0]["informacoes_dados_bancarios_qrcode"] ?? "";
+
+print_r($valPix);
+print_r($valAgencia);
+print_r($valQrcode);
+
+$dadosPorCategoria = [
+    "exames" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_exames_procedimentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_exames_procedimentos"] ?? "",
+        "qrcode" => $valQrcode // continua igual
+    ],
+
+    "treinamentos" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_treinamentos"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_treinamentos"] ?? "",
+        "qrcode" => $valQrcode
+    ],
+
+    "epi" => [
+        "pix" => $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix_epi_epc"] ?? "",
+        "agencia" => $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta_epi_epc"] ?? "",
+        "qrcode" => $valQrcode
+    ]
+];
+
 
 function exibe_info_bancaria($tipos, $dados) {
 
@@ -41621,13 +41778,18 @@ function exibe_info_bancaria($tipos, $dados) {
     if (!$temQrCode && !$temPix && !$temAgenciaConta) return;
 
     // Normaliza dados possíveis
-    $pixValor = $dados['pix'] 
-        ?? $dados['dado_bancario_pix'] 
-        ?? '';
+    // $pixValor = $dados['pix'] 
+    //     ?? $dados['dado_bancario_pix'] 
+    //     ?? '';
 
-    $agenciaConta = $dados['agencia_conta'] 
-        ?? $dados['dado_bancario_agencia_conta'] 
-        ?? '';
+    // $agenciaConta = $dados['agencia_conta'] 
+    //     ?? $dados['dado_bancario_agencia_conta'] 
+    //     ?? '';
+
+    $pixValor = $dados["pix"] ?? "";
+$agenciaConta = $dados["agencia"] ?? "";
+$qrChave = $dados["qrcode"] ?? "";
+
 
     // ======================================================
     // 🔥 AJUSTE PARA SEMPRE MOSTRAR ESTA CHAVE:
@@ -41692,14 +41854,6 @@ function exibe_info_bancaria($tipos, $dados) {
 }
 
 
-
-
-
-
-$valQrcode  = $resultado_busca_informativo_bancario_qrcode["informacoes_dados_bancarios_qrcode"] ?? "";
-$valPix     = $resultado_busca_informativo_bancario_pix["informacoes_dados_bancarios_pix"] ?? "";
-$valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_dados_bancarios_agenciaconta"] ?? "";
-
 // echo "qrcde:".$valQrcode."<br>";
 // echo "pix:".$valPix."<br>";
 // echo "agencia:".$valAgencia;
@@ -41707,23 +41861,32 @@ $valAgencia = $resultado_busca_informativo_bancario_agenciaconta["informacoes_da
 // Tipos permitidos vindos do banco (ex: ["qrcode","agencia-conta","pix"])
 // $tipos = json_decode($resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? "[]", true);
 
-
 $raw = $resultado_busca_dados_bancarios[0]["tipo_dado_bancario"] ?? '';
+$tiposSelecionadosDoBanco = json_decode($raw, true);
 
-$raw = trim($raw);
-
-// Remove aspas externas indevidas
-if (str_starts_with($raw, '"') && str_ends_with($raw, '"')) {
-    $raw = substr($raw, 1, -1);
+if (!is_array($tiposSelecionadosDoBanco)) {
+    $tiposSelecionadosDoBanco = [];
 }
 
-// Agora sim decodifica
-$tipos = json_decode($raw, true);
 
-// Se ainda não for array, corrige
-if (!is_array($tipos)) {
-    $tipos = [$raw]; // fallback
+function tipos_para_exibir($categoria, $tiposSelecionadosDoBanco, $valQrcode, $valPix, $valAgencia) {
+
+    $temQr  = in_array("qrcode",       $tiposSelecionadosDoBanco);
+    $temPix = in_array("pix",           $tiposSelecionadosDoBanco);
+    $temAg  = in_array("agencia-conta", $tiposSelecionadosDoBanco);
+
+    $mostrarQr  = $temQr  && deve_exibir_banco($categoria, $valQrcode);
+    $mostrarPix = $temPix && deve_exibir_banco($categoria, $valPix);
+    $mostrarAg  = $temAg  && deve_exibir_banco($categoria, $valAgencia);
+
+    $lista = [];
+    if ($mostrarQr)  $lista[] = "qrcode";
+    if ($mostrarPix) $lista[] = "pix";
+    if ($mostrarAg)  $lista[] = "agencia-conta";
+
+    return $lista;
 }
+
 
 
 // Dados bancários reais
@@ -41732,6 +41895,7 @@ $dadosBancarios = [
     "pix"           => trim($resultado_busca_dados_bancarios[0]["dado_bancario_pix"] ?? ""),
     "agencia_conta" => trim($resultado_busca_dados_bancarios[0]["dado_bancario_agencia_conta"] ?? "")
 ];
+
 
     //         echo '
     //     <style>
@@ -42586,28 +42750,18 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta // ✅ incluído
 // ], $dadosBancarios);
 
-// TREINAMENTOS
 $categoria = "treinamentos";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("treinamentos", $valQrcode);
+$mostrarPix = deve_exibir_banco("treinamentos", $valPix);
+$mostrarAg  = deve_exibir_banco("treinamentos", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["treinamentos"]);
 
 
 echo '
@@ -42715,28 +42869,18 @@ $dadosBancarios = [
 //     "agencia-conta"  => $mostrarAgConta
 // ], $dadosBancarios);
 
-// EPI / EPC
 $categoria = "epi";
-$mostrarQr       = deve_exibir_banco($categoria, $valQrcode);
-$mostrarPix      = deve_exibir_banco($categoria, $valPix);
-$mostrarAgConta  = deve_exibir_banco($categoria, $valAgencia);
 
-// echo "<pre>";
-// var_dump($categoria, $mostrarQr, $mostrarPix, $mostrarAgConta);
-// echo "</pre>";
-
-// exibe_info_bancaria([
-//     "qrcode"         => $mostrarQr,
-//     "pix"            => $mostrarPix,
-//     "agencia-conta"  => $mostrarAgConta
-// ], $dadosBancarios);
+$mostrarQr  = deve_exibir_banco("epi", $valQrcode);
+$mostrarPix = deve_exibir_banco("epi", $valPix);
+$mostrarAg  = deve_exibir_banco("epi", $valAgencia);
 
 $tiposSelecionados = [];
 if ($mostrarQr) $tiposSelecionados[] = "qrcode";
 if ($mostrarPix) $tiposSelecionados[] = "pix";
-if ($mostrarAgConta) $tiposSelecionados[] = "agencia-conta";
+if ($mostrarAg) $tiposSelecionados[] = "agencia-conta";
 
-exibe_info_bancaria($tiposSelecionados, $dadosBancarios);
+exibe_info_bancaria($tiposSelecionados, $dadosPorCategoria["epi"]);
 
 
 echo '
