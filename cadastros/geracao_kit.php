@@ -7016,40 +7016,40 @@ setTimeout(() => {
     // }
 
     // Restaura PIX (select principal)
-    if (estado.chavePix) {
-        const pixSelect = document.getElementById('pix-key-select');
-        const pixContainer = document.getElementById('pix-selector-container');
+    // if (estado.chavePix) {
+    //     const pixSelect = document.getElementById('pix-key-select');
+    //     const pixContainer = document.getElementById('pix-selector-container');
 
-        if (pixSelect && pixContainer) {
-            let valorPix = estado.chavePix;
+    //     if (pixSelect && pixContainer) {
+    //         let valorPix = estado.chavePix;
 
-            if (emEdicao) {
-                valorPix = formatarPix(valorPix);
-            }
+    //         if (emEdicao) {
+    //             valorPix = formatarPix(valorPix);
+    //         }
 
-            pixSelect.value = valorPix;
-            pixContainer.style.display = 'block';
-            pixSelect.dispatchEvent(new Event('change'));
-        }
-    }
+    //         pixSelect.value = valorPix;
+    //         pixContainer.style.display = 'block';
+    //         pixSelect.dispatchEvent(new Event('change'));
+    //     }
+    // }
 
     // Restaura Agência/Conta (select principal)
-    if (estado.agenciaConta) {
-        const acSelect = document.getElementById('agencia-conta-select');
-        const acContainer = document.getElementById('agencia-selector-container');
+    // if (estado.agenciaConta) {
+    //     const acSelect = document.getElementById('agencia-conta-select');
+    //     const acContainer = document.getElementById('agencia-selector-container');
 
-        if (acSelect && acContainer) {
-            let valorAC = estado.agenciaConta;
+    //     if (acSelect && acContainer) {
+    //         let valorAC = estado.agenciaConta;
 
-            if (emEdicao) {
-                valorAC = formatarAgenciaConta(valorAC);
-            }
+    //         if (emEdicao) {
+    //             valorAC = formatarAgenciaConta(valorAC);
+    //         }
 
-            acSelect.value = valorAC;
-            acContainer.style.display = 'block';
-            acSelect.dispatchEvent(new Event('change'));
-        }
-    }
+    //         acSelect.value = valorAC;
+    //         acContainer.style.display = 'block';
+    //         acSelect.dispatchEvent(new Event('change'));
+    //     }
+    // }
 
     // -------------------------------
     // Função auxiliar para selects por tipo
@@ -7128,9 +7128,9 @@ setTimeout(() => {
           
           // Verificar se o tipo PIX já está selecionado
           const pixRadio = document.querySelector('input[value="pix"]');
-          if (pixRadio && pixRadio.checked) {
-            pixSelectorContainer.style.display = 'block';
-          }
+          // if (pixRadio && pixRadio.checked) {
+          //   pixSelectorContainer.style.display = 'block';
+          // }
           
           // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
           function atualizarVisibilidadePix() {
@@ -7417,13 +7417,13 @@ function tratarSelecaoTipoBancario(input) {
   if (pixSelectorContainer) {
     const algumPixMarcado = Array.from(tipoContaInputs)
       .some(i => i.value === 'pix' && i.checked);
-    pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+    // pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
   }
 
   if (agenciaSelectorContainer) {
     const algumaAgenciaMarcada = Array.from(tipoContaInputs)
       .some(i => i.value === 'agencia-conta' && i.checked);
-    agenciaSelectorContainer.style.display = algumaAgenciaMarcada ? 'block' : 'none';
+    // agenciaSelectorContainer.style.display = algumaAgenciaMarcada ? 'block' : 'none';
   }
 
   // =======================================================
@@ -8274,8 +8274,9 @@ debugger;
             const acBtnSave = document.getElementById('btn-salvar-agencia');
 
             function acAtualizarVisibilidade() {
+              debugger;
               const agSelecionado = Array.from(tipoContaInputs).some(i => i.value === 'agencia-conta' && i.checked);
-              if (acSelector) acSelector.style.display = agSelecionado ? 'block' : 'none';
+              // if (acSelector) acSelector.style.display = agSelecionado ? 'block' : 'none';
             }
             tipoContaInputs.forEach(i => i.addEventListener('change', acAtualizarVisibilidade));
             if (!window._delegacaoVisAg) {
