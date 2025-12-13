@@ -9894,6 +9894,7 @@ try {
       let json_riscos;
 
       async function updateSelectedRisksDisplay() {
+        debugger;
   if (window._riscosRenderRunning) return;
   window._riscosRenderRunning = true;
 
@@ -9965,25 +9966,54 @@ try {
       risksByGroup[grupo].push({ code: codigo, name: descricao });
     }
 
+    // // Atualiza cor dos grupos no container de grupos de riscos
+    // try {
+    //   const gruposContainer = document.getElementById('group-select-container');
+    //   if (gruposContainer) {
+    //     const labels = gruposContainer.querySelectorAll('label.group-option');
+    //     labels.forEach(function (label) {
+    //       const cb = label.querySelector('input[type="checkbox"]');
+    //       if (!cb) return;
+    //       const g = cb.value;
+    //       if (g && risksByGroup[g] && risksByGroup[g].length > 0) {
+    //         label.style.color = '#b30000';
+    //         label.style.fontWeight = '600';
+    //       } else {
+    //         label.style.color = '';
+    //         label.style.fontWeight = '';
+    //       }
+    //     });
+    //   }
+    // } catch (e) { /* ignore */ }
+
     // Atualiza cor dos grupos no container de grupos de riscos
-    try {
-      const gruposContainer = document.getElementById('group-select-container');
-      if (gruposContainer) {
-        const labels = gruposContainer.querySelectorAll('label.group-option');
-        labels.forEach(function (label) {
-          const cb = label.querySelector('input[type="checkbox"]');
-          if (!cb) return;
-          const g = cb.value;
-          if (g && risksByGroup[g] && risksByGroup[g].length > 0) {
-            label.style.color = '#b30000';
-            label.style.fontWeight = '600';
-          } else {
-            label.style.color = '';
-            label.style.fontWeight = '';
-          }
-        });
+try {
+  const gruposContainer = document.getElementById('group-select-container');
+  if (gruposContainer) {
+    const labels = gruposContainer.querySelectorAll('label.group-option');
+    labels.forEach(function (label) {
+      const cb = label.querySelector('input[type="checkbox"]');
+      if (!cb) return;
+      const g = cb.value;
+
+      const temRiscosNoGrupo = g && risksByGroup[g] && risksByGroup[g].length > 0;
+
+      // mantém a lógica visual
+      if (temRiscosNoGrupo) {
+        label.style.color = '#b30000';
+        label.style.fontWeight = '600';
+      } else {
+        label.style.color = '';
+        label.style.fontWeight = '';
       }
-    } catch (e) { /* ignore */ }
+
+      // em modo edição, sincroniza o checkbox com os riscos selecionados
+      if (window.recebe_acao === 'editar') {
+        cb.checked = !!temRiscosNoGrupo;
+      }
+    });
+  }
+} catch (e) { /* ignore */ }
 
     for (const [group, risks] of Object.entries(risksByGroup)) {
       const groupName = risksData[group]?.name || group;
