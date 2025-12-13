@@ -10181,27 +10181,87 @@ try {
     // ==============================
     // 2️⃣ Garante listener de remoção
     // ==============================
+    // if (!selectedRisksContainer._removeDelegationBound) {
+    //   selectedRisksContainer.addEventListener('click', function (e) {
+    //   debugger;
+    //     const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
+    //     if (!btn || !selectedRisksContainer.contains(btn)) return;
+
+    //     e.stopPropagation?.();
+    //     e.preventDefault?.();
+
+    //     const codeToRemove = btn.getAttribute('data-code');
+    //     if (codeToRemove && window.selectedRisks && window.selectedRisks[codeToRemove]) {
+    //       delete window.selectedRisks[codeToRemove];
+    //       window._riscosDirty = true;
+    //       updateSelectedRisksDisplay?.();
+
+    //       if (window.searchBox && window.searchBox.value.trim() !== '') {
+    //         try { performSearch(window.searchBox.value); } catch (_) {}
+    //       }
+    //     }
+    //   });
+    //   selectedRisksContainer._removeDelegationBound = true;
+    // }
+
     if (!selectedRisksContainer._removeDelegationBound) {
-      selectedRisksContainer.addEventListener('click', function (e) {
-        const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
-        if (!btn || !selectedRisksContainer.contains(btn)) return;
+  selectedRisksContainer.addEventListener('click', function (e) {
+    debugger;
+    const btn = e.target && e.target.closest ? e.target.closest('.remove-risk') : null;
+    if (!btn || !selectedRisksContainer.contains(btn)) return;
 
-        e.stopPropagation?.();
-        e.preventDefault?.();
+    e.stopPropagation?.();
+    e.preventDefault?.();
 
-        const codeToRemove = btn.getAttribute('data-code');
-        if (codeToRemove && window.selectedRisks && window.selectedRisks[codeToRemove]) {
-          delete window.selectedRisks[codeToRemove];
-          window._riscosDirty = true;
-          updateSelectedRisksDisplay?.();
+    const codeToRemove = btn.getAttribute('data-code');
+    if (codeToRemove && window.selectedRisks && window.selectedRisks[codeToRemove]) {
+      // guarda info do risco antes de remover
+      const infoRemoved = window.selectedRisks[codeToRemove];
 
-          if (window.searchBox && window.searchBox.value.trim() !== '') {
-            try { performSearch(window.searchBox.value); } catch (_) {}
+      delete window.selectedRisks[codeToRemove];
+      window._riscosDirty = true;
+      updateSelectedRisksDisplay?.();
+
+      // === NOVO: se o grupo ficar sem nenhum risco, desmarca o grupo e tira o vermelho ===
+      if (infoRemoved && infoRemoved.group) {
+        const group = infoRemoved.group;
+
+        // ainda existe algum risco desse grupo?
+        const aindaTemDoGrupo = Object.values(window.selectedRisks || {}).some(function (r) {
+          return r && r.group === group;
+        });
+
+        if (!aindaTemDoGrupo) {
+          const gruposContainer = document.getElementById('group-select-container');
+          if (gruposContainer) {
+            const cb = gruposContainer.querySelector('input[type="checkbox"][value="' + group + '"]');
+            if (cb) {
+              cb.checked = false;
+              const label = cb.closest('label.group-option');
+              if (label) {
+                label.style.color = '';
+                label.style.fontWeight = '';
+              }
+            }
+          }
+
+          // remove da persistência de grupos, se estiver usando
+          if (Array.isArray(window.riscosGruposEstadoSalvo)) {
+            window.riscosGruposEstadoSalvo = window.riscosGruposEstadoSalvo.filter(function (g) {
+              return g !== group;
+            });
           }
         }
-      });
-      selectedRisksContainer._removeDelegationBound = true;
+      }
+      // ======================================================================
+
+      if (window.searchBox && window.searchBox.value.trim() !== '') {
+        try { performSearch(window.searchBox.value); } catch (_) {}
+      }
     }
+  });
+  selectedRisksContainer._removeDelegationBound = true;
+}
 
     // ==============================
     // 3️⃣ Atualiza exibição dos riscos
