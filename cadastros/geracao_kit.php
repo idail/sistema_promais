@@ -10132,51 +10132,96 @@ try {
     // ==============================
     // 1️⃣ Determina a fonte dos riscos
     // ==============================
+    // let riscosFonte = [];
+
+    // // 🔹 Caso 1: Edição (dados vindos do banco)
+    // if (window.recebe_acao === "editar" && window.kit_riscos) {
+    //   let kitRiscosArray = window.kit_riscos;
+
+    //   // Se vier como string, converte para array
+    //   if (typeof kitRiscosArray === "string") {
+    //     try { 
+    //       kitRiscosArray = JSON.parse(kitRiscosArray); 
+    //     } catch (e) { 
+    //       console.error("Erro ao parsear window.kit_riscos:", e);
+    //       kitRiscosArray = []; 
+    //     }
+    //   }
+
+    //   // Só processa se realmente for array
+    //   if (Array.isArray(kitRiscosArray) && kitRiscosArray.length > 0) {
+    //     riscosFonte = kitRiscosArray.map(r => ({
+    //       codigo: r.codigo || '',
+    //       descricao: r.descricao || '',
+    //       grupo: r.grupo || ''
+    //     }));
+    //     console.log("🟢 Modo edição: riscos carregados do banco (window.kit_riscos)");
+    //   }
+    // }
+
+    // // 🔹 Caso 2: Snapshot (usuário trocou de aba)
+    // else if (Array.isArray(window._snapshotRiscosSelecionados) && window._snapshotRiscosSelecionados.length > 0) {
+    //   riscosFonte = window._snapshotRiscosSelecionados.map(r => ({
+    //     codigo: r.codigo || '',
+    //     descricao: r.descricao || '',
+    //     grupo: r.grupo || ''
+    //   }));
+    //   console.log("🟠 Usando snapshot da navegação entre abas (_snapshotRiscosSelecionados)");
+    // }
+    // // 🔹 Caso 3: Sessão atual (usuário marcou riscos manualmente)
+    // else if (typeof window.selectedRisks === 'object' && Object.keys(window.selectedRisks).length > 0) {
+    //   riscosFonte = Object.entries(window.selectedRisks).map(([codigo, info]) => ({
+    //     codigo,
+    //     descricao: info.name,
+    //     grupo: info.group
+    //   }));
+    //   console.log("🟡 Usando riscos da sessão atual (selectedRisks)");
+    // }
+
     let riscosFonte = [];
 
-    // 🔹 Caso 1: Edição (dados vindos do banco)
-    if (window.recebe_acao === "editar" && window.kit_riscos) {
-      let kitRiscosArray = window.kit_riscos;
+// 🔹 PRIORIDADE 1: Sessão atual (usuário marcou riscos manualmente)
+if (typeof window.selectedRisks === 'object' && Object.keys(window.selectedRisks).length > 0) {
+  riscosFonte = Object.entries(window.selectedRisks).map(([codigo, info]) => ({
+    codigo,
+    descricao: info.name,
+    grupo: info.group
+  }));
+  console.log("🟡 Usando riscos da sessão atual (selectedRisks)");
+}
 
-      // Se vier como string, converte para array
-      if (typeof kitRiscosArray === "string") {
-        try { 
-          kitRiscosArray = JSON.parse(kitRiscosArray); 
-        } catch (e) { 
-          console.error("Erro ao parsear window.kit_riscos:", e);
-          kitRiscosArray = []; 
-        }
-      }
+// 🔹 PRIORIDADE 2: Snapshot (usuário trocou de aba)
+else if (Array.isArray(window._snapshotRiscosSelecionados) && window._snapshotRiscosSelecionados.length > 0) {
+  riscosFonte = window._snapshotRiscosSelecionados.map(r => ({
+    codigo: r.codigo || '',
+    descricao: r.descricao || '',
+    grupo: r.grupo || ''
+  }));
+  console.log("🟠 Usando snapshot da navegação entre abas (_snapshotRiscosSelecionados)");
+}
 
-      // Só processa se realmente for array
-      if (Array.isArray(kitRiscosArray) && kitRiscosArray.length > 0) {
-        riscosFonte = kitRiscosArray.map(r => ({
-          codigo: r.codigo || '',
-          descricao: r.descricao || '',
-          grupo: r.grupo || ''
-        }));
-        console.log("🟢 Modo edição: riscos carregados do banco (window.kit_riscos)");
-      }
-    }
+// 🔹 PRIORIDADE 3: Edição (dados vindos do banco)
+else if (window.recebe_acao === "editar" && window.kit_riscos) {
+  let kitRiscosArray = window.kit_riscos;
 
-    // 🔹 Caso 2: Snapshot (usuário trocou de aba)
-    else if (Array.isArray(window._snapshotRiscosSelecionados) && window._snapshotRiscosSelecionados.length > 0) {
-      riscosFonte = window._snapshotRiscosSelecionados.map(r => ({
-        codigo: r.codigo || '',
-        descricao: r.descricao || '',
-        grupo: r.grupo || ''
-      }));
-      console.log("🟠 Usando snapshot da navegação entre abas (_snapshotRiscosSelecionados)");
+  if (typeof kitRiscosArray === "string") {
+    try { 
+      kitRiscosArray = JSON.parse(kitRiscosArray); 
+    } catch (e) { 
+      console.error("Erro ao parsear window.kit_riscos:", e);
+      kitRiscosArray = []; 
     }
-    // 🔹 Caso 3: Sessão atual (usuário marcou riscos manualmente)
-    else if (typeof window.selectedRisks === 'object' && Object.keys(window.selectedRisks).length > 0) {
-      riscosFonte = Object.entries(window.selectedRisks).map(([codigo, info]) => ({
-        codigo,
-        descricao: info.name,
-        grupo: info.group
-      }));
-      console.log("🟡 Usando riscos da sessão atual (selectedRisks)");
-    }
+  }
+
+  if (Array.isArray(kitRiscosArray) && kitRiscosArray.length > 0) {
+    riscosFonte = kitRiscosArray.map(r => ({
+      codigo: r.codigo || '',
+      descricao: r.descricao || '',
+      grupo: r.grupo || ''
+    }));
+    console.log("🟢 Modo edição: riscos carregados do banco (window.kit_riscos)");
+  }
+}
 
     // ==============================
     // 2️⃣ Garante listener de remoção
