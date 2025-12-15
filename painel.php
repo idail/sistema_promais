@@ -122,7 +122,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                         </div>
                         <div class="submenu">
                             <a href="?pg=geracao_kit">Gera&#xe7;&#xe3;o de Kit</a>
-                            <a href="?pg=kits_asos">ASO em Rascunho</a>
+                            <!-- <a href="?pg=kits_asos">ASO em Rascunho</a> -->
                             <a href="?pg=kits">Listar Kits</a>
                             <a href="?pg=informativos_kits">Informações Kits</a>
                         </div>
