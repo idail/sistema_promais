@@ -20416,6 +20416,7 @@ if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0
       </div>`;
 
     badge.querySelector('.btn-remover').addEventListener('click', async (e) => {
+    debugger;
       e.stopPropagation();
       const arrayAlvo = tipo === 'aptidao'
         ? (window.aptAptidoesSelecionadas || aptAptidoesSelecionadas)
@@ -20436,6 +20437,16 @@ if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0
       else precisaSalvarExames = true;
 
       await atualizarListaSelecionados(arrayAlvo, container, tipo, true);
+
+      // Após atualizar a lista, atualiza o destaque visual dos exames
+      if (tipo === 'exame') {
+        try {
+          // Pequeno atraso para garantir que o DOM reflita a remoção
+          setTimeout(destacarExamesSelecionados, 50);
+        } catch (e) {
+          console.error('Erro ao atualizar destaque de exames após remoção pelo badge:', e);
+        }
+      }
     });
 
     container.appendChild(badge);
