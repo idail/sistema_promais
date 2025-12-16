@@ -20812,7 +20812,8 @@ async function atualizarSelecionados(checkbox, tipo) {
       const sincronizado = Array.isArray(arraySelecionado)
         ? arraySelecionado.map(item => ({
             codigo: String(item.codigo),
-            recebe_apenas_nome: item.recebe_apenas_nome,
+            // recebe_apenas_nome: item.recebe_apenas_nome,
+            nome:item.recebe_apenas_nome || item.nome,
             valor: item.valor
           }))
         : [];
