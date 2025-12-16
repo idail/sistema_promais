@@ -20370,8 +20370,11 @@ if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0
     json_exames = JSON.stringify(exames_selecionados);
     console.log("Exames selecionados:", exames_selecionados);
     if (window.recebe_acao === "editar") {
+      // Mantém globais e local em sincronia no modo edição
       window.aptExamesSelecionados = [...exames_selecionados];
+      aptExamesSelecionados = [...exames_selecionados];
     }
+
     if (devePersistir && precisaSalvarExames) {
       await gravar_exames_selecionadas();
       precisaSalvarExames = false;
@@ -20425,6 +20428,20 @@ if ((window.aptAptidoesSelecionadas && window.aptAptidoesSelecionadas.length > 0
       const codigoAlvo = String(item.codigo);
       const index = arrayAlvo.findIndex(a => String(a.codigo) === codigoAlvo);
       if (index !== -1) arrayAlvo.splice(index, 1);
+
+      // Em modo edição, mantém arrays de exames sincronizados ao remover pelo badge
+      if (tipo === 'exame' && window.recebe_acao === 'editar') {
+        const sincronizado = Array.isArray(arrayAlvo)
+          ? arrayAlvo.map(it => ({
+              codigo: String(it.codigo),
+              recebe_apenas_nome: it.recebe_apenas_nome || it.nome,
+              valor: it.valor
+            }))
+          : [];
+
+        window.aptExamesSelecionados = [...sincronizado];
+        aptExamesSelecionados = [...sincronizado];
+      }
 
       const checkbox = document.querySelector(`#${tipo}-${codigoAlvo}`);
       if (checkbox) {
@@ -20660,15 +20677,15 @@ let bloqueioRenderizacaoSelecao = false;
 function destacarExamesSelecionados() {
   debugger;
     try {
-        // Define a fonte de dados dos exames selecionados, com fallback
+        // Define a fonte de dados dos exames selecionados, priorizando arrays locais
         let examesSelecionados = [];
 
-        if (Array.isArray(window.aptExamesSelecionados) && window.aptExamesSelecionados.length > 0) {
-            examesSelecionados = window.aptExamesSelecionados;
-        } else if (Array.isArray(exames_selecionados) && exames_selecionados.length > 0) {
+        if (Array.isArray(exames_selecionados) && exames_selecionados.length > 0) {
             examesSelecionados = exames_selecionados;
         } else if (Array.isArray(aptExamesSelecionados) && aptExamesSelecionados.length > 0) {
             examesSelecionados = aptExamesSelecionados;
+        } else if (Array.isArray(window.aptExamesSelecionados) && window.aptExamesSelecionados.length > 0) {
+            examesSelecionados = window.aptExamesSelecionados;
         }
 
         // Remove a formatação de todos os labels dentro da lista de exames
@@ -20786,11 +20803,32 @@ async function atualizarSelecionados(checkbox, tipo) {
     if (tipo === 'aptidao') precisaSalvarAptidoes = true;
     else {
         precisaSalvarExames = true;
-        // Destacar itens após atualizar
-        setTimeout(destacarExamesSelecionados, 100);
     }
 
     await atualizarListaSelecionados(arraySelecionado, container, tipo, true);
+
+    // Mantém a variável global em sincronia no modo edição
+    if (tipo === 'exame' && window.recebe_acao === 'editar') {
+      const sincronizado = Array.isArray(arraySelecionado)
+        ? arraySelecionado.map(item => ({
+            codigo: String(item.codigo),
+            recebe_apenas_nome: item.recebe_apenas_nome,
+            valor: item.valor
+          }))
+        : [];
+
+      window.aptExamesSelecionados = [...sincronizado];
+      aptExamesSelecionados = [...sincronizado];
+    }
+
+    // Após atualizar os arrays/base de dados, atualiza o destaque dos exames
+    if (tipo === 'exame') {
+      try {
+        setTimeout(destacarExamesSelecionados, 100);
+      } catch (e) {
+        console.error('Erro ao destacar exames após atualizarSelecionados:', e);
+      }
+    }
   } finally {
     // Garante o estado do checkbox conforme o clique original
     if (checkbox.checked !== estadoInicialMarcado) {
