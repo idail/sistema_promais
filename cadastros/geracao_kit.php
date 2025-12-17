@@ -22549,14 +22549,86 @@ function atualizarExibicaoTiposOrcamento(tiposSelecionados) {
     if (secExames) secExames.style.display = hasExames ? 'block' : 'none';
     if (secTreinamentos) secTreinamentos.style.display = hasTreinamentos ? 'block' : 'none';
     if (secEpi) secEpi.style.display = hasEpi ? 'block' : 'none';
+
+    const setSelectFromLabel = (selectId, label) => {
+      const sel = document.getElementById(selectId);
+      if (!sel) return;
+      if (!label) {
+        sel.value = '';
+        return;
+      }
+      let found = false;
+      const target = String(label).trim();
+      Array.prototype.forEach.call(sel.options, opt => {
+        if (found) return;
+        const text = (opt.textContent || '').trim();
+        const val = (opt.value || '').trim();
+        if (text === target || val === target) {
+          sel.value = opt.value;
+          found = true;
+        }
+      });
+      if (!found) sel.value = '';
+    };
+
+    if (window.recebe_acao === 'editar') {
+      if (hasExames) {
+        setSelectFromLabel('agencia-conta-exames-select', window.dado_bancario_agencia_conta_exames_procedimentos);
+        setSelectFromLabel('pix-exames-select', window.dado_bancario_pix_exames_procedimentos);
+      } else {
+        const agenciaExames = document.getElementById('agencia-conta-exames-select');
+        const pixExames = document.getElementById('pix-exames-select');
+        if (agenciaExames) agenciaExames.value = '';
+        if (pixExames) pixExames.value = '';
+      }
+
+      if (hasTreinamentos) {
+        setSelectFromLabel('agencia-conta-treinamentos-select', window.dado_bancario_agencia_conta_treinamentos);
+        setSelectFromLabel('pix-treinamentos-select', window.dado_bancario_pix_treinamentos);
+      } else {
+        const agenciaTrein = document.getElementById('agencia-conta-treinamentos-select');
+        const pixTrein = document.getElementById('pix-treinamentos-select');
+        if (agenciaTrein) agenciaTrein.value = '';
+        if (pixTrein) pixTrein.value = '';
+      }
+
+      if (hasEpi) {
+        setSelectFromLabel('agencia-conta-epi-select', window.dado_bancario_agencia_conta_epi_epc);
+        setSelectFromLabel('pix-epi-select', window.dado_bancario_pix_epi_epc);
+      } else {
+        const agenciaEpi = document.getElementById('agencia-conta-epi-select');
+        const pixEpi = document.getElementById('pix-epi-select');
+        if (agenciaEpi) agenciaEpi.value = '';
+        if (pixEpi) pixEpi.value = '';
+      }
+    } else {
+      if (!hasExames) {
+        const agenciaExames = document.getElementById('agencia-conta-exames-select');
+        const pixExames = document.getElementById('pix-exames-select');
+        if (agenciaExames) agenciaExames.value = '';
+        if (pixExames) pixExames.value = '';
+      }
+
+      if (!hasTreinamentos) {
+        const agenciaTrein = document.getElementById('agencia-conta-treinamentos-select');
+        const pixTrein = document.getElementById('pix-treinamentos-select');
+        if (agenciaTrein) agenciaTrein.value = '';
+        if (pixTrein) pixTrein.value = '';
+      }
+
+      if (!hasEpi) {
+        const agenciaEpi = document.getElementById('agencia-conta-epi-select');
+        const pixEpi = document.getElementById('pix-epi-select');
+        if (agenciaEpi) agenciaEpi.value = '';
+        if (pixEpi) pixEpi.value = '';
+      }
+    }
   } catch (e) {
     console.warn('Erro ao controlar exibicao dos blocos de tipos de orcamento:', e);
   }
 }
 
-
-
-    // Função auxiliar para atualizar a lista global a partir do DOM
+// ... restante do código ...
     function atualizarTiposOrcamentoSelecionados() {
       // debugger;
       // try {
