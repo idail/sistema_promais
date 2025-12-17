@@ -12690,6 +12690,7 @@ else if (window.recebe_acao === "editar" && window.kit_riscos) {
     
     // Função para abrir a modal de empresa
     function abrirModalEmpresa() {
+      debugger;
       const modal = document.getElementById('modalEmpresa');
       if (!modal) return;
       
@@ -12702,8 +12703,10 @@ else if (window.recebe_acao === "editar" && window.kit_riscos) {
       // Carrega os estados
       carregarEstados();
       
-      // Mostra a modal
+      // Mostra a modal, garantindo que volte a ficar visível e interativa
       modal.style.display = 'flex';
+      modal.style.opacity = '1';
+      modal.style.pointerEvents = 'auto';
     }
     
     // Substitui a função abrirModal original para a modal de empresa
@@ -12724,16 +12727,19 @@ else if (window.recebe_acao === "editar" && window.kit_riscos) {
     });
     
     function abrirModal(id) {
+      debugger;
       // Se for a modal de empresa, usa a função específica
       if (id === 'modalEmpresa') {
         abrirModalEmpresa();
         return;
       }
       
-      // Para outras modais, mantém o comportamento original
+      // Para outras modais estáticas (clinica, colaborador, cargo, etc.)
       const modal = document.getElementById(id);
       if (modal) {
         modal.style.display = 'flex';
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
       }
     }
 
