@@ -252,14 +252,14 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                             <i class="fas fa-chart-line"></i>
                             Meus Dados
                         </a>
-                        <a href="?pg=relatorios">
+                        <!-- <a href="?pg=relatorios">
                             <i class="fas fa-file-alt"></i>
                             Relat&#xf3;rios
                         </a>
                         <a href="?pg=notificacoes">
                             <i class="fas fa-bell"></i>
                             Notifica&#xe7;&#xf5;es
-                        </a>
+                        </a> -->
                     </div>
                     <div class="menu-section">
                         <a href="logout.php" class="logout">
