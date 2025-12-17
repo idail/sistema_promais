@@ -7134,11 +7134,11 @@ setTimeout(() => {
           
           // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
           function atualizarVisibilidadePix() {
-            const pixSelecionado = Array.from(tipoContaInputs).some(
-              input => input.value === 'pix' && input.checked
-            );
+            // const pixSelecionado = Array.from(tipoContaInputs).some(
+            //   input => input.value === 'pix' && input.checked
+            // );
             
-            pixSelectorContainer.style.display = pixSelecionado ? 'block' : 'none';
+            // pixSelectorContainer.style.display = pixSelecionado ? 'block' : 'none';
           }
 
           // Função para atualizar o estado global dos dados bancários
@@ -7524,7 +7524,26 @@ function gravar_informacoes_bancarias_qrcode(valor_informacoes_bancarias) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_qrcode: window.valor_informacoes_bancarias_qrcode
     },
-    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    success: function(ret) { 
+      var mensagemSucesso = `
+            <div id="informacoes-bancarias-qrcode" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <div>
+                  <div>KIT Atualizado com sucesso.</div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          $("#informacoes-bancarias-qrcode").remove();
+          $(".tabs-container").before(mensagemSucesso);
+
+          setTimeout(function() {
+            $("#informacoes-bancarias-qrcode").fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+     },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -7548,7 +7567,26 @@ function gravar_informacoes_bancarias_agencia_conta(valor_informacoes_bancarias)
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_agencia_conta: window.valor_informacoes_bancarias_agencia_conta
     },
-    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    success: function(ret) { 
+      var mensagemSucesso = `
+            <div id="informacoes-bancarias-agencia-conta" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <div>
+                  <div>KIT Atualizado com sucesso.</div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          $("#informacoes-bancarias-agencia-conta").remove();
+          $(".tabs-container").before(mensagemSucesso);
+
+          setTimeout(function() {
+            $("#informacoes-bancarias-agencia-conta").fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+     },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -7572,7 +7610,26 @@ function gravar_informacoes_bancarias_pix(valor_informacoes_bancarias) {
       processo_geracao_kit: "incluir_valores_kit",
       valor_informacoes_bancarias_pix: window.valor_informacoes_bancarias_pix
     },
-    success: function(ret) { /* ... mesmo conteúdo ... */ },
+    success: function(ret) { 
+      var mensagemSucesso = `
+            <div id="informacoes-bancarias-pix" class="alert alert-success" style="text-align: center; margin: 0 auto 20px; max-width: 600px; display: block; background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 4px; border: 1px solid #c3e6cb;">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <div>
+                  <div>KIT Atualizado com sucesso.</div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          $("#informacoes-bancarias-pix").remove();
+          $(".tabs-container").before(mensagemSucesso);
+
+          setTimeout(function() {
+            $("#informacoes-bancarias-pix").fadeOut(500, function() {
+              $(this).remove();
+            });
+          }, 5000);
+    },
     error: function(xhr, status, error) { console.log("Erro:", error); }
   });
 }
@@ -19183,7 +19240,7 @@ try {
   // Verificar se o tipo PIX já está selecionado ao carregar a página
   const pixRadio = document.querySelector('input[value="pix"]');
   if (pixRadio && pixRadio.checked && pixSelectorContainer) {
-    pixSelectorContainer.style.display = 'block';
+    // pixSelectorContainer.style.display = 'block';
   }
   
   // Mostrar/ocultar seletor de chave PIX quando PIX for selecionado
@@ -19207,7 +19264,7 @@ tipoContaInputs.forEach(input => {
         // Verifica se algum checkbox de PIX está marcado
         if (pixSelectorContainer) {
             const algumPixMarcado = Array.from(tipoContaInputs).some(i => i.value === 'pix' && i.checked);
-            pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
+            // pixSelectorContainer.style.display = algumPixMarcado ? 'block' : 'none';
         }
 
         try {
