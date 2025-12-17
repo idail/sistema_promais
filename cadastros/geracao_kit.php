@@ -7803,6 +7803,7 @@ if (!window._delegacaoTipoConta) {
           
           // Fechar modal
           function fecharModal() {
+            debugger;
             modalContaBancaria.style.display = 'none';
           }
           
@@ -13849,37 +13850,22 @@ modal.innerHTML = `
 
 
     function fecharModal(modalId) {
+      debugger;
       const modal = document.getElementById(modalId);
       if (modal) {
-        // Adiciona animação de fade out
+        // Animação de fade out / desativação da modal, mas mantendo o elemento no DOM
         modal.style.opacity = '0';
         modal.style.pointerEvents = 'none';
-        
-        // Remove o modal após a animação
-        setTimeout(() => {
-          if (modal && modal.parentNode) {
-            // Verifica se o modal ainda está no documento antes de remover
-            if (document.body.contains(modal)) {
-              modal.parentNode.removeChild(modal);
-            }
-            
-            // Reativa a rolagem da página
-            document.body.style.overflow = '';
-            
-            // Retorna o foco para o elemento que abriu o modal, se existir
-            const lastFocusedElement = document.activeElement;
-            if (lastFocusedElement && lastFocusedElement !== document.body) {
-              lastFocusedElement.focus();
-            }
-          }
-        }, 300);
-      }
-      
-      // Retorna o foco para o elemento que abriu o modal
-      if (window.lastFocusedElement) {
-        window.lastFocusedElement.focus();
+        modal.style.display = 'none';
+
+        // Reativa a rolagem da página
+        document.body.style.overflow = '';
       }
     }
+
+    if (window.lastFocusedElement) {
+        window.lastFocusedElement.focus();
+      }
 
     // Helper function to show toast messages
     function showToast(message, type = 'success') {
@@ -14617,7 +14603,17 @@ modal.innerHTML = `
     }
 
     function abrirModalProfissionais(id) {
-      document.getElementById(id).style.display = 'flex';
+      debugger;
+      const modal = document.getElementById(id);
+      if (!modal) {
+        console.warn(`Modal não encontrada para o id: ${id}`);
+        return;
+      }
+
+      // Garante que a modal volte a aparecer e fique interativa
+      modal.style.display = 'flex';
+      modal.style.opacity = '1';
+      modal.style.pointerEvents = 'auto';
     }
 
     function formatarCPF(input) {
@@ -19237,6 +19233,7 @@ tipoContaInputs.forEach(input => {
   
   // Função para abrir o modal de cadastro de chave PIX
   function abrirModalChavePix() {
+    debugger;
     if (modalContaBancaria) {
       // Marcar o radio de PIX se ainda não estiver marcado
       const radioPix = document.querySelector('input[value="pix"]');
