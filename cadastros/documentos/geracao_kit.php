@@ -4833,6 +4833,7 @@ try {
       
       // Se for a aba de faturamento (etapa 5), atualiza os totais e inicializa a conta bancária
       if (step === 5) {
+        $("#numeracao-kit").html(window.recebe_codigo_kit_gerado);
         window.fatProdutosGlobais = window.fatProdutosGlobais || [];
 
         // ============================================================
@@ -10219,6 +10220,10 @@ try {
         },
         success: function(retorno_exame_geracao_kit, textStatus, xhr) {
           debugger; // sucesso JSON parseado
+
+          console.log(retorno_exame_geracao_kit);
+          window.recebe_codigo_kit_gerado = retorno_exame_geracao_kit;
+
           console.log('[KIT][SUCCESS] status:', textStatus);
           console.log('[KIT][SUCCESS] objeto:', retorno_exame_geracao_kit);
           try { console.log('[KIT][SUCCESS] bruto:', xhr && xhr.responseText); } catch(_) {}
@@ -17299,7 +17304,7 @@ console.log(total); // Exemplo: "180.10"
         // Etapa 5 - Faturamento
         `
         <div class="fat-section">
-          <h1 class="fat-header">#Faturamento N0254</h1>
+          <h1 class="fat-header"><span id="numeracao-kit"></span></h1>
           <h2 class="fat-subheader">Produtos</h2>
           
           <!-- Formulário para adicionar produtos -->
