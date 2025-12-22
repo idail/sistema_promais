@@ -5,22 +5,22 @@
 
 <style>
     /* Estilos gerais da tabela */
-    #pessoas_tabela {
+    #kits_tabela {
         font-size: 12px;
         width: 100%;
         border-collapse: collapse;
         padding-top: 20px;
     }
 
-    #pessoas_tabela th,
-    #pessoas_tabela td {
+    #kits_tabela th,
+    #kits_tabela td {
         padding: 10px;
         border: 1px solid #fff;
         text-align: left;
 
     }
 
-    #pessoas_tabela th {
+    #kits_tabela th {
         background-color: #f2f2f2;
         font-weight: bold;
     }
