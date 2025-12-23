@@ -218,9 +218,32 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                     <div class="avatar">
                         <i class="fas fa-user"></i>
                     </div>
+                    <?php
+                    $nomeCompleto = $_SESSION['user_name'] ?? 'Usuário';
+
+                    // Lista de cargos que podem vir antes do nome
+                    $cargos = ['Vendedor', 'Cliente', 'Administrador', 'Operador', 'Admin'];
+
+                    // Divide a string
+                    $partes = explode(' ', trim($nomeCompleto));
+
+                    // Se o primeiro termo for um cargo conhecido, remove ele
+                    if (in_array($partes[0], $cargos)) {
+                        array_shift($partes);
+                    }
+
+                    // Junta o restante como nome da pessoa
+                    $nomePessoa = implode(' ', $partes);
+                    ?>
                     <div class="user-info">
-                        <div class="user-name">Olá, <?php echo htmlspecialchars($_SESSION['user_name']); ?></div>
-                        <div class="user-role"><?php echo isset($_SESSION['user_access_level']) ? htmlspecialchars($_SESSION['user_access_level']) : 'Usuário'; ?></div>
+                        <div class="user-name">
+                            Olá, <?php echo htmlspecialchars($nomePessoa); ?>
+                        </div>
+                        <div class="user-role">
+                            <?php echo isset($_SESSION['user_access_level'])
+                                ? htmlspecialchars($_SESSION['user_access_level'])
+                                : 'Usuário'; ?>
+                        </div>
                     </div>
                 </button>
                 <div class="profile-menu">
