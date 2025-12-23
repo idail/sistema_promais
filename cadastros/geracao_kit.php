@@ -3415,6 +3415,7 @@ async function popular_medico_relacionados_clinica_edicao() {
                 <div class="dropdown-options">
                   <div class="dropdown-option">Sim</div>
                   <div class="dropdown-option">Não</div>
+                  <div class="dropdown-option">0%</div>
                 </div>
               </div>
             </div>
@@ -3428,6 +3429,7 @@ async function popular_medico_relacionados_clinica_edicao() {
                   <span class="dropdown-arrow">▼</span>
                 </div>
                 <div class="dropdown-options">
+                  <div class="dropdown-option">0%</div>
                   <div class="dropdown-option">10%</div>
                   <div class="dropdown-option">20%</div>
                   <div class="dropdown-option">40%</div>
@@ -3446,6 +3448,8 @@ async function popular_medico_relacionados_clinica_edicao() {
                 <div class="dropdown-options">
                   <div class="dropdown-option">Sim</div>
                   <div class="dropdown-option">Não</div>
+                  <div class="dropdown-option">0%</div>
+                  <div class="dropdown-option">30%</div>
                 </div>
               </div>
             </div>
