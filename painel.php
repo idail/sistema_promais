@@ -271,7 +271,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                     </div>
                     <div class="menu-section">
                         <div class="menu-section-title">Atividade</div>
-                        <a href="?pg=dados">
+                        <a href="?pg=meus_dados&id_user=<?php echo isset($_SESSION["user_id"]) ? htmlspecialchars($_SESSION["user_id"]) : htmlspecialchars($_SESSION["user_id"]); ?>">
                             <i class="fas fa-chart-line"></i>
                             Meus Dados
                         </a>
