@@ -264,7 +264,7 @@ $savedTheme = isset($savedTheme) ? $savedTheme : "theme-green";
                             <i class="fas fa-cog"></i>
                             Configura&#xe7;&#xf5;es
                         </a>
-                        <a href="?pg=senha">
+                        <a href="?pg=alterar_senha">
                             <i class="fas fa-key"></i>
                             Alterar Senha
                         </a>

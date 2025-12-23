@@ -102,6 +102,8 @@ try {
         'user_plan' => $usuario['plano_nome'],
         'user_expire' => $usuario['expira_em'],
         'user_access_level' => $usuario['nivel_acesso'],
+        'user_email' => $usuario["email"],
+        'criacao_user' => $usuario["criado_em"],
     ];
 
     session_start();
