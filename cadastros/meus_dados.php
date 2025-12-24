@@ -172,6 +172,13 @@
     window.recebe_codigo_id_empresa_principal;
     let recebe_tabela_kits;
     $(document).ready(function() {
+
+        let url_parametros = window.location.search;
+        const params = new URLSearchParams(url_parametros);
+
+        console.log("id do usuario",params.get("id_user"));
+
+        
         // Função para buscar dados da API
         // function buscar_kits() {
         //     $.ajax({
