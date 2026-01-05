@@ -23,7 +23,7 @@
     <div id="dados" class="tab-content active">
 
         <input type="hidden" id="empresa_id" name="empresa_id" value="<?php echo $_SESSION['empresa_id']; ?>">
-        <input type="hidden" id="usuario_id" name="usuario_id" value="<?php echo $_SESSION['user_id']; ?>">
+        <input type="hidden" id="usuario-id" name="usuario_id" value="<?php echo $_SESSION['user_id']; ?>">
         <form class="custom-form">
 
             <div class="form-columns">
@@ -131,6 +131,20 @@
             </div>
 
             <button type="button" class="btn btn-primary" id="alterar-senha">Salvar</button>
+
+            <div
+                id="mensagem-senha"
+                style="
+        display: none;
+        margin-top: 12px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #d4edda;
+        color: #155724;
+        font-weight: 500;
+    ">
+                ✅ Senha alterada com sucesso
+            </div>
             <!-- <button type="reset" id="retornar-listagem-pessoas" class="botao-cinza">Cancelar</button> -->
         </form>
     </div>
@@ -327,3 +341,36 @@
         background-color: #fff;
     } */
 </style>
+
+<script>
+    $("#alterar-senha").click(function(e) {
+        debugger;
+        $.ajax({
+            url: "cadastros/processa_usuario.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                processo_usuario: "alterar_senha_usuario",
+                valor_senha_alterada: $("#nova-senha").val(),
+                valor_id_usuario: $("#usuario-id").val()
+            },
+            success: function(retorno_usuario) {
+
+                if (retorno_usuario) {
+
+                    // mostra a mensagem
+                    $("#mensagem-senha")
+                        .fadeIn()
+                        .delay(3000)
+                        .fadeOut();
+
+                    // opcional: limpar campo senha
+                    $("#nova-senha").val("");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("Falha ao alterar senha: " + error);
+            }
+        });
+    });
+</script>

@@ -25,7 +25,23 @@ try {
 
 if($_SERVER["REQUEST_METHOD"] === "POST")
 {
+    $recebe_processo_usuario = $_POST["processo_usuario"];
 
+    if($recebe_processo_usuario === "alterar_senha_usuario")
+    {
+        $recebe_senha_usuario = $_POST["valor_senha_alterada"];
+
+        $recebe_senha_usuario_md5 = md5($recebe_senha_usuario);
+
+        $recebe_id_usuario = $_POST["valor_id_usuario"];
+
+        $instrucao_alterar_senha_usuario = "update usuarios set senha_hash = :recebe_senha_hash where id = :recebe_id_usuario";
+        $comando_alterar_senha_usuario = $pdo->prepare($instrucao_alterar_senha_usuario);
+        $comando_alterar_senha_usuario->bindValue(":recebe_senha_hash",$recebe_senha_usuario_md5);
+        $comando_alterar_senha_usuario->bindValue(":recebe_id_usuario",$recebe_id_usuario);
+        $resultado_alterar_senha_usuario = $comando_alterar_senha_usuario->execute();
+        echo json_encode($resultado_alterar_senha_usuario);
+    }
 }else if($_SERVER["REQUEST_METHOD"] === "GET")
 {
     $recebe_processo_usuario = $_GET["processo_usuario"];
