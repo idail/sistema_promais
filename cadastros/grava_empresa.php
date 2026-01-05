@@ -771,7 +771,7 @@
                             const previewContainer = document.querySelector(".preview-logo");
                             const previewImg = document.getElementById("preview-logo-img");
 
-                            previewImg.src = window.location.origin + "/img/logos/" + empresa.logo_empresa;
+                            previewImg.src = "./img/logos/" + empresa.logo_empresa;
                             previewContainer.style.display = "block";
                         }
 
@@ -1787,46 +1787,89 @@
                 formData.append("valor_logo_empresa", inputLogo.files[0]);
             }
         } else {
+            formData.append("processo_empresa", "alterar_empresa");
+            formData.append("valor_nome_fantasia_empresa", recebe_nome_fantasia_empresa);
+            formData.append("valor_cnpj_empresa", recebe_cnpj_empresa);
+            formData.append("valor_endereco_empresa", recebe_endereco_completo);
+            formData.append("valor_telefone_empresa", recebe_telefone_empresa);
+            formData.append("valor_email_empresa", recebe_email_empresa);
+            formData.append("valor_medico_coordenador_empresa", valores_codigos_medicos_empresas);
+            formData.append("valor_id_cidade", recebe_id_cidade);
+            formData.append("valor_id_estado", recebe_id_estado);
+            formData.append("valor_razao_social_empresa", recebe_razao_social_empresa);
+            formData.append("valor_bairro_empresa", recebe_bairro_empresa);
+            formData.append("valor_cep_empresa", recebe_cep_empresa);
+            formData.append("valor_complemento_empresa", recebe_complemento_empresa);
+            formData.append("valor_nome_contabilidade", recebe_nome_contabilidade);
+            formData.append("valor_email_contabilidade", recebe_email_contabilidade);
+            formData.append("valor_data_cadastro_empresa", recebe_data_cadastro_empresa);
+            formData.append("valor_id_empresa", $("#empresa_id_alteracao").val());
 
+            // 📌 arquivo (logo da empresa)
+            const inputLogo = document.getElementById("logo-empresa");
+            if (inputLogo.files.length > 0) {
+                formData.append("valor_logo_empresa", inputLogo.files[0]);
+            }
         }
 
 
         if (recebe_acao_alteracao_empresa === "editar") {
+
             $.ajax({
                 url: "cadastros/processa_empresa.php",
                 type: "POST",
                 dataType: "json",
-                data: {
-                    processo_empresa: "alterar_empresa",
-                    valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
-                    valor_cnpj_empresa: recebe_cnpj_empresa,
-                    valor_endereco_empresa: recebe_endereco_completo,
-                    valor_telefone_empresa: recebe_telefone_empresa,
-                    valor_email_empresa: recebe_email_empresa,
-                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
-                    valor_id_cidade: recebe_id_cidade,
-                    valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
-                    valor_razao_social_empresa: recebe_razao_social_empresa,
-                    valor_bairro_empresa: recebe_bairro_empresa,
-                    valor_cep_empresa: recebe_cep_empresa,
-                    valor_complemento_empresa: recebe_complemento_empresa,
-                    valor_nome_contabilidade: recebe_nome_contabilidade,
-                    valor_email_contabilidade: recebe_email_contabilidade,
-                    valor_id_empresa: $("#empresa_id_alteracao").val(),
-                },
+                data: formData,
+                processData: false, // OBRIGATÓRIO
+                contentType: false, // OBRIGATÓRIO
                 success: function(retorno_empresa) {
                     debugger;
-
                     console.log(retorno_empresa);
+
                     if (retorno_empresa) {
                         console.log("Empresa alterada com sucesso");
                         window.location.href = "painel.php?pg=empresas";
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao inserir empresa:" + error);
-                },
+                    console.log("Falha ao inserir empresa:", error);
+                }
             });
+            // $.ajax({
+            //     url: "cadastros/processa_empresa.php",
+            //     type: "POST",
+            //     dataType: "json",
+            //     data: {
+            //         processo_empresa: "alterar_empresa",
+            //         valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
+            //         valor_cnpj_empresa: recebe_cnpj_empresa,
+            //         valor_endereco_empresa: recebe_endereco_completo,
+            //         valor_telefone_empresa: recebe_telefone_empresa,
+            //         valor_email_empresa: recebe_email_empresa,
+            //         valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
+            //         valor_id_cidade: recebe_id_cidade,
+            //         valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
+            //         valor_razao_social_empresa: recebe_razao_social_empresa,
+            //         valor_bairro_empresa: recebe_bairro_empresa,
+            //         valor_cep_empresa: recebe_cep_empresa,
+            //         valor_complemento_empresa: recebe_complemento_empresa,
+            //         valor_nome_contabilidade: recebe_nome_contabilidade,
+            //         valor_email_contabilidade: recebe_email_contabilidade,
+            //         valor_id_empresa: $("#empresa_id_alteracao").val(),
+            //     },
+            //     success: function(retorno_empresa) {
+            //         debugger;
+
+            //         console.log(retorno_empresa);
+            //         if (retorno_empresa) {
+            //             console.log("Empresa alterada com sucesso");
+            //             window.location.href = "painel.php?pg=empresas";
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.log("Falha ao inserir empresa:" + error);
+            //     },
+            // });
         } else {
             // $.ajax({
             //     url: "cadastros/processa_empresa.php",

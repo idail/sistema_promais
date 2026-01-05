@@ -157,11 +157,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $recebe_id_empresa_aterar = $_SESSION["empresa_id"];
 
+        $recebe_logo_empresa_alterar = !empty($_FILES["valor_logo_empresa"]) ? $_FILES["valor_logo_empresa"] : null;
+
+        $recebe_nome_arquivo_logo = $recebe_logo_empresa_alterar["name"];
+
+        $destino = "../img/logos/" . $recebe_nome_arquivo_logo;
+
+        if (copy($recebe_logo_empresa_alterar["tmp_name"], $destino)) {
+            $documento_copiado = "com sucesso";
+        } else {
+            $documento_copiado = "sem sucesso";
+        }
+
         $instrucao_altera_empresa =
             "update empresas_novas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
         id_estado = :recebe_id_estado_alterar,telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
         bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar,
-        nome_contabilidade = :recebe_nome_contabilidade_alterar,email_contabilidade = :recebe_email_contabilidade_alterar 
+        nome_contabilidade = :recebe_nome_contabilidade_alterar,email_contabilidade = :recebe_email_contabilidade_alterar,logo_empresa = :recebe_logo_empresa 
         where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
         $comando_altera_empresa = $pdo->prepare($instrucao_altera_empresa);
         $comando_altera_empresa->bindValue(":recebe_nome_alterar", $recebe_nome_fantasia_empresa_alterar);
@@ -178,6 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_altera_empresa->bindValue(":recebe_complemento_alterar", $recebe_complemento_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_nome_contabilidade_alterar", $recebe_nome_contabilidade_alterar);
         $comando_altera_empresa->bindValue(":recebe_email_contabilidade_alterar", $recebe_email_contabilidade_alterar);
+        $comando_altera_empresa->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
         $comando_altera_empresa->bindValue(":recebe_id_empresa_alterar", $recebe_codigo_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_empresa_id", $recebe_id_empresa_aterar);
         $resultado_altera_empresa = $comando_altera_empresa->execute();
@@ -310,3 +323,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 }
+?>
