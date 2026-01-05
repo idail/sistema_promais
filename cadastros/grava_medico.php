@@ -50,7 +50,7 @@
 
                                 <!-- <input type="text" id="crm" name="crm" class="form-control" style="width: 100%;"> -->
 
-                                <select id="crm" name="crm" class="form-control">
+                                <select id="classe" name="crm" class="form-control">
                                     <option value="selecione">Selecione</option>
                                     <option value="cau">CAU</option>
                                     <option value="coren">COREN</option>
@@ -156,6 +156,15 @@
                             </div>
                         </div>
 
+                        <div class="form-group" style="flex:20%;">
+                            <label for="contato">CRM:</label>
+                            <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
+                                <i class="fas fa-user-md"></i>
+
+                                <input type="text" id="crm" name="crm" class="form-control">
+                            </div>
+                        </div>
+
                         <!-- <div class="form-group" style="flex:20%;">
                             <label for="numero_rg">Número do RG:</label>
                             <div class="input-with-icon" style="flex: 25%; margin-left: 0px;">
@@ -192,6 +201,8 @@
                                 </select>
                             </div>
                         </div>
+
+
 
 
                         <!-- <div class="form-group" style="flex:20%;">
@@ -494,6 +505,7 @@
                             $("#sexo_medico").val(resposta_medico[indice].sexo);
                             $("#contato").val(resposta_medico[indice].contato);
                             $("#categoria").val(resposta_medico[indice].categoria);
+                            $("#classe").val(resposta_medico[indice].classe);
                         }
                     }
 
@@ -672,6 +684,7 @@
         let recebe_contato_medico = $("#contato").val();
         let recebe_empresa_id_medico = $("#empresa_id").val();
         let recebe_categoria = $("#categoria").val();
+        let recebe_classe = $("#classe").val();
 
 
         // let recebe_numero_rg_medico = $("#numero_rg").val();
@@ -739,7 +752,8 @@
 
                         valor_empresa_id_medico: recebe_empresa_id_medico,
                         valor_id_medico: $("#medico_id_alteracao").val(),
-                        valor_categoria:recebe_categoria
+                        valor_categoria: recebe_categoria,
+                        valor_classe: recebe_classe
                     },
                     success: function(retorno_pessoa) {
                         debugger;
@@ -774,7 +788,8 @@
                         valor_contato_medico: recebe_contato_medico,
 
                         valor_empresa_id_medico: recebe_empresa_id_medico,
-                        valor_categoria:recebe_categoria
+                        valor_categoria: recebe_categoria,
+                        valor_classe: recebe_classe
 
                         // valor_pcmso_medico: recebe_pcmso_medico,
                         // valor_numero_rg_medico: recebe_numero_rg_medico,

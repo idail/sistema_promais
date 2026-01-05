@@ -129,6 +129,8 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_contato_medico = !empty($_POST["valor_contato_medico"]) ? $_POST["valor_contato_medico"] : null;
         $recebe_empresa_id_medico = $_SESSION["empresa_id"];
         $recebe_categoria = !empty($_POST["valor_categoria"]) ? $_POST["valor_categoria"] : null;
+
+        $recebe_classe = !empty($_POST["valor_classe"]) ? $_POST["valor_classe"] : null;
         
         // $recebe_uf_rg_medico = $_POST["valor_uf_rg_medico"];
         // $recebe_documento_classe_medico = $_POST["valor_documento_classe_medico"];
@@ -141,9 +143,9 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         
 
         $instrucao_cadastra_medico = "insert into medicos(empresa_id,nome,cpf,nascimento,sexo,
-        especialidade,crm,uf_crm,rqe,uf_rqe,contato,status,categoria,created_at,updated_at)
+        especialidade,crm,uf_crm,classe,rqe,uf_rqe,contato,status,categoria,created_at,updated_at)
         values(:recebe_empresa_id,:recebe_nome,:recebe_cpf,:recebe_nascimento,:recebe_sexo,:recebe_especialidade,
-        :recebe_crm,:recebe_uf_crm,:recebe_rqe,:recebe_uf_rqe,:recebe_contato,
+        :recebe_crm,:recebe_uf_crm,:recebe_classe,:recebe_rqe,:recebe_uf_rqe,:recebe_contato,
         :recebe_status,:recebe_categoria,:recebe_created_at,:recebe_updated_at)";
         $comando_cadastra_medico = $pdo->prepare($instrucao_cadastra_medico);
         $comando_cadastra_medico->bindValue(":recebe_empresa_id",$recebe_empresa_id_medico);
@@ -161,6 +163,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
 
         $comando_cadastra_medico->bindValue(":recebe_crm",$recebe_crm_medico);
         $comando_cadastra_medico->bindValue(":recebe_uf_crm",$recebe_uf_crm_medico);
+        $comando_cadastra_medico->bindValue(":recebe_classe",$recebe_classe);
         $comando_cadastra_medico->bindValue(":recebe_rqe",$recebe_rqe_medico);
         $comando_cadastra_medico->bindValue(":recebe_uf_rqe",$recebe_uf_rqe_medico);
         $comando_cadastra_medico->bindValue(":recebe_contato",$recebe_contato_medico);
@@ -190,6 +193,8 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
         $recebe_categoria                    = !empty($_POST["valor_categoria"]) ? $_POST["valor_categoria"] : null;
 
         $recebe_selecao_medico_examinador_kit = !empty($_POST["valor_acao_alteracao_medico"]) ? $_POST["valor_acao_alteracao_medico"] : null;
+
+        $recebe_classe_alterar = !empty($_POST["valor_classe"]) ? $_POST["valor_classe"] : null;
 
         if (!empty($recebe_selecao_medico_examinador_kit)) {
 
@@ -245,6 +250,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
                 especialidade = :recebe_especialidade,
                 crm = :recebe_crm,
                 uf_crm = :recebe_uf_crm,
+                classe = :recebe_classe,
                 rqe = :recebe_rqe,
                 uf_rqe = :recebe_uf_rqe,
                 contato = :recebe_contato,
@@ -263,6 +269,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET")
             $comando_altera_medico->bindValue(":recebe_especialidade", $recebe_especialidade_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_crm", $recebe_crm_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_uf_crm", $recebe_uf_crm_medico_alterar);
+            $comando_altera_medico->bindValue(":recebe_classe", $recebe_classe_alterar);
             $comando_altera_medico->bindValue(":recebe_rqe", $recebe_rqe_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_uf_rqe", $recebe_uf_rqe_medico_alterar);
             $comando_altera_medico->bindValue(":recebe_contato", $recebe_contato_medico_alterar);
