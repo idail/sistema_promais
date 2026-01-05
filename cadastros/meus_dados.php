@@ -176,32 +176,36 @@
         let url_parametros = window.location.search;
         const params = new URLSearchParams(url_parametros);
 
-        console.log("id do usuario",params.get("id_user"));
+        console.log("id do usuario", params.get("id_user"));
+        let recebe_usuario_id = params.get("id_user");
 
-        
-        // Função para buscar dados da API
+        $.ajax({
+            url: "cadastros/processa_geracao_kit.php", // Endpoint da API
+            method: "GET",
+            dataType: "json",
+            data: {
+                "processo_geracao_kit": "buscar_kits_usuario_meus_dados",
+                valor_id_usuario:recebe_usuario_id
+            },
+            success: async function(resposta_kits) {
+                debugger;
+                if (resposta_kits.length > 0) {
+                    console.log(resposta_kits);
+                    await preencher_tabela(resposta_kits);
+                    inicializarDataTable();
+                } else {
+                    preencher_tabela(resposta_kits);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Erro na requisição:", error);
+            }
+        });
+
+
+        // // Função para buscar dados da API
         // function buscar_kits() {
-        //     $.ajax({
-        //         url: "cadastros/processa_geracao_kit.php", // Endpoint da API
-        //         method: "GET",
-        //         dataType: "json",
-        //         data: {
-        //             "processo_geracao_kit": "buscar_todos_kits_empresa"
-        //         },
-        //         success: async function(resposta_kits) {
-        //             debugger;
-        //             if (resposta_kits.length > 0) {
-        //                 console.log(resposta_kits);
-        //                 await preencher_tabela(resposta_kits);
-        //                 inicializarDataTable();
-        //             } else {
-        //                 preencher_tabela(resposta_kits);
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error("Erro na requisição:", error);
-        //         }
-        //     });
+
         // } 
     });
 
@@ -226,82 +230,72 @@
     //             });
     //         }
 
-    //         // Função para preencher a tabela com os dados das clínicas
-    //         async function preencher_tabela(kits) {
-    //             debugger;
-    //             let tbody = document.querySelector("#kits_tabela tbody");
-    //             tbody.innerHTML = ""; // Limpa o conteúdo existente
+            // Função para preencher a tabela com os dados das clínicas
+            async function preencher_tabela(kits) {
+                debugger;
+                let tbody = document.querySelector("#kits_tabela tbody");
+                tbody.innerHTML = ""; // Limpa o conteúdo existente
 
-    //             if (kits.length > 0) {
-    //                 for (let index = 0; index < kits.length; index++) {
-    //                     let kit = kits[index];
+                if (kits.length > 0) {
+                    for (let index = 0; index < kits.length; index++) {
+                        let kit = kits[index];
 
-    //                     // Separar o endereço
-    //                     // let partesEndereco = pessoa.endereco.split(',');
-    //                     // let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
-    //                     // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
+                        // Separar o endereço
+                        // let partesEndereco = pessoa.endereco.split(',');
+                        // let ruaNumero = `${partesEndereco[0] || ''}, ${partesEndereco[1] || ''}`;
+                        // let cidadeEstado = `${(partesEndereco[2] || '').trim()} / ${(partesEndereco[3] || '').trim()}`;
 
-    //                     // Converter data de nascimento para formato brasileiro
-    //                     // let data_nascimento_formatado = "";
-    //                     // if (pessoa.nascimento) {
-    //                     //     let data = new Date(pessoa.nascimento);
-    //                     //     data_nascimento_formatado = data.toLocaleDateString("pt-BR");
-    //                     // }
+                        // Converter data de nascimento para formato brasileiro
+                        // let data_nascimento_formatado = "";
+                        // if (pessoa.nascimento) {
+                        //     let data = new Date(pessoa.nascimento);
+                        //     data_nascimento_formatado = data.toLocaleDateString("pt-BR");
+                        // }
 
-    //                     // <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-pessoa='${pessoa.id}'>
-    //                     //                 <i class="fas fa-eye"></i>
-    //                     //             </a>
+                        // <a href="#" class="view" title="Visualizar" id='visualizar-informacoes-pessoa' data-codigo-pessoa='${pessoa.id}'>
+                        //                 <i class="fas fa-eye"></i>
+                        //             </a>
 
-    //                     window.recebe_codigo_id_empresa_principal = kit.empresa_id_principal;
+                        window.recebe_codigo_id_empresa_principal = kit.empresa_id_principal;
 
-    //                     window.recebe_dados_empresa_principal_kit = await requisitarEmpresaPrincipalKIT();
+                        // window.recebe_dados_empresa_principal_kit = await requisitarEmpresaPrincipalKIT();
 
-    //                     let row = document.createElement("tr");
-    //                     row.innerHTML = `
-    //                         <td style="text-align:center; vertical-align:middle;">${kit.id}</td>
-    // <td style="text-align:center; vertical-align:middle;">${kit.status && kit.status.trim() !== "" ? kit.status : "Não informado"}</td>
-    // <td style="text-align:center; vertical-align:middle;">${kit.tipo_exame && kit.tipo_exame.trim() !== "" ? kit.tipo_exame : "Não informado"}</td>
-    // <td style="text-align:center; vertical-align:middle;">${window.recebe_dados_empresa_principal_kit?.nome || "Não informado"}</td>
-    //     <td style="text-align:center; vertical-align:middle;">
-    //         <div class="action-buttons">
-    //             <a href="?pg=geracao_kit&id=${kit.id}&acao=editar" target="_parent" class="edit" title="Editar">
-    //                 <i class="fas fa-edit"></i>
-    //             </a>
-    //             <a href="#" id='excluir-kit' data-codigo-kit="${kit.id}" class="delete" title="Apagar">
-    //                 <i class="fas fa-trash"></i>
-    //             </a>
-    //         </div>
-    //     </td>
-    //                     `;
-    //                     tbody.appendChild(row);
-    //                 }
-    //             } else {
-    //                 $("#kits_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
-    //             }
-    //         }
+                        let row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td style="text-align:center; vertical-align:middle;">${kit.id}</td>
+    <td style="text-align:center; vertical-align:middle;">${kit.status && kit.status.trim() !== "" ? kit.status : "Não informado"}</td>
+    <td style="text-align:center; vertical-align:middle;">${kit.tipo_exame && kit.tipo_exame.trim() !== "" ? kit.tipo_exame : "Não informado"}</td>
+    
+                        `;
+                        tbody.appendChild(row);
+                    }
+                } else {
+                    $("#kits_tabela tbody").append("<tr><td colspan='9' style='text-align:center;'>Nenhum registro localizado</td></tr>");
+                }
+            }
 
-    //         // Função para inicializar o DataTables
-    //         function inicializarDataTable() {
-    //             recebe_tabela_kits = $("#kits_tabela").DataTable({
-    //                 "language": {
-    //                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
-    //                 },
-    //                 "dom": 'lrtip' // Remove a barra de pesquisa padrão
-    //             });
-    //         }
+            // Função para inicializar o DataTables
+            function inicializarDataTable() {
+                recebe_tabela_kits = $("#kits_tabela").DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+                    },
+                    "dom": 'lrtip' // Remove a barra de pesquisa padrão
+                });
+            }
 
-    //         buscar_kits();
+            // buscar_kits();
 
-    //         $(".search-bar").on('keyup', function() {
-    //             recebe_tabela_kits.search(this.value).draw();
-    //         });
+            $(".search-bar").on('keyup', function() {
+                recebe_tabela_kits.search(this.value).draw();
+            });
 
-    //         // async function buscar_informacoes_rapidas_clinica() {
-    //         //     await popula_cidades_informacoes_rapidas();
-    //         // }
+            // async function buscar_informacoes_rapidas_clinica() {
+            //     await popula_cidades_informacoes_rapidas();
+            // }
 
-    //         // buscar_informacoes_rapidas_clinica();
-    //     });
+            // buscar_informacoes_rapidas_clinica();
+        
 
     //     $(document).on("click", "#excluir-kit", function(e) {
     //         e.preventDefault();

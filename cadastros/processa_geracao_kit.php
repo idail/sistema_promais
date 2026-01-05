@@ -2789,5 +2789,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_fonoaudiologo_especifico->execute();
         $resultado_busca_fonoaudiologo_especifico = $comando_busca_fonoaudiologo_especifico->fetch(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_fonoaudiologo_especifico);
+    }else if($recebe_processo_geracao_kit == "buscar_kits_usuario_meus_dados")
+    {
+        $recebe_usuario_id = $_GET["valor_id_usuario"];
+        $instrucao_buscar_kits_meus_dados = "select * from kits where usuario_id = :recebe_usuario_id";
+        $comando_buscar_kits_menus_dados = $pdo->prepare($instrucao_buscar_kits_meus_dados);
+        $comando_buscar_kits_menus_dados->bindValue(":recebe_usuario_id",$recebe_usuario_id);
+        $comando_buscar_kits_menus_dados->execute();
+        $resultado_buscar_kits_meus_dados = $comando_buscar_kits_menus_dados->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_buscar_kits_meus_dados);
     }
 }
+?>
