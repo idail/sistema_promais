@@ -7,7 +7,7 @@
         color: #666;
         font-size: 0.875rem;
     }
-    
+
     .spinner-border {
         display: inline-block;
         width: 1rem;
@@ -19,11 +19,13 @@
         margin-right: 5px;
         animation: spinner-border .75s linear infinite;
     }
-    
+
     @keyframes spinner-border {
-        to { transform: rotate(360deg); }
+        to {
+            transform: rotate(360deg);
+        }
     }
-    
+
     /* Estilo para mensagens toast */
     .toast-message {
         position: fixed;
@@ -34,34 +36,34 @@
         color: white;
         font-family: Arial, sans-serif;
         font-size: 14px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         z-index: 9999;
         opacity: 0;
         transition: opacity 0.3s ease-in-out;
         max-width: 300px;
     }
-    
+
     .toast-success {
         background-color: #4CAF50;
     }
-    
+
     .toast-error {
         background-color: #F44336;
     }
-    
+
     .toast-warning {
         background-color: #FF9800;
     }
-    
+
     .toast-info {
         background-color: #2196F3;
     }
-    
+
     /* Melhorias para o autocomplete de cidades */
     .autocomplete-box {
         position: relative;
     }
-    
+
     #listaCidades {
         position: absolute;
         z-index: 1000;
@@ -73,24 +75,24 @@
         border-radius: 4px;
         margin-top: 2px;
         display: none;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    
+
     #listaCidades li {
         padding: 8px 12px;
         cursor: pointer;
         list-style: none;
         border-bottom: 1px solid #eee;
     }
-    
+
     #listaCidades li:hover {
         background-color: #f5f5f5;
     }
-    
+
     #listaCidades li:last-child {
         border-bottom: none;
     }
-    
+
     /* Melhorias para o botão de limpar cidade */
     #limparCidade {
         position: absolute;
@@ -103,7 +105,7 @@
         cursor: pointer;
         display: none;
     }
-    
+
     #limparCidade:hover {
         color: #666;
     }
@@ -194,7 +196,7 @@
                 <div class="form-column">
                     <input type="hidden" id="id_estado" name="id_estado">
                     <input type="hidden" id="id_cidade" name="cidade_id">
-                    
+
                     <div class="form-group">
                         <label for="estado">Estado:</label>
                         <div class="input-with-icon">
@@ -294,6 +296,28 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="form-group">
+                    <label for="logo-empresa">Logo Empresa:</label>
+
+                    <div class="input-with-icon">
+                        <i class="fas fa-image"></i>
+                        <input type="file"
+                            id="logo-empresa"
+                            name="logo_empresa"
+                            class="form-control"
+                            accept="image/*">
+                    </div>
+
+                    <!-- Preview da imagem -->
+                    <div class="preview-logo" style="margin-top: 10px; display: none;">
+                        <img id="preview-logo-img"
+                            src=""
+                            alt="Pré-visualização da logo"
+                            style="max-width: 200px; max-height: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
+                    </div>
+                </div>
+
             </div>
 
             <button type="button" class="btn btn-primary" id="grava-empresa">Salvar</button>
@@ -549,7 +573,7 @@
     let recebe_codigo_alteracao_empresa;
     let recebe_acao_alteracao_empresa = "cadastrar";
     let verifica_vinculacao_medico_empresa;
-    
+
     // Carrega os estados quando o DOM estiver pronto
     document.addEventListener('DOMContentLoaded', function() {
         carregarEstados();
@@ -741,7 +765,16 @@
 
                     if (resposta_empresa.length > 0) {
                         const empresa = resposta_empresa[0];
-                        
+
+                        // ===== LOGO EMPRESA =====
+                        if (empresa.logo_empresa) {
+                            const previewContainer = document.querySelector(".preview-logo");
+                            const previewImg = document.getElementById("preview-logo-img");
+
+                            previewImg.src = window.location.origin + "/img/logos/" + empresa.logo_empresa;
+                            previewContainer.style.display = "block";
+                        }
+
                         // Preenche os campos básicos
                         $("#created_at").val(empresa.created_at);
                         $("#cnpj").val(empresa.cnpj);
@@ -756,47 +789,47 @@
                         $("#nome_contabilidade").val(empresa.nome_contabilidade);
                         $("#email_contabilidade").val(empresa.email_contabilidade);
                         $("#empresa_id_alteracao").val(empresa.id);
-                        
+
                         // Se tiver ID de cidade, busca os dados da cidade e estado
                         if (empresa.id_cidade) {
                             try {
                                 // Primeiro busca os dados da cidade para obter o estado
                                 const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${empresa.id_cidade}`);
                                 const cidade = await response.json();
-                                
+
                                 if (cidade) {
                                     // Define o estado
                                     const estadoSelect = document.getElementById('estado');
                                     const uf = cidade.microrregiao.mesorregiao.UF;
                                     estadoSelect.value = uf.sigla;
                                     estadoSelect.disabled = false;
-                                    
+
                                     // Define o ID do estado no campo oculto
                                     document.getElementById('id_estado').value = uf.id;
-                                    
+
                                     // Armazena o estado atual para uso posterior
                                     const estadoAtual = {
                                         id: uf.id,
                                         sigla: uf.sigla,
                                         nome: uf.nome
                                     };
-                                    
+
                                     // Dispara o evento de mudança para carregar as cidades
                                     estadoSelect.dispatchEvent(new Event('change'));
-                                    
+
                                     // Aguarda um pouco para garantir que as cidades foram carregadas
                                     setTimeout(() => {
                                         // Define a cidade
                                         const cidadeInput = document.getElementById('cidade');
                                         cidadeInput.value = cidade.nome;
                                         document.getElementById('id_cidade').value = cidade.id;
-                                        
+
                                         // Armazena a cidade atual
                                         cidadeAtual = cidade;
-                                        
+
                                         // Habilita o botão de limpar
                                         document.getElementById('limparCidade').style.display = 'block';
-                                        
+
                                         resolve(resposta_empresa);
                                     }, 500);
                                 } else {
@@ -840,7 +873,7 @@
                 "processo_empresa": "desvincular_medico_empresa",
                 valor_medico_empresa_id: recebe_codigo_medico_ja_associado,
                 valor_codigo_medico: recebe_codigo_medico,
-                valor_empresa_id:receeb_id_empresa
+                valor_empresa_id: receeb_id_empresa
             },
             success: function(resposta_medicos_clinicas) {
                 debugger;
@@ -1024,7 +1057,7 @@
 
     function fetchCompanyData(cnpj) {
         const cleanedCNPJ = cnpj.replace(/[.\/-]/g, '');
-        
+
         // Limpa os campos de cidade/estado
         document.getElementById('cidade').value = '';
         document.getElementById('id_cidade').value = '';
@@ -1038,7 +1071,7 @@
             .then(data => {
                 debugger;
                 console.log(data);
-                
+
                 // Preenche os campos básicos
                 document.getElementById('nome_fantasia').value = data.alias || '';
                 document.getElementById('razao_social').value = data.company.name || '';
@@ -1048,17 +1081,17 @@
                 document.getElementById('bairro').value = data.address.district || '';
                 document.getElementById('cep').value = formatCEPValue(data.address.zip || '');
                 document.getElementById('email').value = data.emails[0]?.address || '';
-                
+
                 // Formata o telefone se existir
                 if (data.phones && data.phones.length > 0) {
                     const phone = data.phones[0];
-                    const phoneNumber = phone.area && phone.number ? 
+                    const phoneNumber = phone.area && phone.number ?
                         formatPhoneValue(`${phone.area}${phone.number}`) : '';
                     document.getElementById('telefone').value = phoneNumber;
                 } else {
                     document.getElementById('telefone').value = '';
                 }
-                
+
                 // Preenche cidade e estado usando a função carrega_cidades
                 if (data.address.city && data.address.state) {
                     carrega_cidades(data.address.city, data.address.state);
@@ -1066,7 +1099,7 @@
                     // Se não tiver cidade/estado, apenas carrega os estados
                     carregarEstados();
                 }
-                
+
                 // Atualiza a data/hora atual
                 const now = new Date();
                 const formattedDateTime = now.toISOString().slice(0, 16);
@@ -1083,7 +1116,7 @@
     let estados = [];
     let cidades = [];
     let cidadeAtual = null;
-    
+
     // Função para exibir notificações toast
     function showToast(message, type = 'info') {
         // Remove toasts antigos
@@ -1092,12 +1125,12 @@
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 300);
         });
-        
+
         // Cria o elemento do toast
         const toast = document.createElement('div');
         toast.className = `toast-message toast-${type}`;
         toast.textContent = message;
-        
+
         // Estilos básicos para o toast
         toast.style.position = 'fixed';
         toast.style.bottom = '20px';
@@ -1111,7 +1144,7 @@
         toast.style.zIndex = '9999';
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.3s ease-in-out';
-        
+
         // Cores baseadas no tipo de mensagem
         const colors = {
             success: '#4CAF50',
@@ -1119,17 +1152,17 @@
             warning: '#FF9800',
             info: '#2196F3'
         };
-        
+
         toast.style.backgroundColor = colors[type] || colors.info;
-        
+
         // Adiciona o toast ao corpo do documento
         document.body.appendChild(toast);
-        
+
         // Anima a entrada
         setTimeout(() => {
             toast.style.opacity = '1';
         }, 10);
-        
+
         // Remove o toast após 5 segundos
         setTimeout(() => {
             toast.style.opacity = '0';
@@ -1151,36 +1184,36 @@
         loadingIndicator.style.marginTop = '5px';
         loadingIndicator.style.color = '#666';
         loadingIndicator.style.fontSize = '12px';
-        
+
         // Adiciona o indicador de carregamento
         estadoSelect.parentNode.insertBefore(loadingIndicator, estadoSelect.nextSibling);
-        
+
         try {
             // Primeiro, garante que os estados foram carregados
             if (estados.length === 0) {
                 await carregarEstados();
             }
-            
+
             // Define o estado selecionado
-            const estadoEncontrado = estados.find(e => 
+            const estadoEncontrado = estados.find(e =>
                 e.sigla === uf || e.nome.toLowerCase() === uf.toLowerCase()
             );
-            
+
             if (estadoEncontrado) {
                 estadoSelect.value = estadoEncontrado.sigla;
                 document.getElementById('id_estado').value = estadoEncontrado.id;
-                
+
                 // Carrega as cidades do estado
                 try {
                     await carregarCidades();
-                    
+
                     // Aguarda um pouco para garantir que as cidades foram carregadas
                     setTimeout(() => {
                         // Tenta encontrar a cidade pelo nome (busca parcial)
-                        const cidadeEncontrada = cidades.find(c => 
+                        const cidadeEncontrada = cidades.find(c =>
                             c.nome.toLowerCase().includes(nomeCidade.toLowerCase())
                         );
-                        
+
                         if (cidadeEncontrada) {
                             // Seleciona a cidade encontrada
                             selecionarCidade(cidadeEncontrada);
@@ -1188,7 +1221,9 @@
                         } else {
                             // Se não encontrar a cidade, preenche manualmente o campo
                             cidadeInput.value = nomeCidade;
-                            cidadeAtual = { nome: nomeCidade };
+                            cidadeAtual = {
+                                nome: nomeCidade
+                            };
                             document.getElementById('limparCidade').style.display = 'block';
                             showToast('Cidade não encontrada. Por favor, selecione manualmente.', 'warning');
                         }
@@ -1196,7 +1231,9 @@
                 } catch (error) {
                     console.error('Erro ao carregar cidades:', error);
                     cidadeInput.value = nomeCidade;
-                    cidadeAtual = { nome: nomeCidade };
+                    cidadeAtual = {
+                        nome: nomeCidade
+                    };
                     document.getElementById('limparCidade').style.display = 'block';
                     showToast('Erro ao carregar cidades. Por favor, selecione manualmente.', 'error');
                 }
@@ -1204,7 +1241,9 @@
                 console.error('Estado não encontrado:', uf);
                 cidadeInput.value = nomeCidade;
                 estadoSelect.value = '';
-                cidadeAtual = { nome: nomeCidade };
+                cidadeAtual = {
+                    nome: nomeCidade
+                };
                 document.getElementById('limparCidade').style.display = 'block';
                 showToast('Estado não encontrado. Por favor, selecione manualmente.', 'error');
             }
@@ -1213,7 +1252,9 @@
             // Em caso de erro, preenche manualmente os campos
             cidadeInput.value = nomeCidade;
             estadoSelect.value = uf;
-            cidadeAtual = { nome: nomeCidade };
+            cidadeAtual = {
+                nome: nomeCidade
+            };
             document.getElementById('limparCidade').style.display = 'block';
             showToast('Erro ao carregar localização. Por favor, preencha manualmente.', 'error');
         } finally {
@@ -1223,11 +1264,11 @@
             }
         }
     }
-    
+
     // Função para carregar os estados do IBGE com cache e tratamento de erros aprimorado
     async function carregarEstados() {
         const estadoSelect = document.getElementById('estado');
-        
+
         // Cria e configura o indicador de carregamento
         const loadingIndicator = document.createElement('div');
         loadingIndicator.className = 'loading-estados';
@@ -1241,20 +1282,20 @@
         `;
         loadingIndicator.style.marginTop = '5px';
         loadingIndicator.style.color = '#666';
-        
+
         // Insere o indicador após o campo de estado
         const estadoContainer = estadoSelect.parentNode;
         estadoContainer.insertBefore(loadingIndicator, estadoSelect.nextSibling);
-        
+
         // Configura o estado inicial do campo
         estadoSelect.disabled = true;
         estadoSelect.innerHTML = '<option value="">Carregando estados...</option>';
-        
+
         try {
             // Verifica se já temos os estados em cache
             const cacheKey = 'estados_ibge';
             const cachedData = sessionStorage.getItem(cacheKey);
-            
+
             if (cachedData) {
                 // Usa os dados em cache
                 estados = JSON.parse(cachedData);
@@ -1262,32 +1303,32 @@
             } else {
                 // Faz a requisição para a API do IBGE
                 showToast('Buscando lista de estados...', 'info');
-                
+
                 const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
-                
+
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`Erro ao buscar estados: ${response.status} ${response.statusText} - ${errorText}`);
                 }
-                
+
                 estados = await response.json();
-                
+
                 // Armazena em cache na sessionStorage
                 try {
                     sessionStorage.setItem(cacheKey, JSON.stringify(estados));
                 } catch (e) {
                     console.warn('Não foi possível armazenar estados em cache:', e);
                 }
-                
+
                 updateUIAfterStateLoad(false);
             }
-            
+
         } catch (error) {
             console.error('Erro ao carregar estados:', error);
-            
+
             // Mensagem de erro mais amigável
             let errorMessage = 'Não foi possível carregar a lista de estados.';
-            
+
             if (error.message.includes('Failed to fetch')) {
                 errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
             } else if (error.message.includes('404')) {
@@ -1295,24 +1336,24 @@
             } else if (error.message.includes('429')) {
                 errorMessage = 'Muitas requisições. Por favor, aguarde um momento e tente novamente.';
             }
-            
+
             showToast(errorMessage, 'error');
-            
+
             // Define uma mensagem de erro no select
             estadoSelect.innerHTML = '<option value="">Erro ao carregar estados</option>';
-            
+
         } finally {
             // Remove o indicador de carregamento
             if (loadingIndicator.parentNode) {
                 loadingIndicator.parentNode.removeChild(loadingIndicator);
             }
         }
-        
+
         // Função auxiliar para atualizar a UI após o carregamento dos estados
         function updateUIAfterStateLoad(fromCache = false) {
             const estadoSelect = document.getElementById('estado');
             estadoSelect.innerHTML = '<option value="">Selecione um estado</option>';
-            
+
             // Preenche o select com os estados
             estados.forEach(estado => {
                 const option = document.createElement('option');
@@ -1321,14 +1362,14 @@
                 option.setAttribute('data-id', estado.id);
                 estadoSelect.appendChild(option);
             });
-            
+
             // Habilita o campo de estado
             estadoSelect.disabled = false;
-            
+
             // Se estiver em modo de edição, o estado será definido posteriormente
             if (recebe_acao_alteracao_empresa !== 'editar') {
                 estadoSelect.disabled = false;
-                
+
                 // Adiciona o evento de mudança para carregar as cidades
                 estadoSelect.addEventListener('change', function() {
                     if (this.value) {
@@ -1343,7 +1384,7 @@
                     }
                 });
             }
-            
+
             // Mostra mensagem de sucesso
             const cacheMessage = fromCache ? ' (dados em cache)' : '';
             showToast(`${estados.length} estados carregados${cacheMessage}`, 'success');
@@ -1356,7 +1397,7 @@
         const cidadeInput = document.getElementById('cidade');
         const listaCidades = document.getElementById('listaCidades');
         const siglaEstado = estadoSelect.value;
-        
+
         // Verificação inicial de estado vazio
         if (!siglaEstado) {
             cidadeInput.disabled = true;
@@ -1364,7 +1405,7 @@
             document.getElementById('id_estado').value = '';
             return;
         }
-        
+
         // Cria e configura o indicador de carregamento
         const loadingIndicator = document.createElement('div');
         loadingIndicator.className = 'loading-cidades';
@@ -1378,29 +1419,29 @@
         `;
         loadingIndicator.style.marginTop = '5px';
         loadingIndicator.style.color = '#666';
-        
+
         // Insere o indicador após o campo de cidade
         const cidadeContainer = cidadeInput.parentNode;
         cidadeContainer.insertBefore(loadingIndicator, cidadeInput.nextSibling);
-        
+
         // Configura o estado inicial do campo de cidade
         cidadeInput.disabled = true;
         cidadeInput.placeholder = 'Aguarde, carregando cidades...';
-        
+
         try {
             // Encontra o estado selecionado
             const estado = estados.find(e => e.sigla === siglaEstado);
             if (!estado) {
                 throw new Error('Estado não encontrado na lista de estados disponíveis');
             }
-            
+
             // Atualiza o ID do estado no campo oculto
             document.getElementById('id_estado').value = estado.id;
-            
+
             // Verifica se já temos as cidades em cache para este estado
             const cacheKey = `cidades_${estado.id}`;
             const cachedData = sessionStorage.getItem(cacheKey);
-            
+
             if (cachedData) {
                 // Usa os dados em cache
                 cidades = JSON.parse(cachedData);
@@ -1408,35 +1449,35 @@
             } else {
                 // Faz a requisição para a API do IBGE
                 showToast(`Buscando cidades de ${estado.nome}...`, 'info');
-                
+
                 const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${siglaEstado}/municipios`);
-                
+
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`Erro ao buscar cidades: ${response.status} ${response.statusText} - ${errorText}`);
                 }
-                
+
                 cidades = await response.json();
-                
+
                 // Ordena as cidades alfabeticamente
                 cidades.sort((a, b) => a.nome.localeCompare(b.nome));
-                
+
                 // Armazena em cache na sessionStorage (válido apenas durante a sessão)
                 try {
                     sessionStorage.setItem(cacheKey, JSON.stringify(cidades));
                 } catch (e) {
                     console.warn('Não foi possível armazenar em cache:', e);
                 }
-                
+
                 updateUIAfterCityLoad(estado, false);
             }
-            
+
         } catch (error) {
             console.error('Erro ao carregar cidades:', error);
-            
+
             // Mensagem de erro mais amigável
             let errorMessage = 'Não foi possível carregar a lista de cidades.';
-            
+
             if (error.message.includes('Failed to fetch')) {
                 errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
             } else if (error.message.includes('404')) {
@@ -1444,36 +1485,36 @@
             } else if (error.message.includes('429')) {
                 errorMessage = 'Muitas requisições. Por favor, aguarde um momento e tente novamente.';
             }
-            
+
             showToast(errorMessage, 'error');
-            
+
             // Define uma mensagem de erro no placeholder e permite digitação manual
             cidadeInput.placeholder = 'Digite o nome da cidade';
             cidadeInput.disabled = false;
-            
+
         } finally {
             // Remove o indicador de carregamento
             if (loadingIndicator.parentNode) {
                 loadingIndicator.parentNode.removeChild(loadingIndicator);
             }
         }
-        
+
         // Função auxiliar para atualizar a UI após o carregamento das cidades
         function updateUIAfterCityLoad(estado, fromCache = false) {
             // Habilita o campo de cidade
             cidadeInput.disabled = false;
             cidadeInput.placeholder = 'Digite o nome da cidade';
-            
+
             // Mostra mensagem de sucesso
             const cacheMessage = fromCache ? ' (dados em cache)' : '';
             showToast(`${cidades.length} cidades carregadas para ${estado.nome}${cacheMessage}`, 'success');
-            
+
             // Se estiver em modo de edição, tenta selecionar a cidade
             if (recebe_acao_alteracao_empresa === 'editar' && cidadeAtual) {
-                const cidadeEncontrada = cidades.find(c => 
+                const cidadeEncontrada = cidades.find(c =>
                     c.nome.toLowerCase() === cidadeAtual.nome.toLowerCase()
                 );
-                
+
                 if (cidadeEncontrada) {
                     selecionarCidade(cidadeEncontrada);
                     showToast(`Cidade ${cidadeEncontrada.nome} selecionada automaticamente`, 'success');
@@ -1481,127 +1522,127 @@
                     showToast('Cidade não encontrada na lista. Por favor, selecione manualmente.', 'warning');
                 }
             }
-            
+
             // Foca no campo de cidade para facilitar a digitação
             cidadeInput.focus();
         }
     }
-    
+
     // Função para filtrar cidades conforme o usuário digita
     function filtrarCidades() {
         const input = document.getElementById('cidade');
         const filtro = input.value.toLowerCase();
         const listaCidades = document.getElementById('listaCidades');
-        
+
         if (!filtro) {
             listaCidades.style.display = 'none';
             document.getElementById('limparCidade').style.display = 'none';
             return;
         }
-        
-        const cidadesFiltradas = cidades.filter(cidade => 
+
+        const cidadesFiltradas = cidades.filter(cidade =>
             cidade.nome.toLowerCase().includes(filtro)
         );
-        
+
         if (cidadesFiltradas.length === 0) {
             listaCidades.innerHTML = '<li>Nenhuma cidade encontrada</li>';
             listaCidades.style.display = 'block';
             return;
         }
-        
+
         listaCidades.innerHTML = '';
-        
+
         cidadesFiltradas.slice(0, 10).forEach(cidade => {
             const li = document.createElement('li');
             li.textContent = cidade.nome;
             li.onclick = () => selecionarCidade(cidade);
             listaCidades.appendChild(li);
         });
-        
+
         listaCidades.style.display = 'block';
         document.getElementById('limparCidade').style.display = 'block';
     }
-    
+
     // Função para selecionar uma cidade
     function selecionarCidade(cidade) {
         const cidadeInput = document.getElementById('cidade');
         const listaCidades = document.getElementById('listaCidades');
         const estadoSelect = document.getElementById('estado');
         const idEstadoInput = document.getElementById('id_estado');
-        
+
         // Atualiza o campo de cidade
         cidadeInput.value = cidade.nome;
         document.getElementById('id_cidade').value = cidade.id;
         listaCidades.style.display = 'none';
-        
+
         // Obtém o estado selecionado atual
         const siglaEstado = estadoSelect.value;
-        
+
         // Se já tivermos um estado selecionado, usa o ID desse estado
         if (siglaEstado) {
             const estadoSelecionado = estados.find(e => e.sigla === siglaEstado);
             if (estadoSelecionado) {
                 idEstadoInput.value = estadoSelecionado.id;
             }
-        } 
+        }
         // Se a cidade tiver informações de estado, atualiza o estado também
         else if (cidade.microrregiao?.mesorregiao?.UF) {
             const uf = cidade.microrregiao.mesorregiao.UF;
             estadoSelect.value = uf.sigla;
             idEstadoInput.value = uf.id;
-        } 
+        }
         // Se não encontrou o estado de outra forma, tenta obter do nome da cidade (último recurso)
         else if (cidade['municipio-region']?.UF) {
             const uf = cidade['municipio-region'].UF;
             estadoSelect.value = uf.sigla;
             idEstadoInput.value = uf.id;
         }
-        
+
         console.log('Cidade selecionada:', cidade.nome, 'ID Cidade:', cidade.id, 'ID Estado:', idEstadoInput.value);
-        
+
         // Armazena a cidade atual para uso posterior
         cidadeAtual = cidade;
-        
+
         // Habilita o botão de limpar
         document.getElementById('limparCidade').style.display = 'block';
     }
-    
+
     // Função para limpar a seleção de cidade
     function limparCidade() {
         const cidadeInput = document.getElementById('cidade');
         const listaCidades = document.getElementById('listaCidades');
         const estadoSelect = document.getElementById('estado');
-        
+
         // Limpa os campos de cidade
         cidadeInput.value = '';
         document.getElementById('id_cidade').value = '';
-        
+
         // Limpa o estado e o ID do estado
         estadoSelect.value = '';
         document.getElementById('id_estado').value = '';
-        
+
         // Esconde a lista de cidades e o botão de limpar
         listaCidades.style.display = 'none';
         document.getElementById('limparCidade').style.display = 'none';
-        
+
         // Limpa a referência à cidade atual
         cidadeAtual = null;
-        
+
         // Foca no campo de cidade
         cidadeInput.focus();
-        
+
         // Habilita o campo de estado para permitir nova seleção
         estadoSelect.disabled = false;
-        
+
         // Limpa o array de cidades para forçar recarregar quando um novo estado for selecionado
         cidades = [];
     }
-    
+
     // Fechar a lista de cidades ao clicar fora
     document.addEventListener('click', function(event) {
         const listaCidades = document.getElementById('listaCidades');
         const cidadeInput = document.getElementById('cidade');
-        
+
         if (event.target !== cidadeInput && event.target !== listaCidades) {
             listaCidades.style.display = 'none';
         }
@@ -1613,28 +1654,28 @@
         if (estadoSelecionado) {
             const estadoSelect = document.getElementById('estado');
             const idEstadoInput = document.getElementById('id_estado');
-            
+
             // Encontra o estado pelo nome ou sigla
-            const estado = estados.find(e => 
-                e.nome.toLowerCase() === estadoSelecionado.toLowerCase() || 
+            const estado = estados.find(e =>
+                e.nome.toLowerCase() === estadoSelecionado.toLowerCase() ||
                 e.sigla.toLowerCase() === estadoSelecionado.toLowerCase()
             );
-            
+
             if (estado) {
                 console.log('Estado encontrado:', estado.nome, 'ID:', estado.id);
-                
+
                 // Define o estado e o ID do estado
                 estadoSelect.value = estado.sigla;
                 idEstadoInput.value = estado.id;
-                
+
                 // Carrega as cidades
                 carregarCidades().then(() => {
                     // Depois de carregar as cidades, tenta encontrar e selecionar a cidade
                     if (cidadeSelecionada) {
-                        const cidadeEncontrada = cidades.find(c => 
+                        const cidadeEncontrada = cidades.find(c =>
                             c.nome.toLowerCase() === cidadeSelecionada.toLowerCase()
                         );
-                        
+
                         if (cidadeEncontrada) {
                             console.log('Cidade encontrada:', cidadeEncontrada.nome, 'ID:', cidadeEncontrada.id);
                             selecionarCidade(cidadeEncontrada);
@@ -1662,6 +1703,35 @@
     // Removida a variável recebe_nome_cidade_empresa e recebe_id_cidade
     // pois agora usamos os campos id_cidade e id_estado diretamente
 
+    document.getElementById("logo-empresa").addEventListener("change", function() {
+        const file = this.files[0];
+        const previewContainer = document.querySelector(".preview-logo");
+        const previewImg = document.getElementById("preview-logo-img");
+
+        if (!file) {
+            previewContainer.style.display = "none";
+            previewImg.src = "";
+            return;
+        }
+
+        // valida se é imagem
+        if (!file.type.startsWith("image/")) {
+            alert("Selecione apenas arquivos de imagem.");
+            this.value = "";
+            previewContainer.style.display = "none";
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewContainer.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    });
+
     $("#grava-empresa").click(function(e) {
         e.preventDefault();
 
@@ -1680,15 +1750,46 @@
         let recebe_empresa_id = $("#empresa_id").val();
         let recebe_nome_contabilidade = $("#nome_contabilidade").val();
         let recebe_email_contabilidade = $("#email_contabilidade").val();
-        
+
         // Obtém os IDs de cidade e estado dos campos ocultos
         let recebe_id_cidade = $("#id_cidade").val();
         let recebe_id_estado = $("#id_estado").val();
-        
+
         // Monta o endereço completo sem incluir a cidade/estado, pois agora são campos separados
         let recebe_endereco_completo = recebe_endereco_empresa + "," + recebe_numero_empresa;
 
         console.log(recebe_endereco_completo);
+
+        const formData = new FormData();
+
+        if (recebe_acao_alteracao_empresa !== "editar") {
+            formData.append("processo_empresa", "inserir_empresa");
+            formData.append("valor_nome_fantasia_empresa", recebe_nome_fantasia_empresa);
+            formData.append("valor_cnpj_empresa", recebe_cnpj_empresa);
+            formData.append("valor_endereco_empresa", recebe_endereco_completo);
+            formData.append("valor_telefone_empresa", recebe_telefone_empresa);
+            formData.append("valor_email_empresa", recebe_email_empresa);
+            formData.append("valor_medico_coordenador_empresa", valores_codigos_medicos_empresas);
+            formData.append("valor_id_cidade", recebe_id_cidade);
+            formData.append("valor_id_estado", recebe_id_estado);
+            formData.append("valor_razao_social_empresa", recebe_razao_social_empresa);
+            formData.append("valor_bairro_empresa", recebe_bairro_empresa);
+            formData.append("valor_cep_empresa", recebe_cep_empresa);
+            formData.append("valor_complemento_empresa", recebe_complemento_empresa);
+            formData.append("valor_nome_contabilidade", recebe_nome_contabilidade);
+            formData.append("valor_email_contabilidade", recebe_email_contabilidade);
+            formData.append("valor_data_cadastro_empresa", recebe_data_cadastro_empresa);
+            formData.append("valor_empresa_id", recebe_empresa_id);
+
+            // 📌 arquivo (logo da empresa)
+            const inputLogo = document.getElementById("logo-empresa");
+            if (inputLogo.files.length > 0) {
+                formData.append("valor_logo_empresa", inputLogo.files[0]);
+            }
+        } else {
+
+        }
+
 
         if (recebe_acao_alteracao_empresa === "editar") {
             $.ajax({
@@ -1727,32 +1828,53 @@
                 },
             });
         } else {
+            // $.ajax({
+            //     url: "cadastros/processa_empresa.php",
+            //     type: "POST",
+            //     dataType: "json",
+            //     data: {
+            //         processo_empresa: "inserir_empresa",
+            //         valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
+            //         valor_cnpj_empresa: recebe_cnpj_empresa,
+            //         valor_endereco_empresa: recebe_endereco_completo,
+            //         valor_telefone_empresa: recebe_telefone_empresa,
+            //         valor_email_empresa: recebe_email_empresa,
+            //         valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
+            //         valor_id_cidade: recebe_id_cidade,
+            //         valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
+            //         valor_razao_social_empresa: recebe_razao_social_empresa,
+            //         valor_bairro_empresa: recebe_bairro_empresa,
+            //         valor_cep_empresa: recebe_cep_empresa,
+            //         valor_complemento_empresa: recebe_complemento_empresa,
+            //         valor_nome_contabilidade: recebe_nome_contabilidade,
+            //         valor_email_contabilidade: recebe_email_contabilidade,
+            //         valor_data_cadastro_empresa: recebe_data_cadastro_empresa,
+            //         valor_empresa_id: recebe_empresa_id,
+            //     },
+            //     success: function(retorno_empresa) {
+            //         debugger;
+
+            //         console.log(retorno_empresa);
+
+            //         if (retorno_empresa) {
+            //             console.log("Empresa cadastrada com sucesso");
+            //             window.location.href = "painel.php?pg=empresas";
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.log("Falha ao inserir empresa:" + error);
+            //     },
+            // });
+
             $.ajax({
                 url: "cadastros/processa_empresa.php",
                 type: "POST",
                 dataType: "json",
-                data: {
-                    processo_empresa: "inserir_empresa",
-                    valor_nome_fantasia_empresa: recebe_nome_fantasia_empresa,
-                    valor_cnpj_empresa: recebe_cnpj_empresa,
-                    valor_endereco_empresa: recebe_endereco_completo,
-                    valor_telefone_empresa: recebe_telefone_empresa,
-                    valor_email_empresa: recebe_email_empresa,
-                    valor_medico_coordenador_empresa: valores_codigos_medicos_empresas,
-                    valor_id_cidade: recebe_id_cidade,
-                    valor_id_estado: recebe_id_estado, // Adicionando o ID do estado
-                    valor_razao_social_empresa: recebe_razao_social_empresa,
-                    valor_bairro_empresa: recebe_bairro_empresa,
-                    valor_cep_empresa: recebe_cep_empresa,
-                    valor_complemento_empresa: recebe_complemento_empresa,
-                    valor_nome_contabilidade: recebe_nome_contabilidade,
-                    valor_email_contabilidade: recebe_email_contabilidade,
-                    valor_data_cadastro_empresa: recebe_data_cadastro_empresa,
-                    valor_empresa_id: recebe_empresa_id,
-                },
+                data: formData,
+                processData: false, // OBRIGATÓRIO
+                contentType: false, // OBRIGATÓRIO
                 success: function(retorno_empresa) {
                     debugger;
-
                     console.log(retorno_empresa);
 
                     if (retorno_empresa) {
@@ -1761,9 +1883,10 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log("Falha ao inserir empresa:" + error);
-                },
+                    console.log("Falha ao inserir empresa:", error);
+                }
             });
+
         }
     });
 </script>
