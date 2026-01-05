@@ -3433,6 +3433,7 @@ async function popular_medico_relacionados_clinica_edicao() {
                   <div class="dropdown-option">10%</div>
                   <div class="dropdown-option">20%</div>
                   <div class="dropdown-option">40%</div>
+                  <div class="dropdown-option">Não</div>
                 </div>
               </div>
             </div>
