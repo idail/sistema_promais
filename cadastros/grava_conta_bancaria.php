@@ -153,10 +153,11 @@
 
                             <select id="tipo-pix" name="tipo_pix" class="form-control">
                                 <option value="">Selecione</option>
-                                <option value="telefone">Telefone</option>
-                                <option value="cpf">CPF</option>
-                                <option value="cnpj">CNPJ</option>
-                                <option value="email">E-mail</option>
+                                <option value="TELEFONE">Telefone</option>
+                                <option value="CPF">CPF</option>
+                                <option value="CNPJ">CNPJ</option>
+                                <option value="EMAIL">E-mail</option>
+                                <option value="ALEATORIA">Aleatoria</option>
                             </select>
                         </div>
                     </div>
@@ -177,7 +178,7 @@
                         <label for="estado">Tipo Orçamento:</label>
                         <div class="input-with-icon">
                             <i class="fas fa-file-invoice-dollar"></i>
-                            <select id="tipo-pix" name="tipo_pix" class="form-control">
+                            <select id="tipo-orcamento" name="tipo_pix" class="form-control">
                                 <option value="">Selecione</option>
                                 <option value="exames_procedimentos">Exames e Procedimentos</option>
                                 <option value="treinamentos">Treinamentos</option>
@@ -276,6 +277,7 @@
                             $("#conta").val(resposta_conta_bancaria[indice].conta);
                             $("#tipo-pix").val(resposta_conta_bancaria[indice].tipo_pix);
                             $("#valor-pix").val(resposta_conta_bancaria[indice].valor_pix);
+                            $("#tipo-orcamento").val(resposta_conta_bancaria[indice].tipo_orcamento);
                         }
                     }
 
@@ -297,6 +299,7 @@
         let recebe_conta_bancaria = $("#conta").val();
         let recebe_tipo_pix_conta_bancaria = $("#tipo-pix").val();
         let recebe_valor_pix_conta_bancaria = $("#valor-pix").val();
+        let recebe_tipo_orcamento = $("#tipo-orcamento").val();
 
         if (recebe_acao_alteracao_conta_bancaria === "editar") {
             $.ajax({
@@ -310,6 +313,7 @@
                     valor_tipo_pix_conta_bancaria: recebe_tipo_pix_conta_bancaria,
                     valor_pix_conta_bancaria: recebe_valor_pix_conta_bancaria,
                     valor_id_conta_bancaria: $("#conta-bancaria-id-alteracao").val(),
+                    valor_tipo_orcamento:recebe_tipo_orcamento
                 },
                 success: function(retorno_conta_bancaria) {
                     debugger;
@@ -335,6 +339,7 @@
                     valor_conta_bancaria: recebe_conta_bancaria,
                     valor_tipo_pix_conta_bancaria: recebe_tipo_pix_conta_bancaria,
                     valor_pix_conta_bancaria: recebe_valor_pix_conta_bancaria,
+                    valor_tipo_orcamento:recebe_tipo_orcamento
                 },
                 success: function(retorno_conta_bancaria) {
                     debugger;

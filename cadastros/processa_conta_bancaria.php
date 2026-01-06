@@ -62,15 +62,18 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $recebe_conta_bancaria = !empty($_POST["valor_conta_bancaria"]) ? $_POST["valor_conta_bancaria"] : null;
         $recebe_tipo_pix_conta_bancaria = !empty($_POST["valor_tipo_pix_conta_bancaria"]) ? $_POST["valor_tipo_pix_conta_bancaria"] : null;
         $recebe_valor_pix_conta_bancaria = !empty($_POST["valor_pix_conta_bancaria"]) ? $_POST["valor_pix_conta_bancaria"] : null;
+        $recebe_valor_tipo_orcamento = !empty($_POST["valor_tipo_orcamento"]) ? $_POST["valor_tipo_orcamento"] : null;
 
         $recebe_id_conta_bancaria_alteracao = $_POST["valor_id_conta_bancaria"];
 
-        $instrucao_altera_conta_bancaria = "update conta_bancaria set agencia = :recebe_agencia,conta = :recebe_conta,tipo_pix = :recebe_tipo_pix,valor_pix = :recebe_valor_pix where id_conta_bancaria = :recebe_id_conta_bancaria and empresa_id = :recebe_empresa_id";
+        $instrucao_altera_conta_bancaria = "update conta_bancaria set agencia = :recebe_agencia,conta = :recebe_conta,
+        tipo_pix = :recebe_tipo_pix,valor_pix = :recebe_valor_pix,tipo_orcamento = :recebe_tipo_orcamento where id_conta_bancaria = :recebe_id_conta_bancaria and empresa_id = :recebe_empresa_id";
         $comando_altera_conta_bancaria = $pdo->prepare($instrucao_altera_conta_bancaria);
         $comando_altera_conta_bancaria->bindValue(":recebe_agencia",$recebe_agencia_conta_bancaria);
         $comando_altera_conta_bancaria->bindValue(":recebe_conta",$recebe_conta_bancaria);
         $comando_altera_conta_bancaria->bindValue(":recebe_tipo_pix",$recebe_tipo_pix_conta_bancaria);
         $comando_altera_conta_bancaria->bindValue(":recebe_valor_pix",$recebe_valor_pix_conta_bancaria);
+        $comando_altera_conta_bancaria->bindValue(":recebe_tipo_orcamento",$recebe_valor_tipo_orcamento);
         $comando_altera_conta_bancaria->bindValue(":recebe_id_conta_bancaria",$recebe_id_conta_bancaria_alteracao);
         $comando_altera_conta_bancaria->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
         $resultado_altera_conta_bancaria = $comando_altera_conta_bancaria->execute();
@@ -146,6 +149,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_contas_bancaria_informacoes_rapidas->execute();
         $resultado_busca_contas_bancaria_informacoes_rapidas = $comando_busca_contas_bancaria_informacoes_rapidas->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_contas_bancaria_informacoes_rapidas);
+    }else if($recebe_processo_conta_bancaria === "buscar_contas_bancarias")
+    {
+        $instrucao_busca_contas_bancarias = "select * from conta_bancaria where empresa_id = :recebe_empresa_id";
+        $comando_busca_contas_bancarias = $pdo->prepare($instrucao_busca_contas_bancarias);
+        $comando_busca_contas_bancarias->bindValue(":recebe_empresa_id",$_SESSION["empresa_id"]);
+        $comando_busca_contas_bancarias->execute();
+        $resultado_busca_contas_bancarias = $comando_busca_contas_bancarias->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_contas_bancarias);
     }
 }
 
