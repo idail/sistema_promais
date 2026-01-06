@@ -856,7 +856,7 @@ table, tr, td, th, div, p, span {
 
     /* LOGO */ 
     /* -------- COLUNA DA LOGO (TRAVADA) -------- */
-td.logo {
+td.logo-audio {
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
@@ -866,7 +866,7 @@ td.logo {
 }
 
 /* -------- LOGO (IMAGEM CONTROLADA) -------- */
-td.logo img {
+td.logo-audio img {
     max-width: 70px !important;
     max-height: 40px !important;
     width: auto !important;

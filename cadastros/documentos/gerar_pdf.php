@@ -656,7 +656,22 @@ table, tr, td, th, div, p, span {
     .hospital-nome { font-weight:bold; text-decoration:underline; display:block !important; margin-bottom:4px !important; } 
 
     /* LOGO */ 
-    .logo img { width: 90px !important; height: auto !important; max-height:45px !important; display:block; margin: 0 auto !important; } 
+    .audiometria td.logo-audio {
+    width: 15% !important;          /* mesma proporção da guia */
+    height: 50px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 0 !important;
+}
+
+.audiometria td.logo-audio img {
+    height: 34px !important;        /* visual igual ao modelo */
+    max-height: 50px !important;
+    width: auto !important;
+    max-width: 120px !important;    /* não deixa “abrir” demais */
+    display: block !important;
+    margin: 0 auto !important;
+}
 
     /* ASSINATURA - ocupa 100% da linha */ 
     td.assinatura { width: 100% !important; /* força a célula ocupar toda a largura */ text-align:center; /* centraliza horizontalmente */ vertical-align:bottom; /* alinha na parte inferior */ padding: 2px; /* padding reduzido */ border:1px solid #000; 
