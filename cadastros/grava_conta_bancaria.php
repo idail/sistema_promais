@@ -149,7 +149,8 @@
                     <div class="form-group">
                         <label for="estado">PIX:</label>
                         <div class="input-with-icon">
-                            <i class="fas fa-map-marker-alt"></i>
+                            <i class="fas fa-money-bill-wave"></i>
+
                             <select id="tipo-pix" name="tipo_pix" class="form-control">
                                 <option value="">Selecione</option>
                                 <option value="telefone">Telefone</option>
@@ -167,6 +168,21 @@
                         <div class="input-with-icon">
                             <i class="fas fa-credit-card"></i>
                             <input type="text" id="valor-pix" name="valor_pix" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="estado">Tipo Orçamento:</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <select id="tipo-pix" name="tipo_pix" class="form-control">
+                                <option value="">Selecione</option>
+                                <option value="exames_procedimentos">Exames e Procedimentos</option>
+                                <option value="treinamentos">Treinamentos</option>
+                                <option value="epi_epc">EPI/EPC</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -281,7 +297,7 @@
         let recebe_conta_bancaria = $("#conta").val();
         let recebe_tipo_pix_conta_bancaria = $("#tipo-pix").val();
         let recebe_valor_pix_conta_bancaria = $("#valor-pix").val();
-        
+
         if (recebe_acao_alteracao_conta_bancaria === "editar") {
             $.ajax({
                 url: "cadastros/processa_conta_bancaria.php",
