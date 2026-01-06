@@ -39,13 +39,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_complemento_empresa = !empty($_POST["valor_complemento_empresa"]) ? $_POST["valor_complemento_empresa"] : null;
         $recebe_chave_id_empresa = $_SESSION["id_chave_liberacao"]; // Sempre presente pela sessão
 
+        $recebe_logo_empresa = !empty($_FILES["valor_logo_empresa"]) ? $_FILES["valor_logo_empresa"] : null;
+
+        $recebe_nome_arquivo_logo = $recebe_logo_empresa["name"];
+
+        $destino = "../img/logos/" . $recebe_nome_arquivo_logo;
+
+        if (copy($recebe_logo_empresa["tmp_name"], $destino)) {
+            $documento_copiado = "com sucesso";
+        } else {
+            $documento_copiado = "sem sucesso";
+        }
+
         $instrucao_cadastra_empresa_principal = "INSERT INTO empresas
         (nome,cnpj,endereco,id_cidade,id_estado,telefone,email,chave_id,razao_social,
-        bairro,cep,complemento)
+        bairro,cep,complemento,logo_empresa)
         VALUES
         (:recebe_nome_empresa,:recebe_cnpj_empresa,:recebe_endereco_empresa,
         :recebe_id_cidade_empresa,:recebe_id_estado_empresa,:recebe_telefone_empresa,
-        :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,:recebe_complemento)";
+        :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,:recebe_complemento,:recebe_logo_empresa)";
 
         $comando_cadastra_empresa_principal = $pdo->prepare($instrucao_cadastra_empresa_principal);
 
@@ -62,6 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_cadastra_empresa_principal->bindValue(":recebe_bairro", $recebe_bairro_empresa);
         $comando_cadastra_empresa_principal->bindValue(":recebe_cep", $recebe_cep_empresa);
         $comando_cadastra_empresa_principal->bindValue(":recebe_complemento", $recebe_complemento_empresa);
+        $comando_cadastra_empresa_principal->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
         $comando_cadastra_empresa_principal->execute();
         $recebe_ultimo_codigo_gerado_cadastramento_empresa_principal = $pdo->lastInsertId();
         echo json_encode($recebe_ultimo_codigo_gerado_cadastramento_empresa_principal);
@@ -79,21 +92,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_complemento_empresa = !empty($_POST["valor_complemento_empresa"]) ? $_POST["valor_complemento_empresa"] : null;
         $recebe_id_empresa_principal_alterar = !empty($_POST["valor_id_empresa"]) ? $_POST["valor_id_empresa"] : null;
 
+        $recebe_logo_empresa_alterar = !empty($_FILES["valor_logo_empresa"]) ? $_FILES["valor_logo_empresa"] : null;
+
+        $recebe_nome_arquivo_logo = $recebe_logo_empresa_alterar["name"];
+
+        $destino = "../img/logos/" . $recebe_nome_arquivo_logo;
+
+        if (copy($recebe_logo_empresa_alterar["tmp_name"], $destino)) {
+            $documento_copiado = "com sucesso";
+        } else {
+            $documento_copiado = "sem sucesso";
+        }
+
         $instrucao_altera_empresa_principal = "update empresas set nome = :recebe_nome,endereco = :recebe_endereco,
         id_cidade = :recebe_id_ciadde,id_estado = :recebe_id_estado,telefone = :recebe_telefone,email = :recebe_email,razao_social = :recebe_razao_social,
-        bairro = :recebe_bairro,cep = :recebe_cep,complemento = :recebe_complemento where id = :recebe_id_empresa_principal";
+        bairro = :recebe_bairro,cep = :recebe_cep,complemento = :recebe_complemento,logo_empresa = :recebe_logo_empresa where id = :recebe_id_empresa_principal";
         $comando_altera_empresa_principal = $pdo->prepare($instrucao_altera_empresa_principal);
-        $comando_altera_empresa_principal->bindValue(":recebe_nome",$recebe_nome_fantasia_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_endereco",$recebe_endereco_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_id_ciadde",$recebe_id_cidade_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_id_estado",$recebe_id_estado_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_telefone",$recebe_telefone_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_email",$recebe_email_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_razao_social",$recebe_razao_social_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_bairro",$recebe_bairro_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_cep",$recebe_cep_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_complemento",$recebe_complemento_empresa);
-        $comando_altera_empresa_principal->bindValue(":recebe_id_empresa_principal",$recebe_id_empresa_principal_alterar);
+        $comando_altera_empresa_principal->bindValue(":recebe_nome", $recebe_nome_fantasia_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_endereco", $recebe_endereco_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_id_ciadde", $recebe_id_cidade_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_id_estado", $recebe_id_estado_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_telefone", $recebe_telefone_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_email", $recebe_email_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_razao_social", $recebe_razao_social_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_bairro", $recebe_bairro_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_cep", $recebe_cep_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_complemento", $recebe_complemento_empresa);
+        $comando_altera_empresa_principal->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
+        $comando_altera_empresa_principal->bindValue(":recebe_id_empresa_principal", $recebe_id_empresa_principal_alterar);
         $resultado_altera_empresa_principal = $comando_altera_empresa_principal->execute();
         echo json_encode($resultado_altera_empresa_principal);
     }
@@ -106,12 +132,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_busca_empresas_principal->execute();
         $resultado_busca_empresas_principal = $comando_busca_empresas_principal->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_empresas_principal);
-    }else if($recebe_processo_empresa === "buscar_informacoes_empresas_principal_alteracao")
-    {
+    } else if ($recebe_processo_empresa === "buscar_informacoes_empresas_principal_alteracao") {
         $recebe_codigo_empresa_principal = $_GET["valor_codigo_empresa_principal_alteracao"];
         $instrucao_busca_informacoes_empresas_principal = "select * from empresas where id = :recebe_id_empresa_principal";
         $comando_busca_informacoes_empresas_principal = $pdo->prepare($instrucao_busca_informacoes_empresas_principal);
-        $comando_busca_informacoes_empresas_principal->bindValue(":recebe_id_empresa_principal",$recebe_codigo_empresa_principal);
+        $comando_busca_informacoes_empresas_principal->bindValue(":recebe_id_empresa_principal", $recebe_codigo_empresa_principal);
         $comando_busca_informacoes_empresas_principal->execute();
         $resultado_busca_informacoes_empresas_principal = $comando_busca_informacoes_empresas_principal->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_informacoes_empresas_principal);

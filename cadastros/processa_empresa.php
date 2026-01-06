@@ -45,27 +45,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recebe_empresa_id = $_SESSION["empresa_id"];
         $recebe_chave_id_empresa = $_SESSION["id_chave_liberacao"]; // Sempre presente pela sessão
 
-        $recebe_logo_empresa = !empty($_FILES["valor_logo_empresa"]) ? $_FILES["valor_logo_empresa"] : null;
-
-        $recebe_nome_arquivo_logo = $recebe_logo_empresa["name"];
-
-        $destino = "../img/logos/" . $recebe_nome_arquivo_logo;
-
-        if (copy($recebe_logo_empresa["tmp_name"], $destino)) {
-            $documento_copiado = "com sucesso";
-        } else {
-            $documento_copiado = "sem sucesso";
-        }
-
         // Query
         $instrucao_cadastra_empresa = "INSERT INTO empresas_novas
         (nome,empresa_id,cnpj,endereco,id_cidade,id_estado,telefone,email,chave_id,razao_social,
-        bairro,cep,complemento,nome_contabilidade,email_contabilidade,logo_empresa,created_at,updated_at)
+        bairro,cep,complemento,nome_contabilidade,email_contabilidade,created_at,updated_at)
         VALUES
         (:recebe_nome_empresa,:recebe_empresa_id,:recebe_cnpj_empresa,:recebe_endereco_empresa,
         :recebe_id_cidade_empresa,:recebe_id_estado_empresa,:recebe_telefone_empresa,
         :recebe_email_empresa,:recebe_chave_id_empresa,:recebe_razao_social,:recebe_bairro,:recebe_cep,
-        :recebe_complemento,:recebe_nome_contabilidade,:recebe_email_contabilidade,:recebe_logo_empresa,:created_at,:updated_at)";
+        :recebe_complemento,:recebe_nome_contabilidade,:recebe_email_contabilidade,:created_at,:updated_at)";
 
         $comando_cadastra_empresa = $pdo->prepare($instrucao_cadastra_empresa);
 
@@ -85,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_cadastra_empresa->bindValue(":recebe_complemento", $recebe_complemento_empresa);
         $comando_cadastra_empresa->bindValue(":recebe_nome_contabilidade", $recebe_nome_contabilidade);
         $comando_cadastra_empresa->bindValue(":recebe_email_contabilidade", $recebe_email_contabilidade);
-        $comando_cadastra_empresa->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
+        // $comando_cadastra_empresa->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
         $comando_cadastra_empresa->bindValue(":created_at", $recebe_data_cadastro_empresa);
         $comando_cadastra_empresa->bindValue(":updated_at", $recebe_data_cadastro_empresa);
         $comando_cadastra_empresa->execute();
@@ -157,24 +145,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $recebe_id_empresa_aterar = $_SESSION["empresa_id"];
 
-        $recebe_logo_empresa_alterar = !empty($_FILES["valor_logo_empresa"]) ? $_FILES["valor_logo_empresa"] : null;
-
-        $recebe_nome_arquivo_logo = $recebe_logo_empresa_alterar["name"];
-
-        $destino = "../img/logos/" . $recebe_nome_arquivo_logo;
-
-        if (copy($recebe_logo_empresa_alterar["tmp_name"], $destino)) {
-            $documento_copiado = "com sucesso";
-        } else {
-            $documento_copiado = "sem sucesso";
-        }
-
         $instrucao_altera_empresa =
             "update empresas_novas set nome = :recebe_nome_alterar,cnpj = :recebe_cnpj_alterar,endereco = :recebe_endereco_alterar,id_cidade = :recebe_id_cidade_alterar,
         id_estado = :recebe_id_estado_alterar,telefone = :recebe_telefone_alterar,email = :recebe_email_alterar,chave_id = :recebe_chave_id_alterar,razao_social = :recebe_razao_social_alterar,
         bairro = :recebe_bairro_alterar,cep = :recebe_cep_alterar,complemento = :recebe_complemento_alterar,
-        nome_contabilidade = :recebe_nome_contabilidade_alterar,email_contabilidade = :recebe_email_contabilidade_alterar,logo_empresa = :recebe_logo_empresa 
-        where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
+        nome_contabilidade = :recebe_nome_contabilidade_alterar,email_contabilidade = :recebe_email_contabilidade_alterar  where id = :recebe_id_empresa_alterar and empresa_id = :recebe_empresa_id";
         $comando_altera_empresa = $pdo->prepare($instrucao_altera_empresa);
         $comando_altera_empresa->bindValue(":recebe_nome_alterar", $recebe_nome_fantasia_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_cnpj_alterar", $recebe_cnpj_empresa_alterar);
@@ -190,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $comando_altera_empresa->bindValue(":recebe_complemento_alterar", $recebe_complemento_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_nome_contabilidade_alterar", $recebe_nome_contabilidade_alterar);
         $comando_altera_empresa->bindValue(":recebe_email_contabilidade_alterar", $recebe_email_contabilidade_alterar);
-        $comando_altera_empresa->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
+        // $comando_altera_empresa->bindValue(":recebe_logo_empresa", $recebe_nome_arquivo_logo);
         $comando_altera_empresa->bindValue(":recebe_id_empresa_alterar", $recebe_codigo_empresa_alterar);
         $comando_altera_empresa->bindValue(":recebe_empresa_id", $recebe_id_empresa_aterar);
         $resultado_altera_empresa = $comando_altera_empresa->execute();
