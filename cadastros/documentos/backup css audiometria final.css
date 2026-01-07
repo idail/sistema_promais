@@ -1,0 +1,457 @@
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+}
+
+/* Reduz margens internas gerais */
+.guia-container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 1mm auto;
+  padding: 2px 4px;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+/* Fontes menores + células mais compactas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 1px 2px;
+  vertical-align: top;
+}
+
+.titulo-guia {
+  background: #eaeaea;
+  font-weight: bold;
+  text-align: center;
+  font-size: 10px;
+  padding: 2px;
+  height: 14px;
+}
+
+/* Títulos das seções */
+.section-title {
+  background: #eaeaea;
+  border: 1px solid #666;
+  font-weight: bold;
+  font-size: 9px;
+  padding: 2px 2px;
+  text-align: left;
+}
+
+
+/* Dados reduzidos */
+.dados-hospital {
+  padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    line-height: 1.05 !important;
+    font-size: 14px !important;
+}
+
+.hospital-nome {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: underline;
+  display: block;
+  margin-bottom: 0px;
+  font-size: 12px;
+}
+
+/* Logo menor */
+.logo-audio img {
+  max-height: 50px;
+}
+
+/* Tabelas internas */
+.table-riscos td,
+.table-exames td {
+  font-size: 9px;
+  padding: 1px 2px;
+}
+
+.assinatura {
+  width: 100px;
+  height: 50px !important;
+  border-bottom: 1px solid #000;
+  display: block;
+  margin: 0 auto -6px auto;
+}
+
+/* quando a assinatura é uma imagem, não desenhar a linha na própria imagem */
+img.assinatura {
+  border-bottom: none !important;
+  display: block !important;
+  margin: 0 auto -3px auto !important; /* espaço antes da linha separada abaixo */
+      height: 61px !important;
+}
+
+table + table {
+  margin-top: 1px;
+}
+
+/* Imagens reduzidas */
+img {
+  
+  height: auto;
+}
+
+/* Evitar quebra */
+.no-break,
+.no-break * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* ======================= */
+/* AJUSTE SÓ NA AUDIOMETRIA */
+/* ======================= */
+@media print {
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* TODAS AS TABELAS DA AUDIOMETRIA */
+  .audiometria table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
+  }
+
+  .audiometria th,
+  .audiometria td {
+    padding: 1px 2px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* TÍTULOS */
+  .audiometria .titulo-guia,
+  .audiometria .section-title {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+  }
+
+  /* DADOS */
+  .audiometria .dados-hospital,
+  .audiometria .hospital-nome,
+  .audiometria .empresa-info {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* IDENTIFICAÇÃO DO FUNCIONÁRIO */
+  .audiometria td[style*="font-size:12px"],
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* MEATOSCOPIA */
+  .audiometria .tabela-meatoscopia td,
+  .audiometria .tabela-meatoscopia label {
+    font-size: 8px !important;
+    padding: 2px !important;
+  }
+
+    /* LOGO – AUDIOMETRIA (PRINT) */
+.audiometria td.logo-audio {
+    width: 15% !important;          /* mesma proporção da guia */
+    height: 50px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 0 !important;
+}
+
+.audiometria td.logo-audio img {
+    height: 34px !important;        /* visual igual ao modelo */
+    max-height: 50px !important;
+    width: auto !important;
+    max-width: 120px !important;    /* não deixa “abrir” demais */
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+
+
+
+  /* AUDIOGRAMAS */
+  .audiometria table[style*="font-size:12px"] td {
+    font-size: 8px !important;
+  }
+
+  /* AUDIÔMETRO */
+  .audiometria .audiometro th,
+  .audiometria .audiometro td {
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+
+  /* ======================== */
+  /* PARECER FONOAUDIOLÓGICO */
+  /* ======================== */
+  .audiometria .parecer-fono,
+  .audiometria .parecer-fono * {
+    font-size: 7.7px !important;
+    line-height: 1.1 !important;
+    padding: 2px !important;
+  }
+
+  .audiometria .parecer-fono table {
+    width: 100% !important;
+  }
+
+  .audiometria .parecer-fono.titulo {
+    font-size: 8.2px !important;
+  }
+
+  .audiometria .obs-linha {
+    height: 25px !important;
+  }
+
+  /* ======================== */
+  /* ASSINATURAS */
+  /* ======================== */
+  .audiometria .assinaturas-container {
+    margin-top: 3px !important;
+  }
+
+  .audiometria .linha-assinatura {
+    margin: 5px auto 2px !important;
+  }
+
+  .audiometria .assinaturas,
+  .audiometria .assinaturas * {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .audiometria .titulo_assinatura {
+    font-size: 8px !important;
+    margin: 2px 0 !important;
+  }
+
+  .audiometria .nome_funcionario {
+    font-size: 7.8px !important;
+  }
+
+  
+
+  /* EVITA QUEBRA DE TABELA */
+  .audiometria table,
+  .audiometria tr,
+  .audiometria td,
+  .audiometria th {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .actions {
+    display: none !important;
+  }
+
+  .audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  .audiometria table.parecer-fono-tabela tr,
+  .audiometria table.parecer-fono-tabela td,
+  .audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+  }
+
+  /* reforço: garantir 100% da largura do formulário para a tabela do parecer */
+  .guia-container.audiometria table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+      display: table !important;
+  }
+
+  /* células sem largura fixa e respeitando a largura total */
+  .guia-container.audiometria table.parecer-fono-tabela td,
+  .guia-container.audiometria table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      box-sizing: border-box !important;
+  }
+
+  /* força a tabela a pegar 100% */
+  .parecer-fono table,
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: auto !important;
+      border-collapse: collapse !important;
+  }
+
+  /* força cada célula a NÃO ter largura fixa */
+  .parecer-fono table td,
+  .parecer-fono table th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+  }
+
+  .parecer-fono .assinatura {
+      margin-top: 6px !important;
+  }
+
+  /* linha propriamente dita */
+  .parecer-fono .assinatura .linha-assinatura {
+      margin-top: 8px !important;   /* aqui controla a distância da linha */
+      border-bottom: 1px solid #000 !important;
+      height: 40px !important;      /* altura da área da linha */
+  }
+}
+
+
+ /* Bloco do Parecer Fonoaudiológico */
+.parecer-fono {
+    width: 100% !important;
+    margin-top: 2px !important;
+    padding-top: 0 !important;
+}
+
+/* Fonte equilibrada (8.5px) + padding compacto */
+.parecer-fono table, .parecer-fono td, .parecer-fono th {
+    font-size: 8.5px !important;
+    padding: 0px !important;
+    line-height: 1.12 !important;
+}
+
+/* NÃO usar table-layout: fixed (ele aumenta altura e quebra página) */
+.parecer-fono table {
+    table-layout: auto !important;
+    width: 100% !important;
+}
+
+/* Linhas longas */
+.parecer-fono td[colspan="6"] {
+    font-size: 8.5px !important;
+    padding: 2px !important;
+}
+
+/* Altura das linhas com textos grandes */
+.parecer-fono td[style*="height"] {
+    height: 19px !important;    /* antes estava 55px/80px */
+}
+
+/* Assinaturas */
+.parecer-fono .assinatura td {
+    height: 50px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+
+@media print {
+
+    /* Força a tabela EXATA da audiometria a ocupar 100% */
+    table.parecer-fono-tabela {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+    }
+
+    /* Todas as células expandem normalmente */
+    table.parecer-fono-tabela td,
+    table.parecer-fono-tabela th {
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 2px !important;
+    }
+}
+
+/* ===========================
+   AJUSTE FINAL DO PARECER
+   =========================== */
+
+@media print {
+
+  /* força a tabela a ocupar toda a largura */
+  table.parecer-fono-tabela {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: auto !important;
+  }
+
+  /* remove larguras internas que limitam expansão */
+  table.parecer-fono-tabela td,
+  table.parecer-fono-tabela th {
+      width: auto !important;
+      max-width: none !important;
+      white-space: normal !important;
+      padding: 2px !important;
+      line-height: 1.15 !important;
+  }
+
+  /* remove atributos width vindo do HTML */
+  table.parecer-fono-tabela [width],
+  table.parecer-fono-tabela td[width],
+  table.parecer-fono-tabela th[width] {
+      width: auto !important;
+  }
+
+  /* corrige assinatura descendo a linha */
+  .parecer-fono .assinatura {
+      margin-top: 8px !important;
+      padding-top: 4px !important;
+      height: auto !important;
+  }
+
+  .parecer-fono .assinatura .linha-assinatura {
+      height: 40px !important;
+      border-bottom: 1px solid #000 !important;
+      margin-top: 6px !important;
+  }
+}
+/* ============================================
+   FORÇA TODAS AS TABELAS DO PARECER A EXPANDIREM
+   ============================================ */
+.parecer-fono table,
+table.parecer-fono-tabela {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Células sem largura fixa */
+.parecer-fono table td,
+.parecer-fono table th {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    padding: 2px !important;
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+}
+
+/* Ajuste das linhas longas */
+.parecer-fono td[colspan] {
+    width: 100% !important;
+    display: table-cell !important;
+}
+</style>';
