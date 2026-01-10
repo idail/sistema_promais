@@ -17,24 +17,71 @@ use  Dompdf\Options;
 // $user = 'root';
 // $password = ''; // Sem senha
 
-$host = 'mysql.idailneto.com.br';
-$dbname = 'idailneto06';
-$username = 'idailneto06';
-$password = 'Sei20020615';
+// $host = 'mysql.idailneto.com.br';
+// $dbname = 'idailneto06';
+// $username = 'idailneto06';
+// $password = 'Sei20020615';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erro ao conectar ao banco de dados: " . $e->getMessage());
-}
+// try {
+//     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+//     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// } catch (PDOException $e) {
+//     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
+// }
+
+require("../config/database.php");
+
+$pdo = getConnection();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $recebe_processo_geracao_kit = $_POST["processo_geracao_kit"];
+    $recebe_processo_geracao_kit = $_POST["processo_geracao_kit"] ?? $_POST['acao'] ?? '';
 
     $recebe_codigo_gerado_kit;
 
-    if ($recebe_processo_geracao_kit === "geracao_kit_sessao") {
+    if ($recebe_processo_geracao_kit === "duplicar_kit") {
+        $id_original = $_POST['id'];
+        
+        try {
+            // 1. Get original data
+            $stmt = $pdo->prepare("SELECT * FROM kits WHERE id = :id");
+            $stmt->bindValue(':id', $id_original);
+            $stmt->execute();
+            $kit_original = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($kit_original) {
+                // 2. Prepare new data
+                unset($kit_original['id']); // Remove ID to auto-increment
+                $kit_original['status'] = 'RASCUNHO';
+                $kit_original['data_geracao'] = date('Y-m-d H:i:s');
+                // You might want to update usuario_id to current user if different
+                $kit_original['usuario_id'] = $_SESSION['user_id']; 
+
+                // 3. Build Insert Query
+                $columns = array_keys($kit_original);
+                $fields = implode(", ", $columns);
+                $placeholders = ":" . implode(", :", $columns);
+                
+                $sql = "INSERT INTO kits ($fields) VALUES ($placeholders)";
+                $stmtInsert = $pdo->prepare($sql);
+                
+                foreach ($kit_original as $key => $value) {
+                    $stmtInsert->bindValue(":$key", $value);
+                }
+                
+                $stmtInsert->execute();
+                $new_id = $pdo->lastInsertId();
+                
+                echo json_encode(['status' => 'success', 'new_id' => $new_id]);
+            } else {
+                 http_response_code(404);
+                 echo json_encode(['status' => 'error', 'message' => 'Kit original não encontrado.']);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit;
+    } else if ($recebe_processo_geracao_kit === "geracao_kit_sessao") {
         $instrucao_cadastra_kit = "insert into kits(status,empresa_id_principal,usuario_id)values(:recebe_status_kit,:recebe_empresa_id_kit,:recebe_usuario_id)";
         $comando_cadastra_kit = $pdo->prepare($instrucao_cadastra_kit);
         $comando_cadastra_kit->bindValue(":recebe_status_kit", "RASCUNHO");

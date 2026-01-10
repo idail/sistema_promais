@@ -10,17 +10,21 @@ header("Access-Control-Allow-Methods: POST , GET");
 // $user = 'root';
 // $password = ''; // Sem senha
 
-$host = 'mysql.idailneto.com.br';
-$dbname = 'idailneto06';
-$username = 'idailneto06';
-$password = 'Sei20020615';
+// $host = 'mysql.idailneto.com.br';
+// $dbname = 'idailneto06';
+// $username = 'idailneto06';
+// $password = 'Sei20020615';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erro ao conectar ao banco de dados: " . $e->getMessage());
-}
+// try {
+//     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+//     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// } catch (PDOException $e) {
+//     die("Erro ao conectar ao banco de dados: " . $e->getMessage());
+// }
+
+require("../config/database.php");
+
+$pdo = getConnection();
 
 if($_SERVER["REQUEST_METHOD"] === "POST")
 {
@@ -152,6 +156,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST")
         $comando_busca_riscos_outros->execute();
         $resultado_busca_riscos_outros = $comando_busca_riscos_outros->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($resultado_busca_riscos_outros);
+    }else if($recebe_processo_risco === "buscar_informacoes_risco")
+    {
+        $recebe_id_risco = $_GET["valor_id_risco"];
+        $instrucao_busca_risco_especifico = 
+        "select * from grupo_riscos where id = :recebe_id and empresa_id = :recebe_empresa_id";
+        $comando_busca_risco_especifico = $pdo->prepare($instrucao_busca_risco_especifico);
+        $comando_busca_risco_especifico->bindValue(":recebe_id", $recebe_id_risco);
+        $comando_busca_risco_especifico->bindValue(":recebe_empresa_id", $recebe_empresa_id);
+        $comando_busca_risco_especifico->execute();
+        $resultado_busca_risco_especifico = $comando_busca_risco_especifico->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($resultado_busca_risco_especifico);
     }
 }
 ?>
