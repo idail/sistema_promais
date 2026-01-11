@@ -4444,7 +4444,13 @@ function repopular_laudos() {
         window.kit_cargo = await requisitarCargoKITEspecifico(window.kit_tipo_exame.cargo_id);
         window.kit_medico_coordenador = await requisitarMedicoCoordenadorKITEspecifico(window.kit_tipo_exame.medico_coordenador_id);
         window.kit_medico_examinador = await requisitarMedicoExaminadorKITEspecifico(window.kit_tipo_exame.medico_clinica_id);
-        window.recebe_totalizacoes = await requisitarTotalizacoes(window.kit_empresa.empresa_id);
+        
+        if (window.kit_empresa && window.kit_empresa.empresa_id) {
+          window.recebe_totalizacoes = await requisitarTotalizacoes(window.kit_empresa.empresa_id);
+        }
+
+
+        // window.recebe_totalizacoes = await requisitarTotalizacoes(window.kit_empresa.empresa_id);
         window.kit_empresa.quantidadeVidas = total_pessoas;
         window.kit_empresa.quantidadeClinicas = total_clinicas;
         window.kit_empresa.ativo = true;
